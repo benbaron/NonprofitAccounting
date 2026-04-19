@@ -7,7 +7,6 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -65,16 +64,14 @@ public class LedgerRegisterPanel implements AppPanel
 			DateRangeContext.selectedProperty()));
 		title.getStyleClass().add("panel-title");
 
-		Button newTxn = new Button("+ New Transaction");
-		Button refresh = new Button("Refresh");
-		HBox actions = new HBox(8, newTxn, refresh);
+		javafx.scene.control.Button refresh = new javafx.scene.control.Button("Refresh");
+		HBox actions = new HBox(8, refresh);
 
 		root.setTop(new VBox(6, title, range, actions, status, new Separator()));
 
 		buildTable();
 		root.setCenter(txnTable);
 
-		newTxn.setOnAction(e -> onNew());
 		refresh.setOnAction(e -> loadLiveData());
 
 		txnTable.setRowFactory(tv -> {
@@ -86,7 +83,7 @@ public class LedgerRegisterPanel implements AppPanel
 				}
 				if (e.getClickCount() == 2 && e.getButton() == MouseButton.PRIMARY)
 				{
-					openRow(r.getItem().transaction());
+					showDetails(r.getItem().transaction());
 				}
 				if (e.getButton() == MouseButton.SECONDARY)
 				{
@@ -102,12 +99,6 @@ public class LedgerRegisterPanel implements AppPanel
 
 		DateRangeContext.selectedProperty().addListener((obs, oldRange, newRange) ->
 			applyDateRangeFilter(newRange));
-		LedgerSelectionContext.selectedSubpanelProperty().addListener((obs, oldPanel, newPanel) -> {
-			if (newPanel == LedgerSelectionContext.LedgerSubpanel.REGISTER)
-			{
-				loadLiveData();
-			}
-		});
 		loadLiveData();
 	}
 
@@ -247,61 +238,6 @@ public class LedgerRegisterPanel implements AppPanel
 		return column;
 	}
 
-	private void openSelected()
-	{
-		LedgerViewRow sel = txnTable.getSelectionModel().getSelectedItem();
-		if (sel != null)
-		{
-			openRow(sel.transaction());
-		}
-	}
-
-	private void openRow(AccountingTransaction row)
-	{
-		LedgerSelectionContext.setSelectedTransaction(row);
-		LedgerSelectionContext.setSelectedSubpanel(LedgerSelectionContext.LedgerSubpanel.EDITOR);
-	}
-
-	private void mergeUpdatedTransaction(AccountingTransaction transaction)
-	{
-		if (transaction == null)
-		{
-			return;
-		}
-		List<AccountingTransaction> merged = new ArrayList<>(allTransactions);
-		int existingIndex = findExistingTransactionIndex(merged, transaction);
-		if (existingIndex >= 0)
-		{
-			merged.set(existingIndex, transaction);
-		}
-		else
-		{
-			merged.add(transaction);
-		}
-		allTransactions.setAll(merged);
-		applyDateRangeFilter(DateRangeContext.get());
-	}
-
-	private int findExistingTransactionIndex(List<AccountingTransaction> transactions,
-		AccountingTransaction updated)
-	{
-		for (int i = 0; i < transactions.size(); i++)
-		{
-			AccountingTransaction existing = transactions.get(i);
-			if (updated.getId() > 0 && existing.getId() == updated.getId())
-			{
-				return i;
-			}
-			if (updated.getBookingDateTimestamp() != null &&
-				Objects.equals(existing.getBookingDateTimestamp(),
-					updated.getBookingDateTimestamp()))
-			{
-				return i;
-			}
-		}
-		return -1;
-	}
-
 	private void showDetails(AccountingTransaction row)
 	{
 		Alert a = new Alert(Alert.AlertType.INFORMATION,
@@ -327,12 +263,7 @@ public class LedgerRegisterPanel implements AppPanel
 	@Override
 	public void onNew()
 	{
-		AccountingTransaction draft = new AccountingTransaction();
-		draft.setDate(LocalDate.now().toString());
-		draft.setMemo("");
-		draft.setToFrom("");
-		LedgerSelectionContext.setSelectedTransaction(draft);
-		LedgerSelectionContext.setSelectedSubpanel(LedgerSelectionContext.LedgerSubpanel.EDITOR);
+		// Read-only register: no create action.
 	}
 
 	private String safe(String value)

@@ -17,8 +17,7 @@ Use this document to mix-and-match panes from both UI stacks.
 | Route ID | Current class | Present-state quality | Notes |
 |---|---|---|---|
 | `DASHBOARD` | `DashboardPanel` | **Hybrid / data-backed** | Shows fund balances + embeds imported `DashboardPanelFX` workspace. |
-| `LEDGER_REGISTER` | `LedgerRegisterPanel` | **Skeleton** | Demo rows + placeholder alerts for open/details/new. |
-| `TXN_EDITOR` | `TransactionEditorPanel` | **Skeleton** | Form + split grid shell; save/post/journal are placeholder alerts. |
+| `LEDGER_REGISTER` | `LedgerRegisterPanel` | **Read-only** | Register-only surface; no transaction editor route. |
 | `SCHEDULES` | `SchedulesPanel` | **Partially wired** | Account-driven tab gating works; schedule tab content still placeholder text. |
 | `BUDGET_EDITOR` | `BudgetEditorPanel` | **Skeleton** | Header/actions only; TODO center content. |
 | `BUDGET_VS_ACTUAL` | `BudgetVsActualPanel` | **Skeleton** | Header/actions only; TODO report content. |
@@ -84,7 +83,6 @@ ui_mix_map:
       keep_route_id: true
       notes: "Replace entire center pane"
 
-    - target_route: "TXN_EDITOR"
       source: "nonprofitbookkeeping.ui"
       source_component: "JournalEntryWorkspaceFX"
       keep_route_id: true

@@ -27,18 +27,14 @@ public class LedgerRegisterPanel implements AppPanel
             DateRangeContext.selectedProperty()));
         title.getStyleClass().add("panel-title");
 
-        Button newTxn = new Button("+ New Transaction");
-        Button edit = new Button("Edit Selected");
-        HBox actions = new HBox(8, newTxn, edit);
+        Button refresh = new Button("Refresh");
+        HBox actions = new HBox(8, refresh);
 
         VBox header = new VBox(6, title, range, actions, new Separator());
         root.setTop(header);
 
         buildTable();
         root.setCenter(txnTable);
-
-        newTxn.setOnAction(e -> onNew());
-        edit.setOnAction(e -> openSelected());
 
         txnTable.setRowFactory(tv -> {
             TableRow<Row> r = new TableRow<>();
@@ -47,24 +43,20 @@ public class LedgerRegisterPanel implements AppPanel
                 {
                     return;
                 }
-                if (e.getClickCount() == 2 && e.getButton() == javafx.scene.input.MouseButton.PRIMARY)
-                {
-                    txnTable.getSelectionModel().select(r.getIndex());
-                    openRow(r.getItem());
-                    return;
-                }
                 if (e.getButton() == javafx.scene.input.MouseButton.SECONDARY)
                 {
                     ContextMenu cm = new ContextMenu();
                     MenuItem details = new MenuItem("Show Details");
                     details.setOnAction(ev -> showDetails(r.getItem()));
-                    MenuItem editItem = new MenuItem("Edit Transaction");
-                    editItem.setOnAction(ev -> openRow(r.getItem()));
-                    cm.getItems().addAll(editItem, details);
+                    cm.getItems().add(details);
                     r.setContextMenu(cm);
                 }
             });
             return r;
+        });
+
+        refresh.setOnAction(e -> {
+            // sample data panel remains static; no editor navigation.
         });
 
         txnTable.getItems().addAll(new Row("2026-01-05", "Payee A", "Memo A", "Cash/Bank", "Posted"),
@@ -86,23 +78,6 @@ public class LedgerRegisterPanel implements AppPanel
         TableColumn<Row, String> c = new TableColumn<>(name);
         c.setCellValueFactory(v -> new SimpleStringProperty(getter.apply(v.getValue())));
         return c;
-    }
-
-    private void openSelected()
-    {
-        Row sel = txnTable.getSelectionModel().getSelectedItem();
-        if (sel != null)
-        {
-            openRow(sel);
-        }
-    }
-
-    private void openRow(Row row)
-    {
-        TransactionDraftContext.setSelectedRow(row);
-        TransactionEditorPanel editor = new TransactionEditorPanel(row, null);
-        editor.showAsDialog(root.getScene() == null ? null : root.getScene().getWindow(),
-            row.date().isBlank() ? "New Transaction" : "Edit Transaction");
     }
 
     private void showDetails(Row row)
@@ -129,7 +104,7 @@ public class LedgerRegisterPanel implements AppPanel
     @Override
     public void onNew()
     {
-        openRow(new Row("", "", "", "", "Draft"));
+        // Read-only register: no create action.
     }
 
     public record Row(String date, String payee, String memo, String bank, String status)
