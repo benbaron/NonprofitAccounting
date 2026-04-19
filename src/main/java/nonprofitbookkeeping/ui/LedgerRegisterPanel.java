@@ -64,9 +64,8 @@ public class LedgerRegisterPanel implements AppPanel
 		title.getStyleClass().add("panel-title");
 
 		Button newTxn = new Button("+ New Transaction");
-		Button open = new Button("Open");
 		Button refresh = new Button("Refresh");
-		HBox actions = new HBox(8, newTxn, open, refresh);
+		HBox actions = new HBox(8, newTxn, refresh);
 
 		root.setTop(new VBox(6, title, range, actions, status, new Separator()));
 
@@ -74,8 +73,7 @@ public class LedgerRegisterPanel implements AppPanel
 		root.setCenter(txnTable);
 
 		newTxn.setOnAction(e -> onNew());
-		open.setOnAction(e -> openSelected());
-		refresh.setOnAction(e -> refreshCurrentView());
+		refresh.setOnAction(e -> loadLiveData());
 
 		txnTable.setRowFactory(tv -> {
 			TableRow<LedgerViewRow> r = new TableRow<>();
@@ -102,8 +100,12 @@ public class LedgerRegisterPanel implements AppPanel
 
 		DateRangeContext.selectedProperty().addListener((obs, oldRange, newRange) ->
 			applyDateRangeFilter(newRange));
-		LedgerSelectionContext.selectedTransactionProperty().addListener((obs, oldValue, newValue) ->
-			mergeUpdatedTransaction(newValue));
+		LedgerSelectionContext.selectedSubpanelProperty().addListener((obs, oldPanel, newPanel) -> {
+			if (newPanel == LedgerSelectionContext.LedgerSubpanel.REGISTER)
+			{
+				loadLiveData();
+			}
+		});
 		loadLiveData();
 	}
 
