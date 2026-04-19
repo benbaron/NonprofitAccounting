@@ -27,14 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import java.math.BigDecimal;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 /**
  * Asset register panel backed by {@link AssetRecordService} data.
  */
@@ -80,19 +72,21 @@ public class AssetsRegisterPanel implements AppPanel
 	{
 		table.setEditable(true);
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-		table.getColumns().add(col("Asset ID", AssetRow::assetIdProperty));
-		table.getColumns().add(col("Acquired", AssetRow::dateAcquiredProperty));
-		table.getColumns().add(col("Description", AssetRow::descriptionProperty));
-		table.getColumns().add(col("Count", AssetRow::itemCountProperty));
-		table.getColumns().add(col("Approx Value", AssetRow::approxValueTotalProperty));
+		table.getColumns().add(col("Asset ID", AssetRow::assetIdProperty, AssetRow::setAssetId));
+		table.getColumns().add(col("Acquired", AssetRow::dateAcquiredProperty, AssetRow::setDateAcquired));
+		table.getColumns().add(col("Description", AssetRow::descriptionProperty, AssetRow::setDescription));
+		table.getColumns().add(col("Count", AssetRow::itemCountProperty, AssetRow::setItemCount));
+		table.getColumns().add(col("Approx Value", AssetRow::approxValueTotalProperty, AssetRow::setApproxValueTotal));
 	}
 
 	private TableColumn<AssetRow, String> col(String name,
-		java.util.function.Function<AssetRow, SimpleStringProperty> propertyGetter)
+		java.util.function.Function<AssetRow, SimpleStringProperty> propertyGetter,
+		java.util.function.BiConsumer<AssetRow, String> setter)
 	{
 		TableColumn<AssetRow, String> col = new TableColumn<>(name);
 		col.setCellValueFactory(v -> propertyGetter.apply(v.getValue()));
-		col.setCellFactory(TextFieldTableCell.forTableColumn());
+		col.setCellFactory(c -> new FocusCommitTextFieldTableCell<>());
+		col.setOnEditCommit(event -> setter.accept(event.getRowValue(), event.getNewValue()));
 		return col;
 	}
 
@@ -146,6 +140,7 @@ public class AssetsRegisterPanel implements AppPanel
 			status.setText("Failed to save asset records: " + ex.getMessage());
 		}
 	}
+
 
 	public static final class AssetRow
 	{
@@ -222,6 +217,12 @@ public class AssetsRegisterPanel implements AppPanel
 		public SimpleStringProperty descriptionProperty() { return description; }
 		public SimpleStringProperty itemCountProperty() { return itemCount; }
 		public SimpleStringProperty approxValueTotalProperty() { return approxValueTotal; }
+
+		public void setAssetId(String value) { assetId.set(value == null ? "" : value); }
+		public void setDateAcquired(String value) { dateAcquired.set(value == null ? "" : value); }
+		public void setDescription(String value) { description.set(value == null ? "" : value); }
+		public void setItemCount(String value) { itemCount.set(value == null ? "" : value); }
+		public void setApproxValueTotal(String value) { approxValueTotal.set(value == null ? "" : value); }
 
 		private static String nonBlankOrThrow(String raw, String field, int rowNumber)
 		{
