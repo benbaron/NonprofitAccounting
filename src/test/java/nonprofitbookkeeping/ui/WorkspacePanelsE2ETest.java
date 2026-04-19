@@ -18,6 +18,7 @@ import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.records.BankingItemRecord;
 import nonprofitbookkeeping.model.supplemental.ReceivablesLine;
 import nonprofitbookkeeping.persistence.CompanyDataRepository;
@@ -117,6 +118,17 @@ class WorkspacePanelsE2ETest
 			return selectedTabText(view);
 		});
 		assertEquals("Assets", assetsTab);
+	}
+
+	@Test
+	void transactionEditorCanInitializeWhenNoCompanyIsActive() throws Exception
+	{
+		runOnFxThread(() -> {
+			CurrentCompany.forceCompanyLoad(null);
+			TransactionEditorPanel panel = new TransactionEditorPanel();
+			assertNotNull(panel.root());
+			return null;
+		});
 	}
 
 	@Test
