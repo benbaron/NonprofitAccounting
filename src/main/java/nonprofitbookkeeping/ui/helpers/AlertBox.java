@@ -7,6 +7,8 @@ package nonprofitbookkeeping.ui.helpers;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Window;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -16,6 +18,42 @@ import javafx.stage.Window;
  */
 public class AlertBox
 {
+	private static final Logger LOGGER = LoggerFactory.getLogger(AlertBox.class);
+
+	private static void logPopup(AlertType type, String title, String header,
+		String content)
+	{
+		if (type == null)
+		{
+			return;
+		}
+		String popupTitle = title == null ? "" : title;
+		String popupHeader = header == null ? "" : header;
+		String popupContent = content == null ? "" : content;
+
+		switch (type)
+		{
+			case ERROR -> LOGGER.error(
+				"Popup [{}] title='{}' header='{}' content='{}'",
+				type,
+				popupTitle,
+				popupHeader,
+				popupContent);
+			case WARNING -> LOGGER.warn(
+				"Popup [{}] title='{}' header='{}' content='{}'",
+				type,
+				popupTitle,
+				popupHeader,
+				popupContent);
+			default -> LOGGER.info(
+				"Popup [{}] title='{}' header='{}' content='{}'",
+				type,
+				popupTitle,
+				popupHeader,
+				popupContent);
+		}
+	}
+
 	/**
 	 * Displays an error dialog with a predefined title ("Error") and header text ("Something went wrong").
 	 * The dialog is modal with respect to the owner window and waits for the user to dismiss it.
@@ -31,6 +69,8 @@ public class AlertBox
 		alert.setTitle("Error");
 		alert.setHeaderText("Something went wrong"); // Standard header for errors
 		alert.setContentText(message);
+		logPopup(alert.getAlertType(), alert.getTitle(), alert.getHeaderText(),
+			alert.getContentText());
 		
 		// Example for custom buttons (not used by default):
 		// alert.getButtonTypes().setAll(ButtonType.OK, ButtonType.CANCEL);
@@ -52,6 +92,8 @@ public class AlertBox
 		alert.initOwner(owner);
 		alert.setTitle("Information");
 		alert.setHeaderText(message); // Message used as header
+		logPopup(alert.getAlertType(), alert.getTitle(), alert.getHeaderText(),
+			alert.getContentText());
 		// alert.setContentText(message); // Content text is not set, header is primary
 		// display for message
 		
@@ -72,6 +114,8 @@ public class AlertBox
 		alert.initOwner(owner);
 		alert.setTitle("Warning"); // Title changed to "Warning" for consistency
 		alert.setHeaderText(message); // Message used as header
+		logPopup(alert.getAlertType(), alert.getTitle(), alert.getHeaderText(),
+			alert.getContentText());
 		
 		alert.showAndWait();
 	}
@@ -86,9 +130,12 @@ public class AlertBox
 	public static void showError(Window win, String header, String message)
 	{
 		Alert alert = new Alert(AlertType.ERROR);
+		alert.initOwner(win);
 		alert.setTitle("Error");
 		alert.setHeaderText(header); // Standard header for errors
 		alert.setContentText(message);
+		logPopup(alert.getAlertType(), alert.getTitle(), alert.getHeaderText(),
+			alert.getContentText());
 		
 		// Example for custom buttons (not used by default):
 		// alert.getButtonTypes().setAll(ButtonType.OK, ButtonType.CANCEL);
