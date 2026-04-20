@@ -2,6 +2,7 @@ package nonprofitbookkeeping.persistence.records;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.model.records.AssetItemType;
 import nonprofitbookkeeping.model.records.AssetRecord;
 
 import java.sql.Connection;
@@ -26,6 +27,7 @@ public class AssetRecordRepository
             description CLOB,
             item_count INTEGER,
             approx_value_total DECIMAL(19,2),
+            accumulated_depreciation DECIMAL(19,2),
             value_per_item DECIMAL(19,2),
             item_type VARCHAR(128),
             used_for VARCHAR(255),
@@ -51,19 +53,19 @@ public class AssetRecordRepository
     private static final String UPSERT_SQL = """
         MERGE INTO imported_asset_record(
             asset_id, date_acquired, description, item_count, approx_value_total,
-            value_per_item, item_type, used_for, lot_paid_total, lot_item_count,
+            accumulated_depreciation, value_per_item, item_type, used_for, lot_paid_total, lot_item_count,
             guardian_legal_name, guardian_email, guardian_phone,
             guardianship_date_as_of, guardianship_confirmed, guardianship_confirmation_status,
             guardianship_notes, removal_approved_by, removal_approval_date,
             removal_reason, removal_number_removed, removal_removed, removal_type,
             extensions_json
         ) KEY(asset_id)
-        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
         """;
     private static final String LIST_ALL_SQL = """
         SELECT
             asset_id, date_acquired, description, item_count, approx_value_total,
-            value_per_item, item_type, used_for, lot_paid_total, lot_item_count,
+            accumulated_depreciation, value_per_item, item_type, used_for, lot_paid_total, lot_item_count,
             guardian_legal_name, guardian_email, guardian_phone,
             guardianship_date_as_of, guardianship_confirmed, guardianship_confirmation_status,
             guardianship_notes, removal_approved_by, removal_approval_date,
@@ -85,8 +87,9 @@ public class AssetRecordRepository
                 ps.setString(++i, row.description());
                 ps.setObject(++i, row.itemCount());
                 ps.setBigDecimal(++i, row.approxValueTotal());
+                ps.setBigDecimal(++i, row.accumulatedDepreciation());
                 ps.setBigDecimal(++i, row.valuePerItem());
-                ps.setString(++i, row.itemType());
+                ps.setString(++i, row.itemType() == null ? null : row.itemType().name());
                 ps.setString(++i, row.usedFor());
                 ps.setBigDecimal(++i, row.lotPaidTotal());
                 ps.setObject(++i, row.lotItemCount());
@@ -126,8 +129,9 @@ public class AssetRecordRepository
                         rs.getString("description"),
                         rs.getObject("item_count", Integer.class),
                         rs.getBigDecimal("approx_value_total"),
+                        rs.getBigDecimal("accumulated_depreciation"),
                         rs.getBigDecimal("value_per_item"),
-                        rs.getString("item_type"),
+                        AssetItemType.fromStorageValue(rs.getString("item_type")),
                         rs.getString("used_for"),
                         rs.getBigDecimal("lot_paid_total"),
                         rs.getObject("lot_item_count", Integer.class),
