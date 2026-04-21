@@ -27,9 +27,11 @@ import java.sql.Types;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 
 /**
@@ -46,6 +48,7 @@ public class GenericRecordEditorPanel implements AppPanel
     private final String tableName;
     private final String primaryKeyColumn;
     private final Supplier<String> idSupplier;
+    private final Set<String> hiddenColumnNames;
     private final RecordSchemaService schemaService;
     private final GenericRecordCrudService crudService;
     private final Map<String, Double> selectedColumnWidths = new LinkedHashMap<>();
@@ -53,7 +56,26 @@ public class GenericRecordEditorPanel implements AppPanel
 
     public GenericRecordEditorPanel(String panelTitle, String tableName, String primaryKeyColumn, Supplier<String> idSupplier)
     {
-        this(panelTitle, tableName, primaryKeyColumn, idSupplier, new RecordSchemaService(), new GenericRecordCrudService(new RecordSchemaService()));
+        this(panelTitle, tableName, primaryKeyColumn, idSupplier, Set.of());
+    }
+
+    public GenericRecordEditorPanel(
+        String panelTitle,
+        String tableName,
+        String primaryKeyColumn,
+        Supplier<String> idSupplier,
+        Set<String> hiddenColumnNames
+    )
+    {
+        this(
+            panelTitle,
+            tableName,
+            primaryKeyColumn,
+            idSupplier,
+            hiddenColumnNames,
+            new RecordSchemaService(),
+            new GenericRecordCrudService(new RecordSchemaService())
+        );
     }
 
     GenericRecordEditorPanel(
@@ -61,6 +83,7 @@ public class GenericRecordEditorPanel implements AppPanel
         String tableName,
         String primaryKeyColumn,
         Supplier<String> idSupplier,
+        Set<String> hiddenColumnNames,
         RecordSchemaService schemaService,
         GenericRecordCrudService crudService
     )
@@ -69,6 +92,7 @@ public class GenericRecordEditorPanel implements AppPanel
         this.tableName = tableName;
         this.primaryKeyColumn = primaryKeyColumn;
         this.idSupplier = idSupplier;
+        this.hiddenColumnNames = normalizeHiddenColumns(hiddenColumnNames);
         this.schemaService = schemaService;
         this.crudService = crudService;
 
@@ -213,6 +237,10 @@ public class GenericRecordEditorPanel implements AppPanel
         for (TableColumnMetadata column : columns)
         {
             String columnName = column.columnName();
+            if (isHiddenColumn(columnName))
+            {
+                continue;
+            }
             String displayTitle = toDisplayTitle(columnName);
             String headerTitle = column.nullable() ? displayTitle : displayTitle + " *";
             TableColumn<Map<String, Object>, String> tableColumn = new TableColumn<>(headerTitle);
@@ -347,6 +375,34 @@ public class GenericRecordEditorPanel implements AppPanel
         }
         return title.toString();
     }
+
+    private Set<String> normalizeHiddenColumns(Set<String> configuredHiddenColumns)
+    {
+        if (configuredHiddenColumns == null || configuredHiddenColumns.isEmpty())
+        {
+            return Set.of();
+        }
+
+        Set<String> normalized = new HashSet<>();
+        for (String name : configuredHiddenColumns)
+        {
+            if (name != null && !name.isBlank())
+            {
+                normalized.add(name.trim().toLowerCase());
+            }
+        }
+        return Set.copyOf(normalized);
+    }
+
+    private boolean isHiddenColumn(String columnName)
+    {
+        if (columnName == null)
+        {
+            return false;
+        }
+        return hiddenColumnNames.contains(columnName.toLowerCase());
+    }
+
     private double minWidthForTitle(String title)
     {
         Text measure = new Text(title == null ? "" : title);

@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -23,11 +24,12 @@ public class AssetsRegisterPanel implements AppPanel
 
 	public AssetsRegisterPanel()
 	{
-		this(new GenericRecordEditorPanel(
-			"Asset Register",
-			"imported_asset_record",
-			"asset_id",
-			() -> "asset-" + UUID.randomUUID()));
+			this(new GenericRecordEditorPanel(
+				"Asset Register",
+				"imported_asset_record",
+				"asset_id",
+				() -> "asset-" + UUID.randomUUID(),
+				Set.of("extensions_json")));
 	}
 
 	AssetsRegisterPanel(AssetRecordService assetRecordService)
