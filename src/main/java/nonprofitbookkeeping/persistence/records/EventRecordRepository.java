@@ -1,23 +1,18 @@
 package nonprofitbookkeeping.persistence.records;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.records.EventRecord;
 
-import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Persists imported SCLX event records into a concrete staging table.
  */
 @ApplicationScoped
-public class EventRecordRepository
+public class EventRecordRepository extends AbstractRepository<EventRecord, String>
 {
     private static final String CREATE_SQL = """
         CREATE TABLE IF NOT EXISTS imported_event_record (
@@ -42,70 +37,33 @@ public class EventRecordRepository
         """;
     private static final String DELETE_SQL = "DELETE FROM imported_event_record WHERE event_id = ?";
 
-
-    public void upsert(EventRecord row) throws SQLException
+    public EventRecordRepository()
     {
-        try (Connection c = Database.get().getConnection())
-        {
-            ensureTable(c);
-            try (PreparedStatement ps = c.prepareStatement(UPSERT_SQL))
-            {
-                int i = 0;
-                ps.setString(++i, row.eventId());
-                ps.setString(++i, row.name());
-                ps.setDate(++i, row.startDate() == null ? null : Date.valueOf(row.startDate()));
-                ps.setDate(++i, row.endDate() == null ? null : Date.valueOf(row.endDate()));
-                ps.setString(++i, row.hostingOrganizationId());
-                ps.setString(++i, JsonColumnCodec.toJson(row.extensions()));
-                ps.executeUpdate();
-            }
-        }
+        super(CREATE_SQL, UPSERT_SQL, LIST_ALL_SQL, DELETE_SQL);
     }
 
-    public List<EventRecord> listAll() throws SQLException
+    @Override
+    protected void bindUpsert(PreparedStatement ps, EventRecord row) throws SQLException
     {
-        try (Connection c = Database.get().getConnection())
-        {
-            ensureTable(c);
-            List<EventRecord> rows = new ArrayList<>();
-            try (Statement statement = c.createStatement();
-                 ResultSet rs = statement.executeQuery(LIST_ALL_SQL))
-            {
-                while (rs.next())
-                {
-                    rows.add(new EventRecord(
-                        rs.getString("event_id"),
-                        rs.getString("name"),
-                        rs.getDate("start_date") == null ? null : rs.getDate("start_date").toLocalDate(),
-                        rs.getDate("end_date") == null ? null : rs.getDate("end_date").toLocalDate(),
-                        rs.getString("hosting_organization_id"),
-                        java.util.Map.of()
-                    ));
-                }
-            }
-            return rows;
-        }
+        int i = 0;
+        ps.setString(++i, row.eventId());
+        ps.setString(++i, row.name());
+        ps.setDate(++i, row.startDate() == null ? null : Date.valueOf(row.startDate()));
+        ps.setDate(++i, row.endDate() == null ? null : Date.valueOf(row.endDate()));
+        ps.setString(++i, row.hostingOrganizationId());
+        ps.setString(++i, JsonColumnCodec.toJson(row.extensions()));
     }
 
-    public int deleteById(String eventId) throws SQLException
+    @Override
+    protected EventRecord mapRow(ResultSet rs) throws SQLException
     {
-        try (Connection c = Database.get().getConnection())
-        {
-            ensureTable(c);
-            try (PreparedStatement ps = c.prepareStatement(DELETE_SQL))
-            {
-                ps.setString(1, eventId);
-                return ps.executeUpdate();
-            }
-        }
-    }
-
-
-    private void ensureTable(Connection c) throws SQLException
-    {
-        try (PreparedStatement ps = c.prepareStatement(CREATE_SQL))
-        {
-            ps.execute();
-        }
+        return new EventRecord(
+            rs.getString("event_id"),
+            rs.getString("name"),
+            rs.getDate("start_date") == null ? null : rs.getDate("start_date").toLocalDate(),
+            rs.getDate("end_date") == null ? null : rs.getDate("end_date").toLocalDate(),
+            rs.getString("hosting_organization_id"),
+            java.util.Map.of()
+        );
     }
 }
