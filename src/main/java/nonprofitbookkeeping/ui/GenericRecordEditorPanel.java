@@ -13,6 +13,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.text.Text;
 import nonprofitbookkeeping.persistence.records.GenericRecordCrudService;
 import nonprofitbookkeeping.persistence.records.RecordSchemaService;
 import nonprofitbookkeeping.persistence.records.TableColumnMetadata;
@@ -26,9 +27,11 @@ import java.sql.Types;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 
 /**
@@ -45,13 +48,34 @@ public class GenericRecordEditorPanel implements AppPanel
     private final String tableName;
     private final String primaryKeyColumn;
     private final Supplier<String> idSupplier;
+    private final Set<String> hiddenColumnNames;
     private final RecordSchemaService schemaService;
     private final GenericRecordCrudService crudService;
+    private final Map<String, Double> selectedColumnWidths = new LinkedHashMap<>();
     private List<TableColumnMetadata> columns = List.of();
 
     public GenericRecordEditorPanel(String panelTitle, String tableName, String primaryKeyColumn, Supplier<String> idSupplier)
     {
-        this(panelTitle, tableName, primaryKeyColumn, idSupplier, new RecordSchemaService(), new GenericRecordCrudService(new RecordSchemaService()));
+        this(panelTitle, tableName, primaryKeyColumn, idSupplier, Set.of());
+    }
+
+    public GenericRecordEditorPanel(
+        String panelTitle,
+        String tableName,
+        String primaryKeyColumn,
+        Supplier<String> idSupplier,
+        Set<String> hiddenColumnNames
+    )
+    {
+        this(
+            panelTitle,
+            tableName,
+            primaryKeyColumn,
+            idSupplier,
+            hiddenColumnNames,
+            new RecordSchemaService(),
+            new GenericRecordCrudService(new RecordSchemaService())
+        );
     }
 
     GenericRecordEditorPanel(
@@ -59,6 +83,7 @@ public class GenericRecordEditorPanel implements AppPanel
         String tableName,
         String primaryKeyColumn,
         Supplier<String> idSupplier,
+        Set<String> hiddenColumnNames,
         RecordSchemaService schemaService,
         GenericRecordCrudService crudService
     )
@@ -67,6 +92,7 @@ public class GenericRecordEditorPanel implements AppPanel
         this.tableName = tableName;
         this.primaryKeyColumn = primaryKeyColumn;
         this.idSupplier = idSupplier;
+        this.hiddenColumnNames = normalizeHiddenColumns(hiddenColumnNames);
         this.schemaService = schemaService;
         this.crudService = crudService;
 
@@ -82,7 +108,7 @@ public class GenericRecordEditorPanel implements AppPanel
         root.setTop(new VBox(6, title, actions, new Separator()));
 
         table.setEditable(true);
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+        table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
         root.setCenter(table);
         root.setBottom(new VBox(new Separator(), status));
 
@@ -182,7 +208,16 @@ public class GenericRecordEditorPanel implements AppPanel
     {
         try
         {
-            this.columns = schemaService.columnsForTable(tableName);
+            this.columns = schemaService.columnsForTable(tableName).stream()
+                .sorted((left, right) ->
+                {
+                    if (left.nullable() != right.nullable())
+                    {
+                        return left.nullable() ? 1 : -1;
+                    }
+                    return Integer.compare(left.ordinalPosition(), right.ordinalPosition());
+                })
+                .toList();
             configureColumns();
             List<Map<String, Object>> rows = new ArrayList<>(crudService.listAll(tableName));
             table.setItems(FXCollections.observableArrayList(rows));
@@ -197,15 +232,51 @@ public class GenericRecordEditorPanel implements AppPanel
 
     private void configureColumns()
     {
+        captureColumnWidths();
         table.getColumns().clear();
         for (TableColumnMetadata column : columns)
         {
             String columnName = column.columnName();
-            TableColumn<Map<String, Object>, String> tableColumn = new TableColumn<>(columnName);
+            if (isHiddenColumn(columnName))
+            {
+                continue;
+            }
+            String displayTitle = toDisplayTitle(columnName);
+            String headerTitle = column.nullable() ? displayTitle : displayTitle + " *";
+            TableColumn<Map<String, Object>, String> tableColumn = new TableColumn<>(headerTitle);
+            tableColumn.setUserData(columnName);
+            tableColumn.setMinWidth(minWidthForTitle(headerTitle));
+            tableColumn.setPrefWidth(selectedColumnWidths.getOrDefault(columnName, tableColumn.getMinWidth()));
             tableColumn.setCellValueFactory(cell -> new SimpleStringProperty(toDisplay(cell.getValue().get(columnName))));
             tableColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-            tableColumn.setOnEditCommit(event -> event.getRowValue().put(columnName, event.getNewValue()));
+            tableColumn.setOnEditCommit(event ->
+            {
+                Map<String, Object> row = event.getRowValue();
+                String value = event.getNewValue();
+                row.put(columnName, value);
+                try
+                {
+                    convertValue(value, column, displayTitle);
+                    status.setText("Updated " + displayTitle);
+                }
+                catch (IllegalArgumentException ex)
+                {
+                    status.setText("Validation error: " + ex.getMessage());
+                }
+            });
             table.getColumns().add(tableColumn);
+        }
+    }
+
+    private void captureColumnWidths()
+    {
+        for (TableColumn<Map<String, Object>, ?> tableColumn : table.getColumns())
+        {
+            Object key = tableColumn.getUserData();
+            if (key instanceof String columnName && !columnName.isBlank())
+            {
+                selectedColumnWidths.put(columnName, tableColumn.getWidth());
+            }
         }
     }
 
@@ -215,7 +286,7 @@ public class GenericRecordEditorPanel implements AppPanel
         for (TableColumnMetadata column : columns)
         {
             Object raw = row.get(column.columnName());
-            typed.put(column.columnName(), convertValue(raw, column, column.columnName()));
+            typed.put(column.columnName(), convertValue(raw, column, toDisplayTitle(column.columnName())));
         }
         return typed;
     }
@@ -224,6 +295,10 @@ public class GenericRecordEditorPanel implements AppPanel
     {
         if (raw == null)
         {
+            if (!column.nullable())
+            {
+                throw new IllegalArgumentException("Required field is blank: " + fieldName);
+            }
             return null;
         }
         if (!(raw instanceof String value))
@@ -233,6 +308,10 @@ public class GenericRecordEditorPanel implements AppPanel
         String trimmed = value.trim();
         if (trimmed.isEmpty())
         {
+            if (!column.nullable())
+            {
+                throw new IllegalArgumentException("Required field is blank: " + fieldName);
+            }
             return null;
         }
 
@@ -243,7 +322,7 @@ public class GenericRecordEditorPanel implements AppPanel
                 case Types.INTEGER, Types.SMALLINT, Types.TINYINT -> Integer.parseInt(trimmed);
                 case Types.BIGINT -> Long.parseLong(trimmed);
                 case Types.DECIMAL, Types.NUMERIC -> new BigDecimal(trimmed);
-                case Types.BOOLEAN, Types.BIT -> Boolean.parseBoolean(trimmed);
+                case Types.BOOLEAN, Types.BIT -> parseBoolean(trimmed, fieldName);
                 case Types.DATE -> LocalDate.parse(trimmed);
                 default -> trimmed;
             };
@@ -254,8 +333,79 @@ public class GenericRecordEditorPanel implements AppPanel
         }
     }
 
+    private boolean parseBoolean(String raw, String fieldName)
+    {
+        if ("true".equalsIgnoreCase(raw) || "false".equalsIgnoreCase(raw))
+        {
+            return Boolean.parseBoolean(raw);
+        }
+        throw new IllegalArgumentException("Invalid boolean for " + fieldName + ": " + raw);
+    }
+
     private String toDisplay(Object value)
     {
         return value == null ? "" : String.valueOf(value);
+    }
+
+
+    private String toDisplayTitle(String columnName)
+    {
+        if (columnName == null || columnName.isBlank())
+        {
+            return "";
+        }
+        String[] words = columnName.trim().split("[_\\s]+");
+        StringBuilder title = new StringBuilder();
+        for (String word : words)
+        {
+            if (word.isBlank())
+            {
+                continue;
+            }
+            if (!title.isEmpty())
+            {
+                title.append(' ');
+            }
+            String lower = word.toLowerCase();
+            title.append(Character.toUpperCase(lower.charAt(0)));
+            if (lower.length() > 1)
+            {
+                title.append(lower.substring(1));
+            }
+        }
+        return title.toString();
+    }
+
+    private Set<String> normalizeHiddenColumns(Set<String> configuredHiddenColumns)
+    {
+        if (configuredHiddenColumns == null || configuredHiddenColumns.isEmpty())
+        {
+            return Set.of();
+        }
+
+        Set<String> normalized = new HashSet<>();
+        for (String name : configuredHiddenColumns)
+        {
+            if (name != null && !name.isBlank())
+            {
+                normalized.add(name.trim().toLowerCase());
+            }
+        }
+        return Set.copyOf(normalized);
+    }
+
+    private boolean isHiddenColumn(String columnName)
+    {
+        if (columnName == null)
+        {
+            return false;
+        }
+        return hiddenColumnNames.contains(columnName.toLowerCase());
+    }
+
+    private double minWidthForTitle(String title)
+    {
+        Text measure = new Text(title == null ? "" : title);
+        return Math.max(80, measure.getLayoutBounds().getWidth() + 24);
     }
 }
