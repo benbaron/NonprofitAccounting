@@ -3,11 +3,14 @@ package nonprofitbookkeeping.ui;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -28,7 +31,9 @@ import java.sql.Types;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +57,7 @@ public class GenericRecordEditorPanel implements AppPanel
     private final Set<String> hiddenColumnNames;
     private final RecordSchemaService schemaService;
     private final GenericRecordCrudService crudService;
+    private final Set<Map<String, Object>> pendingNewRows = Collections.newSetFromMap(new IdentityHashMap<>());
     private final Map<String, Double> selectedColumnWidths = new LinkedHashMap<>();
     private List<TableColumnMetadata> columns = List.of();
 
@@ -110,6 +116,27 @@ public class GenericRecordEditorPanel implements AppPanel
 
         table.setEditable(true);
         table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+        table.setRowFactory(tv -> new TableRow<>()
+        {
+            @Override
+            protected void updateItem(Map<String, Object> item, boolean empty)
+            {
+                super.updateItem(item, empty);
+                if (empty || item == null)
+                {
+                    setStyle("");
+                    return;
+                }
+                if (pendingNewRows.contains(item))
+                {
+                    setStyle("-fx-background-color: rgba(166, 219, 255, 0.35);");
+                }
+                else
+                {
+                    setStyle("");
+                }
+            }
+        });
         root.setCenter(table);
         root.setBottom(new VBox(new Separator(), status));
 
@@ -169,6 +196,10 @@ public class GenericRecordEditorPanel implements AppPanel
             row.put(primaryKeyColumn, idSupplier == null ? null : idSupplier.get());
         }
         table.getItems().add(row);
+        pendingNewRows.add(row);
+        table.getSelectionModel().select(row);
+        table.scrollTo(row);
+        status.setText("Added new unsaved row. Press Save to persist.");
     }
 
     private void onDeleteSelected()
@@ -191,6 +222,7 @@ public class GenericRecordEditorPanel implements AppPanel
                 }
             }
             int deleted = crudService.deleteByPrimaryKey(tableName, pk);
+            pendingNewRows.remove(selected);
             table.getItems().remove(selected);
             status.setText(deleted > 0 ? "Deleted selected row." : "Removed unsaved row.");
         }
@@ -221,7 +253,9 @@ public class GenericRecordEditorPanel implements AppPanel
                 .toList();
             configureColumns();
             List<Map<String, Object>> rows = new ArrayList<>(crudService.listAll(tableName));
+            pendingNewRows.clear();
             table.setItems(FXCollections.observableArrayList(rows));
+            ensureVerticalScrollBarVisible();
             status.setText("Loaded " + rows.size() + " row(s)");
         }
         catch (SQLException | RuntimeException ex)
@@ -264,15 +298,7 @@ public class GenericRecordEditorPanel implements AppPanel
                 Map<String, Object> row = event.getRowValue();
                 String value = event.getNewValue();
                 row.put(columnName, value);
-                try
-                {
-                    convertValue(value, column, displayTitle);
-                    status.setText("Updated " + displayTitle);
-                }
-                catch (IllegalArgumentException ex)
-                {
-                    status.setText("Validation error: " + ex.getMessage());
-                }
+                status.setText("Updated " + displayTitle + " (pending save)");
             });
             table.getColumns().add(tableColumn);
         }
@@ -288,6 +314,19 @@ public class GenericRecordEditorPanel implements AppPanel
                 selectedColumnWidths.put(columnName, tableColumn.getWidth());
             }
         }
+    }
+
+    private void ensureVerticalScrollBarVisible()
+    {
+        Platform.runLater(() -> {
+            Node node = table.lookup(".scroll-bar:vertical");
+            if (node instanceof ScrollBar scrollBar)
+            {
+                scrollBar.setVisible(true);
+                scrollBar.setManaged(true);
+                scrollBar.setOpacity(1.0);
+            }
+        });
     }
 
     private Map<String, Object> toTypedRow(Map<String, Object> row)
