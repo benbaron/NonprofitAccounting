@@ -1,23 +1,18 @@
 package nonprofitbookkeeping.persistence.records;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.records.DocumentRecord;
 
-import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Persists imported SCLX document records into a concrete staging table.
  */
 @ApplicationScoped
-public class DocumentRecordRepository
+public class DocumentRecordRepository extends AbstractRepository<DocumentRecord, String>
 {
     private static final String CREATE_SQL = """
         CREATE TABLE IF NOT EXISTS imported_document_record (
@@ -43,72 +38,35 @@ public class DocumentRecordRepository
         """;
     private static final String DELETE_SQL = "DELETE FROM imported_document_record WHERE document_id = ?";
 
-    public void upsert(DocumentRecord row) throws SQLException
+    public DocumentRecordRepository()
     {
-        try (Connection c = Database.get().getConnection())
-        {
-            ensureTable(c);
-            try (PreparedStatement ps = c.prepareStatement(UPSERT_SQL))
-            {
-                int i = 0;
-                ps.setString(++i, row.documentId());
-                ps.setString(++i, row.documentType());
-                ps.setString(++i, row.referenceNumber());
-                ps.setDate(++i, row.documentDate() == null ? null : Date.valueOf(row.documentDate()));
-                ps.setString(++i, row.fileName());
-                ps.setString(++i, row.notes());
-                ps.setString(++i, JsonColumnCodec.toJson(row.extensions()));
-                ps.executeUpdate();
-            }
-        }
+        super(CREATE_SQL, UPSERT_SQL, LIST_ALL_SQL, DELETE_SQL);
     }
 
-    public List<DocumentRecord> listAll() throws SQLException
+    @Override
+    protected void bindUpsert(PreparedStatement ps, DocumentRecord row) throws SQLException
     {
-        try (Connection c = Database.get().getConnection())
-        {
-            ensureTable(c);
-            List<DocumentRecord> rows = new ArrayList<>();
-            try (Statement statement = c.createStatement();
-                 ResultSet rs = statement.executeQuery(LIST_ALL_SQL))
-            {
-                while (rs.next())
-                {
-                    rows.add(new DocumentRecord(
-                        rs.getString("document_id"),
-                        rs.getString("document_type"),
-                        rs.getString("reference_number"),
-                        rs.getDate("document_date") == null ? null : rs.getDate("document_date").toLocalDate(),
-                        rs.getString("file_name"),
-                        rs.getString("notes"),
-                        java.util.Map.of()
-                    ));
-                }
-            }
-            return rows;
-        }
+        int i = 0;
+        ps.setString(++i, row.documentId());
+        ps.setString(++i, row.documentType());
+        ps.setString(++i, row.referenceNumber());
+        ps.setDate(++i, row.documentDate() == null ? null : Date.valueOf(row.documentDate()));
+        ps.setString(++i, row.fileName());
+        ps.setString(++i, row.notes());
+        ps.setString(++i, JsonColumnCodec.toJson(row.extensions()));
     }
 
-
-    public int deleteById(String documentId) throws SQLException
+    @Override
+    protected DocumentRecord mapRow(ResultSet rs) throws SQLException
     {
-        try (Connection c = Database.get().getConnection())
-        {
-            ensureTable(c);
-            try (PreparedStatement ps = c.prepareStatement(DELETE_SQL))
-            {
-                ps.setString(1, documentId);
-                return ps.executeUpdate();
-            }
-        }
-    }
-
-
-    private void ensureTable(Connection c) throws SQLException
-    {
-        try (PreparedStatement ps = c.prepareStatement(CREATE_SQL))
-        {
-            ps.execute();
-        }
+        return new DocumentRecord(
+            rs.getString("document_id"),
+            rs.getString("document_type"),
+            rs.getString("reference_number"),
+            rs.getDate("document_date") == null ? null : rs.getDate("document_date").toLocalDate(),
+            rs.getString("file_name"),
+            rs.getString("notes"),
+            java.util.Map.of()
+        );
     }
 }
