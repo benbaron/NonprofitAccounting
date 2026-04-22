@@ -13,6 +13,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.util.converter.DefaultStringConverter;
 import javafx.scene.text.Text;
 import nonprofitbookkeeping.persistence.records.GenericRecordCrudService;
 import nonprofitbookkeeping.persistence.records.RecordSchemaService;
@@ -248,7 +249,16 @@ public class GenericRecordEditorPanel implements AppPanel
             tableColumn.setMinWidth(minWidthForTitle(headerTitle));
             tableColumn.setPrefWidth(selectedColumnWidths.getOrDefault(columnName, tableColumn.getMinWidth()));
             tableColumn.setCellValueFactory(cell -> new SimpleStringProperty(toDisplay(cell.getValue().get(columnName))));
-            tableColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+            tableColumn.setCellFactory(col -> {
+                TextFieldTableCell<Map<String, Object>, String> cell = new TextFieldTableCell<>(new DefaultStringConverter());
+                cell.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+                    if (!isFocused && cell.isEditing())
+                    {
+                        cell.commitEdit(cell.getText());
+                    }
+                });
+                return cell;
+            });
             tableColumn.setOnEditCommit(event ->
             {
                 Map<String, Object> row = event.getRowValue();
