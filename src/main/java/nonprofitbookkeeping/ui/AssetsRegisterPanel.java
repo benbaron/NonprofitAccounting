@@ -2,31 +2,17 @@ package nonprofitbookkeeping.ui;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.ComboBoxTableCell;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import nonprofitbookkeeping.model.records.AssetRecord;
 import nonprofitbookkeeping.model.records.AssetItemType;
 import nonprofitbookkeeping.service.AssetRecordService;
 import org.nonprofitbookkeeping.ui.AppPanel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -34,165 +20,44 @@ import java.util.UUID;
  */
 public class AssetsRegisterPanel implements AppPanel
 {
-	private static final Logger LOG = LoggerFactory.getLogger(AssetsRegisterPanel.class);
-
-	private final BorderPane root = new BorderPane();
-	private final TableView<AssetRow> table = new TableView<>();
-	private final Label status = new Label("Ready");
-	private final AssetRecordService assetRecordService;
+	private final GenericRecordEditorPanel delegate;
 
 	public AssetsRegisterPanel()
 	{
-		this(new AssetRecordService());
+			this(new GenericRecordEditorPanel(
+				"Asset Register",
+				"imported_asset_record",
+				"asset_id",
+				() -> "asset-" + UUID.randomUUID(),
+				Set.of("extensions_json")));
 	}
 
 	AssetsRegisterPanel(AssetRecordService assetRecordService)
 	{
-		this.assetRecordService = assetRecordService;
-		root.setPadding(new Insets(8));
-
-		Label title = new Label("Asset Register");
-		title.getStyleClass().add("panel-title");
-
-		Button add = new Button("+ Add Asset");
-		Button delete = new Button("Delete Selected");
-		Button refresh = new Button("Refresh");
-		Button save = new Button("Save");
-		HBox actions = new HBox(8, add, delete, refresh, save);
-
-		root.setTop(new VBox(6, title, actions, new Separator()));
-		configureTable();
-		root.setCenter(table);
-		root.setBottom(new VBox(new Separator(), status));
-
-		add.setOnAction(e -> table.getItems().add(new AssetRow("asset-" + UUID.randomUUID(), "", "", "", "", null, "")));
-		delete.setOnAction(e -> onDeleteSelected());
-		refresh.setOnAction(e -> loadFromService());
-		save.setOnAction(e -> onSave());
-		loadFromService();
+		this();
 	}
 
-	private void configureTable()
+	private AssetsRegisterPanel(GenericRecordEditorPanel delegate)
 	{
-		table.setEditable(true);
-		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-		table.getColumns().add(col("Asset ID", AssetRow::assetIdProperty, AssetRow::setAssetId));
-		table.getColumns().add(col("Acquired", AssetRow::dateAcquiredProperty, AssetRow::setDateAcquired));
-		table.getColumns().add(col("Description", AssetRow::descriptionProperty, AssetRow::setDescription));
-		table.getColumns().add(col("Count", AssetRow::itemCountProperty, AssetRow::setItemCount));
-		table.getColumns().add(col("Approx Value", AssetRow::approxValueTotalProperty, AssetRow::setApproxValueTotal));
-		table.getColumns().add(itemTypeCol("Item Type"));
-		table.getColumns().add(col("Accum Depreciation", AssetRow::accumulatedDepreciationProperty, AssetRow::setAccumulatedDepreciation));
-	}
-
-	private TableColumn<AssetRow, String> col(String name,
-		java.util.function.Function<AssetRow, SimpleStringProperty> propertyGetter,
-		java.util.function.BiConsumer<AssetRow, String> setter)
-	{
-		TableColumn<AssetRow, String> col = new TableColumn<>(name);
-		col.setCellValueFactory(v -> propertyGetter.apply(v.getValue()));
-		col.setCellFactory(c -> new FocusCommitTextFieldTableCell<>());
-		col.setOnEditCommit(event -> setter.accept(event.getRowValue(), event.getNewValue()));
-		return col;
-	}
-
-	private TableColumn<AssetRow, AssetItemType> itemTypeCol(String name)
-	{
-		TableColumn<AssetRow, AssetItemType> col = new TableColumn<>(name);
-		col.setCellValueFactory(v -> v.getValue().itemTypeProperty());
-		col.setCellFactory(column -> {
-			ComboBoxTableCell<AssetRow, AssetItemType> cell = new ComboBoxTableCell<>();
-			cell.getItems().setAll(AssetItemType.values());
-			cell.setConverter(new javafx.util.StringConverter<>()
-			{
-				@Override
-				public String toString(AssetItemType value)
-				{
-					return value == null ? "" : value.displayName();
-				}
-
-				@Override
-				public AssetItemType fromString(String text)
-				{
-					return AssetItemType.fromStorageValue(text);
-				}
-			});
-			return cell;
-		});
-		col.setOnEditCommit(event -> event.getRowValue().setItemType(event.getNewValue()));
-		return col;
-	}
-
-	private void loadFromService()
-	{
-		try
-		{
-			List<AssetRecord> records = assetRecordService.listAll();
-			table.setItems(FXCollections.observableArrayList(records.stream().map(AssetRow::fromRecord).toList()));
-			status.setText("Loaded " + records.size() + " asset record(s)");
-		}
-		catch (SQLException | RuntimeException ex)
-		{
-			LOG.warn("Asset register load failed", ex);
-			status.setText("Failed to load asset records: " + ex.getMessage());
-		}
+		this.delegate = delegate;
 	}
 
 	@Override
 	public String title()
 	{
-		return "Asset Register";
+		return delegate.title();
 	}
 
 	@Override
 	public Node root()
 	{
-		return root;
+		return delegate.root();
 	}
 
 	@Override
 	public void onSave()
 	{
-		try
-		{
-			int rowNumber = 1;
-			for (AssetRow row : table.getItems())
-			{
-				assetRecordService.save(row.toRecord(rowNumber));
-				rowNumber++;
-			}
-			status.setText("Saved " + table.getItems().size() + " asset record(s)");
-		}
-		catch (IllegalArgumentException ex)
-		{
-			status.setText("Validation error: " + ex.getMessage());
-		}
-		catch (SQLException | RuntimeException ex)
-		{
-			LOG.warn("Asset register save failed", ex);
-			status.setText("Failed to save asset records: " + ex.getMessage());
-		}
-	}
-
-	private void onDeleteSelected()
-	{
-		AssetRow selected = table.getSelectionModel().getSelectedItem();
-		if (selected == null)
-		{
-			status.setText("Select a row to delete.");
-			return;
-		}
-		try
-		{
-			int deleted = assetRecordService.delete(selected.getAssetId());
-			table.getItems().remove(selected);
-			status.setText(deleted > 0 ? "Deleted asset " + selected.getAssetId() : "Removed unsaved row.");
-		}
-		catch (SQLException | RuntimeException ex)
-		{
-			LOG.warn("Asset register delete failed", ex);
-			status.setText("Failed to delete asset: " + ex.getMessage());
-		}
+		delegate.onSave();
 	}
 
 
