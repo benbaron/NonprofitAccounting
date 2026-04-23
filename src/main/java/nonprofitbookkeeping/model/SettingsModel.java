@@ -71,6 +71,8 @@ public class SettingsModel
 	@JsonProperty private String theme;
 	/** Preferred language/locale identifier. */
 	@JsonProperty private String language;
+	/** Preferred text color for rows marked as pending. */
+	@JsonProperty private String pendingRowTextColor = "Black";
 	/** BCP 47 tag representing the locale used for currency formatting. */
 	@JsonProperty("currencyLocale") private String currencyLocaleTag;
 	/** Pattern used to format currency values. */
@@ -144,12 +146,11 @@ public class SettingsModel
 		 *
 		 * @param role the new role
 		 */
-		public void setRole(String role)
-		{
-			this.username = this.username;
-			this.role = role;
-			
-		}
+	public void setRole(String role)
+	{
+		this.role = role;
+		
+	}
 		
 	}
 	
@@ -595,6 +596,28 @@ public class SettingsModel
 	public void setLanguage(String language)
 	{
 		this.language = language;
+		
+	}
+
+	/**
+	 * Gets the pending row text color.
+	 *
+	 * @return the pending row text color
+	 */
+	public String getPendingRowTextColor()
+	{
+		return this.pendingRowTextColor;
+		
+	}
+
+	/**
+	 * Sets the pending row text color.
+	 *
+	 * @param pendingRowTextColor the new pending row text color
+	 */
+	public void setPendingRowTextColor(String pendingRowTextColor)
+	{
+		this.pendingRowTextColor = pendingRowTextColor;
 		
 	}
 	
