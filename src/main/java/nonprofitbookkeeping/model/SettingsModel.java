@@ -146,12 +146,11 @@ public class SettingsModel
 		 *
 		 * @param role the new role
 		 */
-		public void setRole(String role)
-		{
-			this.username = this.username;
-			this.role = role;
-			
-		}
+	public void setRole(String role)
+	{
+		this.role = role;
+		
+	}
 		
 	}
 	
