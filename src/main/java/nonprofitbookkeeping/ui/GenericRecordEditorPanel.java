@@ -9,14 +9,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.Separator;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.util.converter.DefaultStringConverter;
 import javafx.scene.text.Text;
 import nonprofitbookkeeping.persistence.records.GenericRecordCrudService;
 import nonprofitbookkeeping.persistence.records.RecordSchemaService;
@@ -283,16 +283,7 @@ public class GenericRecordEditorPanel implements AppPanel
             tableColumn.setMinWidth(minWidthForTitle(headerTitle));
             tableColumn.setPrefWidth(selectedColumnWidths.getOrDefault(columnName, tableColumn.getMinWidth()));
             tableColumn.setCellValueFactory(cell -> new SimpleStringProperty(toDisplay(cell.getValue().get(columnName))));
-            tableColumn.setCellFactory(col -> {
-                TextFieldTableCell<Map<String, Object>, String> cell = new TextFieldTableCell<>(new DefaultStringConverter());
-                cell.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
-                    if (!isFocused && cell.isEditing())
-                    {
-                        cell.commitEdit(cell.getText());
-                    }
-                });
-                return cell;
-            });
+            tableColumn.setCellFactory(col -> new CommitOnFocusLossCell());
             tableColumn.setOnEditCommit(event ->
             {
                 Map<String, Object> row = event.getRowValue();
@@ -325,8 +316,74 @@ public class GenericRecordEditorPanel implements AppPanel
                 scrollBar.setVisible(true);
                 scrollBar.setManaged(true);
                 scrollBar.setOpacity(1.0);
+                scrollBar.setMaxWidth(12);
             }
         });
+    }
+
+    private static final class CommitOnFocusLossCell extends TableCell<Map<String, Object>, String>
+    {
+        private TextField textField;
+
+        @Override
+        public void startEdit()
+        {
+            if (!isEmpty())
+            {
+                super.startEdit();
+                createTextField();
+                setText(null);
+                setGraphic(textField);
+                textField.selectAll();
+                textField.requestFocus();
+            }
+        }
+
+        @Override
+        public void cancelEdit()
+        {
+            super.cancelEdit();
+            setText(getItem());
+            setGraphic(null);
+        }
+
+        @Override
+        protected void updateItem(String item, boolean empty)
+        {
+            super.updateItem(item, empty);
+            if (empty)
+            {
+                setText(null);
+                setGraphic(null);
+            }
+            else if (isEditing())
+            {
+                if (textField != null)
+                {
+                    textField.setText(item);
+                }
+                setText(null);
+                setGraphic(textField);
+            }
+            else
+            {
+                setText(item);
+                setGraphic(null);
+            }
+        }
+
+        private void createTextField()
+        {
+            textField = new TextField(getItem());
+            textField.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
+            textField.setOnAction(event -> commitEdit(textField.getText()));
+            textField.focusedProperty().addListener((obs, oldValue, hasFocus) -> {
+                if (!hasFocus)
+                {
+                    commitEdit(textField.getText());
+                }
+            });
+        }
     }
 
     private Map<String, Object> toTypedRow(Map<String, Object> row)
