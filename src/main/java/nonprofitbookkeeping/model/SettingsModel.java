@@ -73,6 +73,8 @@ public class SettingsModel
         @JsonProperty("currencyLocale") private String currencyLocaleTag;
         /** Pattern used to format currency values. */
         @JsonProperty private String currencyFormat = "$#,##0.00";
+        /** Preferred text color mode for highlighted pending rows. */
+        @JsonProperty private String pendingRowTextColor = "Black";
 
         /**
          * Represents a user account within the settings model.
@@ -565,6 +567,26 @@ public class SettingsModel
         public void setCurrencyFormat(String currencyFormat)
         {
                 this.currencyFormat = currencyFormat;
+        }
+
+        /**
+         * Gets the preferred pending-row text color mode.
+         *
+         * @return "Black" or "System"
+         */
+        public String getPendingRowTextColor()
+        {
+                return this.pendingRowTextColor;
+        }
+
+        /**
+         * Sets the preferred pending-row text color mode.
+         *
+         * @param pendingRowTextColor the mode value
+         */
+        public void setPendingRowTextColor(String pendingRowTextColor)
+        {
+                this.pendingRowTextColor = pendingRowTextColor;
         }
 
         // ---------------------------------------------------------------------

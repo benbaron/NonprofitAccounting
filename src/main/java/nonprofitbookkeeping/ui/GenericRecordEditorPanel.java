@@ -21,6 +21,7 @@ import javafx.scene.text.Text;
 import nonprofitbookkeeping.persistence.records.GenericRecordCrudService;
 import nonprofitbookkeeping.persistence.records.RecordSchemaService;
 import nonprofitbookkeeping.persistence.records.TableColumnMetadata;
+import nonprofitbookkeeping.service.PreferencesService;
 import org.nonprofitbookkeeping.ui.AppPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,7 +130,9 @@ public class GenericRecordEditorPanel implements AppPanel
                 }
                 if (pendingNewRows.contains(item))
                 {
-                    setStyle("-fx-background-color: rgba(166, 219, 255, 0.35);");
+                    setStyle(
+                        "-fx-background-color: rgba(166, 219, 255, 0.35);"
+                    );
                 }
                 else
                 {
@@ -197,6 +200,7 @@ public class GenericRecordEditorPanel implements AppPanel
         }
         table.getItems().add(row);
         pendingNewRows.add(row);
+        table.refresh();
         table.getSelectionModel().select(row);
         table.scrollTo(row);
         status.setText("Added new unsaved row. Press Save to persist.");
@@ -224,6 +228,7 @@ public class GenericRecordEditorPanel implements AppPanel
             int deleted = crudService.deleteByPrimaryKey(tableName, pk);
             pendingNewRows.remove(selected);
             table.getItems().remove(selected);
+            table.refresh();
             status.setText(deleted > 0 ? "Deleted selected row." : "Removed unsaved row.");
         }
         catch (IllegalArgumentException ex)
@@ -255,6 +260,7 @@ public class GenericRecordEditorPanel implements AppPanel
             List<Map<String, Object>> rows = new ArrayList<>(crudService.listAll(tableName));
             pendingNewRows.clear();
             table.setItems(FXCollections.observableArrayList(rows));
+            table.refresh();
             ensureVerticalScrollBarVisible();
             status.setText("Loaded " + rows.size() + " row(s)");
         }
@@ -321,7 +327,7 @@ public class GenericRecordEditorPanel implements AppPanel
         });
     }
 
-    private static final class CommitOnFocusLossCell extends TableCell<Map<String, Object>, String>
+    private final class CommitOnFocusLossCell extends TableCell<Map<String, Object>, String>
     {
         private TextField textField;
 
@@ -355,6 +361,7 @@ public class GenericRecordEditorPanel implements AppPanel
             {
                 setText(null);
                 setGraphic(null);
+                setStyle("");
             }
             else if (isEditing())
             {
@@ -364,11 +371,13 @@ public class GenericRecordEditorPanel implements AppPanel
                 }
                 setText(null);
                 setGraphic(textField);
+                applyPendingRowTextStyle();
             }
             else
             {
                 setText(item);
                 setGraphic(null);
+                applyPendingRowTextStyle();
             }
         }
 
@@ -383,6 +392,34 @@ public class GenericRecordEditorPanel implements AppPanel
                     commitEdit(textField.getText());
                 }
             });
+        }
+
+        private void applyPendingRowTextStyle()
+        {
+            TableRow<Map<String, Object>> row = getTableRow();
+            if (row != null && pendingNewRows.contains(row.getItem()))
+            {
+                if (isPendingRowTextBlack())
+                {
+                    setStyle("-fx-text-fill: black;");
+                }
+                else
+                {
+                    setStyle("");
+                }
+            }
+            else
+            {
+                setStyle("");
+            }
+        }
+
+        private boolean isPendingRowTextBlack()
+        {
+            String preference =
+                PreferencesService.getPendingRowTextColorPreference();
+            return preference == null || preference.isBlank() ||
+                "black".equalsIgnoreCase(preference);
         }
     }
 
