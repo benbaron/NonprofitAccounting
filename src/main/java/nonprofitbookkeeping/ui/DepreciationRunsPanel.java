@@ -16,6 +16,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.service.DepreciationRunLifecycleService;
 import nonprofitbookkeeping.service.DepreciationRunProcessingService;
 import org.nonprofitbookkeeping.ui.AppPanel;
@@ -280,7 +281,13 @@ public class DepreciationRunsPanel implements AppPanel
 
     private void refreshRuns()
     {
-        try (java.sql.Connection c = nonprofitbookkeeping.core.Database.get().getConnection();
+        if (!Database.isInitialized())
+        {
+            status.setText("Database not initialized yet. Open/create a company to load runs.");
+            runsTable.getItems().clear();
+            return;
+        }
+        try (java.sql.Connection c = Database.get().getConnection();
              java.sql.PreparedStatement ps = c.prepareStatement("""
                  SELECT depreciation_run_id, period_start, period_end, run_status, is_locked, created_at
                  FROM depreciation_run
