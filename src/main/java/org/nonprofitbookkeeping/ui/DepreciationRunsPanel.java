@@ -5,6 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
@@ -16,11 +17,13 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import nonprofitbookkeeping.service.DepreciationRunLifecycleService;
+import nonprofitbookkeeping.service.DepreciationRunProcessingService;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -30,6 +33,7 @@ public class DepreciationRunsPanel implements AppPanel
 {
     private final BorderPane root = new BorderPane();
     private final DepreciationRunLifecycleService lifecycleService;
+    private final DepreciationRunProcessingService processingService;
     private final DatePicker periodStartPicker = new DatePicker(LocalDate.now().withDayOfMonth(1));
     private final DatePicker periodEndPicker = new DatePicker(LocalDate.now());
     private final TextArea notesArea = new TextArea("Created from depreciation panel");
@@ -38,12 +42,14 @@ public class DepreciationRunsPanel implements AppPanel
 
     public DepreciationRunsPanel()
     {
-        this(new DepreciationRunLifecycleService());
+        this(new DepreciationRunLifecycleService(), new DepreciationRunProcessingService());
     }
 
-    DepreciationRunsPanel(DepreciationRunLifecycleService lifecycleService)
+    DepreciationRunsPanel(DepreciationRunLifecycleService lifecycleService,
+                          DepreciationRunProcessingService processingService)
     {
         this.lifecycleService = lifecycleService;
+        this.processingService = processingService;
         root.setPadding(new Insets(8));
         Label title = new Label("Depreciation Runs");
         title.getStyleClass().add("panel-title");
@@ -59,17 +65,22 @@ public class DepreciationRunsPanel implements AppPanel
         inputs.addRow(2, new Label("Notes"), notesArea);
 
         Button run = new Button("Create Draft Run");
-        Button calculate = new Button("Mark Calculated");
+        Button calculate = new Button("Calculate + Mark Calculated");
         Button preview = new Button("Preview Journal");
         Button lock = new Button("Lock Selected");
+        Button unlock = new Button("Unlock Selected");
+        Button delete = new Button("Delete Selected Run");
         run.setOnAction(evt -> createDraftRun());
-        calculate.setOnAction(evt -> markSelectedCalculated());
+        calculate.setOnAction(evt -> calculateSelectedRun());
         preview.setOnAction(evt -> showPreviewHint());
         lock.setOnAction(evt -> lockSelectedRun());
-        HBox actions = new HBox(8, run, calculate, lock, preview);
+        unlock.setOnAction(evt -> unlockSelectedRun());
+        delete.setOnAction(evt -> deleteSelectedRun());
+        HBox actions = new HBox(8, run, calculate, lock, unlock, delete, preview);
 
         root.setTop(new VBox(6, title, actions, new Separator()));
         root.setCenter(new VBox(8, inputs, new Separator(), configureRunsTable(), status));
+        refreshRuns();
     }
 
     @Override public String title() { return "Depreciation Runs"; }
@@ -118,27 +129,27 @@ public class DepreciationRunsPanel implements AppPanel
         }
     }
 
-    private void markSelectedCalculated()
+    private void calculateSelectedRun()
     {
         RunRow row = runsTable.getSelectionModel().getSelectedItem();
         if (row == null)
         {
-            showError("No run selected", "Select a draft run first.");
+            showError("No run selected", "Select a run first.");
             return;
         }
-        if ("Yes".equals(row.getLocked()))
+        if (!"DRAFT".equals(row.getStatus()))
         {
-            showError("Run locked", "Locked runs cannot be changed.");
+            showError("Run status not allowed", "Only DRAFT runs can be calculated.");
             return;
         }
         try
         {
-            lifecycleService.transitionStatus(row.getRunId(), "CALCULATED", null, "ui-user",
-                "Calculated from depreciation panel");
+            List<DepreciationRunProcessingService.PreviewLine> lines =
+                processingService.calculateAndMarkCalculated(row.getRunId(), "ui-user");
             row.setStatus("CALCULATED");
             row.setLastUpdated(nowStamp());
             runsTable.refresh();
-            status.setText("Run marked CALCULATED: " + row.getRunId());
+            status.setText("Calculated " + lines.size() + " asset(s) for run " + row.getRunId());
         }
         catch (SQLException | RuntimeException ex)
         {
@@ -169,6 +180,66 @@ public class DepreciationRunsPanel implements AppPanel
         }
     }
 
+    private void unlockSelectedRun()
+    {
+        RunRow row = runsTable.getSelectionModel().getSelectedItem();
+        if (row == null)
+        {
+            showError("No run selected", "Select a run to unlock.");
+            return;
+        }
+        try
+        {
+            processingService.unlockRun(row.getRunId(), "ui-reviewer", "Unlocked from depreciation panel");
+            row.setLocked("No");
+            row.setLastUpdated(nowStamp());
+            runsTable.refresh();
+            status.setText("Run unlocked: " + row.getRunId());
+        }
+        catch (SQLException | RuntimeException ex)
+        {
+            showError("Could not unlock run", ex.getMessage());
+        }
+    }
+
+    private void deleteSelectedRun()
+    {
+        RunRow row = runsTable.getSelectionModel().getSelectedItem();
+        if (row == null)
+        {
+            showError("No run selected", "Select a run to delete.");
+            return;
+        }
+
+        Dialog<DepreciationRunProcessingService.DeleteMode> dialog = new Dialog<>();
+        dialog.setTitle("Delete depreciation run");
+        dialog.setHeaderText("Choose how linked journal entries should be handled");
+        javafx.scene.control.ButtonType reverseBtn = new javafx.scene.control.ButtonType("Reverse linked journals");
+        javafx.scene.control.ButtonType deleteBtn = new javafx.scene.control.ButtonType("Delete linked journals");
+        dialog.getDialogPane().getButtonTypes().addAll(reverseBtn, deleteBtn, javafx.scene.control.ButtonType.CANCEL);
+        dialog.setResultConverter(bt -> {
+            if (bt == reverseBtn) return DepreciationRunProcessingService.DeleteMode.REVERSE_LINKED_JOURNALS;
+            if (bt == deleteBtn) return DepreciationRunProcessingService.DeleteMode.DELETE_LINKED_JOURNALS;
+            return null;
+        });
+        DepreciationRunProcessingService.DeleteMode mode = dialog.showAndWait().orElse(null);
+        if (mode == null)
+        {
+            return;
+        }
+
+        try
+        {
+            processingService.deleteRun(row.getRunId(), mode, "ui-user");
+            runsTable.getItems().remove(row);
+            status.setText("Deleted run: " + row.getRunId());
+        }
+        catch (SQLException | RuntimeException ex)
+        {
+            showError("Delete failed", ex.getMessage());
+        }
+    }
+
     private void showPreviewHint()
     {
         RunRow row = runsTable.getSelectionModel().getSelectedItem();
@@ -177,13 +248,62 @@ public class DepreciationRunsPanel implements AppPanel
             showError("No run selected", "Select a run to preview generated journal details.");
             return;
         }
-        showInfo("Preview Journal",
-            "Preview for " + row.getRunId() + " (" + row.getStatus() + ") is the next integration step.");
+        try
+        {
+            List<DepreciationRunProcessingService.PreviewLine> lines = processingService.journalPreview(row.getRunId());
+            if (lines.isEmpty())
+            {
+                showInfo("Preview Journal", "No depreciation lines are calculated for this run yet.");
+                return;
+            }
+            List<String> preview = new ArrayList<>();
+            BigDecimal total = BigDecimal.ZERO;
+            for (DepreciationRunProcessingService.PreviewLine line : lines)
+            {
+                total = total.add(line.amount());
+                preview.add(line.assetId() + ": Dr " + line.debitAccount() + " / Cr " + line.creditAccount() +
+                    " = " + line.amount());
+            }
+            showInfo("Preview Journal", String.join("\n", preview) + "\nTotal: " + total);
+        }
+        catch (SQLException ex)
+        {
+            showError("Preview failed", ex.getMessage());
+        }
     }
 
     private String nowStamp()
     {
-        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        return LocalDate.now().toString();
+    }
+
+    private void refreshRuns()
+    {
+        try (java.sql.Connection c = nonprofitbookkeeping.core.Database.get().getConnection();
+             java.sql.PreparedStatement ps = c.prepareStatement("""
+                 SELECT depreciation_run_id, period_start, period_end, run_status, is_locked, created_at
+                 FROM depreciation_run
+                 ORDER BY created_at DESC
+             """);
+             java.sql.ResultSet rs = ps.executeQuery())
+        {
+            runsTable.getItems().clear();
+            while (rs.next())
+            {
+                runsTable.getItems().add(new RunRow(
+                    rs.getString(1),
+                    rs.getDate(2) == null ? "" : rs.getDate(2).toLocalDate().toString(),
+                    rs.getDate(3) == null ? "" : rs.getDate(3).toLocalDate().toString(),
+                    rs.getString(4),
+                    rs.getBoolean(5) ? "Yes" : "No",
+                    rs.getTimestamp(6) == null ? "" : rs.getTimestamp(6).toLocalDateTime().toString()
+                ));
+            }
+        }
+        catch (SQLException ignored)
+        {
+            status.setText("Could not load historical runs.");
+        }
     }
 
     private void showInfo(String title, String content)
