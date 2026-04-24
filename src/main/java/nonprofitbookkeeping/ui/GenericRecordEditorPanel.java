@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -51,6 +52,7 @@ public class GenericRecordEditorPanel implements AppPanel
     private final BorderPane root = new BorderPane();
     private final TableView<Map<String, Object>> table = new TableView<>();
     private final Label status = new Label("Ready");
+    private final ScrollPane tableContainer = new ScrollPane();
     private final String panelTitle;
     private final String tableName;
     private final String primaryKeyColumn;
@@ -140,7 +142,12 @@ public class GenericRecordEditorPanel implements AppPanel
                 }
             }
         });
-        root.setCenter(table);
+        tableContainer.setContent(table);
+        tableContainer.setFitToWidth(true);
+        tableContainer.setFitToHeight(true);
+        tableContainer.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        tableContainer.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        root.setCenter(tableContainer);
         root.setBottom(new VBox(new Separator(), status));
 
         add.setOnAction(e -> onAddRow());
@@ -214,19 +221,20 @@ public class GenericRecordEditorPanel implements AppPanel
             status.setText("Select a row to delete.");
             return;
         }
+
+        if (pendingNewRows.contains(selected))
+        {
+            pendingNewRows.remove(selected);
+            table.getItems().remove(selected);
+            table.refresh();
+            status.setText("Removed unsaved row.");
+            return;
+        }
+
         try
         {
-            Map<String, Object> typed = toTypedRow(selected);
-            Map<String, Object> pk = new LinkedHashMap<>();
-            for (TableColumnMetadata column : columns)
-            {
-                if (column.primaryKey())
-                {
-                    pk.put(column.columnName(), typed.get(column.columnName()));
-                }
-            }
+            Map<String, Object> pk = primaryKeyValues(selected);
             int deleted = crudService.deleteByPrimaryKey(tableName, pk);
-            pendingNewRows.remove(selected);
             table.getItems().remove(selected);
             table.refresh();
             status.setText(deleted > 0 ? "Deleted selected row." : "Removed unsaved row.");
@@ -421,6 +429,20 @@ public class GenericRecordEditorPanel implements AppPanel
             return preference == null || preference.isBlank() ||
                 "black".equalsIgnoreCase(preference);
         }
+    }
+
+    private Map<String, Object> primaryKeyValues(Map<String, Object> row)
+    {
+        Map<String, Object> pk = new LinkedHashMap<>();
+        for (TableColumnMetadata column : columns)
+        {
+            if (column.primaryKey())
+            {
+                Object raw = row.get(column.columnName());
+                pk.put(column.columnName(), convertValue(raw, column, toDisplayTitle(column.columnName())));
+            }
+        }
+        return pk;
     }
 
     private Map<String, Object> toTypedRow(Map<String, Object> row)

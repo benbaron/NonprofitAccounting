@@ -2,6 +2,7 @@ package nonprofitbookkeeping.ui;
 
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import nonprofitbookkeeping.persistence.records.GenericRecordCrudService;
@@ -55,9 +56,10 @@ class GenericRecordEditorPanelHiddenColumnsTest
                 );
 
                 if (!(panel.root() instanceof javafx.scene.layout.BorderPane pane)
-                    || !(pane.getCenter() instanceof TableView<?> centerTable))
+                    || !(pane.getCenter() instanceof ScrollPane container)
+                    || !(container.getContent() instanceof TableView<?> centerTable))
                 {
-                    throw new AssertionError("Expected generic editor center to be a TableView.");
+                    throw new AssertionError("Expected generic editor center to be a ScrollPane wrapping a TableView.");
                 }
 
                 List<String> headers = centerTable.getColumns().stream().map(TableColumn::getText).toList();
