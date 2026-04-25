@@ -34,6 +34,6 @@ public enum AssetItemType
             .filter(type -> type.name().equalsIgnoreCase(normalized)
                 || type.displayName.equalsIgnoreCase(normalized))
             .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("Unsupported asset item type: " + value));
+            .orElse(null);
     }
 }

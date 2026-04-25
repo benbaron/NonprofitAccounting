@@ -184,9 +184,9 @@ public class AssetsRegisterPanel implements AppPanel
 		}
 		try
 		{
-			int deleted = assetRecordService.delete(selected.getAssetId());
+			int deleted = assetRecordService.delete(selected.deleteKey());
 			table.getItems().remove(selected);
-			status.setText(deleted > 0 ? "Deleted asset " + selected.getAssetId() : "Removed unsaved row.");
+			status.setText(deleted > 0 ? "Deleted asset " + selected.deleteKey() : "Removed unsaved row.");
 		}
 		catch (SQLException | RuntimeException ex)
 		{
@@ -294,6 +294,11 @@ public class AssetsRegisterPanel implements AppPanel
 		public void setApproxValueTotal(String value) { approxValueTotal.set(value == null ? "" : value); }
 		public void setItemType(AssetItemType value) { itemType.set(value); }
 		public void setAccumulatedDepreciation(String value) { accumulatedDepreciation.set(value == null ? "" : value); }
+
+		private String deleteKey()
+		{
+			return sourceRecord != null ? sourceRecord.assetId() : getAssetId();
+		}
 
 		private static String nonBlankOrThrow(String raw, String field, int rowNumber)
 		{
