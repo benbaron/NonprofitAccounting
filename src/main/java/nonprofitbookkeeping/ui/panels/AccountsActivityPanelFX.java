@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import java.io.File;
 import nonprofitbookkeeping.service.FileImportService;
+import nonprofitbookkeeping.ui.UiSpacing;
 import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.ChartOfAccounts; 
@@ -88,13 +89,13 @@ public class AccountsActivityPanelFX extends BorderPane
 	{
 		this.transactions = ledger != null && ledger.getTransactions() != null ?
 			ledger.getTransactions() : FXCollections.emptyObservableList();
-		setPadding(new Insets(10));
+		setPadding(UiSpacing.pageInsets());
 		
 		HBox selectorPane = selectorPane(); // Builds and returns the HBox for account selector
 		HBox filterPane = filterPane(); // Builds and returns the HBox for filters (includes
 										// applyFiltersButton)
 		
-		VBox top = new VBox(10);
+		VBox top = new VBox(UiSpacing.SECTION_SPACING);
 		top.getChildren().addAll(selectorPane, filterPane);
 		setTop(top);
 		
@@ -123,8 +124,8 @@ public class AccountsActivityPanelFX extends BorderPane
 	 */
 	private HBox selectorPane()
 	{
-		HBox box = new HBox(10);
-		box.setPadding(new Insets(5));
+		HBox box = new HBox(UiSpacing.SECTION_SPACING);
+		box.setPadding(new Insets(UiSpacing.SECTION_SPACING));
 		box.getStyleClass().add("activity-filter-box");
 
 		this.accountSelector.setOnAction(e -> applyFilters());
@@ -175,8 +176,8 @@ public class AccountsActivityPanelFX extends BorderPane
 	 */
 	private HBox filterPane()
 	{
-		HBox box = new HBox(10);
-		box.setPadding(new Insets(5));
+		HBox box = new HBox(UiSpacing.SECTION_SPACING);
+		box.setPadding(new Insets(UiSpacing.SECTION_SPACING));
 		box.getStyleClass().add("activity-filter-box");
 		this.applyFiltersButton = new Button("Apply Filters");
 		this.applyFiltersButton.setOnAction(e -> applyFilters());
@@ -197,8 +198,8 @@ public class AccountsActivityPanelFX extends BorderPane
          */
         private HBox buttonBar()
         {
-                HBox box = new HBox(10);
-                box.setPadding(new Insets(10));
+                HBox box = new HBox(UiSpacing.SECTION_SPACING);
+                box.setPadding(UiSpacing.actionBarTopMargin());
                 Button reconcile = new Button("Reconcile");
                 reconcile.setOnAction(e -> openReconcileDialog());
                 Button importBtn = new Button("Import Statement (CSV/QIF/OFX)");

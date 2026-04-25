@@ -2,7 +2,6 @@ package nonprofitbookkeeping.ui;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-import javafx.geometry.Insets;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -109,7 +108,7 @@ public class GenericRecordEditorPanel implements AppPanel
         this.schemaService = schemaService;
         this.crudService = crudService;
 
-        root.setPadding(new Insets(8));
+        root.setPadding(UiSpacing.pageInsets());
         Label title = new Label(panelTitle);
         title.getStyleClass().add("panel-title");
 
@@ -117,8 +116,8 @@ public class GenericRecordEditorPanel implements AppPanel
         Button delete = new Button("Delete Selected");
         Button refresh = new Button("Refresh");
         Button save = new Button("Save");
-        HBox actions = new HBox(8, add, delete, refresh, save);
-        root.setTop(new VBox(6, title, actions, new Separator()));
+        HBox actions = new HBox(UiSpacing.SECTION_SPACING, add, delete, refresh, save);
+        root.setTop(new VBox(UiSpacing.SECTION_SPACING, title, actions, new Separator()));
 
         table.setEditable(true);
         table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);

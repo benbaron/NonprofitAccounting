@@ -34,6 +34,7 @@ import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
+import nonprofitbookkeeping.ui.UiSpacing;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.helpers.TableExportUtils;
 import nonprofitbookkeeping.model.ReportPeriodPreset;
@@ -90,13 +91,13 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 	 */
 	public AccountTransactionDetailsPanelFX()
 	{
-		setPadding(new Insets(10));
+		setPadding(UiSpacing.pageInsets());
 		
 		// TOP: Controls
 		GridPane controlsGrid = new GridPane();
-		controlsGrid.setHgap(10);
-		controlsGrid.setVgap(8);
-		controlsGrid.setPadding(new Insets(5));
+		controlsGrid.setHgap(UiSpacing.GRID_H_GAP);
+		controlsGrid.setVgap(UiSpacing.GRID_V_GAP);
+		controlsGrid.setPadding(new Insets(UiSpacing.SECTION_SPACING));
 		
 		this.accountSelectorComboBox = new ComboBox<>();
 		this.accountSelectorComboBox.setPromptText("Select Account");
@@ -162,7 +163,7 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		controlsGrid.add(this.endDatePicker, 1, 2);
 		controlsGrid.add(this.loadTransactionsButton, 2, 2);
 		controlsGrid.add(this.refreshButton, 3, 2);
-		HBox exportBox = new HBox(8, this.printButton, this.exportMenuButton);
+		HBox exportBox = new HBox(UiSpacing.SECTION_SPACING, this.printButton, this.exportMenuButton);
 		controlsGrid.add(exportBox, 4, 2);
 		this.quickRangeButton = new MenuButton("Quick Ranges");
 		this.quickRangeButton
@@ -190,8 +191,8 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		// Set up column data
 		setupTableColumns();
 		
-		HBox totalsBox = new HBox(20);
-		totalsBox.setPadding(new Insets(10, 0, 0, 0));
+		HBox totalsBox = new HBox(UiSpacing.GRID_H_GAP);
+		totalsBox.setPadding(UiSpacing.actionBarTopMargin());
 		this.totalDebitsLabel = new Label(
 			"Total Debits: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
 		this.totalCreditsLabel = new Label(

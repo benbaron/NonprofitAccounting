@@ -16,6 +16,7 @@ import javafx.scene.layout.*;
 
 import nonprofitbookkeeping.model.*;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
+import nonprofitbookkeeping.ui.UiSpacing;
 
 /**
  * A JavaFX {@link BorderPane} that serves as the main dashboard for displaying journal transactions.
@@ -68,7 +69,7 @@ public class DashboardPanelFX extends BorderPane
 	 */
 	public DashboardPanelFX()
 	{
-		setPadding(new Insets(10));
+		setPadding(UiSpacing.pageInsets());
 		
 		buildTopBanner();
 		buildTopFilters();
@@ -96,9 +97,9 @@ public class DashboardPanelFX extends BorderPane
 		this.companyLbl.getStyleClass().add("company-indicator");
 		this.reloadBtn.setOnAction(e -> loadCompany(CurrentCompany.getCompany()));
 		
-		HBox banner = new HBox(10, new Label("Current Company:"), this.companyLbl, this.reloadBtn);
+		HBox banner = new HBox(UiSpacing.SECTION_SPACING, new Label("Current Company:"), this.companyLbl, this.reloadBtn);
 		
-		banner.setPadding(new Insets(4));
+		banner.setPadding(new Insets(UiSpacing.SECTION_SPACING));
 		banner.getStyleClass().add("dashboard-banner");
 		setTop(banner);
 	}
@@ -116,22 +117,22 @@ public class DashboardPanelFX extends BorderPane
 	private void buildTopFilters()
 	{
 		/* selector */
-		HBox selectorBox = new HBox(10, new Label("Account:"), this.accountSelector);
-		selectorBox.setPadding(new Insets(5));
+		HBox selectorBox = new HBox(UiSpacing.SECTION_SPACING, new Label("Account:"), this.accountSelector);
+		selectorBox.setPadding(new Insets(UiSpacing.SECTION_SPACING));
 		selectorBox.getStyleClass().add("dashboard-filter-box");
 		
 		this.applyFiltersButton = new Button("Apply"); // Assign to field
 		this.applyFiltersButton.setOnAction(e -> refresh());
 		
 		HBox filterBox =
-			new HBox(10, new Label("Date (yyyy-mm-dd):"), this.dateFilter, new Label("Memo:"),
+			new HBox(UiSpacing.SECTION_SPACING, new Label("Date (yyyy-mm-dd):"), this.dateFilter, new Label("Memo:"),
 				this.memoFilter, new Label("Amount:"), this.amountFilter, this.applyFiltersButton); // Use
 																									// field
-		filterBox.setPadding(new Insets(5));
+		filterBox.setPadding(new Insets(UiSpacing.SECTION_SPACING));
 		filterBox.getStyleClass().add("dashboard-filter-box");
 		
 		VBox topControls = new VBox(selectorBox, filterBox);
-		setMargin(topControls, new Insets(0, 0, 5, 0));
+		setMargin(topControls, UiSpacing.actionBarTopMargin());
 		
 		Node currentTop = getTop(); // This will be the banner
 		VBox newTopStructure = new VBox(currentTop, topControls);
