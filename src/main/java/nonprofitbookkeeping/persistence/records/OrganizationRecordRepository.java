@@ -1,23 +1,18 @@
 package nonprofitbookkeeping.persistence.records;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.records.OrganizationRecord;
 
-import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Persists imported SCLX organization records into a concrete staging table.
  */
 @ApplicationScoped
-public class OrganizationRecordRepository
+public class OrganizationRecordRepository extends AbstractRepository<OrganizationRecord, String>
 {
     private static final String CREATE_SQL = """
         CREATE TABLE IF NOT EXISTS imported_organization_record (
@@ -44,70 +39,35 @@ public class OrganizationRecordRepository
         """;
     private static final String DELETE_SQL = "DELETE FROM imported_organization_record WHERE organization_id = ?";
 
-    public void upsert(OrganizationRecord row) throws SQLException
+    public OrganizationRecordRepository()
     {
-        try (Connection c = Database.get().getConnection())
-        {
-            ensureTable(c);
-            try (PreparedStatement ps = c.prepareStatement(UPSERT_SQL))
-            {
-                int i = 0;
-                ps.setString(++i, row.organizationId());
-                ps.setString(++i, row.name());
-                ps.setString(++i, row.parentOrganization());
-                ps.setString(++i, row.baseCurrency());
-                ps.setDate(++i, row.fiscalYearStart() == null ? null : Date.valueOf(row.fiscalYearStart()));
-                ps.setDate(++i, row.fiscalYearEnd() == null ? null : Date.valueOf(row.fiscalYearEnd()));
-                ps.setString(++i, JsonColumnCodec.toJson(row.extensions()));
-                ps.executeUpdate();
-            }
-        }
+        super(CREATE_SQL, UPSERT_SQL, LIST_ALL_SQL, DELETE_SQL);
     }
 
-    public List<OrganizationRecord> listAll() throws SQLException
+    @Override
+    protected void bindUpsert(PreparedStatement ps, OrganizationRecord row) throws SQLException
     {
-        try (Connection c = Database.get().getConnection())
-        {
-            ensureTable(c);
-            List<OrganizationRecord> rows = new ArrayList<>();
-            try (Statement statement = c.createStatement();
-                 ResultSet rs = statement.executeQuery(LIST_ALL_SQL))
-            {
-                while (rs.next())
-                {
-                    rows.add(new OrganizationRecord(
-                        rs.getString("organization_id"),
-                        rs.getString("name"),
-                        rs.getString("parent_organization"),
-                        rs.getString("base_currency"),
-                        rs.getDate("fiscal_year_start") == null ? null : rs.getDate("fiscal_year_start").toLocalDate(),
-                        rs.getDate("fiscal_year_end") == null ? null : rs.getDate("fiscal_year_end").toLocalDate(),
-                        java.util.Map.of()
-                    ));
-                }
-            }
-            return rows;
-        }
+        int i = 0;
+        ps.setString(++i, row.organizationId());
+        ps.setString(++i, row.name());
+        ps.setString(++i, row.parentOrganization());
+        ps.setString(++i, row.baseCurrency());
+        ps.setDate(++i, row.fiscalYearStart() == null ? null : Date.valueOf(row.fiscalYearStart()));
+        ps.setDate(++i, row.fiscalYearEnd() == null ? null : Date.valueOf(row.fiscalYearEnd()));
+        ps.setString(++i, JsonColumnCodec.toJson(row.extensions()));
     }
 
-    public int deleteById(String organizationId) throws SQLException
+    @Override
+    protected OrganizationRecord mapRow(ResultSet rs) throws SQLException
     {
-        try (Connection c = Database.get().getConnection())
-        {
-            ensureTable(c);
-            try (PreparedStatement ps = c.prepareStatement(DELETE_SQL))
-            {
-                ps.setString(1, organizationId);
-                return ps.executeUpdate();
-            }
-        }
-    }
-
-    private void ensureTable(Connection c) throws SQLException
-    {
-        try (PreparedStatement ps = c.prepareStatement(CREATE_SQL))
-        {
-            ps.execute();
-        }
+        return new OrganizationRecord(
+            rs.getString("organization_id"),
+            rs.getString("name"),
+            rs.getString("parent_organization"),
+            rs.getString("base_currency"),
+            rs.getDate("fiscal_year_start") == null ? null : rs.getDate("fiscal_year_start").toLocalDate(),
+            rs.getDate("fiscal_year_end") == null ? null : rs.getDate("fiscal_year_end").toLocalDate(),
+            java.util.Map.of()
+        );
     }
 }
