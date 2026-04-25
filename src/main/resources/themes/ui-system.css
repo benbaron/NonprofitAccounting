@@ -1,0 +1,104 @@
+.root {
+    -npbk-font-size-heading: 22px;
+    -npbk-font-size-section: 14px;
+    -npbk-font-size-card-title: 13px;
+
+    -npbk-surface-default: -fx-control-inner-background;
+    -npbk-surface-muted: derive(-fx-control-inner-background, -3%);
+    -npbk-border-default: derive(-fx-base, -18%);
+
+    -npbk-text-default: -fx-text-fill;
+    -npbk-text-muted: derive(-fx-text-fill, -25%);
+
+    -npbk-status-neutral-bg: #666666;
+    -npbk-status-success-bg: #2e7d32;
+    -npbk-status-error-bg: #cc3300;
+    -npbk-status-text: white;
+
+    -npbk-validation-error: #cc3300;
+    -npbk-account-missing-bg: rgba(204, 51, 0, 0.25);
+}
+
+.journal-entry-heading {
+    -fx-font-size: -npbk-font-size-heading;
+    -fx-font-weight: bold;
+}
+
+.section-heading {
+    -fx-font-size: -npbk-font-size-section;
+    -fx-font-weight: bold;
+}
+
+.field-label,
+.value-label {
+    -fx-font-weight: bold;
+}
+
+.card-title {
+    -fx-font-size: -npbk-font-size-card-title;
+    -fx-font-weight: bold;
+}
+
+.npbk-card {
+    -fx-background-color: -npbk-surface-default;
+    -fx-border-color: -npbk-border-default;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+.toolbar-plain {
+    -fx-background-color: transparent;
+}
+
+.status-badge {
+    -fx-text-fill: -npbk-status-text;
+    -fx-background-radius: 12;
+}
+
+.status-badge-neutral {
+    -fx-background-color: -npbk-status-neutral-bg;
+}
+
+.status-badge-error {
+    -fx-background-color: -npbk-status-error-bg;
+}
+
+.status-badge-valid {
+    -fx-background-color: -npbk-status-success-bg;
+}
+
+.validation-message-error {
+    -fx-text-fill: -npbk-validation-error;
+}
+
+.account-cell-missing {
+    -fx-background-color: -npbk-account-missing-bg;
+}
+
+.table-column-numeric {
+    -fx-alignment: CENTER-RIGHT;
+}
+
+.dashboard-banner {
+    -fx-background-color: -npbk-surface-muted;
+    -fx-border-color: -npbk-border-default;
+}
+
+.dashboard-filter-box {
+    -fx-border-color: -npbk-border-default;
+}
+
+.activity-filter-box {
+    -fx-border-color: -npbk-border-default;
+    -fx-border-radius: 4;
+    -fx-border-insets: 4;
+    -fx-border-style: segments(4);
+}
+
+.pending-row {
+    -fx-background-color: -npbk-pending-row-bg;
+}
+
+.pending-row-text-dark {
+    -fx-text-fill: -npbk-pending-row-text;
+}

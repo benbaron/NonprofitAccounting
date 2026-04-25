@@ -125,8 +125,7 @@ public class AccountsActivityPanelFX extends BorderPane
 	{
 		HBox box = new HBox(10);
 		box.setPadding(new Insets(5));
-		box.setStyle(
-			"-fx-border-color: lightgray; -fx-border-radius: 4; -fx-border-insets: 4; -fx-border-style: segments(4)");
+		box.getStyleClass().add("activity-filter-box");
 
 		this.accountSelector.setOnAction(e -> applyFilters());
 		box.getChildren().addAll(new Label("Account:"), this.accountSelector);
@@ -178,8 +177,7 @@ public class AccountsActivityPanelFX extends BorderPane
 	{
 		HBox box = new HBox(10);
 		box.setPadding(new Insets(5));
-		box.setStyle(
-			"-fx-border-color: lightgray; -fx-border-radius: 4; -fx-border-insets: 4; -fx-border-style: segments(4)");
+		box.getStyleClass().add("activity-filter-box");
 		this.applyFiltersButton = new Button("Apply Filters");
 		this.applyFiltersButton.setOnAction(e -> applyFilters());
 		box.getChildren().addAll(
@@ -634,4 +632,3 @@ public class AccountsActivityPanelFX extends BorderPane
 	}
 	
 }
-

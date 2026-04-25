@@ -343,20 +343,20 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 			new TableColumn<>("Debit");
 		debitCol.setCellValueFactory(new PropertyValueFactory<>("debit"));
 		debitCol.setPrefWidth(100);
-		debitCol.setStyle("-fx-alignment: CENTER-RIGHT;");
+		debitCol.getStyleClass().add("table-column-numeric");
 		
 		TableColumn<TransactionDisplayRow, BigDecimal> creditCol =
 			new TableColumn<>("Credit");
 		creditCol.setCellValueFactory(new PropertyValueFactory<>("credit"));
 		creditCol.setPrefWidth(100);
-		creditCol.setStyle("-fx-alignment: CENTER-RIGHT;");
+		creditCol.getStyleClass().add("table-column-numeric");
 		
 		TableColumn<TransactionDisplayRow, BigDecimal> balanceCol =
 			new TableColumn<>("Running Balance");
 		balanceCol
 			.setCellValueFactory(new PropertyValueFactory<>("runningBalance"));
 		balanceCol.setPrefWidth(120);
-		balanceCol.setStyle("-fx-alignment: CENTER-RIGHT;");
+		balanceCol.getStyleClass().add("table-column-numeric");
 		
 		this.transactionsTable.getColumns().addAll(dateCol, idCol, descCol,
 			toFromCol, checkCol, clearBankCol, budgetCol, fundNameCol,

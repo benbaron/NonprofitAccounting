@@ -99,7 +99,7 @@ public class DashboardPanelFX extends BorderPane
 		HBox banner = new HBox(10, new Label("Current Company:"), this.companyLbl, this.reloadBtn);
 		
 		banner.setPadding(new Insets(4));
-		banner.setStyle("-fx-background-color:#f0f0f0; -fx-border-color:lightgray;");
+		banner.getStyleClass().add("dashboard-banner");
 		setTop(banner);
 	}
 	
@@ -118,7 +118,7 @@ public class DashboardPanelFX extends BorderPane
 		/* selector */
 		HBox selectorBox = new HBox(10, new Label("Account:"), this.accountSelector);
 		selectorBox.setPadding(new Insets(5));
-		selectorBox.setStyle("-fx-border-color: lightgray;");
+		selectorBox.getStyleClass().add("dashboard-filter-box");
 		
 		this.applyFiltersButton = new Button("Apply"); // Assign to field
 		this.applyFiltersButton.setOnAction(e -> refresh());
@@ -128,7 +128,7 @@ public class DashboardPanelFX extends BorderPane
 				this.memoFilter, new Label("Amount:"), this.amountFilter, this.applyFiltersButton); // Use
 																									// field
 		filterBox.setPadding(new Insets(5));
-		filterBox.setStyle("-fx-border-color: lightgray;");
+		filterBox.getStyleClass().add("dashboard-filter-box");
 		
 		VBox topControls = new VBox(selectorBox, filterBox);
 		setMargin(topControls, new Insets(0, 0, 5, 0));
