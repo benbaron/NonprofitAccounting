@@ -36,6 +36,30 @@ class ThemeTokenContrastTest
 		assertPendingRowContrast("themes/dark.css", "dark");
 	}
 
+	@Test
+	void statusBadgeContrastIsAccessibleInLightTheme() throws IOException
+	{
+		assertStatusContrast("themes/light.css", "light");
+	}
+
+	@Test
+	void statusBadgeContrastIsAccessibleInDarkTheme() throws IOException
+	{
+		assertStatusContrast("themes/dark.css", "dark");
+	}
+
+	@Test
+	void validationErrorContrastIsAccessibleInLightTheme() throws IOException
+	{
+		assertValidationContrast("themes/light.css", "light");
+	}
+
+	@Test
+	void validationErrorContrastIsAccessibleInDarkTheme() throws IOException
+	{
+		assertValidationContrast("themes/dark.css", "dark");
+	}
+
 	private void assertPendingRowContrast(String resourcePath, String theme)
 		throws IOException
 	{
@@ -88,6 +112,58 @@ class ThemeTokenContrastTest
 			}
 		}
 		return tokens;
+	}
+
+	private void assertStatusContrast(String resourcePath, String theme)
+		throws IOException
+	{
+		Map<String, String> tokens = readTokens(resourcePath);
+		String statusTextToken = tokens.get("-npbk-status-text");
+		assertNotNull(statusTextToken,
+			"Missing -npbk-status-text token in " + resourcePath);
+
+		Color statusText = parseColor(statusTextToken);
+		assertContrast(tokens, theme, resourcePath, statusText,
+			"-npbk-status-neutral-bg", "neutral badge");
+		assertContrast(tokens, theme, resourcePath, statusText,
+			"-npbk-status-success-bg", "success badge");
+		assertContrast(tokens, theme, resourcePath, statusText,
+			"-npbk-status-error-bg", "error badge");
+	}
+
+	private void assertValidationContrast(String resourcePath, String theme)
+		throws IOException
+	{
+		Map<String, String> tokens = readTokens(resourcePath);
+		String validationToken = tokens.get("-npbk-validation-error");
+		String surfaceToken = tokens.get("-npbk-surface-default");
+		assertNotNull(validationToken,
+			"Missing -npbk-validation-error token in " + resourcePath);
+		assertNotNull(surfaceToken,
+			"Missing -npbk-surface-default token in " + resourcePath);
+
+		Color validationText = parseColor(validationToken);
+		Color surface = parseColor(surfaceToken);
+		double contrast = contrastRatio(surface, validationText);
+		assertTrue(contrast >= MIN_CONTRAST,
+			() -> String.format(
+				"Expected validation contrast >= %.1f in %s theme but got %.2f",
+				MIN_CONTRAST, theme, contrast));
+	}
+
+	private void assertContrast(Map<String, String> tokens, String theme,
+		String resourcePath, Color textColor, String backgroundToken,
+		String label)
+	{
+		String rawBackgroundToken = tokens.get(backgroundToken);
+		assertNotNull(rawBackgroundToken,
+			"Missing " + backgroundToken + " token in " + resourcePath);
+		Color background = parseColor(rawBackgroundToken);
+		double contrast = contrastRatio(background, textColor);
+		assertTrue(contrast >= MIN_CONTRAST,
+			() -> String.format(
+				"Expected %s contrast >= %.1f in %s theme but got %.2f",
+				label, MIN_CONTRAST, theme, contrast));
 	}
 
 	private static Color parseColor(String raw)
