@@ -52,7 +52,7 @@ public class DashboardPanelFX extends BorderPane
     {
         HBox banner = new HBox(10, new Label("Context:"), companyLbl, reloadBtn);
         banner.setPadding(new Insets(4));
-        banner.setStyle("-fx-background-color:#f0f0f0; -fx-border-color:lightgray;");
+        banner.getStyleClass().add("dashboard-banner");
         setTop(banner);
     }
 
@@ -70,7 +70,7 @@ public class DashboardPanelFX extends BorderPane
             new Label("Min:"), amountFilter,
             apply);
         filterBox.setPadding(new Insets(5));
-        filterBox.setStyle("-fx-border-color: lightgray;");
+        filterBox.getStyleClass().add("dashboard-filter-box");
 
         Node currentTop = getTop();
         VBox topControls = new VBox(currentTop, filterBox);
