@@ -22,6 +22,10 @@ public class PreferencesService
 	private static final String LAST_FILE_KEY = "lastUsedCompanyFile";
 	/** Key for storing the identifier of the last opened company. */
 	private static final String LAST_COMPANY_ID_KEY = "lastUsedCompanyId";
+	/** Key for storing the preferred UI theme mode. */
+	private static final String THEME_KEY = "uiTheme";
+	/** Key for storing pending-row text color mode. */
+	private static final String PENDING_ROW_TEXT_COLOR_KEY = "pendingRowTextColor";
 	
 	/** The {@link Properties} object used to store and manage preferences. */
 	private static final Properties props = new Properties();
@@ -172,6 +176,62 @@ public class PreferencesService
 		
 		save();
 		
+	}
+
+	/**
+	 * Gets the persisted general UI theme preference.
+	 *
+	 * @return theme preference ("Light", "Dark", or "System")
+	 */
+	public static String getThemePreference()
+	{
+		return props.getProperty(THEME_KEY, "System");
+	}
+
+	/**
+	 * Sets the persisted general UI theme preference.
+	 *
+	 * @param theme theme preference ("Light", "Dark", or "System")
+	 */
+	public static void setThemePreference(String theme)
+	{
+		if (theme == null || theme.isBlank())
+		{
+			props.remove(THEME_KEY);
+		}
+		else
+		{
+			props.setProperty(THEME_KEY, theme);
+		}
+		save();
+	}
+
+	/**
+	 * Gets the preference controlling pending-row text color behavior.
+	 *
+	 * @return preference value ("Black" or "System")
+	 */
+	public static String getPendingRowTextColorPreference()
+	{
+		return props.getProperty(PENDING_ROW_TEXT_COLOR_KEY, "Black");
+	}
+
+	/**
+	 * Sets the preference controlling pending-row text color behavior.
+	 *
+	 * @param value preference value ("Black" or "System")
+	 */
+	public static void setPendingRowTextColorPreference(String value)
+	{
+		if (value == null || value.isBlank())
+		{
+			props.remove(PENDING_ROW_TEXT_COLOR_KEY);
+		}
+		else
+		{
+			props.setProperty(PENDING_ROW_TEXT_COLOR_KEY, value);
+		}
+		save();
 	}
 	
 	/**
