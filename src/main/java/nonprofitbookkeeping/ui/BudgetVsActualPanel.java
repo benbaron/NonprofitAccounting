@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TreeItem;
@@ -26,6 +27,7 @@ public class BudgetVsActualPanel implements AppPanel
 	private final BudgetWorkspaceStore store;
 	private final TreeTableView<Row> table = new TreeTableView<>();
 	private final Label status = new Label("Run report to refresh values");
+	private final ComboBox<ActualSource> actualSource = new ComboBox<>();
 
 	/**
 	 * Creates the budget versus actual panel.
@@ -45,7 +47,9 @@ public class BudgetVsActualPanel implements AppPanel
 		Button run = new Button("Run");
 		Button expandAll = new Button("Expand All");
 		Button collapseAll = new Button("Collapse All");
-		HBox actions = new HBox(8, run, expandAll, collapseAll);
+		this.actualSource.getItems().setAll(ActualSource.values());
+		this.actualSource.setValue(ActualSource.JOURNAL);
+		HBox actions = new HBox(8, new Label("Actuals source:"), this.actualSource, run, expandAll, collapseAll);
 
 		this.root.setTop(new VBox(6, title, actions, new Separator()));
 		this.table.getColumns().add(col("Group / Account", Row::label));
@@ -76,7 +80,7 @@ public class BudgetVsActualPanel implements AppPanel
 		try
 		{
 			TreeItem<Row> rootItem = new TreeItem<>(new Row("All", "", "", ""));
-			for (GroupRow group : this.store.loadBudgetVsActual())
+			for (GroupRow group : this.store.loadBudgetVsActual(this.actualSource.getValue()))
 			{
 				BigDecimal budgetTotal = BigDecimal.ZERO;
 				BigDecimal actualTotal = BigDecimal.ZERO;
@@ -100,7 +104,7 @@ public class BudgetVsActualPanel implements AppPanel
 			}
 			this.table.setRoot(rootItem);
 			setExpandedOnChildren(true);
-			this.status.setText("Grouped report generated for " + DateRangeContext.get());
+			this.status.setText("Grouped report generated for " + DateRangeContext.get() + " (actuals from " + this.actualSource.getValue().label + ")");
 		}
 		catch (RuntimeException | SQLException ex)
 		{
@@ -148,5 +152,24 @@ public class BudgetVsActualPanel implements AppPanel
 
 	public record Row(String label, String budget, String actual, String variance)
 	{
+	}
+
+	public enum ActualSource
+	{
+		JOURNAL("Journal"),
+		NONE("None");
+
+		private final String label;
+
+		ActualSource(String label)
+		{
+			this.label = label;
+		}
+
+		@Override
+		public String toString()
+		{
+			return this.label;
+		}
 	}
 }

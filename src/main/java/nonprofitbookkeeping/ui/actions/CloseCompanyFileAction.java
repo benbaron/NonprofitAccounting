@@ -28,7 +28,7 @@ public class CloseCompanyFileAction
 	 * Constructs and executes the action to close the current company file.
 	 * The dialog presented offers the user three choices:
 	 * <ul>
-	 *   <li><strong>Yes</strong> &ndash; save the company and close it.</li>
+	 *   <li><strong>OK</strong> &ndash; save the company and close it.</li>
 	 *   <li><strong>No</strong> &ndash; close without saving.</li>
 	 *   <li><strong>Cancel</strong> &ndash; abort the close operation entirely.</li>
 	 * </ul>
@@ -37,10 +37,12 @@ public class CloseCompanyFileAction
 	 */
 	public CloseCompanyFileAction(Stage primaryStage)
 	{
+		ButtonType okAndSave = new ButtonType("OK");
+		ButtonType noWithoutSave = new ButtonType("No");
 		Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-			"Save company changes before closing?",
-			ButtonType.YES,
-			ButtonType.NO,
+			"Save current company to the database?",
+			okAndSave,
+			noWithoutSave,
 			ButtonType.CANCEL);
 		confirm.initOwner(primaryStage);
 		Optional<ButtonType> res = confirm.showAndWait();
@@ -51,7 +53,7 @@ public class CloseCompanyFileAction
 			return; // user cancelled the action
 		}
 		
-		if (res.get() == ButtonType.YES)
+		if (res.get() == okAndSave)
 		{
 			
 			try

@@ -377,10 +377,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
 		root.prefWidthProperty().bind(Bindings.createDoubleBinding(
 			() -> Math.max(960, scrollPane.getViewportBounds().getWidth()),
 			scrollPane.viewportBoundsProperty()));
-		root.prefHeightProperty().bind(Bindings.createDoubleBinding(
-			() -> Math.max(700, scrollPane.getViewportBounds().getHeight()),
-			scrollPane.viewportBoundsProperty()));
-		
+
 		this.table.prefHeightProperty().bind(Bindings.max(260,
 			root.heightProperty().multiply(0.40)));
 		this.supplementalTabs.prefHeightProperty().bind(Bindings.max(180,

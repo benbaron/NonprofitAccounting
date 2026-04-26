@@ -10,10 +10,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.geometry.Orientation;
 
 import nonprofitbookkeeping.ui.panels.BalanceSheetPanelFX;
-import nonprofitbookkeeping.ui.panels.ChartOfAccountsTablePanelFX;
 import nonprofitbookkeeping.ui.panels.CoaEditorPanelFX;
 import nonprofitbookkeeping.ui.panels.CompanySelectionPanelFX;
 import nonprofitbookkeeping.ui.panels.BankReconciliationPanelFX;
@@ -130,7 +128,6 @@ public class MainApplicationView extends BorderPane
 	/** Embedded Chart of Accounts editor panel. */
 	private CoaEditorPanelFX coaEditorPanel;
 	/** Embedded Chart of Accounts tabular panel shown with the editor. */
-	private ChartOfAccountsTablePanelFX coaTablePanel;
 	/** Panel used to select or create companies when none are open. */
 	private final CompanySelectionPanelFX companySelectionPanel;
 	/** Journal panel instance to expose search helpers. */
@@ -176,9 +173,8 @@ public class MainApplicationView extends BorderPane
 			}
 			
 		}, () -> {});
-		this.coaTablePanel = new ChartOfAccountsTablePanelFX();
 		this.coaTab = new Tab("Chart of Accounts",
-			createMergedCoaPanel(this.coaEditorPanel, this.coaTablePanel));
+			createMergedCoaPanel(this.coaEditorPanel));
 		
 		this.reportsTab = new Tab("Reports", new SkeletonReportsPanel());
 		this.incomeStatementTab = new Tab("Income Statement",
@@ -353,19 +349,14 @@ public class MainApplicationView extends BorderPane
 	}
 
 	/**
-	 * Creates a single workspace that combines the COA editor and table view.
+	 * Returns the unified Chart of Accounts workspace.
 	 *
 	 * @param editor the ladder/tree editor panel
-	 * @param table the tabular panel
-	 * @return merged COA workspace container
+	 * @return unified COA workspace container
 	 */
-	private SplitPane createMergedCoaPanel(CoaEditorPanelFX editor,
-		ChartOfAccountsTablePanelFX table)
+	private CoaEditorPanelFX createMergedCoaPanel(CoaEditorPanelFX editor)
 	{
-		SplitPane splitPane = new SplitPane(editor, table);
-		splitPane.setOrientation(Orientation.VERTICAL);
-		splitPane.setDividerPositions(0.58);
-		return splitPane;
+		return editor;
 	}
 	
 	/**
@@ -522,9 +513,8 @@ public class MainApplicationView extends BorderPane
 					}
 					
 				}, () -> {});
-				this.coaTablePanel = new ChartOfAccountsTablePanelFX();
 				this.coaTab.setContent(
-					createMergedCoaPanel(this.coaEditorPanel, this.coaTablePanel));
+					createMergedCoaPanel(this.coaEditorPanel));
 			}
 			else
 			{
