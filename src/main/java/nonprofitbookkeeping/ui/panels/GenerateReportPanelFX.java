@@ -18,6 +18,7 @@ import javafx.scene.layout.VBox;
 import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
 import nonprofitbookkeeping.reports.jasper.runtime.ReportTemplates;
 import nonprofitbookkeeping.service.ReportService;
+import nonprofitbookkeeping.ui.UiSpacing;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -54,7 +55,7 @@ public class GenerateReportPanelFX extends BorderPane
 		this.reportService =
 			Objects.requireNonNull(reportService, "reportService");
 		this.templates = new LinkedHashMap<>(ReportTemplates.templates());
-		setPadding(new Insets(10));
+		setPadding(UiSpacing.pageInsets());
 		
 		this.templateList = new ListView<>(
 			FXCollections.observableArrayList(this.templates.keySet()));
@@ -77,14 +78,14 @@ public class GenerateReportPanelFX extends BorderPane
 		generate.setDisable(this.templates.isEmpty());
 		generate.setOnAction(e -> generateReports());
 		
-		VBox selectionBox = new VBox(10);
-		selectionBox.setPadding(new Insets(10));
+		VBox selectionBox = new VBox(UiSpacing.SECTION_SPACING);
+		selectionBox.setPadding(new Insets(UiSpacing.SECTION_SPACING));
 		Label instruction =
 			new Label("Choose one or more reports to generate. " +
 				"If none are selected, all reports will be generated.");
 		instruction.setWrapText(true);
 		VBox.setVgrow(this.templateList, Priority.ALWAYS);
-		HBox actions = new HBox(10, new Label("Output format:"),
+		HBox actions = new HBox(UiSpacing.SECTION_SPACING, new Label("Output format:"),
 			this.formatSelector, generate);
 		selectionBox.getChildren().addAll(instruction, this.templateList,
 			actions);

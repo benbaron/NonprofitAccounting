@@ -61,6 +61,8 @@ public class SettingsPanelFX extends BorderPane
 	
 	/** The language combo. */
 	private ComboBox<Locale> languageCombo;
+	/** Pending-row text color preference combo. */
+	private ComboBox<String> pendingRowTextColorCombo;
 	/** Text field for customizing the currency format pattern. */
 	private TextField currencyFormatField;
 	
@@ -702,7 +704,24 @@ public class SettingsPanelFX extends BorderPane
 		
 		grid.add(this.languageCombo, 1, 1);
 		
-		grid.add(new Label("Currency Format:"), 0, 2);
+		grid.add(new Label("Pending Row Text:"), 0, 2);
+		this.pendingRowTextColorCombo = new ComboBox<>();
+		this.pendingRowTextColorCombo.getItems().addAll("Black", "System");
+		this.pendingRowTextColorCombo.setValue("Black");
+		
+		if (this.service != null)
+		{
+			String pendingRowTextColor =
+				this.service.getSettings().getPendingRowTextColor();
+			if (pendingRowTextColor != null && !pendingRowTextColor.isBlank())
+			{
+				this.pendingRowTextColorCombo.setValue(pendingRowTextColor);
+			}
+		}
+		
+		grid.add(this.pendingRowTextColorCombo, 1, 2);
+		
+		grid.add(new Label("Currency Format:"), 0, 3);
 		this.currencyFormatField = new TextField();
 		
 		if (this.service != null)
@@ -719,7 +738,7 @@ public class SettingsPanelFX extends BorderPane
 			this.currencyFormatField.setText(FormatUtils.getCurrencyFormat());
 		}
 		
-		grid.add(this.currencyFormatField, 1, 2);
+		grid.add(this.currencyFormatField, 1, 3);
 		
 		TitledPane wrapper = titled("UI Preferences", grid);
 		return new Tab("UI Preferences", wrapper);
@@ -808,6 +827,12 @@ public class SettingsPanelFX extends BorderPane
 		
 		if (this.themeCombo != null && this.themeCombo.getValue() != null)
 			m.setTheme(this.themeCombo.getValue());
+
+		if (this.pendingRowTextColorCombo != null &&
+			this.pendingRowTextColorCombo.getValue() != null)
+		{
+			m.setPendingRowTextColor(this.pendingRowTextColorCombo.getValue());
+		}
 			
 		if (this.languageCombo != null && this.languageCombo.getValue() != null)
 		{

@@ -17,6 +17,7 @@ import nonprofitbookkeeping.model.AccountType;
 import nonprofitbookkeeping.service.AccountService;
 import nonprofitbookkeeping.model.CurrentCompany; // Added for listener
 import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.ui.UiSpacing;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -46,7 +47,7 @@ public class AccountsPanelFX extends BorderPane
 	public AccountsPanelFX(AccountService service)
 	{
 		// service param is kept for signature compatibility
-		setPadding(new Insets(10));
+		setPadding(UiSpacing.pageInsets());
 		buildTable();
 		setCenter(
 			new TitledPane("Chart of Accounts", this.table)
@@ -130,8 +131,8 @@ public class AccountsPanelFX extends BorderPane
 	 */
 	private HBox buildControls()
 	{
-		HBox box = new HBox(10);
-		box.setPadding(new Insets(8));
+		HBox box = new HBox(UiSpacing.SECTION_SPACING);
+		box.setPadding(new Insets(UiSpacing.SECTION_SPACING));
 		Button add = new Button("Add Account");
 		Button edit = new Button("Edit Account");
 		Button delete = new Button("Delete Account");

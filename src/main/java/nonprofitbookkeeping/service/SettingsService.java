@@ -146,6 +146,18 @@ public class SettingsService
 		{
 			m.setDefaultReportPeriod(ReportPeriodPreset.YEAR_TO_DATE.name());
 		}
+
+		if (m.getTheme() == null || m.getTheme().isBlank())
+		{
+			m.setTheme(PreferencesService.getThemePreference());
+		}
+
+		if (m.getPendingRowTextColor() == null ||
+			m.getPendingRowTextColor().isBlank())
+		{
+			m.setPendingRowTextColor(
+				PreferencesService.getPendingRowTextColorPreference());
+		}
 		
 		// options default to true when not specified
 		// (Lombok generated getters may return false when null, so no extra
@@ -169,6 +181,18 @@ public class SettingsService
 		{
 			PreferencesService
 				.setLastUsedCompanyFile(m.getLastUsedCompanyFile());
+		}
+
+		if (m.getTheme() != null && !m.getTheme().isBlank())
+		{
+			PreferencesService.setThemePreference(m.getTheme());
+		}
+
+		if (m.getPendingRowTextColor() != null &&
+			!m.getPendingRowTextColor().isBlank())
+		{
+			PreferencesService
+				.setPendingRowTextColorPreference(m.getPendingRowTextColor());
 		}
 		
 	}

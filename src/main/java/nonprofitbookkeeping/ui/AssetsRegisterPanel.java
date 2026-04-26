@@ -18,14 +18,10 @@ import nonprofitbookkeeping.model.records.AssetRecord;
 import nonprofitbookkeeping.model.records.AssetItemType;
 import nonprofitbookkeeping.service.AssetRecordService;
 import org.nonprofitbookkeeping.ui.AppPanel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -35,16 +31,16 @@ import java.util.UUID;
  */
 public class AssetsRegisterPanel implements AppPanel
 {
-	private static final Logger LOG = LoggerFactory.getLogger(AssetsRegisterPanel.class);
-
-	private final BorderPane root = new BorderPane();
-	private final TableView<AssetRow> table = new TableView<>();
-	private final Label status = new Label("Ready");
-	private final AssetRecordService assetRecordService;
+	private final GenericRecordEditorPanel delegate;
 
 	public AssetsRegisterPanel()
 	{
-		this(new AssetRecordService());
+			this(new GenericRecordEditorPanel(
+				"Asset Register",
+				"imported_asset_record",
+				"asset_id",
+				() -> "asset-" + UUID.randomUUID(),
+				Set.of("extensions_json")));
 	}
 
 	public AssetsRegisterPanel(AssetRecordService assetRecordService)
@@ -126,53 +122,25 @@ public class AssetsRegisterPanel implements AppPanel
 
 	private void loadFromService()
 	{
-		try
-		{
-			List<AssetRecord> records = assetRecordService.listAll();
-			table.setItems(FXCollections.observableArrayList(records.stream().map(AssetRow::fromRecord).toList()));
-			status.setText("Loaded " + records.size() + " asset record(s)");
-		}
-		catch (SQLException | RuntimeException ex)
-		{
-			LOG.warn("Asset register load failed", ex);
-			status.setText("Failed to load asset records: " + ex.getMessage());
-		}
+		this.delegate = delegate;
 	}
 
 	@Override
 	public String title()
 	{
-		return "Asset Register";
+		return delegate.title();
 	}
 
 	@Override
 	public Node root()
 	{
-		return root;
+		return delegate.root();
 	}
 
 	@Override
 	public void onSave()
 	{
-		try
-		{
-			int rowNumber = 1;
-			for (AssetRow row : table.getItems())
-			{
-				assetRecordService.save(row.toRecord(rowNumber));
-				rowNumber++;
-			}
-			status.setText("Saved " + table.getItems().size() + " asset record(s)");
-		}
-		catch (IllegalArgumentException ex)
-		{
-			status.setText("Validation error: " + ex.getMessage());
-		}
-		catch (SQLException | RuntimeException ex)
-		{
-			LOG.warn("Asset register save failed", ex);
-			status.setText("Failed to save asset records: " + ex.getMessage());
-		}
+		delegate.onSave();
 	}
 
 	private void onDeleteSelected()

@@ -30,6 +30,7 @@ import javafx.stage.FileChooser;
 import nonprofitbookkeeping.core.AccountingTransactionBuilder;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.service.ReconciliationService;
+import nonprofitbookkeeping.ui.UiSpacing;
 
 import com.webcohesion.ofx4j.io.AggregateUnmarshaller;
 import com.webcohesion.ofx4j.io.OFXParseException;
@@ -81,7 +82,7 @@ public class LedgerReconcilePanelFX extends BorderPane
 	 */
 	public LedgerReconcilePanelFX(ReconciliationService svc)
 	{
-		setPadding(new Insets(10));
+		setPadding(UiSpacing.pageInsets());
 		buildTop();
 		buildTable();
 		setCenter(this.table);
@@ -118,9 +119,9 @@ public class LedgerReconcilePanelFX extends BorderPane
 	private void buildTop()
 	{
 		GridPane g = new GridPane();
-		g.setHgap(10);
-		g.setVgap(8);
-		g.setPadding(new Insets(8));
+		g.setHgap(UiSpacing.GRID_H_GAP);
+		g.setVgap(UiSpacing.GRID_V_GAP);
+		g.setPadding(new Insets(UiSpacing.SECTION_SPACING));
 		g.addRow(0, new Label("Account:"), this.accountBox);
 		g.addRow(1, this.ledgerBalLbl, this.clearedBalLbl, this.diffLbl);
 		this.accountBox.setOnAction(e -> reloadRows());
@@ -188,8 +189,8 @@ public class LedgerReconcilePanelFX extends BorderPane
 		Button exportBtn = new Button("Export Uncleared");
 		exportBtn.setOnAction(new ExportUnclearedHandler(this));
 		
-		HBox box = new HBox(10, importBtn, addBtn, exportBtn);
-		box.setPadding(new Insets(8));
+		HBox box = new HBox(UiSpacing.SECTION_SPACING, importBtn, addBtn, exportBtn);
+		box.setPadding(new Insets(UiSpacing.SECTION_SPACING));
 		return box;
 	}
 	

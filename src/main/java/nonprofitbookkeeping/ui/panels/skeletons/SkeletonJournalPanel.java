@@ -431,13 +431,13 @@ public class SkeletonJournalPanel extends BorderPane
 		TableColumn<JournalDisplayEntry, String> debitCol =
 			new TableColumn<>("Debit");
 		debitCol.setCellValueFactory(new PropertyValueFactory<>("debit"));
-		debitCol.setStyle("-fx-alignment: CENTER-RIGHT;");
+		debitCol.getStyleClass().add("table-column-numeric");
 		debitCol.setPrefWidth(90);
 		
 		TableColumn<JournalDisplayEntry, String> creditCol =
 			new TableColumn<>("Credit");
 		creditCol.setCellValueFactory(new PropertyValueFactory<>("credit"));
-		creditCol.setStyle("-fx-alignment: CENTER-RIGHT;");
+		creditCol.getStyleClass().add("table-column-numeric");
 		creditCol.setPrefWidth(90);
 		
 		this.journalDisplayTable.getColumns().addAll(dateCol, transIdCol,
