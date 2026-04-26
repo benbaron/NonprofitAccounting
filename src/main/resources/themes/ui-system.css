@@ -12,6 +12,7 @@
 
     -npbk-status-neutral-bg: #666666;
     -npbk-status-success-bg: #2e7d32;
+    -npbk-status-warning-bg: #b26a00;
     -npbk-status-error-bg: #cc3300;
     -npbk-status-text: white;
 
@@ -55,6 +56,26 @@
     -fx-background-radius: 12;
 }
 
+.state-neutral {
+    -fx-background-color: -npbk-status-neutral-bg;
+    -fx-text-fill: -npbk-status-text;
+}
+
+.state-valid {
+    -fx-background-color: -npbk-status-success-bg;
+    -fx-text-fill: -npbk-status-text;
+}
+
+.state-warning {
+    -fx-background-color: -npbk-status-warning-bg;
+    -fx-text-fill: -npbk-status-text;
+}
+
+.state-error {
+    -fx-background-color: -npbk-status-error-bg;
+    -fx-text-fill: -npbk-status-text;
+}
+
 .status-badge-neutral {
     -fx-background-color: -npbk-status-neutral-bg;
 }
@@ -69,6 +90,34 @@
 
 .validation-message-error {
     -fx-text-fill: -npbk-validation-error;
+}
+
+.state-inline {
+    -fx-font-weight: bold;
+}
+
+.state-inline.state-neutral {
+    -fx-background-color: transparent;
+    -fx-text-fill: -npbk-text-muted;
+}
+
+.state-inline.state-valid {
+    -fx-background-color: transparent;
+    -fx-text-fill: -npbk-status-success-bg;
+}
+
+.state-inline.state-warning {
+    -fx-background-color: transparent;
+    -fx-text-fill: -npbk-status-warning-bg;
+}
+
+.state-inline.state-error {
+    -fx-background-color: transparent;
+    -fx-text-fill: -npbk-validation-error;
+}
+
+.validation-label {
+    -fx-wrap-text: true;
 }
 
 .account-cell-missing {
