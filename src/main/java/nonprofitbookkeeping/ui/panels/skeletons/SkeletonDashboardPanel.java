@@ -137,7 +137,7 @@ public class SkeletonDashboardPanel extends BorderPane
                                FormatUtils.formatCurrency(totalAmount != null ? totalAmount : BigDecimal.ZERO));
                });
 		amountCol.setPrefWidth(100);
-		amountCol.setStyle("-fx-alignment: CENTER-RIGHT;");
+		amountCol.getStyleClass().add("table-column-numeric");
 		
 		this.recentTransactionsTable.getColumns()
 			.addAll(dateCol,

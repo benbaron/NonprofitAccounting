@@ -23,7 +23,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Map;
-import java.util.Set;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -43,7 +43,7 @@ public class AssetsRegisterPanel implements AppPanel
 				Set.of("extensions_json")));
 	}
 
-	AssetsRegisterPanel(AssetRecordService assetRecordService)
+	public AssetsRegisterPanel(AssetRecordService assetRecordService)
 	{
 		this.assetRecordService = assetRecordService;
 		root.setPadding(new Insets(8));

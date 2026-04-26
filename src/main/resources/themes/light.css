@@ -5,4 +5,20 @@
     -fx-accent: #0066cc;
     -fx-focus-color: #66afe9;
     -fx-faint-focus-color: rgba(102,175,233,0.1);
+    -fx-text-fill: #202124;
+
+    -npbk-surface-default: #ffffff;
+    -npbk-surface-muted: #f7f9fb;
+    -npbk-border-default: #d0d7de;
+    -npbk-text-default: #202124;
+    -npbk-text-muted: #5f6368;
+    -npbk-status-neutral-bg: #666666;
+    -npbk-status-success-bg: #2e7d32;
+    -npbk-status-warning-bg: #b26a00;
+    -npbk-status-error-bg: #cc3300;
+    -npbk-status-text: #ffffff;
+    -npbk-validation-error: #cc3300;
+    -npbk-account-missing-bg: rgba(204, 51, 0, 0.25);
+    -npbk-pending-row-bg: rgba(166, 219, 255, 0.35);
+    -npbk-pending-row-text: #000000;
 }

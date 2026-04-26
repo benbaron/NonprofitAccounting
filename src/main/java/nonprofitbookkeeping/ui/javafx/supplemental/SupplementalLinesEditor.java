@@ -87,7 +87,8 @@ public class SupplementalLinesEditor extends VBox
 		});
 		buttons.getChildren().addAll(add, remove);
 
-		this.validationLabel.getStyleClass().add("validation-label");
+		this.validationLabel.getStyleClass().addAll("validation-label",
+			"state-inline", "state-error");
 		this.validationLabel.setWrapText(true);
 
 		getChildren().addAll(buttons, this.table, this.validationLabel);
@@ -206,7 +207,17 @@ public class SupplementalLinesEditor extends VBox
 		if (errors.isEmpty())
 		{
 			this.validationLabel.setText("");
+			this.validationLabel.getStyleClass().remove("state-error");
+			if (!this.validationLabel.getStyleClass().contains("state-valid"))
+			{
+				this.validationLabel.getStyleClass().add("state-valid");
+			}
 			return true;
+		}
+		this.validationLabel.getStyleClass().remove("state-valid");
+		if (!this.validationLabel.getStyleClass().contains("state-error"))
+		{
+			this.validationLabel.getStyleClass().add("state-error");
 		}
 		this.validationLabel.setText(String.join("\n", errors));
 		return false;
