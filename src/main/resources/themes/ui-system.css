@@ -76,22 +76,6 @@
     -fx-text-fill: -npbk-status-text;
 }
 
-.status-badge-neutral {
-    -fx-background-color: -npbk-status-neutral-bg;
-}
-
-.status-badge-error {
-    -fx-background-color: -npbk-status-error-bg;
-}
-
-.status-badge-valid {
-    -fx-background-color: -npbk-status-success-bg;
-}
-
-.validation-message-error {
-    -fx-text-fill: -npbk-validation-error;
-}
-
 .state-inline {
     -fx-font-weight: bold;
 }

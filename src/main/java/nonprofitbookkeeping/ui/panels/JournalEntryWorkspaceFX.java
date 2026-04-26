@@ -1483,7 +1483,6 @@ public class JournalEntryWorkspaceFX extends BorderPane
 	{
 		this.statusBadge.setText(text);
 		this.statusBadge.getStyleClass().removeAll(
-			"status-badge-neutral", "status-badge-error", "status-badge-valid",
 			"state-neutral", "state-error", "state-valid", "state-warning");
 		this.statusBadge.getStyleClass().add(stateClass);
 	}
