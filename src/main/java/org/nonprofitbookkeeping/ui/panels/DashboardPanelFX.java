@@ -17,7 +17,7 @@ import org.nonprofitbookkeeping.bridge.dashboard.DashboardDataBridge;
 import org.nonprofitbookkeeping.service.FundBalanceRow;
 import org.nonprofitbookkeeping.ui.UiAsync;
 import org.nonprofitbookkeeping.ui.UiErrors;
-import nonprofitbookkeeping.ui.UiSpacing;
+import org.nonprofitbookkeeping.ui.UiSpacing;
 
 import java.math.BigDecimal;
 import java.util.Objects;
