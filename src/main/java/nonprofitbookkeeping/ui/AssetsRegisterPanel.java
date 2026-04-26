@@ -1,7 +1,7 @@
 package nonprofitbookkeeping.ui;
 
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -14,14 +14,19 @@ import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import nonprofitbookkeeping.model.records.AssetRecord;
 import nonprofitbookkeeping.model.records.AssetItemType;
+import nonprofitbookkeeping.model.records.AssetRecord;
 import nonprofitbookkeeping.service.AssetRecordService;
 import org.nonprofitbookkeeping.ui.AppPanel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -31,16 +36,16 @@ import java.util.UUID;
  */
 public class AssetsRegisterPanel implements AppPanel
 {
-	private final GenericRecordEditorPanel delegate;
+	private static final Logger LOG = LoggerFactory.getLogger(AssetsRegisterPanel.class);
+
+	private final BorderPane root = new BorderPane();
+	private final TableView<AssetRow> table = new TableView<>();
+	private final Label status = new Label("Ready");
+	private final AssetRecordService assetRecordService;
 
 	public AssetsRegisterPanel()
 	{
-			this(new GenericRecordEditorPanel(
-				"Asset Register",
-				"imported_asset_record",
-				"asset_id",
-				() -> "asset-" + UUID.randomUUID(),
-				Set.of("extensions_json")));
+		this(new AssetRecordService());
 	}
 
 	public AssetsRegisterPanel(AssetRecordService assetRecordService)
@@ -73,13 +78,14 @@ public class AssetsRegisterPanel implements AppPanel
 	{
 		table.setEditable(true);
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-		table.getColumns().add(col("Asset ID", AssetRow::assetIdProperty, AssetRow::setAssetId));
-		table.getColumns().add(col("Acquired", AssetRow::dateAcquiredProperty, AssetRow::setDateAcquired));
-		table.getColumns().add(col("Description", AssetRow::descriptionProperty, AssetRow::setDescription));
-		table.getColumns().add(col("Count", AssetRow::itemCountProperty, AssetRow::setItemCount));
-		table.getColumns().add(col("Approx Value", AssetRow::approxValueTotalProperty, AssetRow::setApproxValueTotal));
-		table.getColumns().add(itemTypeCol("Item Type"));
-		table.getColumns().add(col("Accum Depreciation", AssetRow::accumulatedDepreciationProperty, AssetRow::setAccumulatedDepreciation));
+		table.getColumns().setAll(
+			col("Asset ID", AssetRow::assetIdProperty, AssetRow::setAssetId),
+			col("Acquired", AssetRow::dateAcquiredProperty, AssetRow::setDateAcquired),
+			col("Description", AssetRow::descriptionProperty, AssetRow::setDescription),
+			col("Count", AssetRow::itemCountProperty, AssetRow::setItemCount),
+			col("Approx Value", AssetRow::approxValueTotalProperty, AssetRow::setApproxValueTotal),
+			itemTypeCol("Item Type"),
+			col("Accum Depreciation", AssetRow::accumulatedDepreciationProperty, AssetRow::setAccumulatedDepreciation));
 	}
 
 	private TableColumn<AssetRow, String> col(String name,
@@ -122,25 +128,58 @@ public class AssetsRegisterPanel implements AppPanel
 
 	private void loadFromService()
 	{
-		this.delegate = delegate;
+		try
+		{
+			table.setItems(FXCollections.observableArrayList(
+				assetRecordService.listAll().stream().map(AssetRow::fromRecord).toList()));
+			table.getSelectionModel().clearSelection();
+			status.setText("Loaded " + table.getItems().size() + " asset row(s).");
+		}
+		catch (SQLException | RuntimeException ex)
+		{
+			LOG.warn("Failed to load asset rows", ex);
+			table.getItems().clear();
+			status.setText("Failed to load asset rows: " + ex.getMessage());
+		}
 	}
 
 	@Override
 	public String title()
 	{
-		return delegate.title();
+		return "Asset Register";
 	}
 
 	@Override
 	public Node root()
 	{
-		return delegate.root();
+		return root;
 	}
 
 	@Override
 	public void onSave()
 	{
-		delegate.onSave();
+		try
+		{
+			List<AssetRecord> recordsToSave = new ArrayList<>();
+			for (int i = 0; i < table.getItems().size(); i++)
+			{
+				recordsToSave.add(table.getItems().get(i).toRecord(i + 1));
+			}
+
+			for (AssetRecord record : recordsToSave)
+			{
+				assetRecordService.save(record);
+			}
+
+			table.setItems(FXCollections.observableArrayList(
+				recordsToSave.stream().map(AssetRow::fromRecord).toList()));
+			status.setText("Saved " + recordsToSave.size() + " asset row(s).");
+		}
+		catch (SQLException | RuntimeException ex)
+		{
+			LOG.warn("Asset register save failed", ex);
+			status.setText("Failed to save assets: " + ex.getMessage());
+		}
 	}
 
 	private void onDeleteSelected()
@@ -163,7 +202,6 @@ public class AssetsRegisterPanel implements AppPanel
 			status.setText("Failed to delete asset: " + ex.getMessage());
 		}
 	}
-
 
 	public static final class AssetRow
 	{
@@ -227,8 +265,8 @@ public class AssetsRegisterPanel implements AppPanel
 				parseLocalDate(dateAcquired.get(), rowNumber),
 				nullIfBlank(description.get()),
 				parseInteger(itemCount.get(), rowNumber),
-				parseBigDecimal(approxValueTotal.get(), rowNumber),
-				parseBigDecimal(accumulatedDepreciation.get(), rowNumber),
+				parseBigDecimal(approxValueTotal.get(), rowNumber, "approx value"),
+				parseBigDecimal(accumulatedDepreciation.get(), rowNumber, "accumulated depreciation"),
 				sourceRecord == null ? null : sourceRecord.valuePerItem(),
 				itemType.get(),
 				sourceRecord == null ? null : sourceRecord.usedFor(),
@@ -266,7 +304,12 @@ public class AssetsRegisterPanel implements AppPanel
 
 		private String deleteKey()
 		{
-			return sourceRecord != null ? sourceRecord.assetId() : getAssetId();
+			String currentAssetId = getAssetId();
+			if (currentAssetId != null && !currentAssetId.isBlank())
+			{
+				return currentAssetId.trim();
+			}
+			return sourceRecord != null ? sourceRecord.assetId() : "";
 		}
 
 		private static String nonBlankOrThrow(String raw, String field, int rowNumber)
@@ -310,7 +353,7 @@ public class AssetsRegisterPanel implements AppPanel
 			}
 		}
 
-		private static BigDecimal parseBigDecimal(String raw, int rowNumber)
+		private static BigDecimal parseBigDecimal(String raw, int rowNumber, String fieldName)
 		{
 			if (raw == null || raw.isBlank())
 			{
@@ -322,7 +365,7 @@ public class AssetsRegisterPanel implements AppPanel
 			}
 			catch (NumberFormatException ex)
 			{
-				throw new IllegalArgumentException("Row " + rowNumber + " has invalid approx value: '" + raw + "'.");
+				throw new IllegalArgumentException("Row " + rowNumber + " has invalid " + fieldName + ": '" + raw + "'.");
 			}
 		}
 
