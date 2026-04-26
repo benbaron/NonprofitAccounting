@@ -1,7 +1,7 @@
 .root {
-    -npbk-font-size-heading: 22px;
-    -npbk-font-size-section: 14px;
-    -npbk-font-size-card-title: 13px;
+    -npbk-font-size-heading: 22;
+    -npbk-font-size-section: 14;
+    -npbk-font-size-card-title: 13;
 
     -npbk-surface-default: -fx-control-inner-background;
     -npbk-surface-muted: derive(-fx-control-inner-background, -3%);
