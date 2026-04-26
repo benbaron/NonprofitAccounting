@@ -6,6 +6,20 @@
     -fx-focus-color: #0093ff;
     -fx-faint-focus-color: rgba(0,147,255,0.2);
     -fx-text-fill: #dddddd;
+
+    -npbk-surface-default: #3c3f41;
+    -npbk-surface-muted: #34373a;
+    -npbk-border-default: #5a5f63;
+    -npbk-text-default: #dddddd;
+    -npbk-text-muted: #b8bcc0;
+    -npbk-status-neutral-bg: #606468;
+    -npbk-status-success-bg: #2d7a36;
+    -npbk-status-error-bg: #d95f4e;
+    -npbk-status-text: #ffffff;
+    -npbk-validation-error: #ff8f82;
+    -npbk-account-missing-bg: rgba(217, 95, 78, 0.30);
+    -npbk-pending-row-bg: rgba(95, 161, 210, 0.35);
+    -npbk-pending-row-text: #f2f6fb;
 }
 .label {
     -fx-text-fill: #dddddd;

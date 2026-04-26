@@ -119,6 +119,7 @@ public class MainApplicationView extends BorderPane
 		this.menuBar = null; // Initialize menuBar, will be set via setter
 		
 		this.tabPane = new TabPane();
+		this.tabPane.getStyleClass().add("main-shell-tabs");
 		this.companySelectionPanel = new CompanySelectionPanelFX();
 		
 		// Create Tab instances
@@ -151,7 +152,18 @@ public class MainApplicationView extends BorderPane
 		this.ledgerTab = new Tab("Ledger", new LedgerPanel());
 		this.assetsTab = new Tab("Assets", new AssetsPanel());
 		this.bankReconciliationTab = new Tab("Bank Reconciliation", new BankReconciliationPanelFX());
-		
+
+		applyTabSemantics(this.dashboardTab, "tab-review", "tab-readonly");
+		applyTabSemantics(this.journalTab, "tab-operational", "tab-workspace");
+		applyTabSemantics(this.coaTab, "tab-operational", "tab-workspace");
+		applyTabSemantics(this.budgetTab, "tab-operational", "tab-workspace");
+		applyTabSemantics(this.ledgerTab, "tab-operational", "tab-workspace");
+		applyTabSemantics(this.assetsTab, "tab-operational", "tab-workspace");
+		applyTabSemantics(this.bankReconciliationTab, "tab-operational", "tab-workspace");
+		applyTabSemantics(this.reportsTab, "tab-reporting", "tab-readonly");
+		applyTabSemantics(this.incomeStatementTab, "tab-reporting", "tab-readonly");
+		applyTabSemantics(this.balanceSheetTab, "tab-reporting", "tab-readonly");
+
 		// Set tabs to be non-closable
 		this.dashboardTab.setClosable(false);
 		this.journalTab.setClosable(false);
@@ -169,26 +181,65 @@ public class MainApplicationView extends BorderPane
 		this.accountDetailsTab =
 			new Tab("Account Details", this.accountDetailsPanel);
 		this.accountDetailsTab.setClosable(false);
-		
+		applyTabSemantics(this.accountDetailsTab, "tab-review", "tab-readonly");
+		this.journalTab.getStyleClass().add("tab-operational-start");
+		this.reportsTab.getStyleClass().add("tab-reporting-start");
 		
 		// Add tabs to the tabPane
+		Tab reviewGroup = createGroupLabelTab("Review");
+		Tab workflowGroup = createGroupLabelTab("Workflows");
+		Tab reportingGroup = createGroupLabelTab("Reporting");
 		this.tabPane.getTabs()
-			.addAll(this.dashboardTab,
+			.addAll(reviewGroup,
+				this.dashboardTab,
+				this.accountDetailsTab,
+				workflowGroup,
 				this.journalTab,
 				this.coaTab,
 				this.budgetTab,
 				this.ledgerTab,
 				this.assetsTab,
 				this.bankReconciliationTab,
+				reportingGroup,
 				this.reportsTab,
 				this.incomeStatementTab,
-				this.balanceSheetTab,
-				this.accountDetailsTab
+				this.balanceSheetTab
 			);
 		
 		// Default to the company selection view until a company is opened.
 		setCenter(this.companySelectionPanel);
 		
+	}
+
+	/**
+	 * Creates a non-interactive shell tab used as a group label.
+	 *
+	 * @param title group title
+	 * @return disabled label tab
+	 */
+	private Tab createGroupLabelTab(String title)
+	{
+		Tab tab = new Tab(title);
+		tab.setClosable(false);
+		tab.setDisable(true);
+		tab.getStyleClass().add("tab-group-label");
+		return tab;
+	}
+
+	/**
+	 * Applies semantic style classes to a shell tab and its content surface.
+	 *
+	 * @param tab target shell tab
+	 * @param groupClass group classification (for example operational/reporting)
+	 * @param surfaceClass content surface classification (workspace/read-only)
+	 */
+	private void applyTabSemantics(Tab tab, String groupClass, String surfaceClass)
+	{
+		tab.getStyleClass().add(groupClass);
+		if (tab.getContent() != null)
+		{
+			tab.getContent().getStyleClass().add(surfaceClass);
+		}
 	}
 
 	/**

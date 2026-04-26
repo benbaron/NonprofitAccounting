@@ -7,7 +7,6 @@ import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -19,6 +18,7 @@ import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 import javafx.scene.Node; // For iterating over toolbar items
+import nonprofitbookkeeping.ui.UiSpacing;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -51,7 +51,7 @@ public class ReportsPanelFX extends BorderPane
 	public ReportsPanelFX()
 	{
 		this.reportService = new ReportService();
-		setPadding(new Insets(10));
+		setPadding(UiSpacing.pageInsets());
 		buildTable();
 		setCenter(this.table);
 		
@@ -369,4 +369,3 @@ public class ReportsPanelFX extends BorderPane
 	}
 	
 }
-
