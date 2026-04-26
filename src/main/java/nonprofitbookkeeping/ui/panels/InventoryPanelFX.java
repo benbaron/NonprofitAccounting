@@ -16,6 +16,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import nonprofitbookkeeping.model.InventoryItem;
 import nonprofitbookkeeping.service.InventoryService;
+import nonprofitbookkeeping.ui.UiSpacing;
 import nonprofitbookkeeping.util.FormatUtils;
 
 // TODO: Auto-generated Javadoc
@@ -59,7 +60,7 @@ public class InventoryPanelFX extends BorderPane
 			ex.printStackTrace();
 		}
 		
-		setPadding(new Insets(10));
+		setPadding(UiSpacing.pageInsets());
 		buildTable();
 		setCenter(this.table);
 		setBottom(buildButtons());
@@ -199,9 +200,9 @@ public class InventoryPanelFX extends BorderPane
 		}
 		
 		GridPane g = new GridPane();
-		g.setHgap(10);
-		g.setVgap(8);
-		g.setPadding(new Insets(10));
+		g.setHgap(UiSpacing.GRID_H_GAP);
+		g.setVgap(UiSpacing.GRID_V_GAP);
+		g.setPadding(new Insets(UiSpacing.SECTION_SPACING));
 		g.addRow(0, new Label("Name:"), nameF);
 		g.addRow(1, new Label("Cost:"), costF);
 		g.addRow(2, new Label("Acquired:"), dateP);
