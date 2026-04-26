@@ -26,6 +26,8 @@ import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.ReportPeriodPreset;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import java.time.MonthDay;
@@ -42,6 +44,10 @@ import java.util.Set;
  */
 public class MainApplicationView extends BorderPane
 {
+	/** Logger for shell-level UI diagnostics. */
+	private static final Logger LOGGER =
+		LoggerFactory.getLogger(MainApplicationView.class);
+
 	/** Semantic group for shell hierarchy highlighting. */
 	private enum ShellGroup
 	{
@@ -310,8 +316,9 @@ public class MainApplicationView extends BorderPane
 			group = ShellGroup.WORKFLOW;
 			if (this.warnedUnmappedTabs.add(selectedTab))
 			{
-				System.err.println("MainApplicationView: unmapped shell tab '"
-					+ selectedTab.getText() + "', defaulting group to WORKFLOW.");
+				LOGGER.warn(
+					"Unmapped shell tab '{}' encountered; defaulting highlight group to WORKFLOW.",
+					selectedTab.getText());
 			}
 		}
 		switch (group)
