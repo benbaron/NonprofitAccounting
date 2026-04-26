@@ -29,6 +29,8 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
 
 
 import java.time.MonthDay;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Represents the main application view, structured as a {@link BorderPane}.
@@ -38,6 +40,13 @@ import java.time.MonthDay;
  */
 public class MainApplicationView extends BorderPane
 {
+	/** Semantic group for shell hierarchy highlighting. */
+	private enum ShellGroup
+	{
+		REVIEW,
+		WORKFLOW,
+		REPORTING
+	}
 	
 	/**
 	 * Enum defining the different types of panels/tabs that can be displayed
@@ -106,6 +115,8 @@ public class MainApplicationView extends BorderPane
 	private Label workflowGroupLabel;
 	/** Shell legend label for reporting surfaces. */
 	private Label reportingGroupLabel;
+	/** Explicit shell group mapping to avoid style-class inference drift. */
+	private final Map<Tab, ShellGroup> tabGroups;
 	/** Embedded Chart of Accounts editor panel. */
 	private CoaEditorPanelFX coaEditorPanel;
 	/** Embedded Chart of Accounts tabular panel shown with the editor. */
@@ -135,6 +146,7 @@ public class MainApplicationView extends BorderPane
 		this.workspaceShell = new VBox();
 		this.workspaceShell.getStyleClass().add("workspace-shell");
 		this.companySelectionPanel = new CompanySelectionPanelFX();
+		this.tabGroups = new HashMap<>();
 		
 		// Create Tab instances
 		this.dashboardTab = new Tab("Dashboard", new SkeletonDashboardPanel());
@@ -168,15 +180,25 @@ public class MainApplicationView extends BorderPane
 		this.bankReconciliationTab = new Tab("Bank Reconciliation", new BankReconciliationPanelFX());
 
 		applyTabSemantics(this.dashboardTab, "tab-review", "tab-readonly");
+		this.tabGroups.put(this.dashboardTab, ShellGroup.REVIEW);
 		applyTabSemantics(this.journalTab, "tab-operational", "tab-workspace");
+		this.tabGroups.put(this.journalTab, ShellGroup.WORKFLOW);
 		applyTabSemantics(this.coaTab, "tab-operational", "tab-workspace");
+		this.tabGroups.put(this.coaTab, ShellGroup.WORKFLOW);
 		applyTabSemantics(this.budgetTab, "tab-operational", "tab-workspace");
+		this.tabGroups.put(this.budgetTab, ShellGroup.WORKFLOW);
 		applyTabSemantics(this.ledgerTab, "tab-operational", "tab-workspace");
+		this.tabGroups.put(this.ledgerTab, ShellGroup.WORKFLOW);
 		applyTabSemantics(this.assetsTab, "tab-operational", "tab-workspace");
+		this.tabGroups.put(this.assetsTab, ShellGroup.WORKFLOW);
 		applyTabSemantics(this.bankReconciliationTab, "tab-operational", "tab-workspace");
+		this.tabGroups.put(this.bankReconciliationTab, ShellGroup.WORKFLOW);
 		applyTabSemantics(this.reportsTab, "tab-reporting", "tab-readonly");
+		this.tabGroups.put(this.reportsTab, ShellGroup.REPORTING);
 		applyTabSemantics(this.incomeStatementTab, "tab-reporting", "tab-readonly");
+		this.tabGroups.put(this.incomeStatementTab, ShellGroup.REPORTING);
 		applyTabSemantics(this.balanceSheetTab, "tab-reporting", "tab-readonly");
+		this.tabGroups.put(this.balanceSheetTab, ShellGroup.REPORTING);
 
 		// Set tabs to be non-closable
 		this.dashboardTab.setClosable(false);
@@ -196,6 +218,7 @@ public class MainApplicationView extends BorderPane
 			new Tab("Account Details", this.accountDetailsPanel);
 		this.accountDetailsTab.setClosable(false);
 		applyTabSemantics(this.accountDetailsTab, "tab-review", "tab-readonly");
+		this.tabGroups.put(this.accountDetailsTab, ShellGroup.REVIEW);
 		this.journalTab.getStyleClass().add("tab-operational-start");
 		this.reportsTab.getStyleClass().add("tab-reporting-start");
 		
@@ -261,17 +284,21 @@ public class MainApplicationView extends BorderPane
 		{
 			return;
 		}
-		if (selectedTab.getStyleClass().contains("tab-review"))
+		ShellGroup group =
+			this.tabGroups.getOrDefault(selectedTab, ShellGroup.WORKFLOW);
+		switch (group)
 		{
-			this.reviewGroupLabel.getStyleClass().add("shell-group-active");
-			return;
+			case REVIEW:
+				this.reviewGroupLabel.getStyleClass().add("shell-group-active");
+				break;
+			case REPORTING:
+				this.reportingGroupLabel.getStyleClass().add("shell-group-active");
+				break;
+			case WORKFLOW:
+			default:
+				this.workflowGroupLabel.getStyleClass().add("shell-group-active");
+				break;
 		}
-		if (selectedTab.getStyleClass().contains("tab-reporting"))
-		{
-			this.reportingGroupLabel.getStyleClass().add("shell-group-active");
-			return;
-		}
-		this.workflowGroupLabel.getStyleClass().add("shell-group-active");
 	}
 
 	/**
