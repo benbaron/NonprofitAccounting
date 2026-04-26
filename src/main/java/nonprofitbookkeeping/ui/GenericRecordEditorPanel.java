@@ -2,7 +2,6 @@ package nonprofitbookkeeping.ui;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-import javafx.geometry.Insets;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -48,6 +47,9 @@ import java.util.function.Supplier;
 public class GenericRecordEditorPanel implements AppPanel
 {
     private static final Logger LOG = LoggerFactory.getLogger(GenericRecordEditorPanel.class);
+    private static final String PENDING_ROW_CLASS = "pending-row";
+    private static final String PENDING_ROW_TEXT_DARK_CLASS =
+        "pending-row-text-dark";
 
     private final BorderPane root = new BorderPane();
     private final TableView<Map<String, Object>> table = new TableView<>();
@@ -106,7 +108,7 @@ public class GenericRecordEditorPanel implements AppPanel
         this.schemaService = schemaService;
         this.crudService = crudService;
 
-        root.setPadding(new Insets(8));
+        root.setPadding(UiSpacing.pageInsets());
         Label title = new Label(panelTitle);
         title.getStyleClass().add("panel-title");
 
@@ -114,8 +116,8 @@ public class GenericRecordEditorPanel implements AppPanel
         Button delete = new Button("Delete Selected");
         Button refresh = new Button("Refresh");
         Button save = new Button("Save");
-        HBox actions = new HBox(8, add, delete, refresh, save);
-        root.setTop(new VBox(6, title, actions, new Separator()));
+        HBox actions = new HBox(UiSpacing.SECTION_SPACING, add, delete, refresh, save);
+        root.setTop(new VBox(UiSpacing.SECTION_SPACING, title, actions, new Separator()));
 
         table.setEditable(true);
         table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
@@ -125,20 +127,14 @@ public class GenericRecordEditorPanel implements AppPanel
             protected void updateItem(Map<String, Object> item, boolean empty)
             {
                 super.updateItem(item, empty);
+                getStyleClass().remove(PENDING_ROW_CLASS);
                 if (empty || item == null)
                 {
-                    setStyle("");
                     return;
                 }
                 if (pendingNewRows.contains(item))
                 {
-                    setStyle(
-                        "-fx-background-color: rgba(166, 219, 255, 0.35);"
-                    );
-                }
-                else
-                {
-                    setStyle("");
+                    getStyleClass().add(PENDING_ROW_CLASS);
                 }
             }
         });
@@ -369,7 +365,7 @@ public class GenericRecordEditorPanel implements AppPanel
             {
                 setText(null);
                 setGraphic(null);
-                setStyle("");
+                getStyleClass().remove(PENDING_ROW_TEXT_DARK_CLASS);
             }
             else if (isEditing())
             {
@@ -405,20 +401,13 @@ public class GenericRecordEditorPanel implements AppPanel
         private void applyPendingRowTextStyle()
         {
             TableRow<Map<String, Object>> row = getTableRow();
+            getStyleClass().remove(PENDING_ROW_TEXT_DARK_CLASS);
             if (row != null && pendingNewRows.contains(row.getItem()))
             {
                 if (isPendingRowTextBlack())
                 {
-                    setStyle("-fx-text-fill: black;");
+                    getStyleClass().add(PENDING_ROW_TEXT_DARK_CLASS);
                 }
-                else
-                {
-                    setStyle("");
-                }
-            }
-            else
-            {
-                setStyle("");
             }
         }
 
