@@ -451,10 +451,11 @@ public class JournalEntryWorkspaceFX extends BorderPane
 		
 		this.statusBadge.getStyleClass().add("status-badge");
 		this.statusBadge.setPadding(new Insets(4, 12, 4, 12));
-		this.statusBadge.getStyleClass().add("status-badge-neutral");
+		this.statusBadge.getStyleClass().add("state-neutral");
 		
 		this.validationMessage.setWrapText(true);
-		this.validationMessage.getStyleClass().add("validation-message-error");
+		this.validationMessage.getStyleClass().addAll("state-inline",
+			"state-warning");
 		
 		Region spacer = new Region();
 		HBox.setHgrow(spacer, Priority.ALWAYS);
@@ -1438,7 +1439,8 @@ public class JournalEntryWorkspaceFX extends BorderPane
 		this.validationMessage
 			.setText("Press Save to validate the entry totals.");
 		this.saveButton.setTooltip(null);
-		setStatusBadgeState("Pending check", "status-badge-neutral");
+		setStatusBadgeState("Pending check", "state-neutral");
+		setValidationStateClass("state-warning");
 		
 	}
 	
@@ -1453,7 +1455,8 @@ public class JournalEntryWorkspaceFX extends BorderPane
 		this.validationMessage.setText(message);
 		this.saveErrorTooltip.setText(message);
 		this.saveButton.setTooltip(this.saveErrorTooltip);
-		setStatusBadgeState("Needs attention", "status-badge-error");
+		setStatusBadgeState("Needs attention", "state-error");
+		setValidationStateClass("state-error");
 		
 	}
 	
@@ -1465,7 +1468,8 @@ public class JournalEntryWorkspaceFX extends BorderPane
 		this.saveButton.setDisable(false);
 		this.validationMessage.setText("");
 		this.saveButton.setTooltip(null);
-		setStatusBadgeState("Balanced", "status-badge-valid");
+		setStatusBadgeState("Balanced", "state-valid");
+		setValidationStateClass("state-valid");
 		
 	}
 
@@ -1479,8 +1483,20 @@ public class JournalEntryWorkspaceFX extends BorderPane
 	{
 		this.statusBadge.setText(text);
 		this.statusBadge.getStyleClass().removeAll(
-			"status-badge-neutral", "status-badge-error", "status-badge-valid");
+			"state-neutral", "state-error", "state-valid", "state-warning");
 		this.statusBadge.getStyleClass().add(stateClass);
+	}
+
+	/**
+	 * Applies shared inline state classes to the validation message.
+	 *
+	 * @param stateClass semantic state class
+	 */
+	private void setValidationStateClass(String stateClass)
+	{
+		this.validationMessage.getStyleClass().removeAll("state-neutral",
+			"state-error", "state-valid", "state-warning");
+		this.validationMessage.getStyleClass().add(stateClass);
 	}
 	
 	/**
