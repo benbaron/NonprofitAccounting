@@ -30,7 +30,9 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
 
 import java.time.MonthDay;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Represents the main application view, structured as a {@link BorderPane}.
@@ -117,6 +119,8 @@ public class MainApplicationView extends BorderPane
 	private Label reportingGroupLabel;
 	/** Explicit shell group mapping to avoid style-class inference drift. */
 	private final Map<Tab, ShellGroup> tabGroups;
+	/** Tracks which tabs have already emitted unmapped-group warnings. */
+	private final Set<Tab> warnedUnmappedTabs;
 	/** Embedded Chart of Accounts editor panel. */
 	private CoaEditorPanelFX coaEditorPanel;
 	/** Embedded Chart of Accounts tabular panel shown with the editor. */
@@ -147,6 +151,7 @@ public class MainApplicationView extends BorderPane
 		this.workspaceShell.getStyleClass().add("workspace-shell");
 		this.companySelectionPanel = new CompanySelectionPanelFX();
 		this.tabGroups = new HashMap<>();
+		this.warnedUnmappedTabs = new HashSet<>();
 		
 		// Create Tab instances
 		this.dashboardTab = new Tab("Dashboard", new SkeletonDashboardPanel());
@@ -179,26 +184,26 @@ public class MainApplicationView extends BorderPane
 		this.assetsTab = new Tab("Assets", new AssetsPanel());
 		this.bankReconciliationTab = new Tab("Bank Reconciliation", new BankReconciliationPanelFX());
 
-		applyTabSemantics(this.dashboardTab, "tab-review", "tab-readonly");
-		this.tabGroups.put(this.dashboardTab, ShellGroup.REVIEW);
-		applyTabSemantics(this.journalTab, "tab-operational", "tab-workspace");
-		this.tabGroups.put(this.journalTab, ShellGroup.WORKFLOW);
-		applyTabSemantics(this.coaTab, "tab-operational", "tab-workspace");
-		this.tabGroups.put(this.coaTab, ShellGroup.WORKFLOW);
-		applyTabSemantics(this.budgetTab, "tab-operational", "tab-workspace");
-		this.tabGroups.put(this.budgetTab, ShellGroup.WORKFLOW);
-		applyTabSemantics(this.ledgerTab, "tab-operational", "tab-workspace");
-		this.tabGroups.put(this.ledgerTab, ShellGroup.WORKFLOW);
-		applyTabSemantics(this.assetsTab, "tab-operational", "tab-workspace");
-		this.tabGroups.put(this.assetsTab, ShellGroup.WORKFLOW);
-		applyTabSemantics(this.bankReconciliationTab, "tab-operational", "tab-workspace");
-		this.tabGroups.put(this.bankReconciliationTab, ShellGroup.WORKFLOW);
-		applyTabSemantics(this.reportsTab, "tab-reporting", "tab-readonly");
-		this.tabGroups.put(this.reportsTab, ShellGroup.REPORTING);
-		applyTabSemantics(this.incomeStatementTab, "tab-reporting", "tab-readonly");
-		this.tabGroups.put(this.incomeStatementTab, ShellGroup.REPORTING);
-		applyTabSemantics(this.balanceSheetTab, "tab-reporting", "tab-readonly");
-		this.tabGroups.put(this.balanceSheetTab, ShellGroup.REPORTING);
+		registerShellTab(this.dashboardTab, ShellGroup.REVIEW, "tab-review",
+			"tab-readonly");
+		registerShellTab(this.journalTab, ShellGroup.WORKFLOW,
+			"tab-operational", "tab-workspace");
+		registerShellTab(this.coaTab, ShellGroup.WORKFLOW, "tab-operational",
+			"tab-workspace");
+		registerShellTab(this.budgetTab, ShellGroup.WORKFLOW,
+			"tab-operational", "tab-workspace");
+		registerShellTab(this.ledgerTab, ShellGroup.WORKFLOW,
+			"tab-operational", "tab-workspace");
+		registerShellTab(this.assetsTab, ShellGroup.WORKFLOW,
+			"tab-operational", "tab-workspace");
+		registerShellTab(this.bankReconciliationTab, ShellGroup.WORKFLOW,
+			"tab-operational", "tab-workspace");
+		registerShellTab(this.reportsTab, ShellGroup.REPORTING, "tab-reporting",
+			"tab-readonly");
+		registerShellTab(this.incomeStatementTab, ShellGroup.REPORTING,
+			"tab-reporting", "tab-readonly");
+		registerShellTab(this.balanceSheetTab, ShellGroup.REPORTING,
+			"tab-reporting", "tab-readonly");
 
 		// Set tabs to be non-closable
 		this.dashboardTab.setClosable(false);
@@ -217,8 +222,8 @@ public class MainApplicationView extends BorderPane
 		this.accountDetailsTab =
 			new Tab("Account Details", this.accountDetailsPanel);
 		this.accountDetailsTab.setClosable(false);
-		applyTabSemantics(this.accountDetailsTab, "tab-review", "tab-readonly");
-		this.tabGroups.put(this.accountDetailsTab, ShellGroup.REVIEW);
+		registerShellTab(this.accountDetailsTab, ShellGroup.REVIEW, "tab-review",
+			"tab-readonly");
 		this.journalTab.getStyleClass().add("tab-operational-start");
 		this.reportsTab.getStyleClass().add("tab-reporting-start");
 		
@@ -271,6 +276,21 @@ public class MainApplicationView extends BorderPane
 	}
 
 	/**
+	 * Applies style semantics and explicit group mapping for one shell tab.
+	 *
+	 * @param tab shell tab
+	 * @param group explicit semantic group
+	 * @param tabClass tab style class
+	 * @param surfaceClass content-surface class
+	 */
+	private void registerShellTab(Tab tab, ShellGroup group, String tabClass,
+		String surfaceClass)
+	{
+		applyTabSemantics(tab, tabClass, surfaceClass);
+		this.tabGroups.put(tab, group);
+	}
+
+	/**
 	 * Highlights the active shell legend group based on the selected top-level tab.
 	 *
 	 * @param selectedTab currently selected tab
@@ -284,8 +304,16 @@ public class MainApplicationView extends BorderPane
 		{
 			return;
 		}
-		ShellGroup group =
-			this.tabGroups.getOrDefault(selectedTab, ShellGroup.WORKFLOW);
+		ShellGroup group = this.tabGroups.get(selectedTab);
+		if (group == null)
+		{
+			group = ShellGroup.WORKFLOW;
+			if (this.warnedUnmappedTabs.add(selectedTab))
+			{
+				System.err.println("MainApplicationView: unmapped shell tab '"
+					+ selectedTab.getText() + "', defaulting group to WORKFLOW.");
+			}
+		}
 		switch (group)
 		{
 			case REVIEW:
