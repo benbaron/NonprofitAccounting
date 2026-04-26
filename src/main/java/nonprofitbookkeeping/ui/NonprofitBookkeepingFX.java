@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -394,6 +395,13 @@ public class NonprofitBookkeepingFX extends Application
 		this.miClose = add(fileMenu, "Close Company", e -> doCloseCompany());
 		this.miClose.setAccelerator(
 			new KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN));
+		add(fileMenu, "Exit", e -> {
+			doCloseCompany();
+			if (!CurrentCompany.isOpen())
+			{
+				Platform.exit();
+			}
+		});
 		this.miSave = add(fileMenu, "Save Company", e -> doSaveCompany());
 		this.miSave.setAccelerator(
 			new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
@@ -422,6 +430,13 @@ public class NonprofitBookkeepingFX extends Application
 			"Import SCA Ledger...",
 			e -> new ImportSCALedgerActionFX(this.primaryStage)
 				.handle(e));
+		add(fileMenu, "Import Legacy .npbk Archive...",
+			e -> handleImportLegacyArchive());
+		add(fileMenu, "Import H2 script into DB...",
+			e -> handleImportScriptIntoDatabase());
+		add(fileMenu, "Export DB to H2 script...", e -> handleExportScriptFromDatabase());
+		add(fileMenu, "Migrate H2 DB to current level...",
+			e -> handleMigrateDatabaseSchema());
 		
 		fileMenu.getItems().add(new SeparatorMenuItem());
 		
@@ -677,13 +692,6 @@ public class NonprofitBookkeepingFX extends Application
 	{
 		Menu db = new Menu("Database");
 		add(db, "Open/Create H2 DB...", e -> handleOpenOrCreateDatabase());
-		add(db, "Import Legacy .npbk Archive...",
-			e -> handleImportLegacyArchive());
-		add(db, "Import H2 script into DB...",
-			e -> handleImportScriptIntoDatabase());
-		add(db, "Export DB to H2 script...", e -> handleExportScriptFromDatabase());
-		add(db, "Migrate H2 DB to current level...",
-			e -> handleMigrateDatabaseSchema());
 		add(db, "Run SQL Query...", e -> showPanel(new SqlQueryPanelFX(),
 			"SQL Query"));
 		return db;

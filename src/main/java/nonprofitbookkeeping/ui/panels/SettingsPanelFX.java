@@ -162,8 +162,8 @@ public class SettingsPanelFX extends BorderPane
 		setPadding(new Insets(10));
 		TabPane tabs = new TabPane();
 		
-		tabs.getTabs().addAll(companyInfoTab(), accountingTab(),
-			applicationTab(), backupTab(),
+		tabs.getTabs().addAll(companyInfoTab(),
+			applicationTab(),
 			uiPrefsTab());
 		
 		setCenter(tabs);
