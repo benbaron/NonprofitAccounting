@@ -9,7 +9,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
@@ -27,6 +26,7 @@ import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Ledger;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
+import nonprofitbookkeeping.ui.UiSpacing;
 import nonprofitbookkeeping.ui.helpers.TableExportUtils;
 import nonprofitbookkeeping.util.FormatUtils;
 
@@ -63,7 +63,7 @@ public class BalanceSheetPanelFX extends BorderPane
 	/** Constructs the panel and loads the current company data. */
 	public BalanceSheetPanelFX()
 	{
-		setPadding(new Insets(10));
+		setPadding(UiSpacing.pageInsets());
 
 		this.table.setItems(this.rows);
 		this.table
@@ -73,9 +73,9 @@ public class BalanceSheetPanelFX extends BorderPane
 		setupColumns();
 		setCenter(this.table);
 
-		HBox actions = new HBox(10, this.refreshButton, this.printButton,
+		HBox actions = new HBox(UiSpacing.SECTION_SPACING, this.refreshButton, this.printButton,
 			this.exportMenu);
-		actions.setPadding(new Insets(0, 0, 10, 0));
+		actions.setPadding(UiSpacing.actionBarTopMargin());
 		setTop(actions);
 
 		this.refreshButton.setOnAction(e -> refresh());
