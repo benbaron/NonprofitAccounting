@@ -184,6 +184,11 @@
 }
 
 .shell-group-review {
+    -fx-opacity: 1.0;
+}
+
+.shell-nav-group-label.shell-group-active {
+    -fx-text-fill: -fx-accent;
     -fx-underline: true;
 }
 

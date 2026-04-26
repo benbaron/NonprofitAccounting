@@ -100,6 +100,12 @@ public class MainApplicationView extends BorderPane
 	private Tab assetsTab;
 	/** Tab for bank reconciliation. */
 	private Tab bankReconciliationTab;
+	/** Shell legend label for review surfaces. */
+	private Label reviewGroupLabel;
+	/** Shell legend label for operational workflow surfaces. */
+	private Label workflowGroupLabel;
+	/** Shell legend label for reporting surfaces. */
+	private Label reportingGroupLabel;
 	/** Embedded Chart of Accounts editor panel. */
 	private CoaEditorPanelFX coaEditorPanel;
 	/** Embedded Chart of Accounts tabular panel shown with the editor. */
@@ -207,13 +213,20 @@ public class MainApplicationView extends BorderPane
 				this.incomeStatementTab,
 				this.balanceSheetTab
 			);
-		HBox shellGroups = new HBox(12,
-			createShellGroupLabel("Review", "shell-group-review"),
-			createShellGroupLabel("Workflows", "shell-group-operational"),
-			createShellGroupLabel("Reporting", "shell-group-reporting"));
+		this.reviewGroupLabel =
+			createShellGroupLabel("Review", "shell-group-review");
+		this.workflowGroupLabel =
+			createShellGroupLabel("Workflows", "shell-group-operational");
+		this.reportingGroupLabel =
+			createShellGroupLabel("Reporting", "shell-group-reporting");
+		HBox shellGroups = new HBox(12, this.reviewGroupLabel,
+			this.workflowGroupLabel, this.reportingGroupLabel);
 		shellGroups.getStyleClass().add("shell-nav-groups");
 		VBox.setVgrow(this.tabPane, Priority.ALWAYS);
 		this.workspaceShell.getChildren().setAll(shellGroups, this.tabPane);
+		this.tabPane.getSelectionModel().selectedItemProperty()
+			.addListener((obs, oldTab, newTab) -> updateShellGroupHighlight(newTab));
+		updateShellGroupHighlight(this.tabPane.getSelectionModel().getSelectedItem());
 		
 		// Default to the company selection view until a company is opened.
 		setCenter(this.companySelectionPanel);
@@ -232,6 +245,33 @@ public class MainApplicationView extends BorderPane
 		Label label = new Label(title);
 		label.getStyleClass().addAll("shell-nav-group-label", styleClass);
 		return label;
+	}
+
+	/**
+	 * Highlights the active shell legend group based on the selected top-level tab.
+	 *
+	 * @param selectedTab currently selected tab
+	 */
+	private void updateShellGroupHighlight(Tab selectedTab)
+	{
+		this.reviewGroupLabel.getStyleClass().remove("shell-group-active");
+		this.workflowGroupLabel.getStyleClass().remove("shell-group-active");
+		this.reportingGroupLabel.getStyleClass().remove("shell-group-active");
+		if (selectedTab == null)
+		{
+			return;
+		}
+		if (selectedTab.getStyleClass().contains("tab-review"))
+		{
+			this.reviewGroupLabel.getStyleClass().add("shell-group-active");
+			return;
+		}
+		if (selectedTab.getStyleClass().contains("tab-reporting"))
+		{
+			this.reportingGroupLabel.getStyleClass().add("shell-group-active");
+			return;
+		}
+		this.workflowGroupLabel.getStyleClass().add("shell-group-active");
 	}
 
 	/**
