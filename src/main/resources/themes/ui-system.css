@@ -167,22 +167,24 @@
 }
 
 
-.main-shell-tabs .tab.tab-group-label {
-    -fx-opacity: 1.0;
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-    -fx-padding: 0 6 0 6;
+.workspace-shell {
+    -fx-background-color: -npbk-surface-default;
 }
 
-.main-shell-tabs .tab.tab-group-label .tab-label {
+.shell-nav-groups {
+    -fx-padding: 6 12 2 12;
+    -fx-background-color: -npbk-surface-muted;
+    -fx-border-color: transparent transparent -npbk-border-default transparent;
+}
+
+.shell-nav-group-label {
     -fx-font-size: 10px;
     -fx-font-weight: bold;
     -fx-text-fill: -npbk-text-muted;
-    -fx-opacity: 1.0;
 }
 
-.main-shell-tabs .tab.tab-group-label:selected {
-    -fx-border-color: transparent;
+.shell-group-review {
+    -fx-underline: true;
 }
 
 .main-shell-tabs .tab:selected {

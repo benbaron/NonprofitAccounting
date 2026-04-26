@@ -2,10 +2,14 @@
 package nonprofitbookkeeping.ui;
 
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.geometry.Orientation;
 
 import nonprofitbookkeeping.ui.panels.BalanceSheetPanelFX;
@@ -69,6 +73,8 @@ public class MainApplicationView extends BorderPane
 	
 	/** The TabPane used to display different application sections. */
 	private TabPane tabPane;
+	/** Shell container that hosts hierarchy legend and top-level tabs. */
+	private VBox workspaceShell;
 	/** The main MenuBar for the application, set externally. */
 	private MenuBar menuBar;
 	
@@ -120,6 +126,8 @@ public class MainApplicationView extends BorderPane
 		
 		this.tabPane = new TabPane();
 		this.tabPane.getStyleClass().add("main-shell-tabs");
+		this.workspaceShell = new VBox();
+		this.workspaceShell.getStyleClass().add("workspace-shell");
 		this.companySelectionPanel = new CompanySelectionPanelFX();
 		
 		// Create Tab instances
@@ -186,25 +194,26 @@ public class MainApplicationView extends BorderPane
 		this.reportsTab.getStyleClass().add("tab-reporting-start");
 		
 		// Add tabs to the tabPane
-		Tab reviewGroup = createGroupLabelTab("Review");
-		Tab workflowGroup = createGroupLabelTab("Workflows");
-		Tab reportingGroup = createGroupLabelTab("Reporting");
 		this.tabPane.getTabs()
-			.addAll(reviewGroup,
-				this.dashboardTab,
+			.addAll(this.dashboardTab,
 				this.accountDetailsTab,
-				workflowGroup,
 				this.journalTab,
 				this.coaTab,
 				this.budgetTab,
 				this.ledgerTab,
 				this.assetsTab,
 				this.bankReconciliationTab,
-				reportingGroup,
 				this.reportsTab,
 				this.incomeStatementTab,
 				this.balanceSheetTab
 			);
+		HBox shellGroups = new HBox(12,
+			createShellGroupLabel("Review", "shell-group-review"),
+			createShellGroupLabel("Workflows", "shell-group-operational"),
+			createShellGroupLabel("Reporting", "shell-group-reporting"));
+		shellGroups.getStyleClass().add("shell-nav-groups");
+		VBox.setVgrow(this.tabPane, Priority.ALWAYS);
+		this.workspaceShell.getChildren().setAll(shellGroups, this.tabPane);
 		
 		// Default to the company selection view until a company is opened.
 		setCenter(this.companySelectionPanel);
@@ -212,18 +221,17 @@ public class MainApplicationView extends BorderPane
 	}
 
 	/**
-	 * Creates a non-interactive shell tab used as a group label.
+	 * Creates a shell-level hierarchy legend label.
 	 *
-	 * @param title group title
-	 * @return disabled label tab
+	 * @param title legend text
+	 * @param styleClass semantic style class for legend color/weight
+	 * @return configured legend label
 	 */
-	private Tab createGroupLabelTab(String title)
+	private Label createShellGroupLabel(String title, String styleClass)
 	{
-		Tab tab = new Tab(title);
-		tab.setClosable(false);
-		tab.setDisable(true);
-		tab.getStyleClass().add("tab-group-label");
-		return tab;
+		Label label = new Label(title);
+		label.getStyleClass().addAll("shell-nav-group-label", styleClass);
+		return label;
 	}
 
 	/**
@@ -279,7 +287,7 @@ public class MainApplicationView extends BorderPane
 	/** Restores the workspace tab pane to the main content area. */
 	public void showWorkspaceTabs()
 	{
-		setCenter(this.tabPane);
+		setCenter(this.workspaceShell);
 		
 	}
 	
