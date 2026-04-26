@@ -30,13 +30,13 @@ public class AccountScheduleRequirement
     @Column(length = 500)
     private String notes;
 
-    public Long getId() { return id; }
-    public Account getAccount() { return account; }
+    public Long getId() { return this.id; }
+    public Account getAccount() { return this.account; }
     public void setAccount(Account account) { this.account = account; }
-    public ScheduleKind getScheduleKind() { return scheduleKind; }
+    public ScheduleKind getScheduleKind() { return this.scheduleKind; }
     public void setScheduleKind(ScheduleKind scheduleKind) { this.scheduleKind = scheduleKind; }
-    public boolean isRequired() { return required; }
+    public boolean isRequired() { return this.required; }
     public void setRequired(boolean required) { this.required = required; }
-    public String getNotes() { return notes; }
+    public String getNotes() { return this.notes; }
     public void setNotes(String notes) { this.notes = notes; }
 }

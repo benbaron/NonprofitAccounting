@@ -32,13 +32,13 @@ public class AccountAlias
     @Column(name = "is_active", nullable = false)
     private boolean active = true;
 
-    public Long getId() { return id; }
-    public Account getAccount() { return account; }
+    public Long getId() { return this.id; }
+    public Account getAccount() { return this.account; }
     public void setAccount(Account account) { this.account = account; }
-    public String getAliasText() { return aliasText; }
+    public String getAliasText() { return this.aliasText; }
     public void setAliasText(String aliasText) { this.aliasText = aliasText; }
-    public String getSource() { return source; }
+    public String getSource() { return this.source; }
     public void setSource(String source) { this.source = source; }
-    public boolean isActive() { return active; }
+    public boolean isActive() { return this.active; }
     public void setActive(boolean active) { this.active = active; }
 }

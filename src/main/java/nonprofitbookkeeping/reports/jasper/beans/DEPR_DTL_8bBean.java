@@ -416,7 +416,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getDepr_dtl_8b_r2c4()
     {
-        return depr_dtl_8b_r2c4;
+        return this.depr_dtl_8b_r2c4;
     }
 
     public void setDepr_dtl_8b_r2c4(java.lang.Double v)
@@ -426,7 +426,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getContents_b59()
     {
-        return contents_b59;
+        return this.contents_b59;
     }
 
     public void setContents_b59(java.lang.Double v)
@@ -436,7 +436,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getContents_e_3()
     {
-        return contents_e_3;
+        return this.contents_e_3;
     }
 
     public void setContents_e_3(java.lang.Double v)
@@ -446,7 +446,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getContents_e_4()
     {
-        return contents_e_4;
+        return this.contents_e_4;
     }
 
     public void setContents_e_4(java.lang.Double v)
@@ -456,7 +456,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr()
     {
-        return oa_ar_or_fr;
+        return this.oa_ar_or_fr;
     }
 
     public void setOa_ar_or_fr(java.lang.String v)
@@ -466,7 +466,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description()
     {
-        return equipment_purchases_or_value_2000_each_item_description;
+        return this.equipment_purchases_or_value_2000_each_item_description;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description(java.lang.String v)
@@ -476,7 +476,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty()
     {
-        return qty;
+        return this.qty;
     }
 
     public void setQty(java.lang.String v)
@@ -486,7 +486,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year()
     {
-        return purchase_year;
+        return this.purchase_year;
     }
 
     public void setPurchase_year(java.lang.String v)
@@ -496,7 +496,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getA_this_year_from_grid_below()
     {
-        return a_this_year_from_grid_below;
+        return this.a_this_year_from_grid_below;
     }
 
     public void setA_this_year_from_grid_below(java.lang.Double v)
@@ -506,7 +506,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getPrior_cost_or_value_if_g14_0_if_and_contents_c_11_0_contents_c_11_g14_6_contents_c_11_g14_0_offset_contents_b_75_0_contents_c_11_g14_0()
     {
-        return prior_cost_or_value_if_g14_0_if_and_contents_c_11_0_contents_c_11_g14_6_contents_c_11_g14_0_offset_contents_b_75_0_contents_c_11_g14_0;
+        return this.prior_cost_or_value_if_g14_0_if_and_contents_c_11_0_contents_c_11_g14_6_contents_c_11_g14_0_offset_contents_b_75_0_contents_c_11_g14_0;
     }
 
     public void setPrior_cost_or_value_if_g14_0_if_and_contents_c_11_0_contents_c_11_g14_6_contents_c_11_g14_0_offset_contents_b_75_0_contents_c_11_g14_0(java.lang.Double v)
@@ -516,7 +516,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g14_0_g14_contents_c_11_contents_c_12_1_contents_c_12_a14_j14_if_and_g14_0_g14_contents_c_11_j14_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g14_0_g14_contents_c_11_contents_c_12_1_contents_c_12_a14_j14_if_and_g14_0_g14_contents_c_11_j14_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g14_0_g14_contents_c_11_contents_c_12_1_contents_c_12_a14_j14_if_and_g14_0_g14_contents_c_11_j14_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g14_0_g14_contents_c_11_contents_c_12_1_contents_c_12_a14_j14_if_and_g14_0_g14_contents_c_11_j14_0(java.lang.String v)
@@ -526,7 +526,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getC_start_accum_deprec_if_and_contents_c_13_sequential_g14_0_g14_contents_c_11_contents_c_12_1_contents_c_12_a14_j14_if_and_g14_0_g14_contents_c_11_j14_0()
     {
-        return c_start_accum_deprec_if_and_contents_c_13_sequential_g14_0_g14_contents_c_11_contents_c_12_1_contents_c_12_a14_j14_if_and_g14_0_g14_contents_c_11_j14_0;
+        return this.c_start_accum_deprec_if_and_contents_c_13_sequential_g14_0_g14_contents_c_11_contents_c_12_1_contents_c_12_a14_j14_if_and_g14_0_g14_contents_c_11_j14_0;
     }
 
     public void setC_start_accum_deprec_if_and_contents_c_13_sequential_g14_0_g14_contents_c_11_contents_c_12_1_contents_c_12_a14_j14_if_and_g14_0_g14_contents_c_11_j14_0(java.lang.Double v)
@@ -536,7 +536,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getD_depr_this_year_a_x_b_if_and_contents_c_11_0_contents_c_11_g14_6_contents_c_11_g14_0_round_offset_contents_b_73_0_contents_c_11_g14_1_j14_2_if_and_contents_c_11_0_j14_0_j14_0()
     {
-        return d_depr_this_year_a_x_b_if_and_contents_c_11_0_contents_c_11_g14_6_contents_c_11_g14_0_round_offset_contents_b_73_0_contents_c_11_g14_1_j14_2_if_and_contents_c_11_0_j14_0_j14_0;
+        return this.d_depr_this_year_a_x_b_if_and_contents_c_11_0_contents_c_11_g14_6_contents_c_11_g14_0_round_offset_contents_b_73_0_contents_c_11_g14_1_j14_2_if_and_contents_c_11_0_j14_0_j14_0;
     }
 
     public void setD_depr_this_year_a_x_b_if_and_contents_c_11_0_contents_c_11_g14_6_contents_c_11_g14_0_round_offset_contents_b_73_0_contents_c_11_g14_1_j14_2_if_and_contents_c_11_0_j14_0_j14_0(java.lang.Double v)
@@ -546,7 +546,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getEnd_accum_deprec_c_d_if_h14_0_round_h14_j14_if_contents_c_12_4_1_0_2()
     {
-        return end_accum_deprec_c_d_if_h14_0_round_h14_j14_if_contents_c_12_4_1_0_2;
+        return this.end_accum_deprec_c_d_if_h14_0_round_h14_j14_if_contents_c_12_4_1_0_2;
     }
 
     public void setEnd_accum_deprec_c_d_if_h14_0_round_h14_j14_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -556,7 +556,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_2()
     {
-        return oa_ar_or_fr_2;
+        return this.oa_ar_or_fr_2;
     }
 
     public void setOa_ar_or_fr_2(java.lang.String v)
@@ -566,7 +566,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_2()
     {
-        return equipment_purchases_or_value_2000_each_item_description_2;
+        return this.equipment_purchases_or_value_2000_each_item_description_2;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_2(java.lang.String v)
@@ -576,7 +576,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_2()
     {
-        return qty_2;
+        return this.qty_2;
     }
 
     public void setQty_2(java.lang.String v)
@@ -586,7 +586,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_2()
     {
-        return purchase_year_2;
+        return this.purchase_year_2;
     }
 
     public void setPurchase_year_2(java.lang.String v)
@@ -596,7 +596,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g14_0_if_and_contents_c_11_0_contents_c_11_g14_6_contents_c_11_g14_0_offset_contents_b_75_0_contents_c_11_g14_0()
     {
-        return if_g14_0_if_and_contents_c_11_0_contents_c_11_g14_6_contents_c_11_g14_0_offset_contents_b_75_0_contents_c_11_g14_0;
+        return this.if_g14_0_if_and_contents_c_11_0_contents_c_11_g14_6_contents_c_11_g14_0_offset_contents_b_75_0_contents_c_11_g14_0;
     }
 
     public void setIf_g14_0_if_and_contents_c_11_0_contents_c_11_g14_6_contents_c_11_g14_0_offset_contents_b_75_0_contents_c_11_g14_0(java.lang.Double v)
@@ -606,7 +606,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g14_0_g14_contents_c_11_contents_c_12_1_contents_c_12_a14_j14_if_and_g14_0_g14_contents_c_11_j14_0_if_g15_0_if_and_contents_c_11_0_contents_c_11_g15_6_contents_c_11_g15_0_offset_contents_b_75_0_contents_c_11_g15_0()
     {
-        return if_and_contents_c_13_sequential_g14_0_g14_contents_c_11_contents_c_12_1_contents_c_12_a14_j14_if_and_g14_0_g14_contents_c_11_j14_0_if_g15_0_if_and_contents_c_11_0_contents_c_11_g15_6_contents_c_11_g15_0_offset_contents_b_75_0_contents_c_11_g15_0;
+        return this.if_and_contents_c_13_sequential_g14_0_g14_contents_c_11_contents_c_12_1_contents_c_12_a14_j14_if_and_g14_0_g14_contents_c_11_j14_0_if_g15_0_if_and_contents_c_11_0_contents_c_11_g15_6_contents_c_11_g15_0_offset_contents_b_75_0_contents_c_11_g15_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g14_0_g14_contents_c_11_contents_c_12_1_contents_c_12_a14_j14_if_and_g14_0_g14_contents_c_11_j14_0_if_g15_0_if_and_contents_c_11_0_contents_c_11_g15_6_contents_c_11_g15_0_offset_contents_b_75_0_contents_c_11_g15_0(java.lang.Double v)
@@ -616,7 +616,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g15_0_g15_contents_c_11_contents_c_12_1_contents_c_12_a15_j15_if_and_g15_0_g15_contents_c_11_j15_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g15_0_g15_contents_c_11_contents_c_12_1_contents_c_12_a15_j15_if_and_g15_0_g15_contents_c_11_j15_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g15_0_g15_contents_c_11_contents_c_12_1_contents_c_12_a15_j15_if_and_g15_0_g15_contents_c_11_j15_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g15_0_g15_contents_c_11_contents_c_12_1_contents_c_12_a15_j15_if_and_g15_0_g15_contents_c_11_j15_0(java.lang.String v)
@@ -626,7 +626,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g14_6_contents_c_11_g14_0_round_offset_contents_b_73_0_contents_c_11_g14_1_j14_2_if_and_contents_c_11_0_j14_0_j14_0_if_and_contents_c_13_sequential_g15_0_g15_contents_c_11_contents_c_12_1_contents_c_12_a15_j15_if_and_g15_0_g15_contents_c_11_j15_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g14_6_contents_c_11_g14_0_round_offset_contents_b_73_0_contents_c_11_g14_1_j14_2_if_and_contents_c_11_0_j14_0_j14_0_if_and_contents_c_13_sequential_g15_0_g15_contents_c_11_contents_c_12_1_contents_c_12_a15_j15_if_and_g15_0_g15_contents_c_11_j15_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g14_6_contents_c_11_g14_0_round_offset_contents_b_73_0_contents_c_11_g14_1_j14_2_if_and_contents_c_11_0_j14_0_j14_0_if_and_contents_c_13_sequential_g15_0_g15_contents_c_11_contents_c_12_1_contents_c_12_a15_j15_if_and_g15_0_g15_contents_c_11_j15_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g14_6_contents_c_11_g14_0_round_offset_contents_b_73_0_contents_c_11_g14_1_j14_2_if_and_contents_c_11_0_j14_0_j14_0_if_and_contents_c_13_sequential_g15_0_g15_contents_c_11_contents_c_12_1_contents_c_12_a15_j15_if_and_g15_0_g15_contents_c_11_j15_0(java.lang.Double v)
@@ -636,7 +636,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h14_0_round_h14_j14_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g15_6_contents_c_11_g15_0_round_offset_contents_b_73_0_contents_c_11_g15_1_j15_2_if_and_contents_c_11_0_j15_0_j15_0()
     {
-        return if_h14_0_round_h14_j14_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g15_6_contents_c_11_g15_0_round_offset_contents_b_73_0_contents_c_11_g15_1_j15_2_if_and_contents_c_11_0_j15_0_j15_0;
+        return this.if_h14_0_round_h14_j14_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g15_6_contents_c_11_g15_0_round_offset_contents_b_73_0_contents_c_11_g15_1_j15_2_if_and_contents_c_11_0_j15_0_j15_0;
     }
 
     public void setIf_h14_0_round_h14_j14_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g15_6_contents_c_11_g15_0_round_offset_contents_b_73_0_contents_c_11_g15_1_j15_2_if_and_contents_c_11_0_j15_0_j15_0(java.lang.Double v)
@@ -646,7 +646,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h14_0_k14_l14_if_h15_0_round_h15_j15_if_contents_c_12_4_1_0_2()
     {
-        return if_h14_0_k14_l14_if_h15_0_round_h15_j15_if_contents_c_12_4_1_0_2;
+        return this.if_h14_0_k14_l14_if_h15_0_round_h15_j15_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h14_0_k14_l14_if_h15_0_round_h15_j15_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -656,7 +656,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_3()
     {
-        return oa_ar_or_fr_3;
+        return this.oa_ar_or_fr_3;
     }
 
     public void setOa_ar_or_fr_3(java.lang.String v)
@@ -666,7 +666,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_3()
     {
-        return equipment_purchases_or_value_2000_each_item_description_3;
+        return this.equipment_purchases_or_value_2000_each_item_description_3;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_3(java.lang.String v)
@@ -676,7 +676,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_3()
     {
-        return qty_3;
+        return this.qty_3;
     }
 
     public void setQty_3(java.lang.String v)
@@ -686,7 +686,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_3()
     {
-        return purchase_year_3;
+        return this.purchase_year_3;
     }
 
     public void setPurchase_year_3(java.lang.String v)
@@ -696,7 +696,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g15_0_if_and_contents_c_11_0_contents_c_11_g15_6_contents_c_11_g15_0_offset_contents_b_75_0_contents_c_11_g15_0()
     {
-        return if_g15_0_if_and_contents_c_11_0_contents_c_11_g15_6_contents_c_11_g15_0_offset_contents_b_75_0_contents_c_11_g15_0;
+        return this.if_g15_0_if_and_contents_c_11_0_contents_c_11_g15_6_contents_c_11_g15_0_offset_contents_b_75_0_contents_c_11_g15_0;
     }
 
     public void setIf_g15_0_if_and_contents_c_11_0_contents_c_11_g15_6_contents_c_11_g15_0_offset_contents_b_75_0_contents_c_11_g15_0(java.lang.Double v)
@@ -706,7 +706,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g15_0_g15_contents_c_11_contents_c_12_1_contents_c_12_a15_j15_if_and_g15_0_g15_contents_c_11_j15_0_if_g16_0_if_and_contents_c_11_0_contents_c_11_g16_6_contents_c_11_g16_0_offset_contents_b_75_0_contents_c_11_g16_0()
     {
-        return if_and_contents_c_13_sequential_g15_0_g15_contents_c_11_contents_c_12_1_contents_c_12_a15_j15_if_and_g15_0_g15_contents_c_11_j15_0_if_g16_0_if_and_contents_c_11_0_contents_c_11_g16_6_contents_c_11_g16_0_offset_contents_b_75_0_contents_c_11_g16_0;
+        return this.if_and_contents_c_13_sequential_g15_0_g15_contents_c_11_contents_c_12_1_contents_c_12_a15_j15_if_and_g15_0_g15_contents_c_11_j15_0_if_g16_0_if_and_contents_c_11_0_contents_c_11_g16_6_contents_c_11_g16_0_offset_contents_b_75_0_contents_c_11_g16_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g15_0_g15_contents_c_11_contents_c_12_1_contents_c_12_a15_j15_if_and_g15_0_g15_contents_c_11_j15_0_if_g16_0_if_and_contents_c_11_0_contents_c_11_g16_6_contents_c_11_g16_0_offset_contents_b_75_0_contents_c_11_g16_0(java.lang.Double v)
@@ -716,7 +716,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g16_0_g16_contents_c_11_contents_c_12_1_contents_c_12_a16_j16_if_and_g16_0_g16_contents_c_11_j16_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g16_0_g16_contents_c_11_contents_c_12_1_contents_c_12_a16_j16_if_and_g16_0_g16_contents_c_11_j16_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g16_0_g16_contents_c_11_contents_c_12_1_contents_c_12_a16_j16_if_and_g16_0_g16_contents_c_11_j16_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g16_0_g16_contents_c_11_contents_c_12_1_contents_c_12_a16_j16_if_and_g16_0_g16_contents_c_11_j16_0(java.lang.String v)
@@ -726,7 +726,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g15_6_contents_c_11_g15_0_round_offset_contents_b_73_0_contents_c_11_g15_1_j15_2_if_and_contents_c_11_0_j15_0_j15_0_if_and_contents_c_13_sequential_g16_0_g16_contents_c_11_contents_c_12_1_contents_c_12_a16_j16_if_and_g16_0_g16_contents_c_11_j16_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g15_6_contents_c_11_g15_0_round_offset_contents_b_73_0_contents_c_11_g15_1_j15_2_if_and_contents_c_11_0_j15_0_j15_0_if_and_contents_c_13_sequential_g16_0_g16_contents_c_11_contents_c_12_1_contents_c_12_a16_j16_if_and_g16_0_g16_contents_c_11_j16_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g15_6_contents_c_11_g15_0_round_offset_contents_b_73_0_contents_c_11_g15_1_j15_2_if_and_contents_c_11_0_j15_0_j15_0_if_and_contents_c_13_sequential_g16_0_g16_contents_c_11_contents_c_12_1_contents_c_12_a16_j16_if_and_g16_0_g16_contents_c_11_j16_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g15_6_contents_c_11_g15_0_round_offset_contents_b_73_0_contents_c_11_g15_1_j15_2_if_and_contents_c_11_0_j15_0_j15_0_if_and_contents_c_13_sequential_g16_0_g16_contents_c_11_contents_c_12_1_contents_c_12_a16_j16_if_and_g16_0_g16_contents_c_11_j16_0(java.lang.Double v)
@@ -736,7 +736,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h15_0_round_h15_j15_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g16_6_contents_c_11_g16_0_round_offset_contents_b_73_0_contents_c_11_g16_1_j16_2_if_and_contents_c_11_0_j16_0_j16_0()
     {
-        return if_h15_0_round_h15_j15_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g16_6_contents_c_11_g16_0_round_offset_contents_b_73_0_contents_c_11_g16_1_j16_2_if_and_contents_c_11_0_j16_0_j16_0;
+        return this.if_h15_0_round_h15_j15_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g16_6_contents_c_11_g16_0_round_offset_contents_b_73_0_contents_c_11_g16_1_j16_2_if_and_contents_c_11_0_j16_0_j16_0;
     }
 
     public void setIf_h15_0_round_h15_j15_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g16_6_contents_c_11_g16_0_round_offset_contents_b_73_0_contents_c_11_g16_1_j16_2_if_and_contents_c_11_0_j16_0_j16_0(java.lang.Double v)
@@ -746,7 +746,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h15_0_k15_l15_if_h16_0_round_h16_j16_if_contents_c_12_4_1_0_2()
     {
-        return if_h15_0_k15_l15_if_h16_0_round_h16_j16_if_contents_c_12_4_1_0_2;
+        return this.if_h15_0_k15_l15_if_h16_0_round_h16_j16_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h15_0_k15_l15_if_h16_0_round_h16_j16_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -756,7 +756,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_4()
     {
-        return oa_ar_or_fr_4;
+        return this.oa_ar_or_fr_4;
     }
 
     public void setOa_ar_or_fr_4(java.lang.String v)
@@ -766,7 +766,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_4()
     {
-        return equipment_purchases_or_value_2000_each_item_description_4;
+        return this.equipment_purchases_or_value_2000_each_item_description_4;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_4(java.lang.String v)
@@ -776,7 +776,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_4()
     {
-        return qty_4;
+        return this.qty_4;
     }
 
     public void setQty_4(java.lang.String v)
@@ -786,7 +786,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_4()
     {
-        return purchase_year_4;
+        return this.purchase_year_4;
     }
 
     public void setPurchase_year_4(java.lang.String v)
@@ -796,7 +796,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g16_0_if_and_contents_c_11_0_contents_c_11_g16_6_contents_c_11_g16_0_offset_contents_b_75_0_contents_c_11_g16_0()
     {
-        return if_g16_0_if_and_contents_c_11_0_contents_c_11_g16_6_contents_c_11_g16_0_offset_contents_b_75_0_contents_c_11_g16_0;
+        return this.if_g16_0_if_and_contents_c_11_0_contents_c_11_g16_6_contents_c_11_g16_0_offset_contents_b_75_0_contents_c_11_g16_0;
     }
 
     public void setIf_g16_0_if_and_contents_c_11_0_contents_c_11_g16_6_contents_c_11_g16_0_offset_contents_b_75_0_contents_c_11_g16_0(java.lang.Double v)
@@ -806,7 +806,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g16_0_g16_contents_c_11_contents_c_12_1_contents_c_12_a16_j16_if_and_g16_0_g16_contents_c_11_j16_0_if_g17_0_if_and_contents_c_11_0_contents_c_11_g17_6_contents_c_11_g17_0_offset_contents_b_75_0_contents_c_11_g17_0()
     {
-        return if_and_contents_c_13_sequential_g16_0_g16_contents_c_11_contents_c_12_1_contents_c_12_a16_j16_if_and_g16_0_g16_contents_c_11_j16_0_if_g17_0_if_and_contents_c_11_0_contents_c_11_g17_6_contents_c_11_g17_0_offset_contents_b_75_0_contents_c_11_g17_0;
+        return this.if_and_contents_c_13_sequential_g16_0_g16_contents_c_11_contents_c_12_1_contents_c_12_a16_j16_if_and_g16_0_g16_contents_c_11_j16_0_if_g17_0_if_and_contents_c_11_0_contents_c_11_g17_6_contents_c_11_g17_0_offset_contents_b_75_0_contents_c_11_g17_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g16_0_g16_contents_c_11_contents_c_12_1_contents_c_12_a16_j16_if_and_g16_0_g16_contents_c_11_j16_0_if_g17_0_if_and_contents_c_11_0_contents_c_11_g17_6_contents_c_11_g17_0_offset_contents_b_75_0_contents_c_11_g17_0(java.lang.Double v)
@@ -816,7 +816,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g17_0_g17_contents_c_11_contents_c_12_1_contents_c_12_a17_j17_if_and_g17_0_g17_contents_c_11_j17_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g17_0_g17_contents_c_11_contents_c_12_1_contents_c_12_a17_j17_if_and_g17_0_g17_contents_c_11_j17_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g17_0_g17_contents_c_11_contents_c_12_1_contents_c_12_a17_j17_if_and_g17_0_g17_contents_c_11_j17_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g17_0_g17_contents_c_11_contents_c_12_1_contents_c_12_a17_j17_if_and_g17_0_g17_contents_c_11_j17_0(java.lang.String v)
@@ -826,7 +826,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g16_6_contents_c_11_g16_0_round_offset_contents_b_73_0_contents_c_11_g16_1_j16_2_if_and_contents_c_11_0_j16_0_j16_0_if_and_contents_c_13_sequential_g17_0_g17_contents_c_11_contents_c_12_1_contents_c_12_a17_j17_if_and_g17_0_g17_contents_c_11_j17_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g16_6_contents_c_11_g16_0_round_offset_contents_b_73_0_contents_c_11_g16_1_j16_2_if_and_contents_c_11_0_j16_0_j16_0_if_and_contents_c_13_sequential_g17_0_g17_contents_c_11_contents_c_12_1_contents_c_12_a17_j17_if_and_g17_0_g17_contents_c_11_j17_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g16_6_contents_c_11_g16_0_round_offset_contents_b_73_0_contents_c_11_g16_1_j16_2_if_and_contents_c_11_0_j16_0_j16_0_if_and_contents_c_13_sequential_g17_0_g17_contents_c_11_contents_c_12_1_contents_c_12_a17_j17_if_and_g17_0_g17_contents_c_11_j17_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g16_6_contents_c_11_g16_0_round_offset_contents_b_73_0_contents_c_11_g16_1_j16_2_if_and_contents_c_11_0_j16_0_j16_0_if_and_contents_c_13_sequential_g17_0_g17_contents_c_11_contents_c_12_1_contents_c_12_a17_j17_if_and_g17_0_g17_contents_c_11_j17_0(java.lang.Double v)
@@ -836,7 +836,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h16_0_round_h16_j16_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g17_6_contents_c_11_g17_0_round_offset_contents_b_73_0_contents_c_11_g17_1_j17_2_if_and_contents_c_11_0_j17_0_j17_0()
     {
-        return if_h16_0_round_h16_j16_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g17_6_contents_c_11_g17_0_round_offset_contents_b_73_0_contents_c_11_g17_1_j17_2_if_and_contents_c_11_0_j17_0_j17_0;
+        return this.if_h16_0_round_h16_j16_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g17_6_contents_c_11_g17_0_round_offset_contents_b_73_0_contents_c_11_g17_1_j17_2_if_and_contents_c_11_0_j17_0_j17_0;
     }
 
     public void setIf_h16_0_round_h16_j16_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g17_6_contents_c_11_g17_0_round_offset_contents_b_73_0_contents_c_11_g17_1_j17_2_if_and_contents_c_11_0_j17_0_j17_0(java.lang.Double v)
@@ -846,7 +846,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h16_0_k16_l16_if_h17_0_round_h17_j17_if_contents_c_12_4_1_0_2()
     {
-        return if_h16_0_k16_l16_if_h17_0_round_h17_j17_if_contents_c_12_4_1_0_2;
+        return this.if_h16_0_k16_l16_if_h17_0_round_h17_j17_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h16_0_k16_l16_if_h17_0_round_h17_j17_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -856,7 +856,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_5()
     {
-        return oa_ar_or_fr_5;
+        return this.oa_ar_or_fr_5;
     }
 
     public void setOa_ar_or_fr_5(java.lang.String v)
@@ -866,7 +866,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_5()
     {
-        return equipment_purchases_or_value_2000_each_item_description_5;
+        return this.equipment_purchases_or_value_2000_each_item_description_5;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_5(java.lang.String v)
@@ -876,7 +876,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_5()
     {
-        return qty_5;
+        return this.qty_5;
     }
 
     public void setQty_5(java.lang.String v)
@@ -886,7 +886,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_5()
     {
-        return purchase_year_5;
+        return this.purchase_year_5;
     }
 
     public void setPurchase_year_5(java.lang.String v)
@@ -896,7 +896,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g17_0_if_and_contents_c_11_0_contents_c_11_g17_6_contents_c_11_g17_0_offset_contents_b_75_0_contents_c_11_g17_0()
     {
-        return if_g17_0_if_and_contents_c_11_0_contents_c_11_g17_6_contents_c_11_g17_0_offset_contents_b_75_0_contents_c_11_g17_0;
+        return this.if_g17_0_if_and_contents_c_11_0_contents_c_11_g17_6_contents_c_11_g17_0_offset_contents_b_75_0_contents_c_11_g17_0;
     }
 
     public void setIf_g17_0_if_and_contents_c_11_0_contents_c_11_g17_6_contents_c_11_g17_0_offset_contents_b_75_0_contents_c_11_g17_0(java.lang.Double v)
@@ -906,7 +906,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g17_0_g17_contents_c_11_contents_c_12_1_contents_c_12_a17_j17_if_and_g17_0_g17_contents_c_11_j17_0_if_g18_0_if_and_contents_c_11_0_contents_c_11_g18_6_contents_c_11_g18_0_offset_contents_b_75_0_contents_c_11_g18_0()
     {
-        return if_and_contents_c_13_sequential_g17_0_g17_contents_c_11_contents_c_12_1_contents_c_12_a17_j17_if_and_g17_0_g17_contents_c_11_j17_0_if_g18_0_if_and_contents_c_11_0_contents_c_11_g18_6_contents_c_11_g18_0_offset_contents_b_75_0_contents_c_11_g18_0;
+        return this.if_and_contents_c_13_sequential_g17_0_g17_contents_c_11_contents_c_12_1_contents_c_12_a17_j17_if_and_g17_0_g17_contents_c_11_j17_0_if_g18_0_if_and_contents_c_11_0_contents_c_11_g18_6_contents_c_11_g18_0_offset_contents_b_75_0_contents_c_11_g18_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g17_0_g17_contents_c_11_contents_c_12_1_contents_c_12_a17_j17_if_and_g17_0_g17_contents_c_11_j17_0_if_g18_0_if_and_contents_c_11_0_contents_c_11_g18_6_contents_c_11_g18_0_offset_contents_b_75_0_contents_c_11_g18_0(java.lang.Double v)
@@ -916,7 +916,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g18_0_g18_contents_c_11_contents_c_12_1_contents_c_12_a18_j18_if_and_g18_0_g18_contents_c_11_j18_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g18_0_g18_contents_c_11_contents_c_12_1_contents_c_12_a18_j18_if_and_g18_0_g18_contents_c_11_j18_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g18_0_g18_contents_c_11_contents_c_12_1_contents_c_12_a18_j18_if_and_g18_0_g18_contents_c_11_j18_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g18_0_g18_contents_c_11_contents_c_12_1_contents_c_12_a18_j18_if_and_g18_0_g18_contents_c_11_j18_0(java.lang.String v)
@@ -926,7 +926,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g17_6_contents_c_11_g17_0_round_offset_contents_b_73_0_contents_c_11_g17_1_j17_2_if_and_contents_c_11_0_j17_0_j17_0_if_and_contents_c_13_sequential_g18_0_g18_contents_c_11_contents_c_12_1_contents_c_12_a18_j18_if_and_g18_0_g18_contents_c_11_j18_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g17_6_contents_c_11_g17_0_round_offset_contents_b_73_0_contents_c_11_g17_1_j17_2_if_and_contents_c_11_0_j17_0_j17_0_if_and_contents_c_13_sequential_g18_0_g18_contents_c_11_contents_c_12_1_contents_c_12_a18_j18_if_and_g18_0_g18_contents_c_11_j18_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g17_6_contents_c_11_g17_0_round_offset_contents_b_73_0_contents_c_11_g17_1_j17_2_if_and_contents_c_11_0_j17_0_j17_0_if_and_contents_c_13_sequential_g18_0_g18_contents_c_11_contents_c_12_1_contents_c_12_a18_j18_if_and_g18_0_g18_contents_c_11_j18_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g17_6_contents_c_11_g17_0_round_offset_contents_b_73_0_contents_c_11_g17_1_j17_2_if_and_contents_c_11_0_j17_0_j17_0_if_and_contents_c_13_sequential_g18_0_g18_contents_c_11_contents_c_12_1_contents_c_12_a18_j18_if_and_g18_0_g18_contents_c_11_j18_0(java.lang.Double v)
@@ -936,7 +936,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h17_0_round_h17_j17_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g18_6_contents_c_11_g18_0_round_offset_contents_b_73_0_contents_c_11_g18_1_j18_2_if_and_contents_c_11_0_j18_0_j18_0()
     {
-        return if_h17_0_round_h17_j17_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g18_6_contents_c_11_g18_0_round_offset_contents_b_73_0_contents_c_11_g18_1_j18_2_if_and_contents_c_11_0_j18_0_j18_0;
+        return this.if_h17_0_round_h17_j17_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g18_6_contents_c_11_g18_0_round_offset_contents_b_73_0_contents_c_11_g18_1_j18_2_if_and_contents_c_11_0_j18_0_j18_0;
     }
 
     public void setIf_h17_0_round_h17_j17_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g18_6_contents_c_11_g18_0_round_offset_contents_b_73_0_contents_c_11_g18_1_j18_2_if_and_contents_c_11_0_j18_0_j18_0(java.lang.Double v)
@@ -946,7 +946,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h17_0_k17_l17_if_h18_0_round_h18_j18_if_contents_c_12_4_1_0_2()
     {
-        return if_h17_0_k17_l17_if_h18_0_round_h18_j18_if_contents_c_12_4_1_0_2;
+        return this.if_h17_0_k17_l17_if_h18_0_round_h18_j18_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h17_0_k17_l17_if_h18_0_round_h18_j18_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -956,7 +956,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_6()
     {
-        return oa_ar_or_fr_6;
+        return this.oa_ar_or_fr_6;
     }
 
     public void setOa_ar_or_fr_6(java.lang.String v)
@@ -966,7 +966,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_6()
     {
-        return equipment_purchases_or_value_2000_each_item_description_6;
+        return this.equipment_purchases_or_value_2000_each_item_description_6;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_6(java.lang.String v)
@@ -976,7 +976,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_6()
     {
-        return qty_6;
+        return this.qty_6;
     }
 
     public void setQty_6(java.lang.String v)
@@ -986,7 +986,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_6()
     {
-        return purchase_year_6;
+        return this.purchase_year_6;
     }
 
     public void setPurchase_year_6(java.lang.String v)
@@ -996,7 +996,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g18_0_if_and_contents_c_11_0_contents_c_11_g18_6_contents_c_11_g18_0_offset_contents_b_75_0_contents_c_11_g18_0()
     {
-        return if_g18_0_if_and_contents_c_11_0_contents_c_11_g18_6_contents_c_11_g18_0_offset_contents_b_75_0_contents_c_11_g18_0;
+        return this.if_g18_0_if_and_contents_c_11_0_contents_c_11_g18_6_contents_c_11_g18_0_offset_contents_b_75_0_contents_c_11_g18_0;
     }
 
     public void setIf_g18_0_if_and_contents_c_11_0_contents_c_11_g18_6_contents_c_11_g18_0_offset_contents_b_75_0_contents_c_11_g18_0(java.lang.Double v)
@@ -1006,7 +1006,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g18_0_g18_contents_c_11_contents_c_12_1_contents_c_12_a18_j18_if_and_g18_0_g18_contents_c_11_j18_0_if_g19_0_if_and_contents_c_11_0_contents_c_11_g19_6_contents_c_11_g19_0_offset_contents_b_75_0_contents_c_11_g19_0()
     {
-        return if_and_contents_c_13_sequential_g18_0_g18_contents_c_11_contents_c_12_1_contents_c_12_a18_j18_if_and_g18_0_g18_contents_c_11_j18_0_if_g19_0_if_and_contents_c_11_0_contents_c_11_g19_6_contents_c_11_g19_0_offset_contents_b_75_0_contents_c_11_g19_0;
+        return this.if_and_contents_c_13_sequential_g18_0_g18_contents_c_11_contents_c_12_1_contents_c_12_a18_j18_if_and_g18_0_g18_contents_c_11_j18_0_if_g19_0_if_and_contents_c_11_0_contents_c_11_g19_6_contents_c_11_g19_0_offset_contents_b_75_0_contents_c_11_g19_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g18_0_g18_contents_c_11_contents_c_12_1_contents_c_12_a18_j18_if_and_g18_0_g18_contents_c_11_j18_0_if_g19_0_if_and_contents_c_11_0_contents_c_11_g19_6_contents_c_11_g19_0_offset_contents_b_75_0_contents_c_11_g19_0(java.lang.Double v)
@@ -1016,7 +1016,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g19_0_g19_contents_c_11_contents_c_12_1_contents_c_12_a19_j19_if_and_g19_0_g19_contents_c_11_j19_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g19_0_g19_contents_c_11_contents_c_12_1_contents_c_12_a19_j19_if_and_g19_0_g19_contents_c_11_j19_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g19_0_g19_contents_c_11_contents_c_12_1_contents_c_12_a19_j19_if_and_g19_0_g19_contents_c_11_j19_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g19_0_g19_contents_c_11_contents_c_12_1_contents_c_12_a19_j19_if_and_g19_0_g19_contents_c_11_j19_0(java.lang.String v)
@@ -1026,7 +1026,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g18_6_contents_c_11_g18_0_round_offset_contents_b_73_0_contents_c_11_g18_1_j18_2_if_and_contents_c_11_0_j18_0_j18_0_if_and_contents_c_13_sequential_g19_0_g19_contents_c_11_contents_c_12_1_contents_c_12_a19_j19_if_and_g19_0_g19_contents_c_11_j19_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g18_6_contents_c_11_g18_0_round_offset_contents_b_73_0_contents_c_11_g18_1_j18_2_if_and_contents_c_11_0_j18_0_j18_0_if_and_contents_c_13_sequential_g19_0_g19_contents_c_11_contents_c_12_1_contents_c_12_a19_j19_if_and_g19_0_g19_contents_c_11_j19_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g18_6_contents_c_11_g18_0_round_offset_contents_b_73_0_contents_c_11_g18_1_j18_2_if_and_contents_c_11_0_j18_0_j18_0_if_and_contents_c_13_sequential_g19_0_g19_contents_c_11_contents_c_12_1_contents_c_12_a19_j19_if_and_g19_0_g19_contents_c_11_j19_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g18_6_contents_c_11_g18_0_round_offset_contents_b_73_0_contents_c_11_g18_1_j18_2_if_and_contents_c_11_0_j18_0_j18_0_if_and_contents_c_13_sequential_g19_0_g19_contents_c_11_contents_c_12_1_contents_c_12_a19_j19_if_and_g19_0_g19_contents_c_11_j19_0(java.lang.Double v)
@@ -1036,7 +1036,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h18_0_round_h18_j18_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g19_6_contents_c_11_g19_0_round_offset_contents_b_73_0_contents_c_11_g19_1_j19_2_if_and_contents_c_11_0_j19_0_j19_0()
     {
-        return if_h18_0_round_h18_j18_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g19_6_contents_c_11_g19_0_round_offset_contents_b_73_0_contents_c_11_g19_1_j19_2_if_and_contents_c_11_0_j19_0_j19_0;
+        return this.if_h18_0_round_h18_j18_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g19_6_contents_c_11_g19_0_round_offset_contents_b_73_0_contents_c_11_g19_1_j19_2_if_and_contents_c_11_0_j19_0_j19_0;
     }
 
     public void setIf_h18_0_round_h18_j18_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g19_6_contents_c_11_g19_0_round_offset_contents_b_73_0_contents_c_11_g19_1_j19_2_if_and_contents_c_11_0_j19_0_j19_0(java.lang.Double v)
@@ -1046,7 +1046,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h18_0_k18_l18_if_h19_0_round_h19_j19_if_contents_c_12_4_1_0_2()
     {
-        return if_h18_0_k18_l18_if_h19_0_round_h19_j19_if_contents_c_12_4_1_0_2;
+        return this.if_h18_0_k18_l18_if_h19_0_round_h19_j19_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h18_0_k18_l18_if_h19_0_round_h19_j19_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -1056,7 +1056,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_7()
     {
-        return oa_ar_or_fr_7;
+        return this.oa_ar_or_fr_7;
     }
 
     public void setOa_ar_or_fr_7(java.lang.String v)
@@ -1066,7 +1066,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_7()
     {
-        return equipment_purchases_or_value_2000_each_item_description_7;
+        return this.equipment_purchases_or_value_2000_each_item_description_7;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_7(java.lang.String v)
@@ -1076,7 +1076,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_7()
     {
-        return qty_7;
+        return this.qty_7;
     }
 
     public void setQty_7(java.lang.String v)
@@ -1086,7 +1086,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_7()
     {
-        return purchase_year_7;
+        return this.purchase_year_7;
     }
 
     public void setPurchase_year_7(java.lang.String v)
@@ -1096,7 +1096,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g19_0_if_and_contents_c_11_0_contents_c_11_g19_6_contents_c_11_g19_0_offset_contents_b_75_0_contents_c_11_g19_0()
     {
-        return if_g19_0_if_and_contents_c_11_0_contents_c_11_g19_6_contents_c_11_g19_0_offset_contents_b_75_0_contents_c_11_g19_0;
+        return this.if_g19_0_if_and_contents_c_11_0_contents_c_11_g19_6_contents_c_11_g19_0_offset_contents_b_75_0_contents_c_11_g19_0;
     }
 
     public void setIf_g19_0_if_and_contents_c_11_0_contents_c_11_g19_6_contents_c_11_g19_0_offset_contents_b_75_0_contents_c_11_g19_0(java.lang.Double v)
@@ -1106,7 +1106,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g19_0_g19_contents_c_11_contents_c_12_1_contents_c_12_a19_j19_if_and_g19_0_g19_contents_c_11_j19_0_if_g20_0_if_and_contents_c_11_0_contents_c_11_g20_6_contents_c_11_g20_0_offset_contents_b_75_0_contents_c_11_g20_0()
     {
-        return if_and_contents_c_13_sequential_g19_0_g19_contents_c_11_contents_c_12_1_contents_c_12_a19_j19_if_and_g19_0_g19_contents_c_11_j19_0_if_g20_0_if_and_contents_c_11_0_contents_c_11_g20_6_contents_c_11_g20_0_offset_contents_b_75_0_contents_c_11_g20_0;
+        return this.if_and_contents_c_13_sequential_g19_0_g19_contents_c_11_contents_c_12_1_contents_c_12_a19_j19_if_and_g19_0_g19_contents_c_11_j19_0_if_g20_0_if_and_contents_c_11_0_contents_c_11_g20_6_contents_c_11_g20_0_offset_contents_b_75_0_contents_c_11_g20_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g19_0_g19_contents_c_11_contents_c_12_1_contents_c_12_a19_j19_if_and_g19_0_g19_contents_c_11_j19_0_if_g20_0_if_and_contents_c_11_0_contents_c_11_g20_6_contents_c_11_g20_0_offset_contents_b_75_0_contents_c_11_g20_0(java.lang.Double v)
@@ -1116,7 +1116,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g20_0_g20_contents_c_11_contents_c_12_1_contents_c_12_a20_j20_if_and_g20_0_g20_contents_c_11_j20_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g20_0_g20_contents_c_11_contents_c_12_1_contents_c_12_a20_j20_if_and_g20_0_g20_contents_c_11_j20_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g20_0_g20_contents_c_11_contents_c_12_1_contents_c_12_a20_j20_if_and_g20_0_g20_contents_c_11_j20_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g20_0_g20_contents_c_11_contents_c_12_1_contents_c_12_a20_j20_if_and_g20_0_g20_contents_c_11_j20_0(java.lang.String v)
@@ -1126,7 +1126,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g19_6_contents_c_11_g19_0_round_offset_contents_b_73_0_contents_c_11_g19_1_j19_2_if_and_contents_c_11_0_j19_0_j19_0_if_and_contents_c_13_sequential_g20_0_g20_contents_c_11_contents_c_12_1_contents_c_12_a20_j20_if_and_g20_0_g20_contents_c_11_j20_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g19_6_contents_c_11_g19_0_round_offset_contents_b_73_0_contents_c_11_g19_1_j19_2_if_and_contents_c_11_0_j19_0_j19_0_if_and_contents_c_13_sequential_g20_0_g20_contents_c_11_contents_c_12_1_contents_c_12_a20_j20_if_and_g20_0_g20_contents_c_11_j20_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g19_6_contents_c_11_g19_0_round_offset_contents_b_73_0_contents_c_11_g19_1_j19_2_if_and_contents_c_11_0_j19_0_j19_0_if_and_contents_c_13_sequential_g20_0_g20_contents_c_11_contents_c_12_1_contents_c_12_a20_j20_if_and_g20_0_g20_contents_c_11_j20_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g19_6_contents_c_11_g19_0_round_offset_contents_b_73_0_contents_c_11_g19_1_j19_2_if_and_contents_c_11_0_j19_0_j19_0_if_and_contents_c_13_sequential_g20_0_g20_contents_c_11_contents_c_12_1_contents_c_12_a20_j20_if_and_g20_0_g20_contents_c_11_j20_0(java.lang.Double v)
@@ -1136,7 +1136,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h19_0_round_h19_j19_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g20_6_contents_c_11_g20_0_round_offset_contents_b_73_0_contents_c_11_g20_1_j20_2_if_and_contents_c_11_0_j20_0_j20_0()
     {
-        return if_h19_0_round_h19_j19_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g20_6_contents_c_11_g20_0_round_offset_contents_b_73_0_contents_c_11_g20_1_j20_2_if_and_contents_c_11_0_j20_0_j20_0;
+        return this.if_h19_0_round_h19_j19_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g20_6_contents_c_11_g20_0_round_offset_contents_b_73_0_contents_c_11_g20_1_j20_2_if_and_contents_c_11_0_j20_0_j20_0;
     }
 
     public void setIf_h19_0_round_h19_j19_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g20_6_contents_c_11_g20_0_round_offset_contents_b_73_0_contents_c_11_g20_1_j20_2_if_and_contents_c_11_0_j20_0_j20_0(java.lang.Double v)
@@ -1146,7 +1146,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h19_0_k19_l19_if_h20_0_round_h20_j20_if_contents_c_12_4_1_0_2()
     {
-        return if_h19_0_k19_l19_if_h20_0_round_h20_j20_if_contents_c_12_4_1_0_2;
+        return this.if_h19_0_k19_l19_if_h20_0_round_h20_j20_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h19_0_k19_l19_if_h20_0_round_h20_j20_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -1156,7 +1156,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_8()
     {
-        return oa_ar_or_fr_8;
+        return this.oa_ar_or_fr_8;
     }
 
     public void setOa_ar_or_fr_8(java.lang.String v)
@@ -1166,7 +1166,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_8()
     {
-        return equipment_purchases_or_value_2000_each_item_description_8;
+        return this.equipment_purchases_or_value_2000_each_item_description_8;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_8(java.lang.String v)
@@ -1176,7 +1176,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_8()
     {
-        return qty_8;
+        return this.qty_8;
     }
 
     public void setQty_8(java.lang.String v)
@@ -1186,7 +1186,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_8()
     {
-        return purchase_year_8;
+        return this.purchase_year_8;
     }
 
     public void setPurchase_year_8(java.lang.String v)
@@ -1196,7 +1196,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g20_0_if_and_contents_c_11_0_contents_c_11_g20_6_contents_c_11_g20_0_offset_contents_b_75_0_contents_c_11_g20_0()
     {
-        return if_g20_0_if_and_contents_c_11_0_contents_c_11_g20_6_contents_c_11_g20_0_offset_contents_b_75_0_contents_c_11_g20_0;
+        return this.if_g20_0_if_and_contents_c_11_0_contents_c_11_g20_6_contents_c_11_g20_0_offset_contents_b_75_0_contents_c_11_g20_0;
     }
 
     public void setIf_g20_0_if_and_contents_c_11_0_contents_c_11_g20_6_contents_c_11_g20_0_offset_contents_b_75_0_contents_c_11_g20_0(java.lang.Double v)
@@ -1206,7 +1206,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g20_0_g20_contents_c_11_contents_c_12_1_contents_c_12_a20_j20_if_and_g20_0_g20_contents_c_11_j20_0_if_g21_0_if_and_contents_c_11_0_contents_c_11_g21_6_contents_c_11_g21_0_offset_contents_b_75_0_contents_c_11_g21_0()
     {
-        return if_and_contents_c_13_sequential_g20_0_g20_contents_c_11_contents_c_12_1_contents_c_12_a20_j20_if_and_g20_0_g20_contents_c_11_j20_0_if_g21_0_if_and_contents_c_11_0_contents_c_11_g21_6_contents_c_11_g21_0_offset_contents_b_75_0_contents_c_11_g21_0;
+        return this.if_and_contents_c_13_sequential_g20_0_g20_contents_c_11_contents_c_12_1_contents_c_12_a20_j20_if_and_g20_0_g20_contents_c_11_j20_0_if_g21_0_if_and_contents_c_11_0_contents_c_11_g21_6_contents_c_11_g21_0_offset_contents_b_75_0_contents_c_11_g21_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g20_0_g20_contents_c_11_contents_c_12_1_contents_c_12_a20_j20_if_and_g20_0_g20_contents_c_11_j20_0_if_g21_0_if_and_contents_c_11_0_contents_c_11_g21_6_contents_c_11_g21_0_offset_contents_b_75_0_contents_c_11_g21_0(java.lang.Double v)
@@ -1216,7 +1216,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g21_0_g21_contents_c_11_contents_c_12_1_contents_c_12_a21_j21_if_and_g21_0_g21_contents_c_11_j21_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g21_0_g21_contents_c_11_contents_c_12_1_contents_c_12_a21_j21_if_and_g21_0_g21_contents_c_11_j21_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g21_0_g21_contents_c_11_contents_c_12_1_contents_c_12_a21_j21_if_and_g21_0_g21_contents_c_11_j21_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g21_0_g21_contents_c_11_contents_c_12_1_contents_c_12_a21_j21_if_and_g21_0_g21_contents_c_11_j21_0(java.lang.String v)
@@ -1226,7 +1226,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g20_6_contents_c_11_g20_0_round_offset_contents_b_73_0_contents_c_11_g20_1_j20_2_if_and_contents_c_11_0_j20_0_j20_0_if_and_contents_c_13_sequential_g21_0_g21_contents_c_11_contents_c_12_1_contents_c_12_a21_j21_if_and_g21_0_g21_contents_c_11_j21_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g20_6_contents_c_11_g20_0_round_offset_contents_b_73_0_contents_c_11_g20_1_j20_2_if_and_contents_c_11_0_j20_0_j20_0_if_and_contents_c_13_sequential_g21_0_g21_contents_c_11_contents_c_12_1_contents_c_12_a21_j21_if_and_g21_0_g21_contents_c_11_j21_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g20_6_contents_c_11_g20_0_round_offset_contents_b_73_0_contents_c_11_g20_1_j20_2_if_and_contents_c_11_0_j20_0_j20_0_if_and_contents_c_13_sequential_g21_0_g21_contents_c_11_contents_c_12_1_contents_c_12_a21_j21_if_and_g21_0_g21_contents_c_11_j21_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g20_6_contents_c_11_g20_0_round_offset_contents_b_73_0_contents_c_11_g20_1_j20_2_if_and_contents_c_11_0_j20_0_j20_0_if_and_contents_c_13_sequential_g21_0_g21_contents_c_11_contents_c_12_1_contents_c_12_a21_j21_if_and_g21_0_g21_contents_c_11_j21_0(java.lang.Double v)
@@ -1236,7 +1236,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h20_0_round_h20_j20_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g21_6_contents_c_11_g21_0_round_offset_contents_b_73_0_contents_c_11_g21_1_j21_2_if_and_contents_c_11_0_j21_0_j21_0()
     {
-        return if_h20_0_round_h20_j20_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g21_6_contents_c_11_g21_0_round_offset_contents_b_73_0_contents_c_11_g21_1_j21_2_if_and_contents_c_11_0_j21_0_j21_0;
+        return this.if_h20_0_round_h20_j20_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g21_6_contents_c_11_g21_0_round_offset_contents_b_73_0_contents_c_11_g21_1_j21_2_if_and_contents_c_11_0_j21_0_j21_0;
     }
 
     public void setIf_h20_0_round_h20_j20_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g21_6_contents_c_11_g21_0_round_offset_contents_b_73_0_contents_c_11_g21_1_j21_2_if_and_contents_c_11_0_j21_0_j21_0(java.lang.Double v)
@@ -1246,7 +1246,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h20_0_k20_l20_if_h21_0_round_h21_j21_if_contents_c_12_4_1_0_2()
     {
-        return if_h20_0_k20_l20_if_h21_0_round_h21_j21_if_contents_c_12_4_1_0_2;
+        return this.if_h20_0_k20_l20_if_h21_0_round_h21_j21_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h20_0_k20_l20_if_h21_0_round_h21_j21_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -1256,7 +1256,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_9()
     {
-        return oa_ar_or_fr_9;
+        return this.oa_ar_or_fr_9;
     }
 
     public void setOa_ar_or_fr_9(java.lang.String v)
@@ -1266,7 +1266,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_9()
     {
-        return equipment_purchases_or_value_2000_each_item_description_9;
+        return this.equipment_purchases_or_value_2000_each_item_description_9;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_9(java.lang.String v)
@@ -1276,7 +1276,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_9()
     {
-        return qty_9;
+        return this.qty_9;
     }
 
     public void setQty_9(java.lang.String v)
@@ -1286,7 +1286,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_9()
     {
-        return purchase_year_9;
+        return this.purchase_year_9;
     }
 
     public void setPurchase_year_9(java.lang.String v)
@@ -1296,7 +1296,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g21_0_if_and_contents_c_11_0_contents_c_11_g21_6_contents_c_11_g21_0_offset_contents_b_75_0_contents_c_11_g21_0()
     {
-        return if_g21_0_if_and_contents_c_11_0_contents_c_11_g21_6_contents_c_11_g21_0_offset_contents_b_75_0_contents_c_11_g21_0;
+        return this.if_g21_0_if_and_contents_c_11_0_contents_c_11_g21_6_contents_c_11_g21_0_offset_contents_b_75_0_contents_c_11_g21_0;
     }
 
     public void setIf_g21_0_if_and_contents_c_11_0_contents_c_11_g21_6_contents_c_11_g21_0_offset_contents_b_75_0_contents_c_11_g21_0(java.lang.Double v)
@@ -1306,7 +1306,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g21_0_g21_contents_c_11_contents_c_12_1_contents_c_12_a21_j21_if_and_g21_0_g21_contents_c_11_j21_0_if_g22_0_if_and_contents_c_11_0_contents_c_11_g22_6_contents_c_11_g22_0_offset_contents_b_75_0_contents_c_11_g22_0()
     {
-        return if_and_contents_c_13_sequential_g21_0_g21_contents_c_11_contents_c_12_1_contents_c_12_a21_j21_if_and_g21_0_g21_contents_c_11_j21_0_if_g22_0_if_and_contents_c_11_0_contents_c_11_g22_6_contents_c_11_g22_0_offset_contents_b_75_0_contents_c_11_g22_0;
+        return this.if_and_contents_c_13_sequential_g21_0_g21_contents_c_11_contents_c_12_1_contents_c_12_a21_j21_if_and_g21_0_g21_contents_c_11_j21_0_if_g22_0_if_and_contents_c_11_0_contents_c_11_g22_6_contents_c_11_g22_0_offset_contents_b_75_0_contents_c_11_g22_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g21_0_g21_contents_c_11_contents_c_12_1_contents_c_12_a21_j21_if_and_g21_0_g21_contents_c_11_j21_0_if_g22_0_if_and_contents_c_11_0_contents_c_11_g22_6_contents_c_11_g22_0_offset_contents_b_75_0_contents_c_11_g22_0(java.lang.Double v)
@@ -1316,7 +1316,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g22_0_g22_contents_c_11_contents_c_12_1_contents_c_12_a22_j22_if_and_g22_0_g22_contents_c_11_j22_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g22_0_g22_contents_c_11_contents_c_12_1_contents_c_12_a22_j22_if_and_g22_0_g22_contents_c_11_j22_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g22_0_g22_contents_c_11_contents_c_12_1_contents_c_12_a22_j22_if_and_g22_0_g22_contents_c_11_j22_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g22_0_g22_contents_c_11_contents_c_12_1_contents_c_12_a22_j22_if_and_g22_0_g22_contents_c_11_j22_0(java.lang.String v)
@@ -1326,7 +1326,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g21_6_contents_c_11_g21_0_round_offset_contents_b_73_0_contents_c_11_g21_1_j21_2_if_and_contents_c_11_0_j21_0_j21_0_if_and_contents_c_13_sequential_g22_0_g22_contents_c_11_contents_c_12_1_contents_c_12_a22_j22_if_and_g22_0_g22_contents_c_11_j22_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g21_6_contents_c_11_g21_0_round_offset_contents_b_73_0_contents_c_11_g21_1_j21_2_if_and_contents_c_11_0_j21_0_j21_0_if_and_contents_c_13_sequential_g22_0_g22_contents_c_11_contents_c_12_1_contents_c_12_a22_j22_if_and_g22_0_g22_contents_c_11_j22_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g21_6_contents_c_11_g21_0_round_offset_contents_b_73_0_contents_c_11_g21_1_j21_2_if_and_contents_c_11_0_j21_0_j21_0_if_and_contents_c_13_sequential_g22_0_g22_contents_c_11_contents_c_12_1_contents_c_12_a22_j22_if_and_g22_0_g22_contents_c_11_j22_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g21_6_contents_c_11_g21_0_round_offset_contents_b_73_0_contents_c_11_g21_1_j21_2_if_and_contents_c_11_0_j21_0_j21_0_if_and_contents_c_13_sequential_g22_0_g22_contents_c_11_contents_c_12_1_contents_c_12_a22_j22_if_and_g22_0_g22_contents_c_11_j22_0(java.lang.Double v)
@@ -1336,7 +1336,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h21_0_round_h21_j21_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g22_6_contents_c_11_g22_0_round_offset_contents_b_73_0_contents_c_11_g22_1_j22_2_if_and_contents_c_11_0_j22_0_j22_0()
     {
-        return if_h21_0_round_h21_j21_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g22_6_contents_c_11_g22_0_round_offset_contents_b_73_0_contents_c_11_g22_1_j22_2_if_and_contents_c_11_0_j22_0_j22_0;
+        return this.if_h21_0_round_h21_j21_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g22_6_contents_c_11_g22_0_round_offset_contents_b_73_0_contents_c_11_g22_1_j22_2_if_and_contents_c_11_0_j22_0_j22_0;
     }
 
     public void setIf_h21_0_round_h21_j21_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g22_6_contents_c_11_g22_0_round_offset_contents_b_73_0_contents_c_11_g22_1_j22_2_if_and_contents_c_11_0_j22_0_j22_0(java.lang.Double v)
@@ -1346,7 +1346,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h21_0_k21_l21_if_h22_0_round_h22_j22_if_contents_c_12_4_1_0_2()
     {
-        return if_h21_0_k21_l21_if_h22_0_round_h22_j22_if_contents_c_12_4_1_0_2;
+        return this.if_h21_0_k21_l21_if_h22_0_round_h22_j22_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h21_0_k21_l21_if_h22_0_round_h22_j22_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -1356,7 +1356,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_10()
     {
-        return oa_ar_or_fr_10;
+        return this.oa_ar_or_fr_10;
     }
 
     public void setOa_ar_or_fr_10(java.lang.String v)
@@ -1366,7 +1366,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_10()
     {
-        return equipment_purchases_or_value_2000_each_item_description_10;
+        return this.equipment_purchases_or_value_2000_each_item_description_10;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_10(java.lang.String v)
@@ -1376,7 +1376,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_10()
     {
-        return qty_10;
+        return this.qty_10;
     }
 
     public void setQty_10(java.lang.String v)
@@ -1386,7 +1386,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_10()
     {
-        return purchase_year_10;
+        return this.purchase_year_10;
     }
 
     public void setPurchase_year_10(java.lang.String v)
@@ -1396,7 +1396,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g22_0_if_and_contents_c_11_0_contents_c_11_g22_6_contents_c_11_g22_0_offset_contents_b_75_0_contents_c_11_g22_0()
     {
-        return if_g22_0_if_and_contents_c_11_0_contents_c_11_g22_6_contents_c_11_g22_0_offset_contents_b_75_0_contents_c_11_g22_0;
+        return this.if_g22_0_if_and_contents_c_11_0_contents_c_11_g22_6_contents_c_11_g22_0_offset_contents_b_75_0_contents_c_11_g22_0;
     }
 
     public void setIf_g22_0_if_and_contents_c_11_0_contents_c_11_g22_6_contents_c_11_g22_0_offset_contents_b_75_0_contents_c_11_g22_0(java.lang.Double v)
@@ -1406,7 +1406,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g22_0_g22_contents_c_11_contents_c_12_1_contents_c_12_a22_j22_if_and_g22_0_g22_contents_c_11_j22_0_if_g23_0_if_and_contents_c_11_0_contents_c_11_g23_6_contents_c_11_g23_0_offset_contents_b_75_0_contents_c_11_g23_0()
     {
-        return if_and_contents_c_13_sequential_g22_0_g22_contents_c_11_contents_c_12_1_contents_c_12_a22_j22_if_and_g22_0_g22_contents_c_11_j22_0_if_g23_0_if_and_contents_c_11_0_contents_c_11_g23_6_contents_c_11_g23_0_offset_contents_b_75_0_contents_c_11_g23_0;
+        return this.if_and_contents_c_13_sequential_g22_0_g22_contents_c_11_contents_c_12_1_contents_c_12_a22_j22_if_and_g22_0_g22_contents_c_11_j22_0_if_g23_0_if_and_contents_c_11_0_contents_c_11_g23_6_contents_c_11_g23_0_offset_contents_b_75_0_contents_c_11_g23_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g22_0_g22_contents_c_11_contents_c_12_1_contents_c_12_a22_j22_if_and_g22_0_g22_contents_c_11_j22_0_if_g23_0_if_and_contents_c_11_0_contents_c_11_g23_6_contents_c_11_g23_0_offset_contents_b_75_0_contents_c_11_g23_0(java.lang.Double v)
@@ -1416,7 +1416,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g23_0_g23_contents_c_11_contents_c_12_1_contents_c_12_a23_j23_if_and_g23_0_g23_contents_c_11_j23_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g23_0_g23_contents_c_11_contents_c_12_1_contents_c_12_a23_j23_if_and_g23_0_g23_contents_c_11_j23_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g23_0_g23_contents_c_11_contents_c_12_1_contents_c_12_a23_j23_if_and_g23_0_g23_contents_c_11_j23_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g23_0_g23_contents_c_11_contents_c_12_1_contents_c_12_a23_j23_if_and_g23_0_g23_contents_c_11_j23_0(java.lang.String v)
@@ -1426,7 +1426,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g22_6_contents_c_11_g22_0_round_offset_contents_b_73_0_contents_c_11_g22_1_j22_2_if_and_contents_c_11_0_j22_0_j22_0_if_and_contents_c_13_sequential_g23_0_g23_contents_c_11_contents_c_12_1_contents_c_12_a23_j23_if_and_g23_0_g23_contents_c_11_j23_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g22_6_contents_c_11_g22_0_round_offset_contents_b_73_0_contents_c_11_g22_1_j22_2_if_and_contents_c_11_0_j22_0_j22_0_if_and_contents_c_13_sequential_g23_0_g23_contents_c_11_contents_c_12_1_contents_c_12_a23_j23_if_and_g23_0_g23_contents_c_11_j23_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g22_6_contents_c_11_g22_0_round_offset_contents_b_73_0_contents_c_11_g22_1_j22_2_if_and_contents_c_11_0_j22_0_j22_0_if_and_contents_c_13_sequential_g23_0_g23_contents_c_11_contents_c_12_1_contents_c_12_a23_j23_if_and_g23_0_g23_contents_c_11_j23_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g22_6_contents_c_11_g22_0_round_offset_contents_b_73_0_contents_c_11_g22_1_j22_2_if_and_contents_c_11_0_j22_0_j22_0_if_and_contents_c_13_sequential_g23_0_g23_contents_c_11_contents_c_12_1_contents_c_12_a23_j23_if_and_g23_0_g23_contents_c_11_j23_0(java.lang.Double v)
@@ -1436,7 +1436,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h22_0_round_h22_j22_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g23_6_contents_c_11_g23_0_round_offset_contents_b_73_0_contents_c_11_g23_1_j23_2_if_and_contents_c_11_0_j23_0_j23_0()
     {
-        return if_h22_0_round_h22_j22_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g23_6_contents_c_11_g23_0_round_offset_contents_b_73_0_contents_c_11_g23_1_j23_2_if_and_contents_c_11_0_j23_0_j23_0;
+        return this.if_h22_0_round_h22_j22_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g23_6_contents_c_11_g23_0_round_offset_contents_b_73_0_contents_c_11_g23_1_j23_2_if_and_contents_c_11_0_j23_0_j23_0;
     }
 
     public void setIf_h22_0_round_h22_j22_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g23_6_contents_c_11_g23_0_round_offset_contents_b_73_0_contents_c_11_g23_1_j23_2_if_and_contents_c_11_0_j23_0_j23_0(java.lang.Double v)
@@ -1446,7 +1446,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h22_0_k22_l22_if_h23_0_round_h23_j23_if_contents_c_12_4_1_0_2()
     {
-        return if_h22_0_k22_l22_if_h23_0_round_h23_j23_if_contents_c_12_4_1_0_2;
+        return this.if_h22_0_k22_l22_if_h23_0_round_h23_j23_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h22_0_k22_l22_if_h23_0_round_h23_j23_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -1456,7 +1456,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_11()
     {
-        return oa_ar_or_fr_11;
+        return this.oa_ar_or_fr_11;
     }
 
     public void setOa_ar_or_fr_11(java.lang.String v)
@@ -1466,7 +1466,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_11()
     {
-        return equipment_purchases_or_value_2000_each_item_description_11;
+        return this.equipment_purchases_or_value_2000_each_item_description_11;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_11(java.lang.String v)
@@ -1476,7 +1476,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_11()
     {
-        return qty_11;
+        return this.qty_11;
     }
 
     public void setQty_11(java.lang.String v)
@@ -1486,7 +1486,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_11()
     {
-        return purchase_year_11;
+        return this.purchase_year_11;
     }
 
     public void setPurchase_year_11(java.lang.String v)
@@ -1496,7 +1496,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g23_0_if_and_contents_c_11_0_contents_c_11_g23_6_contents_c_11_g23_0_offset_contents_b_75_0_contents_c_11_g23_0()
     {
-        return if_g23_0_if_and_contents_c_11_0_contents_c_11_g23_6_contents_c_11_g23_0_offset_contents_b_75_0_contents_c_11_g23_0;
+        return this.if_g23_0_if_and_contents_c_11_0_contents_c_11_g23_6_contents_c_11_g23_0_offset_contents_b_75_0_contents_c_11_g23_0;
     }
 
     public void setIf_g23_0_if_and_contents_c_11_0_contents_c_11_g23_6_contents_c_11_g23_0_offset_contents_b_75_0_contents_c_11_g23_0(java.lang.Double v)
@@ -1506,7 +1506,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g23_0_g23_contents_c_11_contents_c_12_1_contents_c_12_a23_j23_if_and_g23_0_g23_contents_c_11_j23_0_if_g24_0_if_and_contents_c_11_0_contents_c_11_g24_6_contents_c_11_g24_0_offset_contents_b_75_0_contents_c_11_g24_0()
     {
-        return if_and_contents_c_13_sequential_g23_0_g23_contents_c_11_contents_c_12_1_contents_c_12_a23_j23_if_and_g23_0_g23_contents_c_11_j23_0_if_g24_0_if_and_contents_c_11_0_contents_c_11_g24_6_contents_c_11_g24_0_offset_contents_b_75_0_contents_c_11_g24_0;
+        return this.if_and_contents_c_13_sequential_g23_0_g23_contents_c_11_contents_c_12_1_contents_c_12_a23_j23_if_and_g23_0_g23_contents_c_11_j23_0_if_g24_0_if_and_contents_c_11_0_contents_c_11_g24_6_contents_c_11_g24_0_offset_contents_b_75_0_contents_c_11_g24_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g23_0_g23_contents_c_11_contents_c_12_1_contents_c_12_a23_j23_if_and_g23_0_g23_contents_c_11_j23_0_if_g24_0_if_and_contents_c_11_0_contents_c_11_g24_6_contents_c_11_g24_0_offset_contents_b_75_0_contents_c_11_g24_0(java.lang.Double v)
@@ -1516,7 +1516,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g24_0_g24_contents_c_11_contents_c_12_1_contents_c_12_a24_j24_if_and_g24_0_g24_contents_c_11_j24_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g24_0_g24_contents_c_11_contents_c_12_1_contents_c_12_a24_j24_if_and_g24_0_g24_contents_c_11_j24_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g24_0_g24_contents_c_11_contents_c_12_1_contents_c_12_a24_j24_if_and_g24_0_g24_contents_c_11_j24_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g24_0_g24_contents_c_11_contents_c_12_1_contents_c_12_a24_j24_if_and_g24_0_g24_contents_c_11_j24_0(java.lang.String v)
@@ -1526,7 +1526,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g23_6_contents_c_11_g23_0_round_offset_contents_b_73_0_contents_c_11_g23_1_j23_2_if_and_contents_c_11_0_j23_0_j23_0_if_and_contents_c_13_sequential_g24_0_g24_contents_c_11_contents_c_12_1_contents_c_12_a24_j24_if_and_g24_0_g24_contents_c_11_j24_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g23_6_contents_c_11_g23_0_round_offset_contents_b_73_0_contents_c_11_g23_1_j23_2_if_and_contents_c_11_0_j23_0_j23_0_if_and_contents_c_13_sequential_g24_0_g24_contents_c_11_contents_c_12_1_contents_c_12_a24_j24_if_and_g24_0_g24_contents_c_11_j24_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g23_6_contents_c_11_g23_0_round_offset_contents_b_73_0_contents_c_11_g23_1_j23_2_if_and_contents_c_11_0_j23_0_j23_0_if_and_contents_c_13_sequential_g24_0_g24_contents_c_11_contents_c_12_1_contents_c_12_a24_j24_if_and_g24_0_g24_contents_c_11_j24_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g23_6_contents_c_11_g23_0_round_offset_contents_b_73_0_contents_c_11_g23_1_j23_2_if_and_contents_c_11_0_j23_0_j23_0_if_and_contents_c_13_sequential_g24_0_g24_contents_c_11_contents_c_12_1_contents_c_12_a24_j24_if_and_g24_0_g24_contents_c_11_j24_0(java.lang.Double v)
@@ -1536,7 +1536,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h23_0_round_h23_j23_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g24_6_contents_c_11_g24_0_round_offset_contents_b_73_0_contents_c_11_g24_1_j24_2_if_and_contents_c_11_0_j24_0_j24_0()
     {
-        return if_h23_0_round_h23_j23_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g24_6_contents_c_11_g24_0_round_offset_contents_b_73_0_contents_c_11_g24_1_j24_2_if_and_contents_c_11_0_j24_0_j24_0;
+        return this.if_h23_0_round_h23_j23_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g24_6_contents_c_11_g24_0_round_offset_contents_b_73_0_contents_c_11_g24_1_j24_2_if_and_contents_c_11_0_j24_0_j24_0;
     }
 
     public void setIf_h23_0_round_h23_j23_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g24_6_contents_c_11_g24_0_round_offset_contents_b_73_0_contents_c_11_g24_1_j24_2_if_and_contents_c_11_0_j24_0_j24_0(java.lang.Double v)
@@ -1546,7 +1546,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h23_0_k23_l23_if_h24_0_round_h24_j24_if_contents_c_12_4_1_0_2()
     {
-        return if_h23_0_k23_l23_if_h24_0_round_h24_j24_if_contents_c_12_4_1_0_2;
+        return this.if_h23_0_k23_l23_if_h24_0_round_h24_j24_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h23_0_k23_l23_if_h24_0_round_h24_j24_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -1556,7 +1556,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_12()
     {
-        return oa_ar_or_fr_12;
+        return this.oa_ar_or_fr_12;
     }
 
     public void setOa_ar_or_fr_12(java.lang.String v)
@@ -1566,7 +1566,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_12()
     {
-        return equipment_purchases_or_value_2000_each_item_description_12;
+        return this.equipment_purchases_or_value_2000_each_item_description_12;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_12(java.lang.String v)
@@ -1576,7 +1576,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_12()
     {
-        return qty_12;
+        return this.qty_12;
     }
 
     public void setQty_12(java.lang.String v)
@@ -1586,7 +1586,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_12()
     {
-        return purchase_year_12;
+        return this.purchase_year_12;
     }
 
     public void setPurchase_year_12(java.lang.String v)
@@ -1596,7 +1596,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g24_0_if_and_contents_c_11_0_contents_c_11_g24_6_contents_c_11_g24_0_offset_contents_b_75_0_contents_c_11_g24_0()
     {
-        return if_g24_0_if_and_contents_c_11_0_contents_c_11_g24_6_contents_c_11_g24_0_offset_contents_b_75_0_contents_c_11_g24_0;
+        return this.if_g24_0_if_and_contents_c_11_0_contents_c_11_g24_6_contents_c_11_g24_0_offset_contents_b_75_0_contents_c_11_g24_0;
     }
 
     public void setIf_g24_0_if_and_contents_c_11_0_contents_c_11_g24_6_contents_c_11_g24_0_offset_contents_b_75_0_contents_c_11_g24_0(java.lang.Double v)
@@ -1606,7 +1606,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g24_0_g24_contents_c_11_contents_c_12_1_contents_c_12_a24_j24_if_and_g24_0_g24_contents_c_11_j24_0_if_g25_0_if_and_contents_c_11_0_contents_c_11_g25_6_contents_c_11_g25_0_offset_contents_b_75_0_contents_c_11_g25_0()
     {
-        return if_and_contents_c_13_sequential_g24_0_g24_contents_c_11_contents_c_12_1_contents_c_12_a24_j24_if_and_g24_0_g24_contents_c_11_j24_0_if_g25_0_if_and_contents_c_11_0_contents_c_11_g25_6_contents_c_11_g25_0_offset_contents_b_75_0_contents_c_11_g25_0;
+        return this.if_and_contents_c_13_sequential_g24_0_g24_contents_c_11_contents_c_12_1_contents_c_12_a24_j24_if_and_g24_0_g24_contents_c_11_j24_0_if_g25_0_if_and_contents_c_11_0_contents_c_11_g25_6_contents_c_11_g25_0_offset_contents_b_75_0_contents_c_11_g25_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g24_0_g24_contents_c_11_contents_c_12_1_contents_c_12_a24_j24_if_and_g24_0_g24_contents_c_11_j24_0_if_g25_0_if_and_contents_c_11_0_contents_c_11_g25_6_contents_c_11_g25_0_offset_contents_b_75_0_contents_c_11_g25_0(java.lang.Double v)
@@ -1616,7 +1616,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g25_0_g25_contents_c_11_contents_c_12_1_contents_c_12_a25_j25_if_and_g25_0_g25_contents_c_11_j25_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g25_0_g25_contents_c_11_contents_c_12_1_contents_c_12_a25_j25_if_and_g25_0_g25_contents_c_11_j25_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g25_0_g25_contents_c_11_contents_c_12_1_contents_c_12_a25_j25_if_and_g25_0_g25_contents_c_11_j25_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g25_0_g25_contents_c_11_contents_c_12_1_contents_c_12_a25_j25_if_and_g25_0_g25_contents_c_11_j25_0(java.lang.String v)
@@ -1626,7 +1626,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g24_6_contents_c_11_g24_0_round_offset_contents_b_73_0_contents_c_11_g24_1_j24_2_if_and_contents_c_11_0_j24_0_j24_0_if_and_contents_c_13_sequential_g25_0_g25_contents_c_11_contents_c_12_1_contents_c_12_a25_j25_if_and_g25_0_g25_contents_c_11_j25_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g24_6_contents_c_11_g24_0_round_offset_contents_b_73_0_contents_c_11_g24_1_j24_2_if_and_contents_c_11_0_j24_0_j24_0_if_and_contents_c_13_sequential_g25_0_g25_contents_c_11_contents_c_12_1_contents_c_12_a25_j25_if_and_g25_0_g25_contents_c_11_j25_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g24_6_contents_c_11_g24_0_round_offset_contents_b_73_0_contents_c_11_g24_1_j24_2_if_and_contents_c_11_0_j24_0_j24_0_if_and_contents_c_13_sequential_g25_0_g25_contents_c_11_contents_c_12_1_contents_c_12_a25_j25_if_and_g25_0_g25_contents_c_11_j25_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g24_6_contents_c_11_g24_0_round_offset_contents_b_73_0_contents_c_11_g24_1_j24_2_if_and_contents_c_11_0_j24_0_j24_0_if_and_contents_c_13_sequential_g25_0_g25_contents_c_11_contents_c_12_1_contents_c_12_a25_j25_if_and_g25_0_g25_contents_c_11_j25_0(java.lang.Double v)
@@ -1636,7 +1636,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h24_0_round_h24_j24_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g25_6_contents_c_11_g25_0_round_offset_contents_b_73_0_contents_c_11_g25_1_j25_2_if_and_contents_c_11_0_j25_0_j25_0()
     {
-        return if_h24_0_round_h24_j24_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g25_6_contents_c_11_g25_0_round_offset_contents_b_73_0_contents_c_11_g25_1_j25_2_if_and_contents_c_11_0_j25_0_j25_0;
+        return this.if_h24_0_round_h24_j24_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g25_6_contents_c_11_g25_0_round_offset_contents_b_73_0_contents_c_11_g25_1_j25_2_if_and_contents_c_11_0_j25_0_j25_0;
     }
 
     public void setIf_h24_0_round_h24_j24_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g25_6_contents_c_11_g25_0_round_offset_contents_b_73_0_contents_c_11_g25_1_j25_2_if_and_contents_c_11_0_j25_0_j25_0(java.lang.Double v)
@@ -1646,7 +1646,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h24_0_k24_l24_if_h25_0_round_h25_j25_if_contents_c_12_4_1_0_2()
     {
-        return if_h24_0_k24_l24_if_h25_0_round_h25_j25_if_contents_c_12_4_1_0_2;
+        return this.if_h24_0_k24_l24_if_h25_0_round_h25_j25_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h24_0_k24_l24_if_h25_0_round_h25_j25_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -1656,7 +1656,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_13()
     {
-        return oa_ar_or_fr_13;
+        return this.oa_ar_or_fr_13;
     }
 
     public void setOa_ar_or_fr_13(java.lang.String v)
@@ -1666,7 +1666,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_13()
     {
-        return equipment_purchases_or_value_2000_each_item_description_13;
+        return this.equipment_purchases_or_value_2000_each_item_description_13;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_13(java.lang.String v)
@@ -1676,7 +1676,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_13()
     {
-        return qty_13;
+        return this.qty_13;
     }
 
     public void setQty_13(java.lang.String v)
@@ -1686,7 +1686,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_13()
     {
-        return purchase_year_13;
+        return this.purchase_year_13;
     }
 
     public void setPurchase_year_13(java.lang.String v)
@@ -1696,7 +1696,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g25_0_if_and_contents_c_11_0_contents_c_11_g25_6_contents_c_11_g25_0_offset_contents_b_75_0_contents_c_11_g25_0()
     {
-        return if_g25_0_if_and_contents_c_11_0_contents_c_11_g25_6_contents_c_11_g25_0_offset_contents_b_75_0_contents_c_11_g25_0;
+        return this.if_g25_0_if_and_contents_c_11_0_contents_c_11_g25_6_contents_c_11_g25_0_offset_contents_b_75_0_contents_c_11_g25_0;
     }
 
     public void setIf_g25_0_if_and_contents_c_11_0_contents_c_11_g25_6_contents_c_11_g25_0_offset_contents_b_75_0_contents_c_11_g25_0(java.lang.Double v)
@@ -1706,7 +1706,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g25_0_g25_contents_c_11_contents_c_12_1_contents_c_12_a25_j25_if_and_g25_0_g25_contents_c_11_j25_0_if_g26_0_if_and_contents_c_11_0_contents_c_11_g26_6_contents_c_11_g26_0_offset_contents_b_75_0_contents_c_11_g26_0()
     {
-        return if_and_contents_c_13_sequential_g25_0_g25_contents_c_11_contents_c_12_1_contents_c_12_a25_j25_if_and_g25_0_g25_contents_c_11_j25_0_if_g26_0_if_and_contents_c_11_0_contents_c_11_g26_6_contents_c_11_g26_0_offset_contents_b_75_0_contents_c_11_g26_0;
+        return this.if_and_contents_c_13_sequential_g25_0_g25_contents_c_11_contents_c_12_1_contents_c_12_a25_j25_if_and_g25_0_g25_contents_c_11_j25_0_if_g26_0_if_and_contents_c_11_0_contents_c_11_g26_6_contents_c_11_g26_0_offset_contents_b_75_0_contents_c_11_g26_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g25_0_g25_contents_c_11_contents_c_12_1_contents_c_12_a25_j25_if_and_g25_0_g25_contents_c_11_j25_0_if_g26_0_if_and_contents_c_11_0_contents_c_11_g26_6_contents_c_11_g26_0_offset_contents_b_75_0_contents_c_11_g26_0(java.lang.Double v)
@@ -1716,7 +1716,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g26_0_g26_contents_c_11_contents_c_12_1_contents_c_12_a26_j26_if_and_g26_0_g26_contents_c_11_j26_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g26_0_g26_contents_c_11_contents_c_12_1_contents_c_12_a26_j26_if_and_g26_0_g26_contents_c_11_j26_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g26_0_g26_contents_c_11_contents_c_12_1_contents_c_12_a26_j26_if_and_g26_0_g26_contents_c_11_j26_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g26_0_g26_contents_c_11_contents_c_12_1_contents_c_12_a26_j26_if_and_g26_0_g26_contents_c_11_j26_0(java.lang.String v)
@@ -1726,7 +1726,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g25_6_contents_c_11_g25_0_round_offset_contents_b_73_0_contents_c_11_g25_1_j25_2_if_and_contents_c_11_0_j25_0_j25_0_if_and_contents_c_13_sequential_g26_0_g26_contents_c_11_contents_c_12_1_contents_c_12_a26_j26_if_and_g26_0_g26_contents_c_11_j26_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g25_6_contents_c_11_g25_0_round_offset_contents_b_73_0_contents_c_11_g25_1_j25_2_if_and_contents_c_11_0_j25_0_j25_0_if_and_contents_c_13_sequential_g26_0_g26_contents_c_11_contents_c_12_1_contents_c_12_a26_j26_if_and_g26_0_g26_contents_c_11_j26_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g25_6_contents_c_11_g25_0_round_offset_contents_b_73_0_contents_c_11_g25_1_j25_2_if_and_contents_c_11_0_j25_0_j25_0_if_and_contents_c_13_sequential_g26_0_g26_contents_c_11_contents_c_12_1_contents_c_12_a26_j26_if_and_g26_0_g26_contents_c_11_j26_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g25_6_contents_c_11_g25_0_round_offset_contents_b_73_0_contents_c_11_g25_1_j25_2_if_and_contents_c_11_0_j25_0_j25_0_if_and_contents_c_13_sequential_g26_0_g26_contents_c_11_contents_c_12_1_contents_c_12_a26_j26_if_and_g26_0_g26_contents_c_11_j26_0(java.lang.Double v)
@@ -1736,7 +1736,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h25_0_round_h25_j25_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g26_6_contents_c_11_g26_0_round_offset_contents_b_73_0_contents_c_11_g26_1_j26_2_if_and_contents_c_11_0_j26_0_j26_0()
     {
-        return if_h25_0_round_h25_j25_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g26_6_contents_c_11_g26_0_round_offset_contents_b_73_0_contents_c_11_g26_1_j26_2_if_and_contents_c_11_0_j26_0_j26_0;
+        return this.if_h25_0_round_h25_j25_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g26_6_contents_c_11_g26_0_round_offset_contents_b_73_0_contents_c_11_g26_1_j26_2_if_and_contents_c_11_0_j26_0_j26_0;
     }
 
     public void setIf_h25_0_round_h25_j25_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g26_6_contents_c_11_g26_0_round_offset_contents_b_73_0_contents_c_11_g26_1_j26_2_if_and_contents_c_11_0_j26_0_j26_0(java.lang.Double v)
@@ -1746,7 +1746,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h25_0_k25_l25_if_h26_0_round_h26_j26_if_contents_c_12_4_1_0_2()
     {
-        return if_h25_0_k25_l25_if_h26_0_round_h26_j26_if_contents_c_12_4_1_0_2;
+        return this.if_h25_0_k25_l25_if_h26_0_round_h26_j26_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h25_0_k25_l25_if_h26_0_round_h26_j26_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -1756,7 +1756,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_14()
     {
-        return oa_ar_or_fr_14;
+        return this.oa_ar_or_fr_14;
     }
 
     public void setOa_ar_or_fr_14(java.lang.String v)
@@ -1766,7 +1766,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_14()
     {
-        return equipment_purchases_or_value_2000_each_item_description_14;
+        return this.equipment_purchases_or_value_2000_each_item_description_14;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_14(java.lang.String v)
@@ -1776,7 +1776,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_14()
     {
-        return qty_14;
+        return this.qty_14;
     }
 
     public void setQty_14(java.lang.String v)
@@ -1786,7 +1786,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_14()
     {
-        return purchase_year_14;
+        return this.purchase_year_14;
     }
 
     public void setPurchase_year_14(java.lang.String v)
@@ -1796,7 +1796,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g26_0_if_and_contents_c_11_0_contents_c_11_g26_6_contents_c_11_g26_0_offset_contents_b_75_0_contents_c_11_g26_0()
     {
-        return if_g26_0_if_and_contents_c_11_0_contents_c_11_g26_6_contents_c_11_g26_0_offset_contents_b_75_0_contents_c_11_g26_0;
+        return this.if_g26_0_if_and_contents_c_11_0_contents_c_11_g26_6_contents_c_11_g26_0_offset_contents_b_75_0_contents_c_11_g26_0;
     }
 
     public void setIf_g26_0_if_and_contents_c_11_0_contents_c_11_g26_6_contents_c_11_g26_0_offset_contents_b_75_0_contents_c_11_g26_0(java.lang.Double v)
@@ -1806,7 +1806,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g26_0_g26_contents_c_11_contents_c_12_1_contents_c_12_a26_j26_if_and_g26_0_g26_contents_c_11_j26_0_if_g27_0_if_and_contents_c_11_0_contents_c_11_g27_6_contents_c_11_g27_0_offset_contents_b_75_0_contents_c_11_g27_0()
     {
-        return if_and_contents_c_13_sequential_g26_0_g26_contents_c_11_contents_c_12_1_contents_c_12_a26_j26_if_and_g26_0_g26_contents_c_11_j26_0_if_g27_0_if_and_contents_c_11_0_contents_c_11_g27_6_contents_c_11_g27_0_offset_contents_b_75_0_contents_c_11_g27_0;
+        return this.if_and_contents_c_13_sequential_g26_0_g26_contents_c_11_contents_c_12_1_contents_c_12_a26_j26_if_and_g26_0_g26_contents_c_11_j26_0_if_g27_0_if_and_contents_c_11_0_contents_c_11_g27_6_contents_c_11_g27_0_offset_contents_b_75_0_contents_c_11_g27_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g26_0_g26_contents_c_11_contents_c_12_1_contents_c_12_a26_j26_if_and_g26_0_g26_contents_c_11_j26_0_if_g27_0_if_and_contents_c_11_0_contents_c_11_g27_6_contents_c_11_g27_0_offset_contents_b_75_0_contents_c_11_g27_0(java.lang.Double v)
@@ -1816,7 +1816,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g27_0_g27_contents_c_11_contents_c_12_1_contents_c_12_a27_j27_if_and_g27_0_g27_contents_c_11_j27_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g27_0_g27_contents_c_11_contents_c_12_1_contents_c_12_a27_j27_if_and_g27_0_g27_contents_c_11_j27_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g27_0_g27_contents_c_11_contents_c_12_1_contents_c_12_a27_j27_if_and_g27_0_g27_contents_c_11_j27_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g27_0_g27_contents_c_11_contents_c_12_1_contents_c_12_a27_j27_if_and_g27_0_g27_contents_c_11_j27_0(java.lang.String v)
@@ -1826,7 +1826,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g26_6_contents_c_11_g26_0_round_offset_contents_b_73_0_contents_c_11_g26_1_j26_2_if_and_contents_c_11_0_j26_0_j26_0_if_and_contents_c_13_sequential_g27_0_g27_contents_c_11_contents_c_12_1_contents_c_12_a27_j27_if_and_g27_0_g27_contents_c_11_j27_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g26_6_contents_c_11_g26_0_round_offset_contents_b_73_0_contents_c_11_g26_1_j26_2_if_and_contents_c_11_0_j26_0_j26_0_if_and_contents_c_13_sequential_g27_0_g27_contents_c_11_contents_c_12_1_contents_c_12_a27_j27_if_and_g27_0_g27_contents_c_11_j27_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g26_6_contents_c_11_g26_0_round_offset_contents_b_73_0_contents_c_11_g26_1_j26_2_if_and_contents_c_11_0_j26_0_j26_0_if_and_contents_c_13_sequential_g27_0_g27_contents_c_11_contents_c_12_1_contents_c_12_a27_j27_if_and_g27_0_g27_contents_c_11_j27_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g26_6_contents_c_11_g26_0_round_offset_contents_b_73_0_contents_c_11_g26_1_j26_2_if_and_contents_c_11_0_j26_0_j26_0_if_and_contents_c_13_sequential_g27_0_g27_contents_c_11_contents_c_12_1_contents_c_12_a27_j27_if_and_g27_0_g27_contents_c_11_j27_0(java.lang.Double v)
@@ -1836,7 +1836,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h26_0_round_h26_j26_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g27_6_contents_c_11_g27_0_round_offset_contents_b_73_0_contents_c_11_g27_1_j27_2_if_and_contents_c_11_0_j27_0_j27_0()
     {
-        return if_h26_0_round_h26_j26_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g27_6_contents_c_11_g27_0_round_offset_contents_b_73_0_contents_c_11_g27_1_j27_2_if_and_contents_c_11_0_j27_0_j27_0;
+        return this.if_h26_0_round_h26_j26_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g27_6_contents_c_11_g27_0_round_offset_contents_b_73_0_contents_c_11_g27_1_j27_2_if_and_contents_c_11_0_j27_0_j27_0;
     }
 
     public void setIf_h26_0_round_h26_j26_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g27_6_contents_c_11_g27_0_round_offset_contents_b_73_0_contents_c_11_g27_1_j27_2_if_and_contents_c_11_0_j27_0_j27_0(java.lang.Double v)
@@ -1846,7 +1846,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h26_0_k26_l26_if_h27_0_round_h27_j27_if_contents_c_12_4_1_0_2()
     {
-        return if_h26_0_k26_l26_if_h27_0_round_h27_j27_if_contents_c_12_4_1_0_2;
+        return this.if_h26_0_k26_l26_if_h27_0_round_h27_j27_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h26_0_k26_l26_if_h27_0_round_h27_j27_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -1856,7 +1856,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_15()
     {
-        return oa_ar_or_fr_15;
+        return this.oa_ar_or_fr_15;
     }
 
     public void setOa_ar_or_fr_15(java.lang.String v)
@@ -1866,7 +1866,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_15()
     {
-        return equipment_purchases_or_value_2000_each_item_description_15;
+        return this.equipment_purchases_or_value_2000_each_item_description_15;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_15(java.lang.String v)
@@ -1876,7 +1876,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_15()
     {
-        return qty_15;
+        return this.qty_15;
     }
 
     public void setQty_15(java.lang.String v)
@@ -1886,7 +1886,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_15()
     {
-        return purchase_year_15;
+        return this.purchase_year_15;
     }
 
     public void setPurchase_year_15(java.lang.String v)
@@ -1896,7 +1896,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g27_0_if_and_contents_c_11_0_contents_c_11_g27_6_contents_c_11_g27_0_offset_contents_b_75_0_contents_c_11_g27_0()
     {
-        return if_g27_0_if_and_contents_c_11_0_contents_c_11_g27_6_contents_c_11_g27_0_offset_contents_b_75_0_contents_c_11_g27_0;
+        return this.if_g27_0_if_and_contents_c_11_0_contents_c_11_g27_6_contents_c_11_g27_0_offset_contents_b_75_0_contents_c_11_g27_0;
     }
 
     public void setIf_g27_0_if_and_contents_c_11_0_contents_c_11_g27_6_contents_c_11_g27_0_offset_contents_b_75_0_contents_c_11_g27_0(java.lang.Double v)
@@ -1906,7 +1906,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g27_0_g27_contents_c_11_contents_c_12_1_contents_c_12_a27_j27_if_and_g27_0_g27_contents_c_11_j27_0_if_g28_0_if_and_contents_c_11_0_contents_c_11_g28_6_contents_c_11_g28_0_offset_contents_b_75_0_contents_c_11_g28_0()
     {
-        return if_and_contents_c_13_sequential_g27_0_g27_contents_c_11_contents_c_12_1_contents_c_12_a27_j27_if_and_g27_0_g27_contents_c_11_j27_0_if_g28_0_if_and_contents_c_11_0_contents_c_11_g28_6_contents_c_11_g28_0_offset_contents_b_75_0_contents_c_11_g28_0;
+        return this.if_and_contents_c_13_sequential_g27_0_g27_contents_c_11_contents_c_12_1_contents_c_12_a27_j27_if_and_g27_0_g27_contents_c_11_j27_0_if_g28_0_if_and_contents_c_11_0_contents_c_11_g28_6_contents_c_11_g28_0_offset_contents_b_75_0_contents_c_11_g28_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g27_0_g27_contents_c_11_contents_c_12_1_contents_c_12_a27_j27_if_and_g27_0_g27_contents_c_11_j27_0_if_g28_0_if_and_contents_c_11_0_contents_c_11_g28_6_contents_c_11_g28_0_offset_contents_b_75_0_contents_c_11_g28_0(java.lang.Double v)
@@ -1916,7 +1916,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g28_0_g28_contents_c_11_contents_c_12_1_contents_c_12_a28_j28_if_and_g28_0_g28_contents_c_11_j28_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g28_0_g28_contents_c_11_contents_c_12_1_contents_c_12_a28_j28_if_and_g28_0_g28_contents_c_11_j28_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g28_0_g28_contents_c_11_contents_c_12_1_contents_c_12_a28_j28_if_and_g28_0_g28_contents_c_11_j28_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g28_0_g28_contents_c_11_contents_c_12_1_contents_c_12_a28_j28_if_and_g28_0_g28_contents_c_11_j28_0(java.lang.String v)
@@ -1926,7 +1926,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g27_6_contents_c_11_g27_0_round_offset_contents_b_73_0_contents_c_11_g27_1_j27_2_if_and_contents_c_11_0_j27_0_j27_0_if_and_contents_c_13_sequential_g28_0_g28_contents_c_11_contents_c_12_1_contents_c_12_a28_j28_if_and_g28_0_g28_contents_c_11_j28_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g27_6_contents_c_11_g27_0_round_offset_contents_b_73_0_contents_c_11_g27_1_j27_2_if_and_contents_c_11_0_j27_0_j27_0_if_and_contents_c_13_sequential_g28_0_g28_contents_c_11_contents_c_12_1_contents_c_12_a28_j28_if_and_g28_0_g28_contents_c_11_j28_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g27_6_contents_c_11_g27_0_round_offset_contents_b_73_0_contents_c_11_g27_1_j27_2_if_and_contents_c_11_0_j27_0_j27_0_if_and_contents_c_13_sequential_g28_0_g28_contents_c_11_contents_c_12_1_contents_c_12_a28_j28_if_and_g28_0_g28_contents_c_11_j28_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g27_6_contents_c_11_g27_0_round_offset_contents_b_73_0_contents_c_11_g27_1_j27_2_if_and_contents_c_11_0_j27_0_j27_0_if_and_contents_c_13_sequential_g28_0_g28_contents_c_11_contents_c_12_1_contents_c_12_a28_j28_if_and_g28_0_g28_contents_c_11_j28_0(java.lang.Double v)
@@ -1936,7 +1936,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h27_0_round_h27_j27_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g28_6_contents_c_11_g28_0_round_offset_contents_b_73_0_contents_c_11_g28_1_j28_2_if_and_contents_c_11_0_j28_0_j28_0()
     {
-        return if_h27_0_round_h27_j27_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g28_6_contents_c_11_g28_0_round_offset_contents_b_73_0_contents_c_11_g28_1_j28_2_if_and_contents_c_11_0_j28_0_j28_0;
+        return this.if_h27_0_round_h27_j27_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g28_6_contents_c_11_g28_0_round_offset_contents_b_73_0_contents_c_11_g28_1_j28_2_if_and_contents_c_11_0_j28_0_j28_0;
     }
 
     public void setIf_h27_0_round_h27_j27_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g28_6_contents_c_11_g28_0_round_offset_contents_b_73_0_contents_c_11_g28_1_j28_2_if_and_contents_c_11_0_j28_0_j28_0(java.lang.Double v)
@@ -1946,7 +1946,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h27_0_k27_l27_if_h28_0_round_h28_j28_if_contents_c_12_4_1_0_2()
     {
-        return if_h27_0_k27_l27_if_h28_0_round_h28_j28_if_contents_c_12_4_1_0_2;
+        return this.if_h27_0_k27_l27_if_h28_0_round_h28_j28_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h27_0_k27_l27_if_h28_0_round_h28_j28_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -1956,7 +1956,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_16()
     {
-        return oa_ar_or_fr_16;
+        return this.oa_ar_or_fr_16;
     }
 
     public void setOa_ar_or_fr_16(java.lang.String v)
@@ -1966,7 +1966,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_16()
     {
-        return equipment_purchases_or_value_2000_each_item_description_16;
+        return this.equipment_purchases_or_value_2000_each_item_description_16;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_16(java.lang.String v)
@@ -1976,7 +1976,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_16()
     {
-        return qty_16;
+        return this.qty_16;
     }
 
     public void setQty_16(java.lang.String v)
@@ -1986,7 +1986,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_16()
     {
-        return purchase_year_16;
+        return this.purchase_year_16;
     }
 
     public void setPurchase_year_16(java.lang.String v)
@@ -1996,7 +1996,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g28_0_if_and_contents_c_11_0_contents_c_11_g28_6_contents_c_11_g28_0_offset_contents_b_75_0_contents_c_11_g28_0()
     {
-        return if_g28_0_if_and_contents_c_11_0_contents_c_11_g28_6_contents_c_11_g28_0_offset_contents_b_75_0_contents_c_11_g28_0;
+        return this.if_g28_0_if_and_contents_c_11_0_contents_c_11_g28_6_contents_c_11_g28_0_offset_contents_b_75_0_contents_c_11_g28_0;
     }
 
     public void setIf_g28_0_if_and_contents_c_11_0_contents_c_11_g28_6_contents_c_11_g28_0_offset_contents_b_75_0_contents_c_11_g28_0(java.lang.Double v)
@@ -2006,7 +2006,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g28_0_g28_contents_c_11_contents_c_12_1_contents_c_12_a28_j28_if_and_g28_0_g28_contents_c_11_j28_0_if_g29_0_if_and_contents_c_11_0_contents_c_11_g29_6_contents_c_11_g29_0_offset_contents_b_75_0_contents_c_11_g29_0()
     {
-        return if_and_contents_c_13_sequential_g28_0_g28_contents_c_11_contents_c_12_1_contents_c_12_a28_j28_if_and_g28_0_g28_contents_c_11_j28_0_if_g29_0_if_and_contents_c_11_0_contents_c_11_g29_6_contents_c_11_g29_0_offset_contents_b_75_0_contents_c_11_g29_0;
+        return this.if_and_contents_c_13_sequential_g28_0_g28_contents_c_11_contents_c_12_1_contents_c_12_a28_j28_if_and_g28_0_g28_contents_c_11_j28_0_if_g29_0_if_and_contents_c_11_0_contents_c_11_g29_6_contents_c_11_g29_0_offset_contents_b_75_0_contents_c_11_g29_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g28_0_g28_contents_c_11_contents_c_12_1_contents_c_12_a28_j28_if_and_g28_0_g28_contents_c_11_j28_0_if_g29_0_if_and_contents_c_11_0_contents_c_11_g29_6_contents_c_11_g29_0_offset_contents_b_75_0_contents_c_11_g29_0(java.lang.Double v)
@@ -2016,7 +2016,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g29_0_g29_contents_c_11_contents_c_12_1_contents_c_12_a29_j29_if_and_g29_0_g29_contents_c_11_j29_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g29_0_g29_contents_c_11_contents_c_12_1_contents_c_12_a29_j29_if_and_g29_0_g29_contents_c_11_j29_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g29_0_g29_contents_c_11_contents_c_12_1_contents_c_12_a29_j29_if_and_g29_0_g29_contents_c_11_j29_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g29_0_g29_contents_c_11_contents_c_12_1_contents_c_12_a29_j29_if_and_g29_0_g29_contents_c_11_j29_0(java.lang.String v)
@@ -2026,7 +2026,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g28_6_contents_c_11_g28_0_round_offset_contents_b_73_0_contents_c_11_g28_1_j28_2_if_and_contents_c_11_0_j28_0_j28_0_if_and_contents_c_13_sequential_g29_0_g29_contents_c_11_contents_c_12_1_contents_c_12_a29_j29_if_and_g29_0_g29_contents_c_11_j29_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g28_6_contents_c_11_g28_0_round_offset_contents_b_73_0_contents_c_11_g28_1_j28_2_if_and_contents_c_11_0_j28_0_j28_0_if_and_contents_c_13_sequential_g29_0_g29_contents_c_11_contents_c_12_1_contents_c_12_a29_j29_if_and_g29_0_g29_contents_c_11_j29_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g28_6_contents_c_11_g28_0_round_offset_contents_b_73_0_contents_c_11_g28_1_j28_2_if_and_contents_c_11_0_j28_0_j28_0_if_and_contents_c_13_sequential_g29_0_g29_contents_c_11_contents_c_12_1_contents_c_12_a29_j29_if_and_g29_0_g29_contents_c_11_j29_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g28_6_contents_c_11_g28_0_round_offset_contents_b_73_0_contents_c_11_g28_1_j28_2_if_and_contents_c_11_0_j28_0_j28_0_if_and_contents_c_13_sequential_g29_0_g29_contents_c_11_contents_c_12_1_contents_c_12_a29_j29_if_and_g29_0_g29_contents_c_11_j29_0(java.lang.Double v)
@@ -2036,7 +2036,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h28_0_round_h28_j28_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g29_6_contents_c_11_g29_0_round_offset_contents_b_73_0_contents_c_11_g29_1_j29_2_if_and_contents_c_11_0_j29_0_j29_0()
     {
-        return if_h28_0_round_h28_j28_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g29_6_contents_c_11_g29_0_round_offset_contents_b_73_0_contents_c_11_g29_1_j29_2_if_and_contents_c_11_0_j29_0_j29_0;
+        return this.if_h28_0_round_h28_j28_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g29_6_contents_c_11_g29_0_round_offset_contents_b_73_0_contents_c_11_g29_1_j29_2_if_and_contents_c_11_0_j29_0_j29_0;
     }
 
     public void setIf_h28_0_round_h28_j28_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g29_6_contents_c_11_g29_0_round_offset_contents_b_73_0_contents_c_11_g29_1_j29_2_if_and_contents_c_11_0_j29_0_j29_0(java.lang.Double v)
@@ -2046,7 +2046,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h28_0_k28_l28_if_h29_0_round_h29_j29_if_contents_c_12_4_1_0_2()
     {
-        return if_h28_0_k28_l28_if_h29_0_round_h29_j29_if_contents_c_12_4_1_0_2;
+        return this.if_h28_0_k28_l28_if_h29_0_round_h29_j29_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h28_0_k28_l28_if_h29_0_round_h29_j29_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -2056,7 +2056,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_17()
     {
-        return oa_ar_or_fr_17;
+        return this.oa_ar_or_fr_17;
     }
 
     public void setOa_ar_or_fr_17(java.lang.String v)
@@ -2066,7 +2066,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_17()
     {
-        return equipment_purchases_or_value_2000_each_item_description_17;
+        return this.equipment_purchases_or_value_2000_each_item_description_17;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_17(java.lang.String v)
@@ -2076,7 +2076,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_17()
     {
-        return qty_17;
+        return this.qty_17;
     }
 
     public void setQty_17(java.lang.String v)
@@ -2086,7 +2086,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_17()
     {
-        return purchase_year_17;
+        return this.purchase_year_17;
     }
 
     public void setPurchase_year_17(java.lang.String v)
@@ -2096,7 +2096,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g29_0_if_and_contents_c_11_0_contents_c_11_g29_6_contents_c_11_g29_0_offset_contents_b_75_0_contents_c_11_g29_0()
     {
-        return if_g29_0_if_and_contents_c_11_0_contents_c_11_g29_6_contents_c_11_g29_0_offset_contents_b_75_0_contents_c_11_g29_0;
+        return this.if_g29_0_if_and_contents_c_11_0_contents_c_11_g29_6_contents_c_11_g29_0_offset_contents_b_75_0_contents_c_11_g29_0;
     }
 
     public void setIf_g29_0_if_and_contents_c_11_0_contents_c_11_g29_6_contents_c_11_g29_0_offset_contents_b_75_0_contents_c_11_g29_0(java.lang.Double v)
@@ -2106,7 +2106,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g29_0_g29_contents_c_11_contents_c_12_1_contents_c_12_a29_j29_if_and_g29_0_g29_contents_c_11_j29_0_if_g30_0_if_and_contents_c_11_0_contents_c_11_g30_6_contents_c_11_g30_0_offset_contents_b_75_0_contents_c_11_g30_0()
     {
-        return if_and_contents_c_13_sequential_g29_0_g29_contents_c_11_contents_c_12_1_contents_c_12_a29_j29_if_and_g29_0_g29_contents_c_11_j29_0_if_g30_0_if_and_contents_c_11_0_contents_c_11_g30_6_contents_c_11_g30_0_offset_contents_b_75_0_contents_c_11_g30_0;
+        return this.if_and_contents_c_13_sequential_g29_0_g29_contents_c_11_contents_c_12_1_contents_c_12_a29_j29_if_and_g29_0_g29_contents_c_11_j29_0_if_g30_0_if_and_contents_c_11_0_contents_c_11_g30_6_contents_c_11_g30_0_offset_contents_b_75_0_contents_c_11_g30_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g29_0_g29_contents_c_11_contents_c_12_1_contents_c_12_a29_j29_if_and_g29_0_g29_contents_c_11_j29_0_if_g30_0_if_and_contents_c_11_0_contents_c_11_g30_6_contents_c_11_g30_0_offset_contents_b_75_0_contents_c_11_g30_0(java.lang.Double v)
@@ -2116,7 +2116,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g30_0_g30_contents_c_11_contents_c_12_1_contents_c_12_a30_j30_if_and_g30_0_g30_contents_c_11_j30_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g30_0_g30_contents_c_11_contents_c_12_1_contents_c_12_a30_j30_if_and_g30_0_g30_contents_c_11_j30_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g30_0_g30_contents_c_11_contents_c_12_1_contents_c_12_a30_j30_if_and_g30_0_g30_contents_c_11_j30_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g30_0_g30_contents_c_11_contents_c_12_1_contents_c_12_a30_j30_if_and_g30_0_g30_contents_c_11_j30_0(java.lang.String v)
@@ -2126,7 +2126,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g29_6_contents_c_11_g29_0_round_offset_contents_b_73_0_contents_c_11_g29_1_j29_2_if_and_contents_c_11_0_j29_0_j29_0_if_and_contents_c_13_sequential_g30_0_g30_contents_c_11_contents_c_12_1_contents_c_12_a30_j30_if_and_g30_0_g30_contents_c_11_j30_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g29_6_contents_c_11_g29_0_round_offset_contents_b_73_0_contents_c_11_g29_1_j29_2_if_and_contents_c_11_0_j29_0_j29_0_if_and_contents_c_13_sequential_g30_0_g30_contents_c_11_contents_c_12_1_contents_c_12_a30_j30_if_and_g30_0_g30_contents_c_11_j30_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g29_6_contents_c_11_g29_0_round_offset_contents_b_73_0_contents_c_11_g29_1_j29_2_if_and_contents_c_11_0_j29_0_j29_0_if_and_contents_c_13_sequential_g30_0_g30_contents_c_11_contents_c_12_1_contents_c_12_a30_j30_if_and_g30_0_g30_contents_c_11_j30_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g29_6_contents_c_11_g29_0_round_offset_contents_b_73_0_contents_c_11_g29_1_j29_2_if_and_contents_c_11_0_j29_0_j29_0_if_and_contents_c_13_sequential_g30_0_g30_contents_c_11_contents_c_12_1_contents_c_12_a30_j30_if_and_g30_0_g30_contents_c_11_j30_0(java.lang.Double v)
@@ -2136,7 +2136,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h29_0_round_h29_j29_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g30_6_contents_c_11_g30_0_round_offset_contents_b_73_0_contents_c_11_g30_1_j30_2_if_and_contents_c_11_0_j30_0_j30_0()
     {
-        return if_h29_0_round_h29_j29_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g30_6_contents_c_11_g30_0_round_offset_contents_b_73_0_contents_c_11_g30_1_j30_2_if_and_contents_c_11_0_j30_0_j30_0;
+        return this.if_h29_0_round_h29_j29_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g30_6_contents_c_11_g30_0_round_offset_contents_b_73_0_contents_c_11_g30_1_j30_2_if_and_contents_c_11_0_j30_0_j30_0;
     }
 
     public void setIf_h29_0_round_h29_j29_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g30_6_contents_c_11_g30_0_round_offset_contents_b_73_0_contents_c_11_g30_1_j30_2_if_and_contents_c_11_0_j30_0_j30_0(java.lang.Double v)
@@ -2146,7 +2146,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h29_0_k29_l29_if_h30_0_round_h30_j30_if_contents_c_12_4_1_0_2()
     {
-        return if_h29_0_k29_l29_if_h30_0_round_h30_j30_if_contents_c_12_4_1_0_2;
+        return this.if_h29_0_k29_l29_if_h30_0_round_h30_j30_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h29_0_k29_l29_if_h30_0_round_h30_j30_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -2156,7 +2156,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_18()
     {
-        return oa_ar_or_fr_18;
+        return this.oa_ar_or_fr_18;
     }
 
     public void setOa_ar_or_fr_18(java.lang.String v)
@@ -2166,7 +2166,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_18()
     {
-        return equipment_purchases_or_value_2000_each_item_description_18;
+        return this.equipment_purchases_or_value_2000_each_item_description_18;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_18(java.lang.String v)
@@ -2176,7 +2176,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_18()
     {
-        return qty_18;
+        return this.qty_18;
     }
 
     public void setQty_18(java.lang.String v)
@@ -2186,7 +2186,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_18()
     {
-        return purchase_year_18;
+        return this.purchase_year_18;
     }
 
     public void setPurchase_year_18(java.lang.String v)
@@ -2196,7 +2196,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g30_0_if_and_contents_c_11_0_contents_c_11_g30_6_contents_c_11_g30_0_offset_contents_b_75_0_contents_c_11_g30_0()
     {
-        return if_g30_0_if_and_contents_c_11_0_contents_c_11_g30_6_contents_c_11_g30_0_offset_contents_b_75_0_contents_c_11_g30_0;
+        return this.if_g30_0_if_and_contents_c_11_0_contents_c_11_g30_6_contents_c_11_g30_0_offset_contents_b_75_0_contents_c_11_g30_0;
     }
 
     public void setIf_g30_0_if_and_contents_c_11_0_contents_c_11_g30_6_contents_c_11_g30_0_offset_contents_b_75_0_contents_c_11_g30_0(java.lang.Double v)
@@ -2206,7 +2206,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g30_0_g30_contents_c_11_contents_c_12_1_contents_c_12_a30_j30_if_and_g30_0_g30_contents_c_11_j30_0_if_g31_0_if_and_contents_c_11_0_contents_c_11_g31_6_contents_c_11_g31_0_offset_contents_b_75_0_contents_c_11_g31_0()
     {
-        return if_and_contents_c_13_sequential_g30_0_g30_contents_c_11_contents_c_12_1_contents_c_12_a30_j30_if_and_g30_0_g30_contents_c_11_j30_0_if_g31_0_if_and_contents_c_11_0_contents_c_11_g31_6_contents_c_11_g31_0_offset_contents_b_75_0_contents_c_11_g31_0;
+        return this.if_and_contents_c_13_sequential_g30_0_g30_contents_c_11_contents_c_12_1_contents_c_12_a30_j30_if_and_g30_0_g30_contents_c_11_j30_0_if_g31_0_if_and_contents_c_11_0_contents_c_11_g31_6_contents_c_11_g31_0_offset_contents_b_75_0_contents_c_11_g31_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g30_0_g30_contents_c_11_contents_c_12_1_contents_c_12_a30_j30_if_and_g30_0_g30_contents_c_11_j30_0_if_g31_0_if_and_contents_c_11_0_contents_c_11_g31_6_contents_c_11_g31_0_offset_contents_b_75_0_contents_c_11_g31_0(java.lang.Double v)
@@ -2216,7 +2216,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g31_0_g31_contents_c_11_contents_c_12_1_contents_c_12_a31_j31_if_and_g31_0_g31_contents_c_11_j31_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g31_0_g31_contents_c_11_contents_c_12_1_contents_c_12_a31_j31_if_and_g31_0_g31_contents_c_11_j31_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g31_0_g31_contents_c_11_contents_c_12_1_contents_c_12_a31_j31_if_and_g31_0_g31_contents_c_11_j31_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g31_0_g31_contents_c_11_contents_c_12_1_contents_c_12_a31_j31_if_and_g31_0_g31_contents_c_11_j31_0(java.lang.String v)
@@ -2226,7 +2226,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g30_6_contents_c_11_g30_0_round_offset_contents_b_73_0_contents_c_11_g30_1_j30_2_if_and_contents_c_11_0_j30_0_j30_0_if_and_contents_c_13_sequential_g31_0_g31_contents_c_11_contents_c_12_1_contents_c_12_a31_j31_if_and_g31_0_g31_contents_c_11_j31_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g30_6_contents_c_11_g30_0_round_offset_contents_b_73_0_contents_c_11_g30_1_j30_2_if_and_contents_c_11_0_j30_0_j30_0_if_and_contents_c_13_sequential_g31_0_g31_contents_c_11_contents_c_12_1_contents_c_12_a31_j31_if_and_g31_0_g31_contents_c_11_j31_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g30_6_contents_c_11_g30_0_round_offset_contents_b_73_0_contents_c_11_g30_1_j30_2_if_and_contents_c_11_0_j30_0_j30_0_if_and_contents_c_13_sequential_g31_0_g31_contents_c_11_contents_c_12_1_contents_c_12_a31_j31_if_and_g31_0_g31_contents_c_11_j31_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g30_6_contents_c_11_g30_0_round_offset_contents_b_73_0_contents_c_11_g30_1_j30_2_if_and_contents_c_11_0_j30_0_j30_0_if_and_contents_c_13_sequential_g31_0_g31_contents_c_11_contents_c_12_1_contents_c_12_a31_j31_if_and_g31_0_g31_contents_c_11_j31_0(java.lang.Double v)
@@ -2236,7 +2236,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h30_0_round_h30_j30_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g31_6_contents_c_11_g31_0_round_offset_contents_b_73_0_contents_c_11_g31_1_j31_2_if_and_contents_c_11_0_j31_0_j31_0()
     {
-        return if_h30_0_round_h30_j30_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g31_6_contents_c_11_g31_0_round_offset_contents_b_73_0_contents_c_11_g31_1_j31_2_if_and_contents_c_11_0_j31_0_j31_0;
+        return this.if_h30_0_round_h30_j30_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g31_6_contents_c_11_g31_0_round_offset_contents_b_73_0_contents_c_11_g31_1_j31_2_if_and_contents_c_11_0_j31_0_j31_0;
     }
 
     public void setIf_h30_0_round_h30_j30_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g31_6_contents_c_11_g31_0_round_offset_contents_b_73_0_contents_c_11_g31_1_j31_2_if_and_contents_c_11_0_j31_0_j31_0(java.lang.Double v)
@@ -2246,7 +2246,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h30_0_k30_l30_if_h31_0_round_h31_j31_if_contents_c_12_4_1_0_2()
     {
-        return if_h30_0_k30_l30_if_h31_0_round_h31_j31_if_contents_c_12_4_1_0_2;
+        return this.if_h30_0_k30_l30_if_h31_0_round_h31_j31_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h30_0_k30_l30_if_h31_0_round_h31_j31_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -2256,7 +2256,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_19()
     {
-        return oa_ar_or_fr_19;
+        return this.oa_ar_or_fr_19;
     }
 
     public void setOa_ar_or_fr_19(java.lang.String v)
@@ -2266,7 +2266,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_19()
     {
-        return equipment_purchases_or_value_2000_each_item_description_19;
+        return this.equipment_purchases_or_value_2000_each_item_description_19;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_19(java.lang.String v)
@@ -2276,7 +2276,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_19()
     {
-        return qty_19;
+        return this.qty_19;
     }
 
     public void setQty_19(java.lang.String v)
@@ -2286,7 +2286,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_19()
     {
-        return purchase_year_19;
+        return this.purchase_year_19;
     }
 
     public void setPurchase_year_19(java.lang.String v)
@@ -2296,7 +2296,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g31_0_if_and_contents_c_11_0_contents_c_11_g31_6_contents_c_11_g31_0_offset_contents_b_75_0_contents_c_11_g31_0()
     {
-        return if_g31_0_if_and_contents_c_11_0_contents_c_11_g31_6_contents_c_11_g31_0_offset_contents_b_75_0_contents_c_11_g31_0;
+        return this.if_g31_0_if_and_contents_c_11_0_contents_c_11_g31_6_contents_c_11_g31_0_offset_contents_b_75_0_contents_c_11_g31_0;
     }
 
     public void setIf_g31_0_if_and_contents_c_11_0_contents_c_11_g31_6_contents_c_11_g31_0_offset_contents_b_75_0_contents_c_11_g31_0(java.lang.Double v)
@@ -2306,7 +2306,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g31_0_g31_contents_c_11_contents_c_12_1_contents_c_12_a31_j31_if_and_g31_0_g31_contents_c_11_j31_0_if_g32_0_if_and_contents_c_11_0_contents_c_11_g32_6_contents_c_11_g32_0_offset_contents_b_75_0_contents_c_11_g32_0()
     {
-        return if_and_contents_c_13_sequential_g31_0_g31_contents_c_11_contents_c_12_1_contents_c_12_a31_j31_if_and_g31_0_g31_contents_c_11_j31_0_if_g32_0_if_and_contents_c_11_0_contents_c_11_g32_6_contents_c_11_g32_0_offset_contents_b_75_0_contents_c_11_g32_0;
+        return this.if_and_contents_c_13_sequential_g31_0_g31_contents_c_11_contents_c_12_1_contents_c_12_a31_j31_if_and_g31_0_g31_contents_c_11_j31_0_if_g32_0_if_and_contents_c_11_0_contents_c_11_g32_6_contents_c_11_g32_0_offset_contents_b_75_0_contents_c_11_g32_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g31_0_g31_contents_c_11_contents_c_12_1_contents_c_12_a31_j31_if_and_g31_0_g31_contents_c_11_j31_0_if_g32_0_if_and_contents_c_11_0_contents_c_11_g32_6_contents_c_11_g32_0_offset_contents_b_75_0_contents_c_11_g32_0(java.lang.Double v)
@@ -2316,7 +2316,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g32_0_g32_contents_c_11_contents_c_12_1_contents_c_12_a32_j32_if_and_g32_0_g32_contents_c_11_j32_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g32_0_g32_contents_c_11_contents_c_12_1_contents_c_12_a32_j32_if_and_g32_0_g32_contents_c_11_j32_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g32_0_g32_contents_c_11_contents_c_12_1_contents_c_12_a32_j32_if_and_g32_0_g32_contents_c_11_j32_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g32_0_g32_contents_c_11_contents_c_12_1_contents_c_12_a32_j32_if_and_g32_0_g32_contents_c_11_j32_0(java.lang.String v)
@@ -2326,7 +2326,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g31_6_contents_c_11_g31_0_round_offset_contents_b_73_0_contents_c_11_g31_1_j31_2_if_and_contents_c_11_0_j31_0_j31_0_if_and_contents_c_13_sequential_g32_0_g32_contents_c_11_contents_c_12_1_contents_c_12_a32_j32_if_and_g32_0_g32_contents_c_11_j32_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g31_6_contents_c_11_g31_0_round_offset_contents_b_73_0_contents_c_11_g31_1_j31_2_if_and_contents_c_11_0_j31_0_j31_0_if_and_contents_c_13_sequential_g32_0_g32_contents_c_11_contents_c_12_1_contents_c_12_a32_j32_if_and_g32_0_g32_contents_c_11_j32_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g31_6_contents_c_11_g31_0_round_offset_contents_b_73_0_contents_c_11_g31_1_j31_2_if_and_contents_c_11_0_j31_0_j31_0_if_and_contents_c_13_sequential_g32_0_g32_contents_c_11_contents_c_12_1_contents_c_12_a32_j32_if_and_g32_0_g32_contents_c_11_j32_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g31_6_contents_c_11_g31_0_round_offset_contents_b_73_0_contents_c_11_g31_1_j31_2_if_and_contents_c_11_0_j31_0_j31_0_if_and_contents_c_13_sequential_g32_0_g32_contents_c_11_contents_c_12_1_contents_c_12_a32_j32_if_and_g32_0_g32_contents_c_11_j32_0(java.lang.Double v)
@@ -2336,7 +2336,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h31_0_round_h31_j31_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g32_6_contents_c_11_g32_0_round_offset_contents_b_73_0_contents_c_11_g32_1_j32_2_if_and_contents_c_11_0_j32_0_j32_0()
     {
-        return if_h31_0_round_h31_j31_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g32_6_contents_c_11_g32_0_round_offset_contents_b_73_0_contents_c_11_g32_1_j32_2_if_and_contents_c_11_0_j32_0_j32_0;
+        return this.if_h31_0_round_h31_j31_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g32_6_contents_c_11_g32_0_round_offset_contents_b_73_0_contents_c_11_g32_1_j32_2_if_and_contents_c_11_0_j32_0_j32_0;
     }
 
     public void setIf_h31_0_round_h31_j31_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g32_6_contents_c_11_g32_0_round_offset_contents_b_73_0_contents_c_11_g32_1_j32_2_if_and_contents_c_11_0_j32_0_j32_0(java.lang.Double v)
@@ -2346,7 +2346,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h31_0_k31_l31_if_h32_0_round_h32_j32_if_contents_c_12_4_1_0_2()
     {
-        return if_h31_0_k31_l31_if_h32_0_round_h32_j32_if_contents_c_12_4_1_0_2;
+        return this.if_h31_0_k31_l31_if_h32_0_round_h32_j32_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h31_0_k31_l31_if_h32_0_round_h32_j32_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -2356,7 +2356,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_20()
     {
-        return oa_ar_or_fr_20;
+        return this.oa_ar_or_fr_20;
     }
 
     public void setOa_ar_or_fr_20(java.lang.String v)
@@ -2366,7 +2366,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_20()
     {
-        return equipment_purchases_or_value_2000_each_item_description_20;
+        return this.equipment_purchases_or_value_2000_each_item_description_20;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_20(java.lang.String v)
@@ -2376,7 +2376,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_20()
     {
-        return qty_20;
+        return this.qty_20;
     }
 
     public void setQty_20(java.lang.String v)
@@ -2386,7 +2386,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_20()
     {
-        return purchase_year_20;
+        return this.purchase_year_20;
     }
 
     public void setPurchase_year_20(java.lang.String v)
@@ -2396,7 +2396,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g32_0_if_and_contents_c_11_0_contents_c_11_g32_6_contents_c_11_g32_0_offset_contents_b_75_0_contents_c_11_g32_0()
     {
-        return if_g32_0_if_and_contents_c_11_0_contents_c_11_g32_6_contents_c_11_g32_0_offset_contents_b_75_0_contents_c_11_g32_0;
+        return this.if_g32_0_if_and_contents_c_11_0_contents_c_11_g32_6_contents_c_11_g32_0_offset_contents_b_75_0_contents_c_11_g32_0;
     }
 
     public void setIf_g32_0_if_and_contents_c_11_0_contents_c_11_g32_6_contents_c_11_g32_0_offset_contents_b_75_0_contents_c_11_g32_0(java.lang.Double v)
@@ -2406,7 +2406,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g32_0_g32_contents_c_11_contents_c_12_1_contents_c_12_a32_j32_if_and_g32_0_g32_contents_c_11_j32_0_if_g33_0_if_and_contents_c_11_0_contents_c_11_g33_6_contents_c_11_g33_0_offset_contents_b_75_0_contents_c_11_g33_0()
     {
-        return if_and_contents_c_13_sequential_g32_0_g32_contents_c_11_contents_c_12_1_contents_c_12_a32_j32_if_and_g32_0_g32_contents_c_11_j32_0_if_g33_0_if_and_contents_c_11_0_contents_c_11_g33_6_contents_c_11_g33_0_offset_contents_b_75_0_contents_c_11_g33_0;
+        return this.if_and_contents_c_13_sequential_g32_0_g32_contents_c_11_contents_c_12_1_contents_c_12_a32_j32_if_and_g32_0_g32_contents_c_11_j32_0_if_g33_0_if_and_contents_c_11_0_contents_c_11_g33_6_contents_c_11_g33_0_offset_contents_b_75_0_contents_c_11_g33_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g32_0_g32_contents_c_11_contents_c_12_1_contents_c_12_a32_j32_if_and_g32_0_g32_contents_c_11_j32_0_if_g33_0_if_and_contents_c_11_0_contents_c_11_g33_6_contents_c_11_g33_0_offset_contents_b_75_0_contents_c_11_g33_0(java.lang.Double v)
@@ -2416,7 +2416,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g33_0_g33_contents_c_11_contents_c_12_1_contents_c_12_a33_j33_if_and_g33_0_g33_contents_c_11_j33_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g33_0_g33_contents_c_11_contents_c_12_1_contents_c_12_a33_j33_if_and_g33_0_g33_contents_c_11_j33_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g33_0_g33_contents_c_11_contents_c_12_1_contents_c_12_a33_j33_if_and_g33_0_g33_contents_c_11_j33_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g33_0_g33_contents_c_11_contents_c_12_1_contents_c_12_a33_j33_if_and_g33_0_g33_contents_c_11_j33_0(java.lang.String v)
@@ -2426,7 +2426,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g32_6_contents_c_11_g32_0_round_offset_contents_b_73_0_contents_c_11_g32_1_j32_2_if_and_contents_c_11_0_j32_0_j32_0_if_and_contents_c_13_sequential_g33_0_g33_contents_c_11_contents_c_12_1_contents_c_12_a33_j33_if_and_g33_0_g33_contents_c_11_j33_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g32_6_contents_c_11_g32_0_round_offset_contents_b_73_0_contents_c_11_g32_1_j32_2_if_and_contents_c_11_0_j32_0_j32_0_if_and_contents_c_13_sequential_g33_0_g33_contents_c_11_contents_c_12_1_contents_c_12_a33_j33_if_and_g33_0_g33_contents_c_11_j33_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g32_6_contents_c_11_g32_0_round_offset_contents_b_73_0_contents_c_11_g32_1_j32_2_if_and_contents_c_11_0_j32_0_j32_0_if_and_contents_c_13_sequential_g33_0_g33_contents_c_11_contents_c_12_1_contents_c_12_a33_j33_if_and_g33_0_g33_contents_c_11_j33_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g32_6_contents_c_11_g32_0_round_offset_contents_b_73_0_contents_c_11_g32_1_j32_2_if_and_contents_c_11_0_j32_0_j32_0_if_and_contents_c_13_sequential_g33_0_g33_contents_c_11_contents_c_12_1_contents_c_12_a33_j33_if_and_g33_0_g33_contents_c_11_j33_0(java.lang.Double v)
@@ -2436,7 +2436,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h32_0_round_h32_j32_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g33_6_contents_c_11_g33_0_round_offset_contents_b_73_0_contents_c_11_g33_1_j33_2_if_and_contents_c_11_0_j33_0_j33_0()
     {
-        return if_h32_0_round_h32_j32_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g33_6_contents_c_11_g33_0_round_offset_contents_b_73_0_contents_c_11_g33_1_j33_2_if_and_contents_c_11_0_j33_0_j33_0;
+        return this.if_h32_0_round_h32_j32_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g33_6_contents_c_11_g33_0_round_offset_contents_b_73_0_contents_c_11_g33_1_j33_2_if_and_contents_c_11_0_j33_0_j33_0;
     }
 
     public void setIf_h32_0_round_h32_j32_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g33_6_contents_c_11_g33_0_round_offset_contents_b_73_0_contents_c_11_g33_1_j33_2_if_and_contents_c_11_0_j33_0_j33_0(java.lang.Double v)
@@ -2446,7 +2446,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h32_0_k32_l32_if_h33_0_round_h33_j33_if_contents_c_12_4_1_0_2()
     {
-        return if_h32_0_k32_l32_if_h33_0_round_h33_j33_if_contents_c_12_4_1_0_2;
+        return this.if_h32_0_k32_l32_if_h33_0_round_h33_j33_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h32_0_k32_l32_if_h33_0_round_h33_j33_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -2456,7 +2456,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_21()
     {
-        return oa_ar_or_fr_21;
+        return this.oa_ar_or_fr_21;
     }
 
     public void setOa_ar_or_fr_21(java.lang.String v)
@@ -2466,7 +2466,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_21()
     {
-        return equipment_purchases_or_value_2000_each_item_description_21;
+        return this.equipment_purchases_or_value_2000_each_item_description_21;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_21(java.lang.String v)
@@ -2476,7 +2476,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_21()
     {
-        return qty_21;
+        return this.qty_21;
     }
 
     public void setQty_21(java.lang.String v)
@@ -2486,7 +2486,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_21()
     {
-        return purchase_year_21;
+        return this.purchase_year_21;
     }
 
     public void setPurchase_year_21(java.lang.String v)
@@ -2496,7 +2496,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g33_0_if_and_contents_c_11_0_contents_c_11_g33_6_contents_c_11_g33_0_offset_contents_b_75_0_contents_c_11_g33_0()
     {
-        return if_g33_0_if_and_contents_c_11_0_contents_c_11_g33_6_contents_c_11_g33_0_offset_contents_b_75_0_contents_c_11_g33_0;
+        return this.if_g33_0_if_and_contents_c_11_0_contents_c_11_g33_6_contents_c_11_g33_0_offset_contents_b_75_0_contents_c_11_g33_0;
     }
 
     public void setIf_g33_0_if_and_contents_c_11_0_contents_c_11_g33_6_contents_c_11_g33_0_offset_contents_b_75_0_contents_c_11_g33_0(java.lang.Double v)
@@ -2506,7 +2506,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g33_0_g33_contents_c_11_contents_c_12_1_contents_c_12_a33_j33_if_and_g33_0_g33_contents_c_11_j33_0_if_g34_0_if_and_contents_c_11_0_contents_c_11_g34_6_contents_c_11_g34_0_offset_contents_b_75_0_contents_c_11_g34_0()
     {
-        return if_and_contents_c_13_sequential_g33_0_g33_contents_c_11_contents_c_12_1_contents_c_12_a33_j33_if_and_g33_0_g33_contents_c_11_j33_0_if_g34_0_if_and_contents_c_11_0_contents_c_11_g34_6_contents_c_11_g34_0_offset_contents_b_75_0_contents_c_11_g34_0;
+        return this.if_and_contents_c_13_sequential_g33_0_g33_contents_c_11_contents_c_12_1_contents_c_12_a33_j33_if_and_g33_0_g33_contents_c_11_j33_0_if_g34_0_if_and_contents_c_11_0_contents_c_11_g34_6_contents_c_11_g34_0_offset_contents_b_75_0_contents_c_11_g34_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g33_0_g33_contents_c_11_contents_c_12_1_contents_c_12_a33_j33_if_and_g33_0_g33_contents_c_11_j33_0_if_g34_0_if_and_contents_c_11_0_contents_c_11_g34_6_contents_c_11_g34_0_offset_contents_b_75_0_contents_c_11_g34_0(java.lang.Double v)
@@ -2516,7 +2516,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g34_0_g34_contents_c_11_contents_c_12_1_contents_c_12_a34_j34_if_and_g34_0_g34_contents_c_11_j34_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g34_0_g34_contents_c_11_contents_c_12_1_contents_c_12_a34_j34_if_and_g34_0_g34_contents_c_11_j34_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g34_0_g34_contents_c_11_contents_c_12_1_contents_c_12_a34_j34_if_and_g34_0_g34_contents_c_11_j34_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g34_0_g34_contents_c_11_contents_c_12_1_contents_c_12_a34_j34_if_and_g34_0_g34_contents_c_11_j34_0(java.lang.String v)
@@ -2526,7 +2526,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g33_6_contents_c_11_g33_0_round_offset_contents_b_73_0_contents_c_11_g33_1_j33_2_if_and_contents_c_11_0_j33_0_j33_0_if_and_contents_c_13_sequential_g34_0_g34_contents_c_11_contents_c_12_1_contents_c_12_a34_j34_if_and_g34_0_g34_contents_c_11_j34_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g33_6_contents_c_11_g33_0_round_offset_contents_b_73_0_contents_c_11_g33_1_j33_2_if_and_contents_c_11_0_j33_0_j33_0_if_and_contents_c_13_sequential_g34_0_g34_contents_c_11_contents_c_12_1_contents_c_12_a34_j34_if_and_g34_0_g34_contents_c_11_j34_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g33_6_contents_c_11_g33_0_round_offset_contents_b_73_0_contents_c_11_g33_1_j33_2_if_and_contents_c_11_0_j33_0_j33_0_if_and_contents_c_13_sequential_g34_0_g34_contents_c_11_contents_c_12_1_contents_c_12_a34_j34_if_and_g34_0_g34_contents_c_11_j34_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g33_6_contents_c_11_g33_0_round_offset_contents_b_73_0_contents_c_11_g33_1_j33_2_if_and_contents_c_11_0_j33_0_j33_0_if_and_contents_c_13_sequential_g34_0_g34_contents_c_11_contents_c_12_1_contents_c_12_a34_j34_if_and_g34_0_g34_contents_c_11_j34_0(java.lang.Double v)
@@ -2536,7 +2536,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h33_0_round_h33_j33_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g34_6_contents_c_11_g34_0_round_offset_contents_b_73_0_contents_c_11_g34_1_j34_2_if_and_contents_c_11_0_j34_0_j34_0()
     {
-        return if_h33_0_round_h33_j33_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g34_6_contents_c_11_g34_0_round_offset_contents_b_73_0_contents_c_11_g34_1_j34_2_if_and_contents_c_11_0_j34_0_j34_0;
+        return this.if_h33_0_round_h33_j33_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g34_6_contents_c_11_g34_0_round_offset_contents_b_73_0_contents_c_11_g34_1_j34_2_if_and_contents_c_11_0_j34_0_j34_0;
     }
 
     public void setIf_h33_0_round_h33_j33_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g34_6_contents_c_11_g34_0_round_offset_contents_b_73_0_contents_c_11_g34_1_j34_2_if_and_contents_c_11_0_j34_0_j34_0(java.lang.Double v)
@@ -2546,7 +2546,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h33_0_k33_l33_if_h34_0_round_h34_j34_if_contents_c_12_4_1_0_2()
     {
-        return if_h33_0_k33_l33_if_h34_0_round_h34_j34_if_contents_c_12_4_1_0_2;
+        return this.if_h33_0_k33_l33_if_h34_0_round_h34_j34_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h33_0_k33_l33_if_h34_0_round_h34_j34_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -2556,7 +2556,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_22()
     {
-        return oa_ar_or_fr_22;
+        return this.oa_ar_or_fr_22;
     }
 
     public void setOa_ar_or_fr_22(java.lang.String v)
@@ -2566,7 +2566,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_22()
     {
-        return equipment_purchases_or_value_2000_each_item_description_22;
+        return this.equipment_purchases_or_value_2000_each_item_description_22;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_22(java.lang.String v)
@@ -2576,7 +2576,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_22()
     {
-        return qty_22;
+        return this.qty_22;
     }
 
     public void setQty_22(java.lang.String v)
@@ -2586,7 +2586,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_22()
     {
-        return purchase_year_22;
+        return this.purchase_year_22;
     }
 
     public void setPurchase_year_22(java.lang.String v)
@@ -2596,7 +2596,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g34_0_if_and_contents_c_11_0_contents_c_11_g34_6_contents_c_11_g34_0_offset_contents_b_75_0_contents_c_11_g34_0()
     {
-        return if_g34_0_if_and_contents_c_11_0_contents_c_11_g34_6_contents_c_11_g34_0_offset_contents_b_75_0_contents_c_11_g34_0;
+        return this.if_g34_0_if_and_contents_c_11_0_contents_c_11_g34_6_contents_c_11_g34_0_offset_contents_b_75_0_contents_c_11_g34_0;
     }
 
     public void setIf_g34_0_if_and_contents_c_11_0_contents_c_11_g34_6_contents_c_11_g34_0_offset_contents_b_75_0_contents_c_11_g34_0(java.lang.Double v)
@@ -2606,7 +2606,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g34_0_g34_contents_c_11_contents_c_12_1_contents_c_12_a34_j34_if_and_g34_0_g34_contents_c_11_j34_0_if_g35_0_if_and_contents_c_11_0_contents_c_11_g35_6_contents_c_11_g35_0_offset_contents_b_75_0_contents_c_11_g35_0()
     {
-        return if_and_contents_c_13_sequential_g34_0_g34_contents_c_11_contents_c_12_1_contents_c_12_a34_j34_if_and_g34_0_g34_contents_c_11_j34_0_if_g35_0_if_and_contents_c_11_0_contents_c_11_g35_6_contents_c_11_g35_0_offset_contents_b_75_0_contents_c_11_g35_0;
+        return this.if_and_contents_c_13_sequential_g34_0_g34_contents_c_11_contents_c_12_1_contents_c_12_a34_j34_if_and_g34_0_g34_contents_c_11_j34_0_if_g35_0_if_and_contents_c_11_0_contents_c_11_g35_6_contents_c_11_g35_0_offset_contents_b_75_0_contents_c_11_g35_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g34_0_g34_contents_c_11_contents_c_12_1_contents_c_12_a34_j34_if_and_g34_0_g34_contents_c_11_j34_0_if_g35_0_if_and_contents_c_11_0_contents_c_11_g35_6_contents_c_11_g35_0_offset_contents_b_75_0_contents_c_11_g35_0(java.lang.Double v)
@@ -2616,7 +2616,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g35_0_g35_contents_c_11_contents_c_12_1_contents_c_12_a35_j35_if_and_g35_0_g35_contents_c_11_j35_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g35_0_g35_contents_c_11_contents_c_12_1_contents_c_12_a35_j35_if_and_g35_0_g35_contents_c_11_j35_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g35_0_g35_contents_c_11_contents_c_12_1_contents_c_12_a35_j35_if_and_g35_0_g35_contents_c_11_j35_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g35_0_g35_contents_c_11_contents_c_12_1_contents_c_12_a35_j35_if_and_g35_0_g35_contents_c_11_j35_0(java.lang.String v)
@@ -2626,7 +2626,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g34_6_contents_c_11_g34_0_round_offset_contents_b_73_0_contents_c_11_g34_1_j34_2_if_and_contents_c_11_0_j34_0_j34_0_if_and_contents_c_13_sequential_g35_0_g35_contents_c_11_contents_c_12_1_contents_c_12_a35_j35_if_and_g35_0_g35_contents_c_11_j35_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g34_6_contents_c_11_g34_0_round_offset_contents_b_73_0_contents_c_11_g34_1_j34_2_if_and_contents_c_11_0_j34_0_j34_0_if_and_contents_c_13_sequential_g35_0_g35_contents_c_11_contents_c_12_1_contents_c_12_a35_j35_if_and_g35_0_g35_contents_c_11_j35_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g34_6_contents_c_11_g34_0_round_offset_contents_b_73_0_contents_c_11_g34_1_j34_2_if_and_contents_c_11_0_j34_0_j34_0_if_and_contents_c_13_sequential_g35_0_g35_contents_c_11_contents_c_12_1_contents_c_12_a35_j35_if_and_g35_0_g35_contents_c_11_j35_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g34_6_contents_c_11_g34_0_round_offset_contents_b_73_0_contents_c_11_g34_1_j34_2_if_and_contents_c_11_0_j34_0_j34_0_if_and_contents_c_13_sequential_g35_0_g35_contents_c_11_contents_c_12_1_contents_c_12_a35_j35_if_and_g35_0_g35_contents_c_11_j35_0(java.lang.Double v)
@@ -2636,7 +2636,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h34_0_round_h34_j34_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g35_6_contents_c_11_g35_0_round_offset_contents_b_73_0_contents_c_11_g35_1_j35_2_if_and_contents_c_11_0_j35_0_j35_0()
     {
-        return if_h34_0_round_h34_j34_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g35_6_contents_c_11_g35_0_round_offset_contents_b_73_0_contents_c_11_g35_1_j35_2_if_and_contents_c_11_0_j35_0_j35_0;
+        return this.if_h34_0_round_h34_j34_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g35_6_contents_c_11_g35_0_round_offset_contents_b_73_0_contents_c_11_g35_1_j35_2_if_and_contents_c_11_0_j35_0_j35_0;
     }
 
     public void setIf_h34_0_round_h34_j34_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g35_6_contents_c_11_g35_0_round_offset_contents_b_73_0_contents_c_11_g35_1_j35_2_if_and_contents_c_11_0_j35_0_j35_0(java.lang.Double v)
@@ -2646,7 +2646,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h34_0_k34_l34_if_h35_0_round_h35_j35_if_contents_c_12_4_1_0_2()
     {
-        return if_h34_0_k34_l34_if_h35_0_round_h35_j35_if_contents_c_12_4_1_0_2;
+        return this.if_h34_0_k34_l34_if_h35_0_round_h35_j35_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h34_0_k34_l34_if_h35_0_round_h35_j35_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -2656,7 +2656,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_23()
     {
-        return oa_ar_or_fr_23;
+        return this.oa_ar_or_fr_23;
     }
 
     public void setOa_ar_or_fr_23(java.lang.String v)
@@ -2666,7 +2666,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_23()
     {
-        return equipment_purchases_or_value_2000_each_item_description_23;
+        return this.equipment_purchases_or_value_2000_each_item_description_23;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_23(java.lang.String v)
@@ -2676,7 +2676,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_23()
     {
-        return qty_23;
+        return this.qty_23;
     }
 
     public void setQty_23(java.lang.String v)
@@ -2686,7 +2686,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_23()
     {
-        return purchase_year_23;
+        return this.purchase_year_23;
     }
 
     public void setPurchase_year_23(java.lang.String v)
@@ -2696,7 +2696,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g35_0_if_and_contents_c_11_0_contents_c_11_g35_6_contents_c_11_g35_0_offset_contents_b_75_0_contents_c_11_g35_0()
     {
-        return if_g35_0_if_and_contents_c_11_0_contents_c_11_g35_6_contents_c_11_g35_0_offset_contents_b_75_0_contents_c_11_g35_0;
+        return this.if_g35_0_if_and_contents_c_11_0_contents_c_11_g35_6_contents_c_11_g35_0_offset_contents_b_75_0_contents_c_11_g35_0;
     }
 
     public void setIf_g35_0_if_and_contents_c_11_0_contents_c_11_g35_6_contents_c_11_g35_0_offset_contents_b_75_0_contents_c_11_g35_0(java.lang.Double v)
@@ -2706,7 +2706,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g35_0_g35_contents_c_11_contents_c_12_1_contents_c_12_a35_j35_if_and_g35_0_g35_contents_c_11_j35_0_if_g36_0_if_and_contents_c_11_0_contents_c_11_g36_6_contents_c_11_g36_0_offset_contents_b_75_0_contents_c_11_g36_0()
     {
-        return if_and_contents_c_13_sequential_g35_0_g35_contents_c_11_contents_c_12_1_contents_c_12_a35_j35_if_and_g35_0_g35_contents_c_11_j35_0_if_g36_0_if_and_contents_c_11_0_contents_c_11_g36_6_contents_c_11_g36_0_offset_contents_b_75_0_contents_c_11_g36_0;
+        return this.if_and_contents_c_13_sequential_g35_0_g35_contents_c_11_contents_c_12_1_contents_c_12_a35_j35_if_and_g35_0_g35_contents_c_11_j35_0_if_g36_0_if_and_contents_c_11_0_contents_c_11_g36_6_contents_c_11_g36_0_offset_contents_b_75_0_contents_c_11_g36_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g35_0_g35_contents_c_11_contents_c_12_1_contents_c_12_a35_j35_if_and_g35_0_g35_contents_c_11_j35_0_if_g36_0_if_and_contents_c_11_0_contents_c_11_g36_6_contents_c_11_g36_0_offset_contents_b_75_0_contents_c_11_g36_0(java.lang.Double v)
@@ -2716,7 +2716,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g36_0_g36_contents_c_11_contents_c_12_1_contents_c_12_a36_j36_if_and_g36_0_g36_contents_c_11_j36_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g36_0_g36_contents_c_11_contents_c_12_1_contents_c_12_a36_j36_if_and_g36_0_g36_contents_c_11_j36_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g36_0_g36_contents_c_11_contents_c_12_1_contents_c_12_a36_j36_if_and_g36_0_g36_contents_c_11_j36_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g36_0_g36_contents_c_11_contents_c_12_1_contents_c_12_a36_j36_if_and_g36_0_g36_contents_c_11_j36_0(java.lang.String v)
@@ -2726,7 +2726,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g35_6_contents_c_11_g35_0_round_offset_contents_b_73_0_contents_c_11_g35_1_j35_2_if_and_contents_c_11_0_j35_0_j35_0_if_and_contents_c_13_sequential_g36_0_g36_contents_c_11_contents_c_12_1_contents_c_12_a36_j36_if_and_g36_0_g36_contents_c_11_j36_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g35_6_contents_c_11_g35_0_round_offset_contents_b_73_0_contents_c_11_g35_1_j35_2_if_and_contents_c_11_0_j35_0_j35_0_if_and_contents_c_13_sequential_g36_0_g36_contents_c_11_contents_c_12_1_contents_c_12_a36_j36_if_and_g36_0_g36_contents_c_11_j36_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g35_6_contents_c_11_g35_0_round_offset_contents_b_73_0_contents_c_11_g35_1_j35_2_if_and_contents_c_11_0_j35_0_j35_0_if_and_contents_c_13_sequential_g36_0_g36_contents_c_11_contents_c_12_1_contents_c_12_a36_j36_if_and_g36_0_g36_contents_c_11_j36_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g35_6_contents_c_11_g35_0_round_offset_contents_b_73_0_contents_c_11_g35_1_j35_2_if_and_contents_c_11_0_j35_0_j35_0_if_and_contents_c_13_sequential_g36_0_g36_contents_c_11_contents_c_12_1_contents_c_12_a36_j36_if_and_g36_0_g36_contents_c_11_j36_0(java.lang.Double v)
@@ -2736,7 +2736,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h35_0_round_h35_j35_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g36_6_contents_c_11_g36_0_round_offset_contents_b_73_0_contents_c_11_g36_1_j36_2_if_and_contents_c_11_0_j36_0_j36_0()
     {
-        return if_h35_0_round_h35_j35_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g36_6_contents_c_11_g36_0_round_offset_contents_b_73_0_contents_c_11_g36_1_j36_2_if_and_contents_c_11_0_j36_0_j36_0;
+        return this.if_h35_0_round_h35_j35_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g36_6_contents_c_11_g36_0_round_offset_contents_b_73_0_contents_c_11_g36_1_j36_2_if_and_contents_c_11_0_j36_0_j36_0;
     }
 
     public void setIf_h35_0_round_h35_j35_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g36_6_contents_c_11_g36_0_round_offset_contents_b_73_0_contents_c_11_g36_1_j36_2_if_and_contents_c_11_0_j36_0_j36_0(java.lang.Double v)
@@ -2746,7 +2746,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h35_0_k35_l35_if_h36_0_round_h36_j36_if_contents_c_12_4_1_0_2()
     {
-        return if_h35_0_k35_l35_if_h36_0_round_h36_j36_if_contents_c_12_4_1_0_2;
+        return this.if_h35_0_k35_l35_if_h36_0_round_h36_j36_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h35_0_k35_l35_if_h36_0_round_h36_j36_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -2756,7 +2756,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_24()
     {
-        return oa_ar_or_fr_24;
+        return this.oa_ar_or_fr_24;
     }
 
     public void setOa_ar_or_fr_24(java.lang.String v)
@@ -2766,7 +2766,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_24()
     {
-        return equipment_purchases_or_value_2000_each_item_description_24;
+        return this.equipment_purchases_or_value_2000_each_item_description_24;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_24(java.lang.String v)
@@ -2776,7 +2776,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_24()
     {
-        return qty_24;
+        return this.qty_24;
     }
 
     public void setQty_24(java.lang.String v)
@@ -2786,7 +2786,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_24()
     {
-        return purchase_year_24;
+        return this.purchase_year_24;
     }
 
     public void setPurchase_year_24(java.lang.String v)
@@ -2796,7 +2796,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g36_0_if_and_contents_c_11_0_contents_c_11_g36_6_contents_c_11_g36_0_offset_contents_b_75_0_contents_c_11_g36_0()
     {
-        return if_g36_0_if_and_contents_c_11_0_contents_c_11_g36_6_contents_c_11_g36_0_offset_contents_b_75_0_contents_c_11_g36_0;
+        return this.if_g36_0_if_and_contents_c_11_0_contents_c_11_g36_6_contents_c_11_g36_0_offset_contents_b_75_0_contents_c_11_g36_0;
     }
 
     public void setIf_g36_0_if_and_contents_c_11_0_contents_c_11_g36_6_contents_c_11_g36_0_offset_contents_b_75_0_contents_c_11_g36_0(java.lang.Double v)
@@ -2806,7 +2806,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g36_0_g36_contents_c_11_contents_c_12_1_contents_c_12_a36_j36_if_and_g36_0_g36_contents_c_11_j36_0_if_g37_0_if_and_contents_c_11_0_contents_c_11_g37_6_contents_c_11_g37_0_offset_contents_b_75_0_contents_c_11_g37_0()
     {
-        return if_and_contents_c_13_sequential_g36_0_g36_contents_c_11_contents_c_12_1_contents_c_12_a36_j36_if_and_g36_0_g36_contents_c_11_j36_0_if_g37_0_if_and_contents_c_11_0_contents_c_11_g37_6_contents_c_11_g37_0_offset_contents_b_75_0_contents_c_11_g37_0;
+        return this.if_and_contents_c_13_sequential_g36_0_g36_contents_c_11_contents_c_12_1_contents_c_12_a36_j36_if_and_g36_0_g36_contents_c_11_j36_0_if_g37_0_if_and_contents_c_11_0_contents_c_11_g37_6_contents_c_11_g37_0_offset_contents_b_75_0_contents_c_11_g37_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g36_0_g36_contents_c_11_contents_c_12_1_contents_c_12_a36_j36_if_and_g36_0_g36_contents_c_11_j36_0_if_g37_0_if_and_contents_c_11_0_contents_c_11_g37_6_contents_c_11_g37_0_offset_contents_b_75_0_contents_c_11_g37_0(java.lang.Double v)
@@ -2816,7 +2816,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g37_0_g37_contents_c_11_contents_c_12_1_contents_c_12_a37_j37_if_and_g37_0_g37_contents_c_11_j37_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g37_0_g37_contents_c_11_contents_c_12_1_contents_c_12_a37_j37_if_and_g37_0_g37_contents_c_11_j37_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g37_0_g37_contents_c_11_contents_c_12_1_contents_c_12_a37_j37_if_and_g37_0_g37_contents_c_11_j37_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g37_0_g37_contents_c_11_contents_c_12_1_contents_c_12_a37_j37_if_and_g37_0_g37_contents_c_11_j37_0(java.lang.String v)
@@ -2826,7 +2826,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g36_6_contents_c_11_g36_0_round_offset_contents_b_73_0_contents_c_11_g36_1_j36_2_if_and_contents_c_11_0_j36_0_j36_0_if_and_contents_c_13_sequential_g37_0_g37_contents_c_11_contents_c_12_1_contents_c_12_a37_j37_if_and_g37_0_g37_contents_c_11_j37_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g36_6_contents_c_11_g36_0_round_offset_contents_b_73_0_contents_c_11_g36_1_j36_2_if_and_contents_c_11_0_j36_0_j36_0_if_and_contents_c_13_sequential_g37_0_g37_contents_c_11_contents_c_12_1_contents_c_12_a37_j37_if_and_g37_0_g37_contents_c_11_j37_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g36_6_contents_c_11_g36_0_round_offset_contents_b_73_0_contents_c_11_g36_1_j36_2_if_and_contents_c_11_0_j36_0_j36_0_if_and_contents_c_13_sequential_g37_0_g37_contents_c_11_contents_c_12_1_contents_c_12_a37_j37_if_and_g37_0_g37_contents_c_11_j37_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g36_6_contents_c_11_g36_0_round_offset_contents_b_73_0_contents_c_11_g36_1_j36_2_if_and_contents_c_11_0_j36_0_j36_0_if_and_contents_c_13_sequential_g37_0_g37_contents_c_11_contents_c_12_1_contents_c_12_a37_j37_if_and_g37_0_g37_contents_c_11_j37_0(java.lang.Double v)
@@ -2836,7 +2836,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h36_0_round_h36_j36_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g37_6_contents_c_11_g37_0_round_offset_contents_b_73_0_contents_c_11_g37_1_j37_2_if_and_contents_c_11_0_j37_0_j37_0()
     {
-        return if_h36_0_round_h36_j36_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g37_6_contents_c_11_g37_0_round_offset_contents_b_73_0_contents_c_11_g37_1_j37_2_if_and_contents_c_11_0_j37_0_j37_0;
+        return this.if_h36_0_round_h36_j36_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g37_6_contents_c_11_g37_0_round_offset_contents_b_73_0_contents_c_11_g37_1_j37_2_if_and_contents_c_11_0_j37_0_j37_0;
     }
 
     public void setIf_h36_0_round_h36_j36_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g37_6_contents_c_11_g37_0_round_offset_contents_b_73_0_contents_c_11_g37_1_j37_2_if_and_contents_c_11_0_j37_0_j37_0(java.lang.Double v)
@@ -2846,7 +2846,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h36_0_k36_l36_if_h37_0_round_h37_j37_if_contents_c_12_4_1_0_2()
     {
-        return if_h36_0_k36_l36_if_h37_0_round_h37_j37_if_contents_c_12_4_1_0_2;
+        return this.if_h36_0_k36_l36_if_h37_0_round_h37_j37_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h36_0_k36_l36_if_h37_0_round_h37_j37_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -2856,7 +2856,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_25()
     {
-        return oa_ar_or_fr_25;
+        return this.oa_ar_or_fr_25;
     }
 
     public void setOa_ar_or_fr_25(java.lang.String v)
@@ -2866,7 +2866,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_25()
     {
-        return equipment_purchases_or_value_2000_each_item_description_25;
+        return this.equipment_purchases_or_value_2000_each_item_description_25;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_25(java.lang.String v)
@@ -2876,7 +2876,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_25()
     {
-        return qty_25;
+        return this.qty_25;
     }
 
     public void setQty_25(java.lang.String v)
@@ -2886,7 +2886,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_25()
     {
-        return purchase_year_25;
+        return this.purchase_year_25;
     }
 
     public void setPurchase_year_25(java.lang.String v)
@@ -2896,7 +2896,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g37_0_if_and_contents_c_11_0_contents_c_11_g37_6_contents_c_11_g37_0_offset_contents_b_75_0_contents_c_11_g37_0()
     {
-        return if_g37_0_if_and_contents_c_11_0_contents_c_11_g37_6_contents_c_11_g37_0_offset_contents_b_75_0_contents_c_11_g37_0;
+        return this.if_g37_0_if_and_contents_c_11_0_contents_c_11_g37_6_contents_c_11_g37_0_offset_contents_b_75_0_contents_c_11_g37_0;
     }
 
     public void setIf_g37_0_if_and_contents_c_11_0_contents_c_11_g37_6_contents_c_11_g37_0_offset_contents_b_75_0_contents_c_11_g37_0(java.lang.Double v)
@@ -2906,7 +2906,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g37_0_g37_contents_c_11_contents_c_12_1_contents_c_12_a37_j37_if_and_g37_0_g37_contents_c_11_j37_0_if_g38_0_if_and_contents_c_11_0_contents_c_11_g38_6_contents_c_11_g38_0_offset_contents_b_75_0_contents_c_11_g38_0()
     {
-        return if_and_contents_c_13_sequential_g37_0_g37_contents_c_11_contents_c_12_1_contents_c_12_a37_j37_if_and_g37_0_g37_contents_c_11_j37_0_if_g38_0_if_and_contents_c_11_0_contents_c_11_g38_6_contents_c_11_g38_0_offset_contents_b_75_0_contents_c_11_g38_0;
+        return this.if_and_contents_c_13_sequential_g37_0_g37_contents_c_11_contents_c_12_1_contents_c_12_a37_j37_if_and_g37_0_g37_contents_c_11_j37_0_if_g38_0_if_and_contents_c_11_0_contents_c_11_g38_6_contents_c_11_g38_0_offset_contents_b_75_0_contents_c_11_g38_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g37_0_g37_contents_c_11_contents_c_12_1_contents_c_12_a37_j37_if_and_g37_0_g37_contents_c_11_j37_0_if_g38_0_if_and_contents_c_11_0_contents_c_11_g38_6_contents_c_11_g38_0_offset_contents_b_75_0_contents_c_11_g38_0(java.lang.Double v)
@@ -2916,7 +2916,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g38_0_g38_contents_c_11_contents_c_12_1_contents_c_12_a38_j38_if_and_g38_0_g38_contents_c_11_j38_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g38_0_g38_contents_c_11_contents_c_12_1_contents_c_12_a38_j38_if_and_g38_0_g38_contents_c_11_j38_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g38_0_g38_contents_c_11_contents_c_12_1_contents_c_12_a38_j38_if_and_g38_0_g38_contents_c_11_j38_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g38_0_g38_contents_c_11_contents_c_12_1_contents_c_12_a38_j38_if_and_g38_0_g38_contents_c_11_j38_0(java.lang.String v)
@@ -2926,7 +2926,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g37_6_contents_c_11_g37_0_round_offset_contents_b_73_0_contents_c_11_g37_1_j37_2_if_and_contents_c_11_0_j37_0_j37_0_if_and_contents_c_13_sequential_g38_0_g38_contents_c_11_contents_c_12_1_contents_c_12_a38_j38_if_and_g38_0_g38_contents_c_11_j38_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g37_6_contents_c_11_g37_0_round_offset_contents_b_73_0_contents_c_11_g37_1_j37_2_if_and_contents_c_11_0_j37_0_j37_0_if_and_contents_c_13_sequential_g38_0_g38_contents_c_11_contents_c_12_1_contents_c_12_a38_j38_if_and_g38_0_g38_contents_c_11_j38_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g37_6_contents_c_11_g37_0_round_offset_contents_b_73_0_contents_c_11_g37_1_j37_2_if_and_contents_c_11_0_j37_0_j37_0_if_and_contents_c_13_sequential_g38_0_g38_contents_c_11_contents_c_12_1_contents_c_12_a38_j38_if_and_g38_0_g38_contents_c_11_j38_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g37_6_contents_c_11_g37_0_round_offset_contents_b_73_0_contents_c_11_g37_1_j37_2_if_and_contents_c_11_0_j37_0_j37_0_if_and_contents_c_13_sequential_g38_0_g38_contents_c_11_contents_c_12_1_contents_c_12_a38_j38_if_and_g38_0_g38_contents_c_11_j38_0(java.lang.Double v)
@@ -2936,7 +2936,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h37_0_round_h37_j37_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g38_6_contents_c_11_g38_0_round_offset_contents_b_73_0_contents_c_11_g38_1_j38_2_if_and_contents_c_11_0_j38_0_j38_0()
     {
-        return if_h37_0_round_h37_j37_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g38_6_contents_c_11_g38_0_round_offset_contents_b_73_0_contents_c_11_g38_1_j38_2_if_and_contents_c_11_0_j38_0_j38_0;
+        return this.if_h37_0_round_h37_j37_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g38_6_contents_c_11_g38_0_round_offset_contents_b_73_0_contents_c_11_g38_1_j38_2_if_and_contents_c_11_0_j38_0_j38_0;
     }
 
     public void setIf_h37_0_round_h37_j37_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g38_6_contents_c_11_g38_0_round_offset_contents_b_73_0_contents_c_11_g38_1_j38_2_if_and_contents_c_11_0_j38_0_j38_0(java.lang.Double v)
@@ -2946,7 +2946,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h37_0_k37_l37_if_h38_0_round_h38_j38_if_contents_c_12_4_1_0_2()
     {
-        return if_h37_0_k37_l37_if_h38_0_round_h38_j38_if_contents_c_12_4_1_0_2;
+        return this.if_h37_0_k37_l37_if_h38_0_round_h38_j38_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h37_0_k37_l37_if_h38_0_round_h38_j38_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -2956,7 +2956,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_26()
     {
-        return oa_ar_or_fr_26;
+        return this.oa_ar_or_fr_26;
     }
 
     public void setOa_ar_or_fr_26(java.lang.String v)
@@ -2966,7 +2966,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_26()
     {
-        return equipment_purchases_or_value_2000_each_item_description_26;
+        return this.equipment_purchases_or_value_2000_each_item_description_26;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_26(java.lang.String v)
@@ -2976,7 +2976,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_26()
     {
-        return qty_26;
+        return this.qty_26;
     }
 
     public void setQty_26(java.lang.String v)
@@ -2986,7 +2986,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_26()
     {
-        return purchase_year_26;
+        return this.purchase_year_26;
     }
 
     public void setPurchase_year_26(java.lang.String v)
@@ -2996,7 +2996,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g38_0_if_and_contents_c_11_0_contents_c_11_g38_6_contents_c_11_g38_0_offset_contents_b_75_0_contents_c_11_g38_0()
     {
-        return if_g38_0_if_and_contents_c_11_0_contents_c_11_g38_6_contents_c_11_g38_0_offset_contents_b_75_0_contents_c_11_g38_0;
+        return this.if_g38_0_if_and_contents_c_11_0_contents_c_11_g38_6_contents_c_11_g38_0_offset_contents_b_75_0_contents_c_11_g38_0;
     }
 
     public void setIf_g38_0_if_and_contents_c_11_0_contents_c_11_g38_6_contents_c_11_g38_0_offset_contents_b_75_0_contents_c_11_g38_0(java.lang.Double v)
@@ -3006,7 +3006,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g38_0_g38_contents_c_11_contents_c_12_1_contents_c_12_a38_j38_if_and_g38_0_g38_contents_c_11_j38_0_if_g39_0_if_and_contents_c_11_0_contents_c_11_g39_6_contents_c_11_g39_0_offset_contents_b_75_0_contents_c_11_g39_0()
     {
-        return if_and_contents_c_13_sequential_g38_0_g38_contents_c_11_contents_c_12_1_contents_c_12_a38_j38_if_and_g38_0_g38_contents_c_11_j38_0_if_g39_0_if_and_contents_c_11_0_contents_c_11_g39_6_contents_c_11_g39_0_offset_contents_b_75_0_contents_c_11_g39_0;
+        return this.if_and_contents_c_13_sequential_g38_0_g38_contents_c_11_contents_c_12_1_contents_c_12_a38_j38_if_and_g38_0_g38_contents_c_11_j38_0_if_g39_0_if_and_contents_c_11_0_contents_c_11_g39_6_contents_c_11_g39_0_offset_contents_b_75_0_contents_c_11_g39_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g38_0_g38_contents_c_11_contents_c_12_1_contents_c_12_a38_j38_if_and_g38_0_g38_contents_c_11_j38_0_if_g39_0_if_and_contents_c_11_0_contents_c_11_g39_6_contents_c_11_g39_0_offset_contents_b_75_0_contents_c_11_g39_0(java.lang.Double v)
@@ -3016,7 +3016,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g39_0_g39_contents_c_11_contents_c_12_1_contents_c_12_a39_j39_if_and_g39_0_g39_contents_c_11_j39_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g39_0_g39_contents_c_11_contents_c_12_1_contents_c_12_a39_j39_if_and_g39_0_g39_contents_c_11_j39_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g39_0_g39_contents_c_11_contents_c_12_1_contents_c_12_a39_j39_if_and_g39_0_g39_contents_c_11_j39_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g39_0_g39_contents_c_11_contents_c_12_1_contents_c_12_a39_j39_if_and_g39_0_g39_contents_c_11_j39_0(java.lang.String v)
@@ -3026,7 +3026,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g38_6_contents_c_11_g38_0_round_offset_contents_b_73_0_contents_c_11_g38_1_j38_2_if_and_contents_c_11_0_j38_0_j38_0_if_and_contents_c_13_sequential_g39_0_g39_contents_c_11_contents_c_12_1_contents_c_12_a39_j39_if_and_g39_0_g39_contents_c_11_j39_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g38_6_contents_c_11_g38_0_round_offset_contents_b_73_0_contents_c_11_g38_1_j38_2_if_and_contents_c_11_0_j38_0_j38_0_if_and_contents_c_13_sequential_g39_0_g39_contents_c_11_contents_c_12_1_contents_c_12_a39_j39_if_and_g39_0_g39_contents_c_11_j39_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g38_6_contents_c_11_g38_0_round_offset_contents_b_73_0_contents_c_11_g38_1_j38_2_if_and_contents_c_11_0_j38_0_j38_0_if_and_contents_c_13_sequential_g39_0_g39_contents_c_11_contents_c_12_1_contents_c_12_a39_j39_if_and_g39_0_g39_contents_c_11_j39_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g38_6_contents_c_11_g38_0_round_offset_contents_b_73_0_contents_c_11_g38_1_j38_2_if_and_contents_c_11_0_j38_0_j38_0_if_and_contents_c_13_sequential_g39_0_g39_contents_c_11_contents_c_12_1_contents_c_12_a39_j39_if_and_g39_0_g39_contents_c_11_j39_0(java.lang.Double v)
@@ -3036,7 +3036,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h38_0_round_h38_j38_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g39_6_contents_c_11_g39_0_round_offset_contents_b_73_0_contents_c_11_g39_1_j39_2_if_and_contents_c_11_0_j39_0_j39_0()
     {
-        return if_h38_0_round_h38_j38_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g39_6_contents_c_11_g39_0_round_offset_contents_b_73_0_contents_c_11_g39_1_j39_2_if_and_contents_c_11_0_j39_0_j39_0;
+        return this.if_h38_0_round_h38_j38_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g39_6_contents_c_11_g39_0_round_offset_contents_b_73_0_contents_c_11_g39_1_j39_2_if_and_contents_c_11_0_j39_0_j39_0;
     }
 
     public void setIf_h38_0_round_h38_j38_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g39_6_contents_c_11_g39_0_round_offset_contents_b_73_0_contents_c_11_g39_1_j39_2_if_and_contents_c_11_0_j39_0_j39_0(java.lang.Double v)
@@ -3046,7 +3046,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h38_0_k38_l38_if_h39_0_round_h39_j39_if_contents_c_12_4_1_0_2()
     {
-        return if_h38_0_k38_l38_if_h39_0_round_h39_j39_if_contents_c_12_4_1_0_2;
+        return this.if_h38_0_k38_l38_if_h39_0_round_h39_j39_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h38_0_k38_l38_if_h39_0_round_h39_j39_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -3056,7 +3056,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_27()
     {
-        return oa_ar_or_fr_27;
+        return this.oa_ar_or_fr_27;
     }
 
     public void setOa_ar_or_fr_27(java.lang.String v)
@@ -3066,7 +3066,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_27()
     {
-        return equipment_purchases_or_value_2000_each_item_description_27;
+        return this.equipment_purchases_or_value_2000_each_item_description_27;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_27(java.lang.String v)
@@ -3076,7 +3076,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_27()
     {
-        return qty_27;
+        return this.qty_27;
     }
 
     public void setQty_27(java.lang.String v)
@@ -3086,7 +3086,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_27()
     {
-        return purchase_year_27;
+        return this.purchase_year_27;
     }
 
     public void setPurchase_year_27(java.lang.String v)
@@ -3096,7 +3096,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g39_0_if_and_contents_c_11_0_contents_c_11_g39_6_contents_c_11_g39_0_offset_contents_b_75_0_contents_c_11_g39_0()
     {
-        return if_g39_0_if_and_contents_c_11_0_contents_c_11_g39_6_contents_c_11_g39_0_offset_contents_b_75_0_contents_c_11_g39_0;
+        return this.if_g39_0_if_and_contents_c_11_0_contents_c_11_g39_6_contents_c_11_g39_0_offset_contents_b_75_0_contents_c_11_g39_0;
     }
 
     public void setIf_g39_0_if_and_contents_c_11_0_contents_c_11_g39_6_contents_c_11_g39_0_offset_contents_b_75_0_contents_c_11_g39_0(java.lang.Double v)
@@ -3106,7 +3106,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g39_0_g39_contents_c_11_contents_c_12_1_contents_c_12_a39_j39_if_and_g39_0_g39_contents_c_11_j39_0_if_g40_0_if_and_contents_c_11_0_contents_c_11_g40_6_contents_c_11_g40_0_offset_contents_b_75_0_contents_c_11_g40_0()
     {
-        return if_and_contents_c_13_sequential_g39_0_g39_contents_c_11_contents_c_12_1_contents_c_12_a39_j39_if_and_g39_0_g39_contents_c_11_j39_0_if_g40_0_if_and_contents_c_11_0_contents_c_11_g40_6_contents_c_11_g40_0_offset_contents_b_75_0_contents_c_11_g40_0;
+        return this.if_and_contents_c_13_sequential_g39_0_g39_contents_c_11_contents_c_12_1_contents_c_12_a39_j39_if_and_g39_0_g39_contents_c_11_j39_0_if_g40_0_if_and_contents_c_11_0_contents_c_11_g40_6_contents_c_11_g40_0_offset_contents_b_75_0_contents_c_11_g40_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g39_0_g39_contents_c_11_contents_c_12_1_contents_c_12_a39_j39_if_and_g39_0_g39_contents_c_11_j39_0_if_g40_0_if_and_contents_c_11_0_contents_c_11_g40_6_contents_c_11_g40_0_offset_contents_b_75_0_contents_c_11_g40_0(java.lang.Double v)
@@ -3116,7 +3116,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g40_0_g40_contents_c_11_contents_c_12_1_contents_c_12_a40_j40_if_and_g40_0_g40_contents_c_11_j40_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g40_0_g40_contents_c_11_contents_c_12_1_contents_c_12_a40_j40_if_and_g40_0_g40_contents_c_11_j40_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g40_0_g40_contents_c_11_contents_c_12_1_contents_c_12_a40_j40_if_and_g40_0_g40_contents_c_11_j40_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g40_0_g40_contents_c_11_contents_c_12_1_contents_c_12_a40_j40_if_and_g40_0_g40_contents_c_11_j40_0(java.lang.String v)
@@ -3126,7 +3126,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g39_6_contents_c_11_g39_0_round_offset_contents_b_73_0_contents_c_11_g39_1_j39_2_if_and_contents_c_11_0_j39_0_j39_0_if_and_contents_c_13_sequential_g40_0_g40_contents_c_11_contents_c_12_1_contents_c_12_a40_j40_if_and_g40_0_g40_contents_c_11_j40_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g39_6_contents_c_11_g39_0_round_offset_contents_b_73_0_contents_c_11_g39_1_j39_2_if_and_contents_c_11_0_j39_0_j39_0_if_and_contents_c_13_sequential_g40_0_g40_contents_c_11_contents_c_12_1_contents_c_12_a40_j40_if_and_g40_0_g40_contents_c_11_j40_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g39_6_contents_c_11_g39_0_round_offset_contents_b_73_0_contents_c_11_g39_1_j39_2_if_and_contents_c_11_0_j39_0_j39_0_if_and_contents_c_13_sequential_g40_0_g40_contents_c_11_contents_c_12_1_contents_c_12_a40_j40_if_and_g40_0_g40_contents_c_11_j40_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g39_6_contents_c_11_g39_0_round_offset_contents_b_73_0_contents_c_11_g39_1_j39_2_if_and_contents_c_11_0_j39_0_j39_0_if_and_contents_c_13_sequential_g40_0_g40_contents_c_11_contents_c_12_1_contents_c_12_a40_j40_if_and_g40_0_g40_contents_c_11_j40_0(java.lang.Double v)
@@ -3136,7 +3136,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h39_0_round_h39_j39_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g40_6_contents_c_11_g40_0_round_offset_contents_b_73_0_contents_c_11_g40_1_j40_2_if_and_contents_c_11_0_j40_0_j40_0()
     {
-        return if_h39_0_round_h39_j39_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g40_6_contents_c_11_g40_0_round_offset_contents_b_73_0_contents_c_11_g40_1_j40_2_if_and_contents_c_11_0_j40_0_j40_0;
+        return this.if_h39_0_round_h39_j39_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g40_6_contents_c_11_g40_0_round_offset_contents_b_73_0_contents_c_11_g40_1_j40_2_if_and_contents_c_11_0_j40_0_j40_0;
     }
 
     public void setIf_h39_0_round_h39_j39_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g40_6_contents_c_11_g40_0_round_offset_contents_b_73_0_contents_c_11_g40_1_j40_2_if_and_contents_c_11_0_j40_0_j40_0(java.lang.Double v)
@@ -3146,7 +3146,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h39_0_k39_l39_if_h40_0_round_h40_j40_if_contents_c_12_4_1_0_2()
     {
-        return if_h39_0_k39_l39_if_h40_0_round_h40_j40_if_contents_c_12_4_1_0_2;
+        return this.if_h39_0_k39_l39_if_h40_0_round_h40_j40_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h39_0_k39_l39_if_h40_0_round_h40_j40_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -3156,7 +3156,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_28()
     {
-        return oa_ar_or_fr_28;
+        return this.oa_ar_or_fr_28;
     }
 
     public void setOa_ar_or_fr_28(java.lang.String v)
@@ -3166,7 +3166,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_28()
     {
-        return equipment_purchases_or_value_2000_each_item_description_28;
+        return this.equipment_purchases_or_value_2000_each_item_description_28;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_28(java.lang.String v)
@@ -3176,7 +3176,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_28()
     {
-        return qty_28;
+        return this.qty_28;
     }
 
     public void setQty_28(java.lang.String v)
@@ -3186,7 +3186,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_28()
     {
-        return purchase_year_28;
+        return this.purchase_year_28;
     }
 
     public void setPurchase_year_28(java.lang.String v)
@@ -3196,7 +3196,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g40_0_if_and_contents_c_11_0_contents_c_11_g40_6_contents_c_11_g40_0_offset_contents_b_75_0_contents_c_11_g40_0()
     {
-        return if_g40_0_if_and_contents_c_11_0_contents_c_11_g40_6_contents_c_11_g40_0_offset_contents_b_75_0_contents_c_11_g40_0;
+        return this.if_g40_0_if_and_contents_c_11_0_contents_c_11_g40_6_contents_c_11_g40_0_offset_contents_b_75_0_contents_c_11_g40_0;
     }
 
     public void setIf_g40_0_if_and_contents_c_11_0_contents_c_11_g40_6_contents_c_11_g40_0_offset_contents_b_75_0_contents_c_11_g40_0(java.lang.Double v)
@@ -3206,7 +3206,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g40_0_g40_contents_c_11_contents_c_12_1_contents_c_12_a40_j40_if_and_g40_0_g40_contents_c_11_j40_0_if_g41_0_if_and_contents_c_11_0_contents_c_11_g41_6_contents_c_11_g41_0_offset_contents_b_75_0_contents_c_11_g41_0()
     {
-        return if_and_contents_c_13_sequential_g40_0_g40_contents_c_11_contents_c_12_1_contents_c_12_a40_j40_if_and_g40_0_g40_contents_c_11_j40_0_if_g41_0_if_and_contents_c_11_0_contents_c_11_g41_6_contents_c_11_g41_0_offset_contents_b_75_0_contents_c_11_g41_0;
+        return this.if_and_contents_c_13_sequential_g40_0_g40_contents_c_11_contents_c_12_1_contents_c_12_a40_j40_if_and_g40_0_g40_contents_c_11_j40_0_if_g41_0_if_and_contents_c_11_0_contents_c_11_g41_6_contents_c_11_g41_0_offset_contents_b_75_0_contents_c_11_g41_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g40_0_g40_contents_c_11_contents_c_12_1_contents_c_12_a40_j40_if_and_g40_0_g40_contents_c_11_j40_0_if_g41_0_if_and_contents_c_11_0_contents_c_11_g41_6_contents_c_11_g41_0_offset_contents_b_75_0_contents_c_11_g41_0(java.lang.Double v)
@@ -3216,7 +3216,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g41_0_g41_contents_c_11_contents_c_12_1_contents_c_12_a41_j41_if_and_g41_0_g41_contents_c_11_j41_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g41_0_g41_contents_c_11_contents_c_12_1_contents_c_12_a41_j41_if_and_g41_0_g41_contents_c_11_j41_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g41_0_g41_contents_c_11_contents_c_12_1_contents_c_12_a41_j41_if_and_g41_0_g41_contents_c_11_j41_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g41_0_g41_contents_c_11_contents_c_12_1_contents_c_12_a41_j41_if_and_g41_0_g41_contents_c_11_j41_0(java.lang.String v)
@@ -3226,7 +3226,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g40_6_contents_c_11_g40_0_round_offset_contents_b_73_0_contents_c_11_g40_1_j40_2_if_and_contents_c_11_0_j40_0_j40_0_if_and_contents_c_13_sequential_g41_0_g41_contents_c_11_contents_c_12_1_contents_c_12_a41_j41_if_and_g41_0_g41_contents_c_11_j41_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g40_6_contents_c_11_g40_0_round_offset_contents_b_73_0_contents_c_11_g40_1_j40_2_if_and_contents_c_11_0_j40_0_j40_0_if_and_contents_c_13_sequential_g41_0_g41_contents_c_11_contents_c_12_1_contents_c_12_a41_j41_if_and_g41_0_g41_contents_c_11_j41_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g40_6_contents_c_11_g40_0_round_offset_contents_b_73_0_contents_c_11_g40_1_j40_2_if_and_contents_c_11_0_j40_0_j40_0_if_and_contents_c_13_sequential_g41_0_g41_contents_c_11_contents_c_12_1_contents_c_12_a41_j41_if_and_g41_0_g41_contents_c_11_j41_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g40_6_contents_c_11_g40_0_round_offset_contents_b_73_0_contents_c_11_g40_1_j40_2_if_and_contents_c_11_0_j40_0_j40_0_if_and_contents_c_13_sequential_g41_0_g41_contents_c_11_contents_c_12_1_contents_c_12_a41_j41_if_and_g41_0_g41_contents_c_11_j41_0(java.lang.Double v)
@@ -3236,7 +3236,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h40_0_round_h40_j40_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g41_6_contents_c_11_g41_0_round_offset_contents_b_73_0_contents_c_11_g41_1_j41_2_if_and_contents_c_11_0_j41_0_j41_0()
     {
-        return if_h40_0_round_h40_j40_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g41_6_contents_c_11_g41_0_round_offset_contents_b_73_0_contents_c_11_g41_1_j41_2_if_and_contents_c_11_0_j41_0_j41_0;
+        return this.if_h40_0_round_h40_j40_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g41_6_contents_c_11_g41_0_round_offset_contents_b_73_0_contents_c_11_g41_1_j41_2_if_and_contents_c_11_0_j41_0_j41_0;
     }
 
     public void setIf_h40_0_round_h40_j40_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g41_6_contents_c_11_g41_0_round_offset_contents_b_73_0_contents_c_11_g41_1_j41_2_if_and_contents_c_11_0_j41_0_j41_0(java.lang.Double v)
@@ -3246,7 +3246,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h40_0_k40_l40_if_h41_0_round_h41_j41_if_contents_c_12_4_1_0_2()
     {
-        return if_h40_0_k40_l40_if_h41_0_round_h41_j41_if_contents_c_12_4_1_0_2;
+        return this.if_h40_0_k40_l40_if_h41_0_round_h41_j41_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h40_0_k40_l40_if_h41_0_round_h41_j41_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -3256,7 +3256,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_29()
     {
-        return oa_ar_or_fr_29;
+        return this.oa_ar_or_fr_29;
     }
 
     public void setOa_ar_or_fr_29(java.lang.String v)
@@ -3266,7 +3266,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_29()
     {
-        return equipment_purchases_or_value_2000_each_item_description_29;
+        return this.equipment_purchases_or_value_2000_each_item_description_29;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_29(java.lang.String v)
@@ -3276,7 +3276,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_29()
     {
-        return qty_29;
+        return this.qty_29;
     }
 
     public void setQty_29(java.lang.String v)
@@ -3286,7 +3286,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_29()
     {
-        return purchase_year_29;
+        return this.purchase_year_29;
     }
 
     public void setPurchase_year_29(java.lang.String v)
@@ -3296,7 +3296,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g41_0_if_and_contents_c_11_0_contents_c_11_g41_6_contents_c_11_g41_0_offset_contents_b_75_0_contents_c_11_g41_0()
     {
-        return if_g41_0_if_and_contents_c_11_0_contents_c_11_g41_6_contents_c_11_g41_0_offset_contents_b_75_0_contents_c_11_g41_0;
+        return this.if_g41_0_if_and_contents_c_11_0_contents_c_11_g41_6_contents_c_11_g41_0_offset_contents_b_75_0_contents_c_11_g41_0;
     }
 
     public void setIf_g41_0_if_and_contents_c_11_0_contents_c_11_g41_6_contents_c_11_g41_0_offset_contents_b_75_0_contents_c_11_g41_0(java.lang.Double v)
@@ -3306,7 +3306,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g41_0_g41_contents_c_11_contents_c_12_1_contents_c_12_a41_j41_if_and_g41_0_g41_contents_c_11_j41_0_if_g42_0_if_and_contents_c_11_0_contents_c_11_g42_6_contents_c_11_g42_0_offset_contents_b_75_0_contents_c_11_g42_0()
     {
-        return if_and_contents_c_13_sequential_g41_0_g41_contents_c_11_contents_c_12_1_contents_c_12_a41_j41_if_and_g41_0_g41_contents_c_11_j41_0_if_g42_0_if_and_contents_c_11_0_contents_c_11_g42_6_contents_c_11_g42_0_offset_contents_b_75_0_contents_c_11_g42_0;
+        return this.if_and_contents_c_13_sequential_g41_0_g41_contents_c_11_contents_c_12_1_contents_c_12_a41_j41_if_and_g41_0_g41_contents_c_11_j41_0_if_g42_0_if_and_contents_c_11_0_contents_c_11_g42_6_contents_c_11_g42_0_offset_contents_b_75_0_contents_c_11_g42_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g41_0_g41_contents_c_11_contents_c_12_1_contents_c_12_a41_j41_if_and_g41_0_g41_contents_c_11_j41_0_if_g42_0_if_and_contents_c_11_0_contents_c_11_g42_6_contents_c_11_g42_0_offset_contents_b_75_0_contents_c_11_g42_0(java.lang.Double v)
@@ -3316,7 +3316,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g42_0_g42_contents_c_11_contents_c_12_1_contents_c_12_a42_j42_if_and_g42_0_g42_contents_c_11_j42_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g42_0_g42_contents_c_11_contents_c_12_1_contents_c_12_a42_j42_if_and_g42_0_g42_contents_c_11_j42_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g42_0_g42_contents_c_11_contents_c_12_1_contents_c_12_a42_j42_if_and_g42_0_g42_contents_c_11_j42_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g42_0_g42_contents_c_11_contents_c_12_1_contents_c_12_a42_j42_if_and_g42_0_g42_contents_c_11_j42_0(java.lang.String v)
@@ -3326,7 +3326,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g41_6_contents_c_11_g41_0_round_offset_contents_b_73_0_contents_c_11_g41_1_j41_2_if_and_contents_c_11_0_j41_0_j41_0_if_and_contents_c_13_sequential_g42_0_g42_contents_c_11_contents_c_12_1_contents_c_12_a42_j42_if_and_g42_0_g42_contents_c_11_j42_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g41_6_contents_c_11_g41_0_round_offset_contents_b_73_0_contents_c_11_g41_1_j41_2_if_and_contents_c_11_0_j41_0_j41_0_if_and_contents_c_13_sequential_g42_0_g42_contents_c_11_contents_c_12_1_contents_c_12_a42_j42_if_and_g42_0_g42_contents_c_11_j42_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g41_6_contents_c_11_g41_0_round_offset_contents_b_73_0_contents_c_11_g41_1_j41_2_if_and_contents_c_11_0_j41_0_j41_0_if_and_contents_c_13_sequential_g42_0_g42_contents_c_11_contents_c_12_1_contents_c_12_a42_j42_if_and_g42_0_g42_contents_c_11_j42_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g41_6_contents_c_11_g41_0_round_offset_contents_b_73_0_contents_c_11_g41_1_j41_2_if_and_contents_c_11_0_j41_0_j41_0_if_and_contents_c_13_sequential_g42_0_g42_contents_c_11_contents_c_12_1_contents_c_12_a42_j42_if_and_g42_0_g42_contents_c_11_j42_0(java.lang.Double v)
@@ -3336,7 +3336,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h41_0_round_h41_j41_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g42_6_contents_c_11_g42_0_round_offset_contents_b_73_0_contents_c_11_g42_1_j42_2_if_and_contents_c_11_0_j42_0_j42_0()
     {
-        return if_h41_0_round_h41_j41_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g42_6_contents_c_11_g42_0_round_offset_contents_b_73_0_contents_c_11_g42_1_j42_2_if_and_contents_c_11_0_j42_0_j42_0;
+        return this.if_h41_0_round_h41_j41_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g42_6_contents_c_11_g42_0_round_offset_contents_b_73_0_contents_c_11_g42_1_j42_2_if_and_contents_c_11_0_j42_0_j42_0;
     }
 
     public void setIf_h41_0_round_h41_j41_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g42_6_contents_c_11_g42_0_round_offset_contents_b_73_0_contents_c_11_g42_1_j42_2_if_and_contents_c_11_0_j42_0_j42_0(java.lang.Double v)
@@ -3346,7 +3346,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h41_0_k41_l41_if_h42_0_round_h42_j42_if_contents_c_12_4_1_0_2()
     {
-        return if_h41_0_k41_l41_if_h42_0_round_h42_j42_if_contents_c_12_4_1_0_2;
+        return this.if_h41_0_k41_l41_if_h42_0_round_h42_j42_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h41_0_k41_l41_if_h42_0_round_h42_j42_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -3356,7 +3356,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_30()
     {
-        return oa_ar_or_fr_30;
+        return this.oa_ar_or_fr_30;
     }
 
     public void setOa_ar_or_fr_30(java.lang.String v)
@@ -3366,7 +3366,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_30()
     {
-        return equipment_purchases_or_value_2000_each_item_description_30;
+        return this.equipment_purchases_or_value_2000_each_item_description_30;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_30(java.lang.String v)
@@ -3376,7 +3376,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_30()
     {
-        return qty_30;
+        return this.qty_30;
     }
 
     public void setQty_30(java.lang.String v)
@@ -3386,7 +3386,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_30()
     {
-        return purchase_year_30;
+        return this.purchase_year_30;
     }
 
     public void setPurchase_year_30(java.lang.String v)
@@ -3396,7 +3396,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g42_0_if_and_contents_c_11_0_contents_c_11_g42_6_contents_c_11_g42_0_offset_contents_b_75_0_contents_c_11_g42_0()
     {
-        return if_g42_0_if_and_contents_c_11_0_contents_c_11_g42_6_contents_c_11_g42_0_offset_contents_b_75_0_contents_c_11_g42_0;
+        return this.if_g42_0_if_and_contents_c_11_0_contents_c_11_g42_6_contents_c_11_g42_0_offset_contents_b_75_0_contents_c_11_g42_0;
     }
 
     public void setIf_g42_0_if_and_contents_c_11_0_contents_c_11_g42_6_contents_c_11_g42_0_offset_contents_b_75_0_contents_c_11_g42_0(java.lang.Double v)
@@ -3406,7 +3406,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g42_0_g42_contents_c_11_contents_c_12_1_contents_c_12_a42_j42_if_and_g42_0_g42_contents_c_11_j42_0_if_g43_0_if_and_contents_c_11_0_contents_c_11_g43_6_contents_c_11_g43_0_offset_contents_b_75_0_contents_c_11_g43_0()
     {
-        return if_and_contents_c_13_sequential_g42_0_g42_contents_c_11_contents_c_12_1_contents_c_12_a42_j42_if_and_g42_0_g42_contents_c_11_j42_0_if_g43_0_if_and_contents_c_11_0_contents_c_11_g43_6_contents_c_11_g43_0_offset_contents_b_75_0_contents_c_11_g43_0;
+        return this.if_and_contents_c_13_sequential_g42_0_g42_contents_c_11_contents_c_12_1_contents_c_12_a42_j42_if_and_g42_0_g42_contents_c_11_j42_0_if_g43_0_if_and_contents_c_11_0_contents_c_11_g43_6_contents_c_11_g43_0_offset_contents_b_75_0_contents_c_11_g43_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g42_0_g42_contents_c_11_contents_c_12_1_contents_c_12_a42_j42_if_and_g42_0_g42_contents_c_11_j42_0_if_g43_0_if_and_contents_c_11_0_contents_c_11_g43_6_contents_c_11_g43_0_offset_contents_b_75_0_contents_c_11_g43_0(java.lang.Double v)
@@ -3416,7 +3416,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g43_0_g43_contents_c_11_contents_c_12_1_contents_c_12_a43_j43_if_and_g43_0_g43_contents_c_11_j43_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g43_0_g43_contents_c_11_contents_c_12_1_contents_c_12_a43_j43_if_and_g43_0_g43_contents_c_11_j43_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g43_0_g43_contents_c_11_contents_c_12_1_contents_c_12_a43_j43_if_and_g43_0_g43_contents_c_11_j43_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g43_0_g43_contents_c_11_contents_c_12_1_contents_c_12_a43_j43_if_and_g43_0_g43_contents_c_11_j43_0(java.lang.String v)
@@ -3426,7 +3426,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g42_6_contents_c_11_g42_0_round_offset_contents_b_73_0_contents_c_11_g42_1_j42_2_if_and_contents_c_11_0_j42_0_j42_0_if_and_contents_c_13_sequential_g43_0_g43_contents_c_11_contents_c_12_1_contents_c_12_a43_j43_if_and_g43_0_g43_contents_c_11_j43_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g42_6_contents_c_11_g42_0_round_offset_contents_b_73_0_contents_c_11_g42_1_j42_2_if_and_contents_c_11_0_j42_0_j42_0_if_and_contents_c_13_sequential_g43_0_g43_contents_c_11_contents_c_12_1_contents_c_12_a43_j43_if_and_g43_0_g43_contents_c_11_j43_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g42_6_contents_c_11_g42_0_round_offset_contents_b_73_0_contents_c_11_g42_1_j42_2_if_and_contents_c_11_0_j42_0_j42_0_if_and_contents_c_13_sequential_g43_0_g43_contents_c_11_contents_c_12_1_contents_c_12_a43_j43_if_and_g43_0_g43_contents_c_11_j43_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g42_6_contents_c_11_g42_0_round_offset_contents_b_73_0_contents_c_11_g42_1_j42_2_if_and_contents_c_11_0_j42_0_j42_0_if_and_contents_c_13_sequential_g43_0_g43_contents_c_11_contents_c_12_1_contents_c_12_a43_j43_if_and_g43_0_g43_contents_c_11_j43_0(java.lang.Double v)
@@ -3436,7 +3436,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h42_0_round_h42_j42_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g43_6_contents_c_11_g43_0_round_offset_contents_b_73_0_contents_c_11_g43_1_j43_2_if_and_contents_c_11_0_j43_0_j43_0()
     {
-        return if_h42_0_round_h42_j42_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g43_6_contents_c_11_g43_0_round_offset_contents_b_73_0_contents_c_11_g43_1_j43_2_if_and_contents_c_11_0_j43_0_j43_0;
+        return this.if_h42_0_round_h42_j42_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g43_6_contents_c_11_g43_0_round_offset_contents_b_73_0_contents_c_11_g43_1_j43_2_if_and_contents_c_11_0_j43_0_j43_0;
     }
 
     public void setIf_h42_0_round_h42_j42_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g43_6_contents_c_11_g43_0_round_offset_contents_b_73_0_contents_c_11_g43_1_j43_2_if_and_contents_c_11_0_j43_0_j43_0(java.lang.Double v)
@@ -3446,7 +3446,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h42_0_k42_l42_if_h43_0_round_h43_j43_if_contents_c_12_4_1_0_2()
     {
-        return if_h42_0_k42_l42_if_h43_0_round_h43_j43_if_contents_c_12_4_1_0_2;
+        return this.if_h42_0_k42_l42_if_h43_0_round_h43_j43_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h42_0_k42_l42_if_h43_0_round_h43_j43_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -3456,7 +3456,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_31()
     {
-        return oa_ar_or_fr_31;
+        return this.oa_ar_or_fr_31;
     }
 
     public void setOa_ar_or_fr_31(java.lang.String v)
@@ -3466,7 +3466,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_31()
     {
-        return equipment_purchases_or_value_2000_each_item_description_31;
+        return this.equipment_purchases_or_value_2000_each_item_description_31;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_31(java.lang.String v)
@@ -3476,7 +3476,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_31()
     {
-        return qty_31;
+        return this.qty_31;
     }
 
     public void setQty_31(java.lang.String v)
@@ -3486,7 +3486,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_31()
     {
-        return purchase_year_31;
+        return this.purchase_year_31;
     }
 
     public void setPurchase_year_31(java.lang.String v)
@@ -3496,7 +3496,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g43_0_if_and_contents_c_11_0_contents_c_11_g43_6_contents_c_11_g43_0_offset_contents_b_75_0_contents_c_11_g43_0()
     {
-        return if_g43_0_if_and_contents_c_11_0_contents_c_11_g43_6_contents_c_11_g43_0_offset_contents_b_75_0_contents_c_11_g43_0;
+        return this.if_g43_0_if_and_contents_c_11_0_contents_c_11_g43_6_contents_c_11_g43_0_offset_contents_b_75_0_contents_c_11_g43_0;
     }
 
     public void setIf_g43_0_if_and_contents_c_11_0_contents_c_11_g43_6_contents_c_11_g43_0_offset_contents_b_75_0_contents_c_11_g43_0(java.lang.Double v)
@@ -3506,7 +3506,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g43_0_g43_contents_c_11_contents_c_12_1_contents_c_12_a43_j43_if_and_g43_0_g43_contents_c_11_j43_0_if_g44_0_if_and_contents_c_11_0_contents_c_11_g44_6_contents_c_11_g44_0_offset_contents_b_75_0_contents_c_11_g44_0()
     {
-        return if_and_contents_c_13_sequential_g43_0_g43_contents_c_11_contents_c_12_1_contents_c_12_a43_j43_if_and_g43_0_g43_contents_c_11_j43_0_if_g44_0_if_and_contents_c_11_0_contents_c_11_g44_6_contents_c_11_g44_0_offset_contents_b_75_0_contents_c_11_g44_0;
+        return this.if_and_contents_c_13_sequential_g43_0_g43_contents_c_11_contents_c_12_1_contents_c_12_a43_j43_if_and_g43_0_g43_contents_c_11_j43_0_if_g44_0_if_and_contents_c_11_0_contents_c_11_g44_6_contents_c_11_g44_0_offset_contents_b_75_0_contents_c_11_g44_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g43_0_g43_contents_c_11_contents_c_12_1_contents_c_12_a43_j43_if_and_g43_0_g43_contents_c_11_j43_0_if_g44_0_if_and_contents_c_11_0_contents_c_11_g44_6_contents_c_11_g44_0_offset_contents_b_75_0_contents_c_11_g44_0(java.lang.Double v)
@@ -3516,7 +3516,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g44_0_g44_contents_c_11_contents_c_12_1_contents_c_12_a44_j44_if_and_g44_0_g44_contents_c_11_j44_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g44_0_g44_contents_c_11_contents_c_12_1_contents_c_12_a44_j44_if_and_g44_0_g44_contents_c_11_j44_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g44_0_g44_contents_c_11_contents_c_12_1_contents_c_12_a44_j44_if_and_g44_0_g44_contents_c_11_j44_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g44_0_g44_contents_c_11_contents_c_12_1_contents_c_12_a44_j44_if_and_g44_0_g44_contents_c_11_j44_0(java.lang.String v)
@@ -3526,7 +3526,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g43_6_contents_c_11_g43_0_round_offset_contents_b_73_0_contents_c_11_g43_1_j43_2_if_and_contents_c_11_0_j43_0_j43_0_if_and_contents_c_13_sequential_g44_0_g44_contents_c_11_contents_c_12_1_contents_c_12_a44_j44_if_and_g44_0_g44_contents_c_11_j44_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g43_6_contents_c_11_g43_0_round_offset_contents_b_73_0_contents_c_11_g43_1_j43_2_if_and_contents_c_11_0_j43_0_j43_0_if_and_contents_c_13_sequential_g44_0_g44_contents_c_11_contents_c_12_1_contents_c_12_a44_j44_if_and_g44_0_g44_contents_c_11_j44_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g43_6_contents_c_11_g43_0_round_offset_contents_b_73_0_contents_c_11_g43_1_j43_2_if_and_contents_c_11_0_j43_0_j43_0_if_and_contents_c_13_sequential_g44_0_g44_contents_c_11_contents_c_12_1_contents_c_12_a44_j44_if_and_g44_0_g44_contents_c_11_j44_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g43_6_contents_c_11_g43_0_round_offset_contents_b_73_0_contents_c_11_g43_1_j43_2_if_and_contents_c_11_0_j43_0_j43_0_if_and_contents_c_13_sequential_g44_0_g44_contents_c_11_contents_c_12_1_contents_c_12_a44_j44_if_and_g44_0_g44_contents_c_11_j44_0(java.lang.Double v)
@@ -3536,7 +3536,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h43_0_round_h43_j43_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g44_6_contents_c_11_g44_0_round_offset_contents_b_73_0_contents_c_11_g44_1_j44_2_if_and_contents_c_11_0_j44_0_j44_0()
     {
-        return if_h43_0_round_h43_j43_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g44_6_contents_c_11_g44_0_round_offset_contents_b_73_0_contents_c_11_g44_1_j44_2_if_and_contents_c_11_0_j44_0_j44_0;
+        return this.if_h43_0_round_h43_j43_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g44_6_contents_c_11_g44_0_round_offset_contents_b_73_0_contents_c_11_g44_1_j44_2_if_and_contents_c_11_0_j44_0_j44_0;
     }
 
     public void setIf_h43_0_round_h43_j43_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g44_6_contents_c_11_g44_0_round_offset_contents_b_73_0_contents_c_11_g44_1_j44_2_if_and_contents_c_11_0_j44_0_j44_0(java.lang.Double v)
@@ -3546,7 +3546,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h43_0_k43_l43_if_h44_0_round_h44_j44_if_contents_c_12_4_1_0_2()
     {
-        return if_h43_0_k43_l43_if_h44_0_round_h44_j44_if_contents_c_12_4_1_0_2;
+        return this.if_h43_0_k43_l43_if_h44_0_round_h44_j44_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h43_0_k43_l43_if_h44_0_round_h44_j44_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -3556,7 +3556,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_32()
     {
-        return oa_ar_or_fr_32;
+        return this.oa_ar_or_fr_32;
     }
 
     public void setOa_ar_or_fr_32(java.lang.String v)
@@ -3566,7 +3566,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_32()
     {
-        return equipment_purchases_or_value_2000_each_item_description_32;
+        return this.equipment_purchases_or_value_2000_each_item_description_32;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_32(java.lang.String v)
@@ -3576,7 +3576,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_32()
     {
-        return qty_32;
+        return this.qty_32;
     }
 
     public void setQty_32(java.lang.String v)
@@ -3586,7 +3586,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_32()
     {
-        return purchase_year_32;
+        return this.purchase_year_32;
     }
 
     public void setPurchase_year_32(java.lang.String v)
@@ -3596,7 +3596,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g44_0_if_and_contents_c_11_0_contents_c_11_g44_6_contents_c_11_g44_0_offset_contents_b_75_0_contents_c_11_g44_0()
     {
-        return if_g44_0_if_and_contents_c_11_0_contents_c_11_g44_6_contents_c_11_g44_0_offset_contents_b_75_0_contents_c_11_g44_0;
+        return this.if_g44_0_if_and_contents_c_11_0_contents_c_11_g44_6_contents_c_11_g44_0_offset_contents_b_75_0_contents_c_11_g44_0;
     }
 
     public void setIf_g44_0_if_and_contents_c_11_0_contents_c_11_g44_6_contents_c_11_g44_0_offset_contents_b_75_0_contents_c_11_g44_0(java.lang.Double v)
@@ -3606,7 +3606,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g44_0_g44_contents_c_11_contents_c_12_1_contents_c_12_a44_j44_if_and_g44_0_g44_contents_c_11_j44_0_if_g45_0_if_and_contents_c_11_0_contents_c_11_g45_6_contents_c_11_g45_0_offset_contents_b_75_0_contents_c_11_g45_0()
     {
-        return if_and_contents_c_13_sequential_g44_0_g44_contents_c_11_contents_c_12_1_contents_c_12_a44_j44_if_and_g44_0_g44_contents_c_11_j44_0_if_g45_0_if_and_contents_c_11_0_contents_c_11_g45_6_contents_c_11_g45_0_offset_contents_b_75_0_contents_c_11_g45_0;
+        return this.if_and_contents_c_13_sequential_g44_0_g44_contents_c_11_contents_c_12_1_contents_c_12_a44_j44_if_and_g44_0_g44_contents_c_11_j44_0_if_g45_0_if_and_contents_c_11_0_contents_c_11_g45_6_contents_c_11_g45_0_offset_contents_b_75_0_contents_c_11_g45_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g44_0_g44_contents_c_11_contents_c_12_1_contents_c_12_a44_j44_if_and_g44_0_g44_contents_c_11_j44_0_if_g45_0_if_and_contents_c_11_0_contents_c_11_g45_6_contents_c_11_g45_0_offset_contents_b_75_0_contents_c_11_g45_0(java.lang.Double v)
@@ -3616,7 +3616,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g45_0_g45_contents_c_11_contents_c_12_1_contents_c_12_a45_j45_if_and_g45_0_g45_contents_c_11_j45_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g45_0_g45_contents_c_11_contents_c_12_1_contents_c_12_a45_j45_if_and_g45_0_g45_contents_c_11_j45_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g45_0_g45_contents_c_11_contents_c_12_1_contents_c_12_a45_j45_if_and_g45_0_g45_contents_c_11_j45_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g45_0_g45_contents_c_11_contents_c_12_1_contents_c_12_a45_j45_if_and_g45_0_g45_contents_c_11_j45_0(java.lang.String v)
@@ -3626,7 +3626,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g44_6_contents_c_11_g44_0_round_offset_contents_b_73_0_contents_c_11_g44_1_j44_2_if_and_contents_c_11_0_j44_0_j44_0_if_and_contents_c_13_sequential_g45_0_g45_contents_c_11_contents_c_12_1_contents_c_12_a45_j45_if_and_g45_0_g45_contents_c_11_j45_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g44_6_contents_c_11_g44_0_round_offset_contents_b_73_0_contents_c_11_g44_1_j44_2_if_and_contents_c_11_0_j44_0_j44_0_if_and_contents_c_13_sequential_g45_0_g45_contents_c_11_contents_c_12_1_contents_c_12_a45_j45_if_and_g45_0_g45_contents_c_11_j45_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g44_6_contents_c_11_g44_0_round_offset_contents_b_73_0_contents_c_11_g44_1_j44_2_if_and_contents_c_11_0_j44_0_j44_0_if_and_contents_c_13_sequential_g45_0_g45_contents_c_11_contents_c_12_1_contents_c_12_a45_j45_if_and_g45_0_g45_contents_c_11_j45_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g44_6_contents_c_11_g44_0_round_offset_contents_b_73_0_contents_c_11_g44_1_j44_2_if_and_contents_c_11_0_j44_0_j44_0_if_and_contents_c_13_sequential_g45_0_g45_contents_c_11_contents_c_12_1_contents_c_12_a45_j45_if_and_g45_0_g45_contents_c_11_j45_0(java.lang.Double v)
@@ -3636,7 +3636,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h44_0_round_h44_j44_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g45_6_contents_c_11_g45_0_round_offset_contents_b_73_0_contents_c_11_g45_1_j45_2_if_and_contents_c_11_0_j45_0_j45_0()
     {
-        return if_h44_0_round_h44_j44_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g45_6_contents_c_11_g45_0_round_offset_contents_b_73_0_contents_c_11_g45_1_j45_2_if_and_contents_c_11_0_j45_0_j45_0;
+        return this.if_h44_0_round_h44_j44_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g45_6_contents_c_11_g45_0_round_offset_contents_b_73_0_contents_c_11_g45_1_j45_2_if_and_contents_c_11_0_j45_0_j45_0;
     }
 
     public void setIf_h44_0_round_h44_j44_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g45_6_contents_c_11_g45_0_round_offset_contents_b_73_0_contents_c_11_g45_1_j45_2_if_and_contents_c_11_0_j45_0_j45_0(java.lang.Double v)
@@ -3646,7 +3646,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h44_0_k44_l44_if_h45_0_round_h45_j45_if_contents_c_12_4_1_0_2()
     {
-        return if_h44_0_k44_l44_if_h45_0_round_h45_j45_if_contents_c_12_4_1_0_2;
+        return this.if_h44_0_k44_l44_if_h45_0_round_h45_j45_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h44_0_k44_l44_if_h45_0_round_h45_j45_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -3656,7 +3656,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_33()
     {
-        return oa_ar_or_fr_33;
+        return this.oa_ar_or_fr_33;
     }
 
     public void setOa_ar_or_fr_33(java.lang.String v)
@@ -3666,7 +3666,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_33()
     {
-        return equipment_purchases_or_value_2000_each_item_description_33;
+        return this.equipment_purchases_or_value_2000_each_item_description_33;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_33(java.lang.String v)
@@ -3676,7 +3676,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_33()
     {
-        return qty_33;
+        return this.qty_33;
     }
 
     public void setQty_33(java.lang.String v)
@@ -3686,7 +3686,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_33()
     {
-        return purchase_year_33;
+        return this.purchase_year_33;
     }
 
     public void setPurchase_year_33(java.lang.String v)
@@ -3696,7 +3696,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g45_0_if_and_contents_c_11_0_contents_c_11_g45_6_contents_c_11_g45_0_offset_contents_b_75_0_contents_c_11_g45_0()
     {
-        return if_g45_0_if_and_contents_c_11_0_contents_c_11_g45_6_contents_c_11_g45_0_offset_contents_b_75_0_contents_c_11_g45_0;
+        return this.if_g45_0_if_and_contents_c_11_0_contents_c_11_g45_6_contents_c_11_g45_0_offset_contents_b_75_0_contents_c_11_g45_0;
     }
 
     public void setIf_g45_0_if_and_contents_c_11_0_contents_c_11_g45_6_contents_c_11_g45_0_offset_contents_b_75_0_contents_c_11_g45_0(java.lang.Double v)
@@ -3706,7 +3706,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g45_0_g45_contents_c_11_contents_c_12_1_contents_c_12_a45_j45_if_and_g45_0_g45_contents_c_11_j45_0_if_g46_0_if_and_contents_c_11_0_contents_c_11_g46_6_contents_c_11_g46_0_offset_contents_b_75_0_contents_c_11_g46_0()
     {
-        return if_and_contents_c_13_sequential_g45_0_g45_contents_c_11_contents_c_12_1_contents_c_12_a45_j45_if_and_g45_0_g45_contents_c_11_j45_0_if_g46_0_if_and_contents_c_11_0_contents_c_11_g46_6_contents_c_11_g46_0_offset_contents_b_75_0_contents_c_11_g46_0;
+        return this.if_and_contents_c_13_sequential_g45_0_g45_contents_c_11_contents_c_12_1_contents_c_12_a45_j45_if_and_g45_0_g45_contents_c_11_j45_0_if_g46_0_if_and_contents_c_11_0_contents_c_11_g46_6_contents_c_11_g46_0_offset_contents_b_75_0_contents_c_11_g46_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g45_0_g45_contents_c_11_contents_c_12_1_contents_c_12_a45_j45_if_and_g45_0_g45_contents_c_11_j45_0_if_g46_0_if_and_contents_c_11_0_contents_c_11_g46_6_contents_c_11_g46_0_offset_contents_b_75_0_contents_c_11_g46_0(java.lang.Double v)
@@ -3716,7 +3716,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g46_0_g46_contents_c_11_contents_c_12_1_contents_c_12_a46_j46_if_and_g46_0_g46_contents_c_11_j46_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g46_0_g46_contents_c_11_contents_c_12_1_contents_c_12_a46_j46_if_and_g46_0_g46_contents_c_11_j46_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g46_0_g46_contents_c_11_contents_c_12_1_contents_c_12_a46_j46_if_and_g46_0_g46_contents_c_11_j46_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g46_0_g46_contents_c_11_contents_c_12_1_contents_c_12_a46_j46_if_and_g46_0_g46_contents_c_11_j46_0(java.lang.String v)
@@ -3726,7 +3726,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g45_6_contents_c_11_g45_0_round_offset_contents_b_73_0_contents_c_11_g45_1_j45_2_if_and_contents_c_11_0_j45_0_j45_0_if_and_contents_c_13_sequential_g46_0_g46_contents_c_11_contents_c_12_1_contents_c_12_a46_j46_if_and_g46_0_g46_contents_c_11_j46_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g45_6_contents_c_11_g45_0_round_offset_contents_b_73_0_contents_c_11_g45_1_j45_2_if_and_contents_c_11_0_j45_0_j45_0_if_and_contents_c_13_sequential_g46_0_g46_contents_c_11_contents_c_12_1_contents_c_12_a46_j46_if_and_g46_0_g46_contents_c_11_j46_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g45_6_contents_c_11_g45_0_round_offset_contents_b_73_0_contents_c_11_g45_1_j45_2_if_and_contents_c_11_0_j45_0_j45_0_if_and_contents_c_13_sequential_g46_0_g46_contents_c_11_contents_c_12_1_contents_c_12_a46_j46_if_and_g46_0_g46_contents_c_11_j46_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g45_6_contents_c_11_g45_0_round_offset_contents_b_73_0_contents_c_11_g45_1_j45_2_if_and_contents_c_11_0_j45_0_j45_0_if_and_contents_c_13_sequential_g46_0_g46_contents_c_11_contents_c_12_1_contents_c_12_a46_j46_if_and_g46_0_g46_contents_c_11_j46_0(java.lang.Double v)
@@ -3736,7 +3736,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h45_0_round_h45_j45_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g46_6_contents_c_11_g46_0_round_offset_contents_b_73_0_contents_c_11_g46_1_j46_2_if_and_contents_c_11_0_j46_0_j46_0()
     {
-        return if_h45_0_round_h45_j45_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g46_6_contents_c_11_g46_0_round_offset_contents_b_73_0_contents_c_11_g46_1_j46_2_if_and_contents_c_11_0_j46_0_j46_0;
+        return this.if_h45_0_round_h45_j45_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g46_6_contents_c_11_g46_0_round_offset_contents_b_73_0_contents_c_11_g46_1_j46_2_if_and_contents_c_11_0_j46_0_j46_0;
     }
 
     public void setIf_h45_0_round_h45_j45_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g46_6_contents_c_11_g46_0_round_offset_contents_b_73_0_contents_c_11_g46_1_j46_2_if_and_contents_c_11_0_j46_0_j46_0(java.lang.Double v)
@@ -3746,7 +3746,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h45_0_k45_l45_if_h46_0_round_h46_j46_if_contents_c_12_4_1_0_2()
     {
-        return if_h45_0_k45_l45_if_h46_0_round_h46_j46_if_contents_c_12_4_1_0_2;
+        return this.if_h45_0_k45_l45_if_h46_0_round_h46_j46_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h45_0_k45_l45_if_h46_0_round_h46_j46_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -3756,7 +3756,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_34()
     {
-        return oa_ar_or_fr_34;
+        return this.oa_ar_or_fr_34;
     }
 
     public void setOa_ar_or_fr_34(java.lang.String v)
@@ -3766,7 +3766,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_34()
     {
-        return equipment_purchases_or_value_2000_each_item_description_34;
+        return this.equipment_purchases_or_value_2000_each_item_description_34;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_34(java.lang.String v)
@@ -3776,7 +3776,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_34()
     {
-        return qty_34;
+        return this.qty_34;
     }
 
     public void setQty_34(java.lang.String v)
@@ -3786,7 +3786,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_34()
     {
-        return purchase_year_34;
+        return this.purchase_year_34;
     }
 
     public void setPurchase_year_34(java.lang.String v)
@@ -3796,7 +3796,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g46_0_if_and_contents_c_11_0_contents_c_11_g46_6_contents_c_11_g46_0_offset_contents_b_75_0_contents_c_11_g46_0()
     {
-        return if_g46_0_if_and_contents_c_11_0_contents_c_11_g46_6_contents_c_11_g46_0_offset_contents_b_75_0_contents_c_11_g46_0;
+        return this.if_g46_0_if_and_contents_c_11_0_contents_c_11_g46_6_contents_c_11_g46_0_offset_contents_b_75_0_contents_c_11_g46_0;
     }
 
     public void setIf_g46_0_if_and_contents_c_11_0_contents_c_11_g46_6_contents_c_11_g46_0_offset_contents_b_75_0_contents_c_11_g46_0(java.lang.Double v)
@@ -3806,7 +3806,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g46_0_g46_contents_c_11_contents_c_12_1_contents_c_12_a46_j46_if_and_g46_0_g46_contents_c_11_j46_0_if_g47_0_if_and_contents_c_11_0_contents_c_11_g47_6_contents_c_11_g47_0_offset_contents_b_75_0_contents_c_11_g47_0()
     {
-        return if_and_contents_c_13_sequential_g46_0_g46_contents_c_11_contents_c_12_1_contents_c_12_a46_j46_if_and_g46_0_g46_contents_c_11_j46_0_if_g47_0_if_and_contents_c_11_0_contents_c_11_g47_6_contents_c_11_g47_0_offset_contents_b_75_0_contents_c_11_g47_0;
+        return this.if_and_contents_c_13_sequential_g46_0_g46_contents_c_11_contents_c_12_1_contents_c_12_a46_j46_if_and_g46_0_g46_contents_c_11_j46_0_if_g47_0_if_and_contents_c_11_0_contents_c_11_g47_6_contents_c_11_g47_0_offset_contents_b_75_0_contents_c_11_g47_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g46_0_g46_contents_c_11_contents_c_12_1_contents_c_12_a46_j46_if_and_g46_0_g46_contents_c_11_j46_0_if_g47_0_if_and_contents_c_11_0_contents_c_11_g47_6_contents_c_11_g47_0_offset_contents_b_75_0_contents_c_11_g47_0(java.lang.Double v)
@@ -3816,7 +3816,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g47_0_g47_contents_c_11_contents_c_12_1_contents_c_12_a47_j47_if_and_g47_0_g47_contents_c_11_j47_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g47_0_g47_contents_c_11_contents_c_12_1_contents_c_12_a47_j47_if_and_g47_0_g47_contents_c_11_j47_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g47_0_g47_contents_c_11_contents_c_12_1_contents_c_12_a47_j47_if_and_g47_0_g47_contents_c_11_j47_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g47_0_g47_contents_c_11_contents_c_12_1_contents_c_12_a47_j47_if_and_g47_0_g47_contents_c_11_j47_0(java.lang.String v)
@@ -3826,7 +3826,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g46_6_contents_c_11_g46_0_round_offset_contents_b_73_0_contents_c_11_g46_1_j46_2_if_and_contents_c_11_0_j46_0_j46_0_if_and_contents_c_13_sequential_g47_0_g47_contents_c_11_contents_c_12_1_contents_c_12_a47_j47_if_and_g47_0_g47_contents_c_11_j47_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g46_6_contents_c_11_g46_0_round_offset_contents_b_73_0_contents_c_11_g46_1_j46_2_if_and_contents_c_11_0_j46_0_j46_0_if_and_contents_c_13_sequential_g47_0_g47_contents_c_11_contents_c_12_1_contents_c_12_a47_j47_if_and_g47_0_g47_contents_c_11_j47_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g46_6_contents_c_11_g46_0_round_offset_contents_b_73_0_contents_c_11_g46_1_j46_2_if_and_contents_c_11_0_j46_0_j46_0_if_and_contents_c_13_sequential_g47_0_g47_contents_c_11_contents_c_12_1_contents_c_12_a47_j47_if_and_g47_0_g47_contents_c_11_j47_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g46_6_contents_c_11_g46_0_round_offset_contents_b_73_0_contents_c_11_g46_1_j46_2_if_and_contents_c_11_0_j46_0_j46_0_if_and_contents_c_13_sequential_g47_0_g47_contents_c_11_contents_c_12_1_contents_c_12_a47_j47_if_and_g47_0_g47_contents_c_11_j47_0(java.lang.Double v)
@@ -3836,7 +3836,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h46_0_round_h46_j46_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g47_6_contents_c_11_g47_0_round_offset_contents_b_73_0_contents_c_11_g47_1_j47_2_if_and_contents_c_11_0_j47_0_j47_0()
     {
-        return if_h46_0_round_h46_j46_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g47_6_contents_c_11_g47_0_round_offset_contents_b_73_0_contents_c_11_g47_1_j47_2_if_and_contents_c_11_0_j47_0_j47_0;
+        return this.if_h46_0_round_h46_j46_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g47_6_contents_c_11_g47_0_round_offset_contents_b_73_0_contents_c_11_g47_1_j47_2_if_and_contents_c_11_0_j47_0_j47_0;
     }
 
     public void setIf_h46_0_round_h46_j46_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g47_6_contents_c_11_g47_0_round_offset_contents_b_73_0_contents_c_11_g47_1_j47_2_if_and_contents_c_11_0_j47_0_j47_0(java.lang.Double v)
@@ -3846,7 +3846,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h46_0_k46_l46_if_h47_0_round_h47_j47_if_contents_c_12_4_1_0_2()
     {
-        return if_h46_0_k46_l46_if_h47_0_round_h47_j47_if_contents_c_12_4_1_0_2;
+        return this.if_h46_0_k46_l46_if_h47_0_round_h47_j47_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h46_0_k46_l46_if_h47_0_round_h47_j47_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -3856,7 +3856,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_35()
     {
-        return oa_ar_or_fr_35;
+        return this.oa_ar_or_fr_35;
     }
 
     public void setOa_ar_or_fr_35(java.lang.String v)
@@ -3866,7 +3866,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_35()
     {
-        return equipment_purchases_or_value_2000_each_item_description_35;
+        return this.equipment_purchases_or_value_2000_each_item_description_35;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_35(java.lang.String v)
@@ -3876,7 +3876,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_35()
     {
-        return qty_35;
+        return this.qty_35;
     }
 
     public void setQty_35(java.lang.String v)
@@ -3886,7 +3886,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_35()
     {
-        return purchase_year_35;
+        return this.purchase_year_35;
     }
 
     public void setPurchase_year_35(java.lang.String v)
@@ -3896,7 +3896,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g47_0_if_and_contents_c_11_0_contents_c_11_g47_6_contents_c_11_g47_0_offset_contents_b_75_0_contents_c_11_g47_0()
     {
-        return if_g47_0_if_and_contents_c_11_0_contents_c_11_g47_6_contents_c_11_g47_0_offset_contents_b_75_0_contents_c_11_g47_0;
+        return this.if_g47_0_if_and_contents_c_11_0_contents_c_11_g47_6_contents_c_11_g47_0_offset_contents_b_75_0_contents_c_11_g47_0;
     }
 
     public void setIf_g47_0_if_and_contents_c_11_0_contents_c_11_g47_6_contents_c_11_g47_0_offset_contents_b_75_0_contents_c_11_g47_0(java.lang.Double v)
@@ -3906,7 +3906,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g47_0_g47_contents_c_11_contents_c_12_1_contents_c_12_a47_j47_if_and_g47_0_g47_contents_c_11_j47_0_if_g48_0_if_and_contents_c_11_0_contents_c_11_g48_6_contents_c_11_g48_0_offset_contents_b_75_0_contents_c_11_g48_0()
     {
-        return if_and_contents_c_13_sequential_g47_0_g47_contents_c_11_contents_c_12_1_contents_c_12_a47_j47_if_and_g47_0_g47_contents_c_11_j47_0_if_g48_0_if_and_contents_c_11_0_contents_c_11_g48_6_contents_c_11_g48_0_offset_contents_b_75_0_contents_c_11_g48_0;
+        return this.if_and_contents_c_13_sequential_g47_0_g47_contents_c_11_contents_c_12_1_contents_c_12_a47_j47_if_and_g47_0_g47_contents_c_11_j47_0_if_g48_0_if_and_contents_c_11_0_contents_c_11_g48_6_contents_c_11_g48_0_offset_contents_b_75_0_contents_c_11_g48_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g47_0_g47_contents_c_11_contents_c_12_1_contents_c_12_a47_j47_if_and_g47_0_g47_contents_c_11_j47_0_if_g48_0_if_and_contents_c_11_0_contents_c_11_g48_6_contents_c_11_g48_0_offset_contents_b_75_0_contents_c_11_g48_0(java.lang.Double v)
@@ -3916,7 +3916,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g48_0_g48_contents_c_11_contents_c_12_1_contents_c_12_a48_j48_if_and_g48_0_g48_contents_c_11_j48_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g48_0_g48_contents_c_11_contents_c_12_1_contents_c_12_a48_j48_if_and_g48_0_g48_contents_c_11_j48_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g48_0_g48_contents_c_11_contents_c_12_1_contents_c_12_a48_j48_if_and_g48_0_g48_contents_c_11_j48_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g48_0_g48_contents_c_11_contents_c_12_1_contents_c_12_a48_j48_if_and_g48_0_g48_contents_c_11_j48_0(java.lang.String v)
@@ -3926,7 +3926,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g47_6_contents_c_11_g47_0_round_offset_contents_b_73_0_contents_c_11_g47_1_j47_2_if_and_contents_c_11_0_j47_0_j47_0_if_and_contents_c_13_sequential_g48_0_g48_contents_c_11_contents_c_12_1_contents_c_12_a48_j48_if_and_g48_0_g48_contents_c_11_j48_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g47_6_contents_c_11_g47_0_round_offset_contents_b_73_0_contents_c_11_g47_1_j47_2_if_and_contents_c_11_0_j47_0_j47_0_if_and_contents_c_13_sequential_g48_0_g48_contents_c_11_contents_c_12_1_contents_c_12_a48_j48_if_and_g48_0_g48_contents_c_11_j48_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g47_6_contents_c_11_g47_0_round_offset_contents_b_73_0_contents_c_11_g47_1_j47_2_if_and_contents_c_11_0_j47_0_j47_0_if_and_contents_c_13_sequential_g48_0_g48_contents_c_11_contents_c_12_1_contents_c_12_a48_j48_if_and_g48_0_g48_contents_c_11_j48_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g47_6_contents_c_11_g47_0_round_offset_contents_b_73_0_contents_c_11_g47_1_j47_2_if_and_contents_c_11_0_j47_0_j47_0_if_and_contents_c_13_sequential_g48_0_g48_contents_c_11_contents_c_12_1_contents_c_12_a48_j48_if_and_g48_0_g48_contents_c_11_j48_0(java.lang.Double v)
@@ -3936,7 +3936,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h47_0_round_h47_j47_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g48_6_contents_c_11_g48_0_round_offset_contents_b_73_0_contents_c_11_g48_1_j48_2_if_and_contents_c_11_0_j48_0_j48_0()
     {
-        return if_h47_0_round_h47_j47_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g48_6_contents_c_11_g48_0_round_offset_contents_b_73_0_contents_c_11_g48_1_j48_2_if_and_contents_c_11_0_j48_0_j48_0;
+        return this.if_h47_0_round_h47_j47_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g48_6_contents_c_11_g48_0_round_offset_contents_b_73_0_contents_c_11_g48_1_j48_2_if_and_contents_c_11_0_j48_0_j48_0;
     }
 
     public void setIf_h47_0_round_h47_j47_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g48_6_contents_c_11_g48_0_round_offset_contents_b_73_0_contents_c_11_g48_1_j48_2_if_and_contents_c_11_0_j48_0_j48_0(java.lang.Double v)
@@ -3946,7 +3946,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h47_0_k47_l47_if_h48_0_round_h48_j48_if_contents_c_12_4_1_0_2()
     {
-        return if_h47_0_k47_l47_if_h48_0_round_h48_j48_if_contents_c_12_4_1_0_2;
+        return this.if_h47_0_k47_l47_if_h48_0_round_h48_j48_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h47_0_k47_l47_if_h48_0_round_h48_j48_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -3956,7 +3956,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_36()
     {
-        return oa_ar_or_fr_36;
+        return this.oa_ar_or_fr_36;
     }
 
     public void setOa_ar_or_fr_36(java.lang.String v)
@@ -3966,7 +3966,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_36()
     {
-        return equipment_purchases_or_value_2000_each_item_description_36;
+        return this.equipment_purchases_or_value_2000_each_item_description_36;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_36(java.lang.String v)
@@ -3976,7 +3976,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_36()
     {
-        return qty_36;
+        return this.qty_36;
     }
 
     public void setQty_36(java.lang.String v)
@@ -3986,7 +3986,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_36()
     {
-        return purchase_year_36;
+        return this.purchase_year_36;
     }
 
     public void setPurchase_year_36(java.lang.String v)
@@ -3996,7 +3996,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g48_0_if_and_contents_c_11_0_contents_c_11_g48_6_contents_c_11_g48_0_offset_contents_b_75_0_contents_c_11_g48_0()
     {
-        return if_g48_0_if_and_contents_c_11_0_contents_c_11_g48_6_contents_c_11_g48_0_offset_contents_b_75_0_contents_c_11_g48_0;
+        return this.if_g48_0_if_and_contents_c_11_0_contents_c_11_g48_6_contents_c_11_g48_0_offset_contents_b_75_0_contents_c_11_g48_0;
     }
 
     public void setIf_g48_0_if_and_contents_c_11_0_contents_c_11_g48_6_contents_c_11_g48_0_offset_contents_b_75_0_contents_c_11_g48_0(java.lang.Double v)
@@ -4006,7 +4006,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g48_0_g48_contents_c_11_contents_c_12_1_contents_c_12_a48_j48_if_and_g48_0_g48_contents_c_11_j48_0_if_g49_0_if_and_contents_c_11_0_contents_c_11_g49_6_contents_c_11_g49_0_offset_contents_b_75_0_contents_c_11_g49_0()
     {
-        return if_and_contents_c_13_sequential_g48_0_g48_contents_c_11_contents_c_12_1_contents_c_12_a48_j48_if_and_g48_0_g48_contents_c_11_j48_0_if_g49_0_if_and_contents_c_11_0_contents_c_11_g49_6_contents_c_11_g49_0_offset_contents_b_75_0_contents_c_11_g49_0;
+        return this.if_and_contents_c_13_sequential_g48_0_g48_contents_c_11_contents_c_12_1_contents_c_12_a48_j48_if_and_g48_0_g48_contents_c_11_j48_0_if_g49_0_if_and_contents_c_11_0_contents_c_11_g49_6_contents_c_11_g49_0_offset_contents_b_75_0_contents_c_11_g49_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g48_0_g48_contents_c_11_contents_c_12_1_contents_c_12_a48_j48_if_and_g48_0_g48_contents_c_11_j48_0_if_g49_0_if_and_contents_c_11_0_contents_c_11_g49_6_contents_c_11_g49_0_offset_contents_b_75_0_contents_c_11_g49_0(java.lang.Double v)
@@ -4016,7 +4016,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g49_0_g49_contents_c_11_contents_c_12_1_contents_c_12_a49_j49_if_and_g49_0_g49_contents_c_11_j49_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g49_0_g49_contents_c_11_contents_c_12_1_contents_c_12_a49_j49_if_and_g49_0_g49_contents_c_11_j49_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g49_0_g49_contents_c_11_contents_c_12_1_contents_c_12_a49_j49_if_and_g49_0_g49_contents_c_11_j49_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g49_0_g49_contents_c_11_contents_c_12_1_contents_c_12_a49_j49_if_and_g49_0_g49_contents_c_11_j49_0(java.lang.String v)
@@ -4026,7 +4026,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g48_6_contents_c_11_g48_0_round_offset_contents_b_73_0_contents_c_11_g48_1_j48_2_if_and_contents_c_11_0_j48_0_j48_0_if_and_contents_c_13_sequential_g49_0_g49_contents_c_11_contents_c_12_1_contents_c_12_a49_j49_if_and_g49_0_g49_contents_c_11_j49_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g48_6_contents_c_11_g48_0_round_offset_contents_b_73_0_contents_c_11_g48_1_j48_2_if_and_contents_c_11_0_j48_0_j48_0_if_and_contents_c_13_sequential_g49_0_g49_contents_c_11_contents_c_12_1_contents_c_12_a49_j49_if_and_g49_0_g49_contents_c_11_j49_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g48_6_contents_c_11_g48_0_round_offset_contents_b_73_0_contents_c_11_g48_1_j48_2_if_and_contents_c_11_0_j48_0_j48_0_if_and_contents_c_13_sequential_g49_0_g49_contents_c_11_contents_c_12_1_contents_c_12_a49_j49_if_and_g49_0_g49_contents_c_11_j49_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g48_6_contents_c_11_g48_0_round_offset_contents_b_73_0_contents_c_11_g48_1_j48_2_if_and_contents_c_11_0_j48_0_j48_0_if_and_contents_c_13_sequential_g49_0_g49_contents_c_11_contents_c_12_1_contents_c_12_a49_j49_if_and_g49_0_g49_contents_c_11_j49_0(java.lang.Double v)
@@ -4036,7 +4036,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h48_0_round_h48_j48_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g49_6_contents_c_11_g49_0_round_offset_contents_b_73_0_contents_c_11_g49_1_j49_2_if_and_contents_c_11_0_j49_0_j49_0()
     {
-        return if_h48_0_round_h48_j48_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g49_6_contents_c_11_g49_0_round_offset_contents_b_73_0_contents_c_11_g49_1_j49_2_if_and_contents_c_11_0_j49_0_j49_0;
+        return this.if_h48_0_round_h48_j48_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g49_6_contents_c_11_g49_0_round_offset_contents_b_73_0_contents_c_11_g49_1_j49_2_if_and_contents_c_11_0_j49_0_j49_0;
     }
 
     public void setIf_h48_0_round_h48_j48_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g49_6_contents_c_11_g49_0_round_offset_contents_b_73_0_contents_c_11_g49_1_j49_2_if_and_contents_c_11_0_j49_0_j49_0(java.lang.Double v)
@@ -4046,7 +4046,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h48_0_k48_l48_if_h49_0_round_h49_j49_if_contents_c_12_4_1_0_2()
     {
-        return if_h48_0_k48_l48_if_h49_0_round_h49_j49_if_contents_c_12_4_1_0_2;
+        return this.if_h48_0_k48_l48_if_h49_0_round_h49_j49_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h48_0_k48_l48_if_h49_0_round_h49_j49_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -4056,7 +4056,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_37()
     {
-        return oa_ar_or_fr_37;
+        return this.oa_ar_or_fr_37;
     }
 
     public void setOa_ar_or_fr_37(java.lang.String v)
@@ -4066,7 +4066,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_37()
     {
-        return equipment_purchases_or_value_2000_each_item_description_37;
+        return this.equipment_purchases_or_value_2000_each_item_description_37;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_37(java.lang.String v)
@@ -4076,7 +4076,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_37()
     {
-        return qty_37;
+        return this.qty_37;
     }
 
     public void setQty_37(java.lang.String v)
@@ -4086,7 +4086,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_37()
     {
-        return purchase_year_37;
+        return this.purchase_year_37;
     }
 
     public void setPurchase_year_37(java.lang.String v)
@@ -4096,7 +4096,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g49_0_if_and_contents_c_11_0_contents_c_11_g49_6_contents_c_11_g49_0_offset_contents_b_75_0_contents_c_11_g49_0()
     {
-        return if_g49_0_if_and_contents_c_11_0_contents_c_11_g49_6_contents_c_11_g49_0_offset_contents_b_75_0_contents_c_11_g49_0;
+        return this.if_g49_0_if_and_contents_c_11_0_contents_c_11_g49_6_contents_c_11_g49_0_offset_contents_b_75_0_contents_c_11_g49_0;
     }
 
     public void setIf_g49_0_if_and_contents_c_11_0_contents_c_11_g49_6_contents_c_11_g49_0_offset_contents_b_75_0_contents_c_11_g49_0(java.lang.Double v)
@@ -4106,7 +4106,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g49_0_g49_contents_c_11_contents_c_12_1_contents_c_12_a49_j49_if_and_g49_0_g49_contents_c_11_j49_0_if_g50_0_if_and_contents_c_11_0_contents_c_11_g50_6_contents_c_11_g50_0_offset_contents_b_75_0_contents_c_11_g50_0()
     {
-        return if_and_contents_c_13_sequential_g49_0_g49_contents_c_11_contents_c_12_1_contents_c_12_a49_j49_if_and_g49_0_g49_contents_c_11_j49_0_if_g50_0_if_and_contents_c_11_0_contents_c_11_g50_6_contents_c_11_g50_0_offset_contents_b_75_0_contents_c_11_g50_0;
+        return this.if_and_contents_c_13_sequential_g49_0_g49_contents_c_11_contents_c_12_1_contents_c_12_a49_j49_if_and_g49_0_g49_contents_c_11_j49_0_if_g50_0_if_and_contents_c_11_0_contents_c_11_g50_6_contents_c_11_g50_0_offset_contents_b_75_0_contents_c_11_g50_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g49_0_g49_contents_c_11_contents_c_12_1_contents_c_12_a49_j49_if_and_g49_0_g49_contents_c_11_j49_0_if_g50_0_if_and_contents_c_11_0_contents_c_11_g50_6_contents_c_11_g50_0_offset_contents_b_75_0_contents_c_11_g50_0(java.lang.Double v)
@@ -4116,7 +4116,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g50_0_g50_contents_c_11_contents_c_12_1_contents_c_12_a50_j50_if_and_g50_0_g50_contents_c_11_j50_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g50_0_g50_contents_c_11_contents_c_12_1_contents_c_12_a50_j50_if_and_g50_0_g50_contents_c_11_j50_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g50_0_g50_contents_c_11_contents_c_12_1_contents_c_12_a50_j50_if_and_g50_0_g50_contents_c_11_j50_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g50_0_g50_contents_c_11_contents_c_12_1_contents_c_12_a50_j50_if_and_g50_0_g50_contents_c_11_j50_0(java.lang.String v)
@@ -4126,7 +4126,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g49_6_contents_c_11_g49_0_round_offset_contents_b_73_0_contents_c_11_g49_1_j49_2_if_and_contents_c_11_0_j49_0_j49_0_if_and_contents_c_13_sequential_g50_0_g50_contents_c_11_contents_c_12_1_contents_c_12_a50_j50_if_and_g50_0_g50_contents_c_11_j50_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g49_6_contents_c_11_g49_0_round_offset_contents_b_73_0_contents_c_11_g49_1_j49_2_if_and_contents_c_11_0_j49_0_j49_0_if_and_contents_c_13_sequential_g50_0_g50_contents_c_11_contents_c_12_1_contents_c_12_a50_j50_if_and_g50_0_g50_contents_c_11_j50_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g49_6_contents_c_11_g49_0_round_offset_contents_b_73_0_contents_c_11_g49_1_j49_2_if_and_contents_c_11_0_j49_0_j49_0_if_and_contents_c_13_sequential_g50_0_g50_contents_c_11_contents_c_12_1_contents_c_12_a50_j50_if_and_g50_0_g50_contents_c_11_j50_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g49_6_contents_c_11_g49_0_round_offset_contents_b_73_0_contents_c_11_g49_1_j49_2_if_and_contents_c_11_0_j49_0_j49_0_if_and_contents_c_13_sequential_g50_0_g50_contents_c_11_contents_c_12_1_contents_c_12_a50_j50_if_and_g50_0_g50_contents_c_11_j50_0(java.lang.Double v)
@@ -4136,7 +4136,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h49_0_round_h49_j49_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g50_6_contents_c_11_g50_0_round_offset_contents_b_73_0_contents_c_11_g50_1_j50_2_if_and_contents_c_11_0_j50_0_j50_0()
     {
-        return if_h49_0_round_h49_j49_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g50_6_contents_c_11_g50_0_round_offset_contents_b_73_0_contents_c_11_g50_1_j50_2_if_and_contents_c_11_0_j50_0_j50_0;
+        return this.if_h49_0_round_h49_j49_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g50_6_contents_c_11_g50_0_round_offset_contents_b_73_0_contents_c_11_g50_1_j50_2_if_and_contents_c_11_0_j50_0_j50_0;
     }
 
     public void setIf_h49_0_round_h49_j49_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g50_6_contents_c_11_g50_0_round_offset_contents_b_73_0_contents_c_11_g50_1_j50_2_if_and_contents_c_11_0_j50_0_j50_0(java.lang.Double v)
@@ -4146,7 +4146,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h49_0_k49_l49_if_h50_0_round_h50_j50_if_contents_c_12_4_1_0_2()
     {
-        return if_h49_0_k49_l49_if_h50_0_round_h50_j50_if_contents_c_12_4_1_0_2;
+        return this.if_h49_0_k49_l49_if_h50_0_round_h50_j50_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h49_0_k49_l49_if_h50_0_round_h50_j50_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -4156,7 +4156,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_38()
     {
-        return oa_ar_or_fr_38;
+        return this.oa_ar_or_fr_38;
     }
 
     public void setOa_ar_or_fr_38(java.lang.String v)
@@ -4166,7 +4166,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_38()
     {
-        return equipment_purchases_or_value_2000_each_item_description_38;
+        return this.equipment_purchases_or_value_2000_each_item_description_38;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_38(java.lang.String v)
@@ -4176,7 +4176,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_38()
     {
-        return qty_38;
+        return this.qty_38;
     }
 
     public void setQty_38(java.lang.String v)
@@ -4186,7 +4186,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_38()
     {
-        return purchase_year_38;
+        return this.purchase_year_38;
     }
 
     public void setPurchase_year_38(java.lang.String v)
@@ -4196,7 +4196,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g50_0_if_and_contents_c_11_0_contents_c_11_g50_6_contents_c_11_g50_0_offset_contents_b_75_0_contents_c_11_g50_0()
     {
-        return if_g50_0_if_and_contents_c_11_0_contents_c_11_g50_6_contents_c_11_g50_0_offset_contents_b_75_0_contents_c_11_g50_0;
+        return this.if_g50_0_if_and_contents_c_11_0_contents_c_11_g50_6_contents_c_11_g50_0_offset_contents_b_75_0_contents_c_11_g50_0;
     }
 
     public void setIf_g50_0_if_and_contents_c_11_0_contents_c_11_g50_6_contents_c_11_g50_0_offset_contents_b_75_0_contents_c_11_g50_0(java.lang.Double v)
@@ -4206,7 +4206,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g50_0_g50_contents_c_11_contents_c_12_1_contents_c_12_a50_j50_if_and_g50_0_g50_contents_c_11_j50_0_if_g51_0_if_and_contents_c_11_0_contents_c_11_g51_6_contents_c_11_g51_0_offset_contents_b_75_0_contents_c_11_g51_0()
     {
-        return if_and_contents_c_13_sequential_g50_0_g50_contents_c_11_contents_c_12_1_contents_c_12_a50_j50_if_and_g50_0_g50_contents_c_11_j50_0_if_g51_0_if_and_contents_c_11_0_contents_c_11_g51_6_contents_c_11_g51_0_offset_contents_b_75_0_contents_c_11_g51_0;
+        return this.if_and_contents_c_13_sequential_g50_0_g50_contents_c_11_contents_c_12_1_contents_c_12_a50_j50_if_and_g50_0_g50_contents_c_11_j50_0_if_g51_0_if_and_contents_c_11_0_contents_c_11_g51_6_contents_c_11_g51_0_offset_contents_b_75_0_contents_c_11_g51_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g50_0_g50_contents_c_11_contents_c_12_1_contents_c_12_a50_j50_if_and_g50_0_g50_contents_c_11_j50_0_if_g51_0_if_and_contents_c_11_0_contents_c_11_g51_6_contents_c_11_g51_0_offset_contents_b_75_0_contents_c_11_g51_0(java.lang.Double v)
@@ -4216,7 +4216,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g51_0_g51_contents_c_11_contents_c_12_1_contents_c_12_a51_j51_if_and_g51_0_g51_contents_c_11_j51_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g51_0_g51_contents_c_11_contents_c_12_1_contents_c_12_a51_j51_if_and_g51_0_g51_contents_c_11_j51_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g51_0_g51_contents_c_11_contents_c_12_1_contents_c_12_a51_j51_if_and_g51_0_g51_contents_c_11_j51_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g51_0_g51_contents_c_11_contents_c_12_1_contents_c_12_a51_j51_if_and_g51_0_g51_contents_c_11_j51_0(java.lang.String v)
@@ -4226,7 +4226,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g50_6_contents_c_11_g50_0_round_offset_contents_b_73_0_contents_c_11_g50_1_j50_2_if_and_contents_c_11_0_j50_0_j50_0_if_and_contents_c_13_sequential_g51_0_g51_contents_c_11_contents_c_12_1_contents_c_12_a51_j51_if_and_g51_0_g51_contents_c_11_j51_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g50_6_contents_c_11_g50_0_round_offset_contents_b_73_0_contents_c_11_g50_1_j50_2_if_and_contents_c_11_0_j50_0_j50_0_if_and_contents_c_13_sequential_g51_0_g51_contents_c_11_contents_c_12_1_contents_c_12_a51_j51_if_and_g51_0_g51_contents_c_11_j51_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g50_6_contents_c_11_g50_0_round_offset_contents_b_73_0_contents_c_11_g50_1_j50_2_if_and_contents_c_11_0_j50_0_j50_0_if_and_contents_c_13_sequential_g51_0_g51_contents_c_11_contents_c_12_1_contents_c_12_a51_j51_if_and_g51_0_g51_contents_c_11_j51_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g50_6_contents_c_11_g50_0_round_offset_contents_b_73_0_contents_c_11_g50_1_j50_2_if_and_contents_c_11_0_j50_0_j50_0_if_and_contents_c_13_sequential_g51_0_g51_contents_c_11_contents_c_12_1_contents_c_12_a51_j51_if_and_g51_0_g51_contents_c_11_j51_0(java.lang.Double v)
@@ -4236,7 +4236,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h50_0_round_h50_j50_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g51_6_contents_c_11_g51_0_round_offset_contents_b_73_0_contents_c_11_g51_1_j51_2_if_and_contents_c_11_0_j51_0_j51_0()
     {
-        return if_h50_0_round_h50_j50_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g51_6_contents_c_11_g51_0_round_offset_contents_b_73_0_contents_c_11_g51_1_j51_2_if_and_contents_c_11_0_j51_0_j51_0;
+        return this.if_h50_0_round_h50_j50_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g51_6_contents_c_11_g51_0_round_offset_contents_b_73_0_contents_c_11_g51_1_j51_2_if_and_contents_c_11_0_j51_0_j51_0;
     }
 
     public void setIf_h50_0_round_h50_j50_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g51_6_contents_c_11_g51_0_round_offset_contents_b_73_0_contents_c_11_g51_1_j51_2_if_and_contents_c_11_0_j51_0_j51_0(java.lang.Double v)
@@ -4246,7 +4246,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h50_0_k50_l50_if_h51_0_round_h51_j51_if_contents_c_12_4_1_0_2()
     {
-        return if_h50_0_k50_l50_if_h51_0_round_h51_j51_if_contents_c_12_4_1_0_2;
+        return this.if_h50_0_k50_l50_if_h51_0_round_h51_j51_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h50_0_k50_l50_if_h51_0_round_h51_j51_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -4256,7 +4256,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_39()
     {
-        return oa_ar_or_fr_39;
+        return this.oa_ar_or_fr_39;
     }
 
     public void setOa_ar_or_fr_39(java.lang.String v)
@@ -4266,7 +4266,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_39()
     {
-        return equipment_purchases_or_value_2000_each_item_description_39;
+        return this.equipment_purchases_or_value_2000_each_item_description_39;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_39(java.lang.String v)
@@ -4276,7 +4276,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_39()
     {
-        return qty_39;
+        return this.qty_39;
     }
 
     public void setQty_39(java.lang.String v)
@@ -4286,7 +4286,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_39()
     {
-        return purchase_year_39;
+        return this.purchase_year_39;
     }
 
     public void setPurchase_year_39(java.lang.String v)
@@ -4296,7 +4296,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g51_0_if_and_contents_c_11_0_contents_c_11_g51_6_contents_c_11_g51_0_offset_contents_b_75_0_contents_c_11_g51_0()
     {
-        return if_g51_0_if_and_contents_c_11_0_contents_c_11_g51_6_contents_c_11_g51_0_offset_contents_b_75_0_contents_c_11_g51_0;
+        return this.if_g51_0_if_and_contents_c_11_0_contents_c_11_g51_6_contents_c_11_g51_0_offset_contents_b_75_0_contents_c_11_g51_0;
     }
 
     public void setIf_g51_0_if_and_contents_c_11_0_contents_c_11_g51_6_contents_c_11_g51_0_offset_contents_b_75_0_contents_c_11_g51_0(java.lang.Double v)
@@ -4306,7 +4306,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g51_0_g51_contents_c_11_contents_c_12_1_contents_c_12_a51_j51_if_and_g51_0_g51_contents_c_11_j51_0_if_g52_0_if_and_contents_c_11_0_contents_c_11_g52_6_contents_c_11_g52_0_offset_contents_b_75_0_contents_c_11_g52_0()
     {
-        return if_and_contents_c_13_sequential_g51_0_g51_contents_c_11_contents_c_12_1_contents_c_12_a51_j51_if_and_g51_0_g51_contents_c_11_j51_0_if_g52_0_if_and_contents_c_11_0_contents_c_11_g52_6_contents_c_11_g52_0_offset_contents_b_75_0_contents_c_11_g52_0;
+        return this.if_and_contents_c_13_sequential_g51_0_g51_contents_c_11_contents_c_12_1_contents_c_12_a51_j51_if_and_g51_0_g51_contents_c_11_j51_0_if_g52_0_if_and_contents_c_11_0_contents_c_11_g52_6_contents_c_11_g52_0_offset_contents_b_75_0_contents_c_11_g52_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g51_0_g51_contents_c_11_contents_c_12_1_contents_c_12_a51_j51_if_and_g51_0_g51_contents_c_11_j51_0_if_g52_0_if_and_contents_c_11_0_contents_c_11_g52_6_contents_c_11_g52_0_offset_contents_b_75_0_contents_c_11_g52_0(java.lang.Double v)
@@ -4316,7 +4316,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g52_0_g52_contents_c_11_contents_c_12_1_contents_c_12_a52_j52_if_and_g52_0_g52_contents_c_11_j52_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g52_0_g52_contents_c_11_contents_c_12_1_contents_c_12_a52_j52_if_and_g52_0_g52_contents_c_11_j52_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g52_0_g52_contents_c_11_contents_c_12_1_contents_c_12_a52_j52_if_and_g52_0_g52_contents_c_11_j52_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g52_0_g52_contents_c_11_contents_c_12_1_contents_c_12_a52_j52_if_and_g52_0_g52_contents_c_11_j52_0(java.lang.String v)
@@ -4326,7 +4326,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g51_6_contents_c_11_g51_0_round_offset_contents_b_73_0_contents_c_11_g51_1_j51_2_if_and_contents_c_11_0_j51_0_j51_0_if_and_contents_c_13_sequential_g52_0_g52_contents_c_11_contents_c_12_1_contents_c_12_a52_j52_if_and_g52_0_g52_contents_c_11_j52_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g51_6_contents_c_11_g51_0_round_offset_contents_b_73_0_contents_c_11_g51_1_j51_2_if_and_contents_c_11_0_j51_0_j51_0_if_and_contents_c_13_sequential_g52_0_g52_contents_c_11_contents_c_12_1_contents_c_12_a52_j52_if_and_g52_0_g52_contents_c_11_j52_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g51_6_contents_c_11_g51_0_round_offset_contents_b_73_0_contents_c_11_g51_1_j51_2_if_and_contents_c_11_0_j51_0_j51_0_if_and_contents_c_13_sequential_g52_0_g52_contents_c_11_contents_c_12_1_contents_c_12_a52_j52_if_and_g52_0_g52_contents_c_11_j52_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g51_6_contents_c_11_g51_0_round_offset_contents_b_73_0_contents_c_11_g51_1_j51_2_if_and_contents_c_11_0_j51_0_j51_0_if_and_contents_c_13_sequential_g52_0_g52_contents_c_11_contents_c_12_1_contents_c_12_a52_j52_if_and_g52_0_g52_contents_c_11_j52_0(java.lang.Double v)
@@ -4336,7 +4336,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h51_0_round_h51_j51_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g52_6_contents_c_11_g52_0_round_offset_contents_b_73_0_contents_c_11_g52_1_j52_2_if_and_contents_c_11_0_j52_0_j52_0()
     {
-        return if_h51_0_round_h51_j51_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g52_6_contents_c_11_g52_0_round_offset_contents_b_73_0_contents_c_11_g52_1_j52_2_if_and_contents_c_11_0_j52_0_j52_0;
+        return this.if_h51_0_round_h51_j51_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g52_6_contents_c_11_g52_0_round_offset_contents_b_73_0_contents_c_11_g52_1_j52_2_if_and_contents_c_11_0_j52_0_j52_0;
     }
 
     public void setIf_h51_0_round_h51_j51_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g52_6_contents_c_11_g52_0_round_offset_contents_b_73_0_contents_c_11_g52_1_j52_2_if_and_contents_c_11_0_j52_0_j52_0(java.lang.Double v)
@@ -4346,7 +4346,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h51_0_k51_l51_if_h52_0_round_h52_j52_if_contents_c_12_4_1_0_2()
     {
-        return if_h51_0_k51_l51_if_h52_0_round_h52_j52_if_contents_c_12_4_1_0_2;
+        return this.if_h51_0_k51_l51_if_h52_0_round_h52_j52_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h51_0_k51_l51_if_h52_0_round_h52_j52_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -4356,7 +4356,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getOa_ar_or_fr_40()
     {
-        return oa_ar_or_fr_40;
+        return this.oa_ar_or_fr_40;
     }
 
     public void setOa_ar_or_fr_40(java.lang.String v)
@@ -4366,7 +4366,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getEquipment_purchases_or_value_2000_each_item_description_40()
     {
-        return equipment_purchases_or_value_2000_each_item_description_40;
+        return this.equipment_purchases_or_value_2000_each_item_description_40;
     }
 
     public void setEquipment_purchases_or_value_2000_each_item_description_40(java.lang.String v)
@@ -4376,7 +4376,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getQty_40()
     {
-        return qty_40;
+        return this.qty_40;
     }
 
     public void setQty_40(java.lang.String v)
@@ -4386,7 +4386,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getPurchase_year_40()
     {
-        return purchase_year_40;
+        return this.purchase_year_40;
     }
 
     public void setPurchase_year_40(java.lang.String v)
@@ -4396,7 +4396,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_g52_0_if_and_contents_c_11_0_contents_c_11_g52_6_contents_c_11_g52_0_offset_contents_b_75_0_contents_c_11_g52_0()
     {
-        return if_g52_0_if_and_contents_c_11_0_contents_c_11_g52_6_contents_c_11_g52_0_offset_contents_b_75_0_contents_c_11_g52_0;
+        return this.if_g52_0_if_and_contents_c_11_0_contents_c_11_g52_6_contents_c_11_g52_0_offset_contents_b_75_0_contents_c_11_g52_0;
     }
 
     public void setIf_g52_0_if_and_contents_c_11_0_contents_c_11_g52_6_contents_c_11_g52_0_offset_contents_b_75_0_contents_c_11_g52_0(java.lang.Double v)
@@ -4406,7 +4406,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g52_0_g52_contents_c_11_contents_c_12_1_contents_c_12_a52_j52_if_and_g52_0_g52_contents_c_11_j52_0_if_g53_0_if_and_contents_c_11_0_contents_c_11_g53_9_contents_c_11_g53_0_offset_contents_b_79_0_contents_c_11_g53_0()
     {
-        return if_and_contents_c_13_sequential_g52_0_g52_contents_c_11_contents_c_12_1_contents_c_12_a52_j52_if_and_g52_0_g52_contents_c_11_j52_0_if_g53_0_if_and_contents_c_11_0_contents_c_11_g53_9_contents_c_11_g53_0_offset_contents_b_79_0_contents_c_11_g53_0;
+        return this.if_and_contents_c_13_sequential_g52_0_g52_contents_c_11_contents_c_12_1_contents_c_12_a52_j52_if_and_g52_0_g52_contents_c_11_j52_0_if_g53_0_if_and_contents_c_11_0_contents_c_11_g53_9_contents_c_11_g53_0_offset_contents_b_79_0_contents_c_11_g53_0;
     }
 
     public void setIf_and_contents_c_13_sequential_g52_0_g52_contents_c_11_contents_c_12_1_contents_c_12_a52_j52_if_and_g52_0_g52_contents_c_11_j52_0_if_g53_0_if_and_contents_c_11_0_contents_c_11_g53_9_contents_c_11_g53_0_offset_contents_b_79_0_contents_c_11_g53_0(java.lang.Double v)
@@ -4416,7 +4416,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.String getB_current_cost_or_value_if_and_contents_c_13_sequential_g53_0_g53_contents_c_11_contents_c_12_1_contents_c_12_a53_j53_if_and_g53_0_g53_contents_c_11_j53_0()
     {
-        return b_current_cost_or_value_if_and_contents_c_13_sequential_g53_0_g53_contents_c_11_contents_c_12_1_contents_c_12_a53_j53_if_and_g53_0_g53_contents_c_11_j53_0;
+        return this.b_current_cost_or_value_if_and_contents_c_13_sequential_g53_0_g53_contents_c_11_contents_c_12_1_contents_c_12_a53_j53_if_and_g53_0_g53_contents_c_11_j53_0;
     }
 
     public void setB_current_cost_or_value_if_and_contents_c_13_sequential_g53_0_g53_contents_c_11_contents_c_12_1_contents_c_12_a53_j53_if_and_g53_0_g53_contents_c_11_j53_0(java.lang.String v)
@@ -4426,7 +4426,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g52_6_contents_c_11_g52_0_round_offset_contents_b_73_0_contents_c_11_g52_1_j52_2_if_and_contents_c_11_0_j52_0_j52_0_if_and_contents_c_13_sequential_g53_0_g53_contents_c_11_contents_c_12_1_contents_c_12_a53_j53_if_and_g53_0_g53_contents_c_11_j53_0()
     {
-        return if_and_contents_c_11_0_contents_c_11_g52_6_contents_c_11_g52_0_round_offset_contents_b_73_0_contents_c_11_g52_1_j52_2_if_and_contents_c_11_0_j52_0_j52_0_if_and_contents_c_13_sequential_g53_0_g53_contents_c_11_contents_c_12_1_contents_c_12_a53_j53_if_and_g53_0_g53_contents_c_11_j53_0;
+        return this.if_and_contents_c_11_0_contents_c_11_g52_6_contents_c_11_g52_0_round_offset_contents_b_73_0_contents_c_11_g52_1_j52_2_if_and_contents_c_11_0_j52_0_j52_0_if_and_contents_c_13_sequential_g53_0_g53_contents_c_11_contents_c_12_1_contents_c_12_a53_j53_if_and_g53_0_g53_contents_c_11_j53_0;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g52_6_contents_c_11_g52_0_round_offset_contents_b_73_0_contents_c_11_g52_1_j52_2_if_and_contents_c_11_0_j52_0_j52_0_if_and_contents_c_13_sequential_g53_0_g53_contents_c_11_contents_c_12_1_contents_c_12_a53_j53_if_and_g53_0_g53_contents_c_11_j53_0(java.lang.Double v)
@@ -4436,7 +4436,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h52_0_round_h52_j52_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g53_6_contents_c_11_g53_0_round_offset_contents_b_77_0_contents_c_11_g53_1_j53_2_if_and_contents_c_11_0_j53_0_j53_0()
     {
-        return if_h52_0_round_h52_j52_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g53_6_contents_c_11_g53_0_round_offset_contents_b_77_0_contents_c_11_g53_1_j53_2_if_and_contents_c_11_0_j53_0_j53_0;
+        return this.if_h52_0_round_h52_j52_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g53_6_contents_c_11_g53_0_round_offset_contents_b_77_0_contents_c_11_g53_1_j53_2_if_and_contents_c_11_0_j53_0_j53_0;
     }
 
     public void setIf_h52_0_round_h52_j52_if_contents_c_12_4_1_0_2_if_and_contents_c_11_0_contents_c_11_g53_6_contents_c_11_g53_0_round_offset_contents_b_77_0_contents_c_11_g53_1_j53_2_if_and_contents_c_11_0_j53_0_j53_0(java.lang.Double v)
@@ -4446,7 +4446,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h52_0_k52_l52_if_h53_0_round_h53_j53_if_contents_c_12_4_1_0_2()
     {
-        return if_h52_0_k52_l52_if_h53_0_round_h53_j53_if_contents_c_12_4_1_0_2;
+        return this.if_h52_0_k52_l52_if_h53_0_round_h53_j53_if_contents_c_12_4_1_0_2;
     }
 
     public void setIf_h52_0_k52_l52_if_h53_0_round_h53_j53_if_contents_c_12_4_1_0_2(java.lang.Double v)
@@ -4456,7 +4456,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_13_sequential_g53_0_g53_contents_c_11_contents_c_12_1_contents_c_12_a53_j53_if_and_g53_0_g53_contents_c_11_j53_0_5_year_total()
     {
-        return if_and_contents_c_13_sequential_g53_0_g53_contents_c_11_contents_c_12_1_contents_c_12_a53_j53_if_and_g53_0_g53_contents_c_11_j53_0_5_year_total;
+        return this.if_and_contents_c_13_sequential_g53_0_g53_contents_c_11_contents_c_12_1_contents_c_12_a53_j53_if_and_g53_0_g53_contents_c_11_j53_0_5_year_total;
     }
 
     public void setIf_and_contents_c_13_sequential_g53_0_g53_contents_c_11_contents_c_12_1_contents_c_12_a53_j53_if_and_g53_0_g53_contents_c_11_j53_0_5_year_total(java.lang.Double v)
@@ -4466,7 +4466,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getB_current_cost_or_value_sum_i14_i53()
     {
-        return b_current_cost_or_value_sum_i14_i53;
+        return this.b_current_cost_or_value_sum_i14_i53;
     }
 
     public void setB_current_cost_or_value_sum_i14_i53(java.lang.Double v)
@@ -4476,7 +4476,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_and_contents_c_11_0_contents_c_11_g53_6_contents_c_11_g53_0_round_offset_contents_b_77_0_contents_c_11_g53_1_j53_2_if_and_contents_c_11_0_j53_0_j53_0_sum_j14_j53()
     {
-        return if_and_contents_c_11_0_contents_c_11_g53_6_contents_c_11_g53_0_round_offset_contents_b_77_0_contents_c_11_g53_1_j53_2_if_and_contents_c_11_0_j53_0_j53_0_sum_j14_j53;
+        return this.if_and_contents_c_11_0_contents_c_11_g53_6_contents_c_11_g53_0_round_offset_contents_b_77_0_contents_c_11_g53_1_j53_2_if_and_contents_c_11_0_j53_0_j53_0_sum_j14_j53;
     }
 
     public void setIf_and_contents_c_11_0_contents_c_11_g53_6_contents_c_11_g53_0_round_offset_contents_b_77_0_contents_c_11_g53_1_j53_2_if_and_contents_c_11_0_j53_0_j53_0_sum_j14_j53(java.lang.Double v)
@@ -4486,7 +4486,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h53_0_round_h53_j53_if_contents_c_12_4_1_0_2_sum_k14_k53()
     {
-        return if_h53_0_round_h53_j53_if_contents_c_12_4_1_0_2_sum_k14_k53;
+        return this.if_h53_0_round_h53_j53_if_contents_c_12_4_1_0_2_sum_k14_k53;
     }
 
     public void setIf_h53_0_round_h53_j53_if_contents_c_12_4_1_0_2_sum_k14_k53(java.lang.Double v)
@@ -4496,7 +4496,7 @@ public class DEPR_DTL_8bBean
 
     public java.lang.Double getIf_h53_0_k53_l53_sum_l14_l53()
     {
-        return if_h53_0_k53_l53_sum_l14_l53;
+        return this.if_h53_0_k53_l53_sum_l14_l53;
     }
 
     public void setIf_h53_0_k53_l53_sum_l14_l53(java.lang.Double v)

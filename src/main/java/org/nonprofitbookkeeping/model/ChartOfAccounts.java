@@ -31,14 +31,14 @@ public class ChartOfAccounts
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt = Instant.now();
 
-    public Long getId() { return id; }
-    public String getName() { return name; }
+    public Long getId() { return this.id; }
+    public String getName() { return this.name; }
     public void setName(String name) { this.name = name; }
-    public String getVersion() { return version; }
+    public String getVersion() { return this.version; }
     public void setVersion(String version) { this.version = version; }
-    public ChartStatus getStatus() { return status; }
+    public ChartStatus getStatus() { return this.status; }
     public void setStatus(ChartStatus status) { this.status = status; }
-    public Instant getCreatedAt() { return createdAt; }
-    public Instant getUpdatedAt() { return updatedAt; }
+    public Instant getCreatedAt() { return this.createdAt; }
+    public Instant getUpdatedAt() { return this.updatedAt; }
     public void touchUpdatedAt() { this.updatedAt = Instant.now(); }
 }

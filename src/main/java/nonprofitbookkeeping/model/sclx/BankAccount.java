@@ -111,7 +111,7 @@ public class BankAccount {
      */
     @JsonProperty("bankAccountId")
     public String getBankAccountId() {
-        return bankAccountId;
+        return this.bankAccountId;
     }
 
     /**
@@ -131,7 +131,7 @@ public class BankAccount {
      */
     @JsonProperty("accountName")
     public String getAccountName() {
-        return accountName;
+        return this.accountName;
     }
 
     /**
@@ -146,7 +146,7 @@ public class BankAccount {
 
     @JsonProperty("institutionName")
     public String getInstitutionName() {
-        return institutionName;
+        return this.institutionName;
     }
 
     @JsonProperty("institutionName")
@@ -156,7 +156,7 @@ public class BankAccount {
 
     @JsonProperty("institutionEmail")
     public String getInstitutionEmail() {
-        return institutionEmail;
+        return this.institutionEmail;
     }
 
     @JsonProperty("institutionEmail")
@@ -166,7 +166,7 @@ public class BankAccount {
 
     @JsonProperty("institutionPhone")
     public String getInstitutionPhone() {
-        return institutionPhone;
+        return this.institutionPhone;
     }
 
     @JsonProperty("institutionPhone")
@@ -176,7 +176,7 @@ public class BankAccount {
 
     @JsonProperty("accountNumberMasked")
     public String getAccountNumberMasked() {
-        return accountNumberMasked;
+        return this.accountNumberMasked;
     }
 
     @JsonProperty("accountNumberMasked")
@@ -186,7 +186,7 @@ public class BankAccount {
 
     @JsonProperty("accountType")
     public String getAccountType() {
-        return accountType;
+        return this.accountType;
     }
 
     @JsonProperty("accountType")
@@ -196,7 +196,7 @@ public class BankAccount {
 
     @JsonProperty("currency")
     public String getCurrency() {
-        return currency;
+        return this.currency;
     }
 
     @JsonProperty("currency")
@@ -206,7 +206,7 @@ public class BankAccount {
 
     @JsonProperty("interestBearing")
     public Boolean getInterestBearing() {
-        return interestBearing;
+        return this.interestBearing;
     }
 
     @JsonProperty("interestBearing")
@@ -216,7 +216,7 @@ public class BankAccount {
 
     @JsonProperty("signatureRequirement")
     public String getSignatureRequirement() {
-        return signatureRequirement;
+        return this.signatureRequirement;
     }
 
     @JsonProperty("signatureRequirement")
@@ -226,7 +226,7 @@ public class BankAccount {
 
     @JsonProperty("accountHolderName")
     public String getAccountHolderName() {
-        return accountHolderName;
+        return this.accountHolderName;
     }
 
     @JsonProperty("accountHolderName")
@@ -236,7 +236,7 @@ public class BankAccount {
 
     @JsonProperty("chartAccountId")
     public String getChartAccountId() {
-        return chartAccountId;
+        return this.chartAccountId;
     }
 
     @JsonProperty("chartAccountId")
@@ -246,7 +246,7 @@ public class BankAccount {
 
     @JsonProperty("authorizedSigners")
     public List<BankAccountSigner> getAuthorizedSigners() {
-        return authorizedSigners;
+        return this.authorizedSigners;
     }
 
     @JsonProperty("authorizedSigners")
@@ -256,7 +256,7 @@ public class BankAccount {
 
     @JsonProperty("extensions")
     public Extensions getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     @JsonProperty("extensions")

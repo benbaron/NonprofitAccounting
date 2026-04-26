@@ -1,8 +1,6 @@
 package org.nonprofitbookkeeping.model;
 
 import jakarta.persistence.*;
-import java.time.*;
-import java.math.*;
 
 
 @Entity
@@ -25,11 +23,11 @@ public class Activity
     @Column(name = "is_active", nullable = false)
     private boolean active = true;
 
-    public Long getId() { return id; }
-    public String getCode() { return code; }
+    public Long getId() { return this.id; }
+    public String getCode() { return this.code; }
     public void setCode(String code) { this.code = code; }
-    public String getName() { return name; }
+    public String getName() { return this.name; }
     public void setName(String name) { this.name = name; }
-    public boolean isActive() { return active; }
+    public boolean isActive() { return this.active; }
     public void setActive(boolean active) { this.active = active; }
 }

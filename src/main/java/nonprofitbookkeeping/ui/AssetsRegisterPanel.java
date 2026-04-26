@@ -51,7 +51,7 @@ public class AssetsRegisterPanel implements AppPanel
 	public AssetsRegisterPanel(AssetRecordService assetRecordService)
 	{
 		this.assetRecordService = Objects.requireNonNull(assetRecordService, "assetRecordService");
-		root.setPadding(new Insets(8));
+		this.root.setPadding(new Insets(8));
 
 		Label title = new Label("Asset Register");
 		title.getStyleClass().add("panel-title");
@@ -62,12 +62,12 @@ public class AssetsRegisterPanel implements AppPanel
 		Button save = new Button("Save");
 		HBox actions = new HBox(8, add, delete, refresh, save);
 
-		root.setTop(new VBox(6, title, actions, new Separator()));
+		this.root.setTop(new VBox(6, title, actions, new Separator()));
 		configureTable();
-		root.setCenter(table);
-		root.setBottom(new VBox(new Separator(), status));
+		this.root.setCenter(this.table);
+		this.root.setBottom(new VBox(new Separator(), this.status));
 
-		add.setOnAction(e -> table.getItems().add(new AssetRow("asset-" + UUID.randomUUID(), "", "", "", "", null, "")));
+		add.setOnAction(e -> this.table.getItems().add(new AssetRow("asset-" + UUID.randomUUID(), "", "", "", "", null, "")));
 		delete.setOnAction(e -> onDeleteSelected());
 		refresh.setOnAction(e -> loadFromService());
 		save.setOnAction(e -> onSave());
@@ -76,9 +76,9 @@ public class AssetsRegisterPanel implements AppPanel
 
 	private void configureTable()
 	{
-		table.setEditable(true);
-		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-		table.getColumns().setAll(
+		this.table.setEditable(true);
+		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+		this.table.getColumns().setAll(
 			col("Asset ID", AssetRow::assetIdProperty, AssetRow::setAssetId),
 			col("Acquired", AssetRow::dateAcquiredProperty, AssetRow::setDateAcquired),
 			col("Description", AssetRow::descriptionProperty, AssetRow::setDescription),
@@ -130,16 +130,16 @@ public class AssetsRegisterPanel implements AppPanel
 	{
 		try
 		{
-			table.setItems(FXCollections.observableArrayList(
-				assetRecordService.listAll().stream().map(AssetRow::fromRecord).toList()));
-			table.getSelectionModel().clearSelection();
-			status.setText("Loaded " + table.getItems().size() + " asset row(s).");
+			this.table.setItems(FXCollections.observableArrayList(
+				this.assetRecordService.listAll().stream().map(AssetRow::fromRecord).toList()));
+			this.table.getSelectionModel().clearSelection();
+			this.status.setText("Loaded " + this.table.getItems().size() + " asset row(s).");
 		}
 		catch (SQLException | RuntimeException ex)
 		{
 			LOG.warn("Failed to load asset rows", ex);
-			table.getItems().clear();
-			status.setText("Failed to load asset rows: " + ex.getMessage());
+			this.table.getItems().clear();
+			this.status.setText("Failed to load asset rows: " + ex.getMessage());
 		}
 	}
 
@@ -152,7 +152,7 @@ public class AssetsRegisterPanel implements AppPanel
 	@Override
 	public Node root()
 	{
-		return root;
+		return this.root;
 	}
 
 	@Override
@@ -161,45 +161,45 @@ public class AssetsRegisterPanel implements AppPanel
 		try
 		{
 			List<AssetRecord> recordsToSave = new ArrayList<>();
-			for (int i = 0; i < table.getItems().size(); i++)
+			for (int i = 0; i < this.table.getItems().size(); i++)
 			{
-				recordsToSave.add(table.getItems().get(i).toRecord(i + 1));
+				recordsToSave.add(this.table.getItems().get(i).toRecord(i + 1));
 			}
 
 			for (AssetRecord record : recordsToSave)
 			{
-				assetRecordService.save(record);
+				this.assetRecordService.save(record);
 			}
 
-			table.setItems(FXCollections.observableArrayList(
+			this.table.setItems(FXCollections.observableArrayList(
 				recordsToSave.stream().map(AssetRow::fromRecord).toList()));
-			status.setText("Saved " + recordsToSave.size() + " asset row(s).");
+			this.status.setText("Saved " + recordsToSave.size() + " asset row(s).");
 		}
 		catch (SQLException | RuntimeException ex)
 		{
 			LOG.warn("Asset register save failed", ex);
-			status.setText("Failed to save assets: " + ex.getMessage());
+			this.status.setText("Failed to save assets: " + ex.getMessage());
 		}
 	}
 
 	private void onDeleteSelected()
 	{
-		AssetRow selected = table.getSelectionModel().getSelectedItem();
+		AssetRow selected = this.table.getSelectionModel().getSelectedItem();
 		if (selected == null)
 		{
-			status.setText("Select a row to delete.");
+			this.status.setText("Select a row to delete.");
 			return;
 		}
 		try
 		{
-			int deleted = assetRecordService.delete(selected.deleteKey());
-			table.getItems().remove(selected);
-			status.setText(deleted > 0 ? "Deleted asset " + selected.deleteKey() : "Removed unsaved row.");
+			int deleted = this.assetRecordService.delete(selected.deleteKey());
+			this.table.getItems().remove(selected);
+			this.status.setText(deleted > 0 ? "Deleted asset " + selected.deleteKey() : "Removed unsaved row.");
 		}
 		catch (SQLException | RuntimeException ex)
 		{
 			LOG.warn("Asset register delete failed", ex);
-			status.setText("Failed to delete asset: " + ex.getMessage());
+			this.status.setText("Failed to delete asset: " + ex.getMessage());
 		}
 	}
 
@@ -259,48 +259,48 @@ public class AssetsRegisterPanel implements AppPanel
 
 		public AssetRecord toRecord(int rowNumber)
 		{
-			String assetIdValue = nonBlankOrThrow(assetId.get(), "assetId", rowNumber);
+			String assetIdValue = nonBlankOrThrow(this.assetId.get(), "assetId", rowNumber);
 			return new AssetRecord(
 				assetIdValue,
-				parseLocalDate(dateAcquired.get(), rowNumber),
-				nullIfBlank(description.get()),
-				parseInteger(itemCount.get(), rowNumber),
-				parseBigDecimal(approxValueTotal.get(), rowNumber, "approx value"),
-				parseBigDecimal(accumulatedDepreciation.get(), rowNumber, "accumulated depreciation"),
-				sourceRecord == null ? null : sourceRecord.valuePerItem(),
-				itemType.get(),
-				sourceRecord == null ? null : sourceRecord.usedFor(),
-				sourceRecord == null ? null : sourceRecord.lotPaidTotal(),
-				sourceRecord == null ? null : sourceRecord.lotItemCount(),
-				sourceRecord == null ? null : sourceRecord.currentGuardian(),
-				sourceRecord == null ? null : sourceRecord.guardianshipDetails(),
-				sourceRecord == null ? null : sourceRecord.removalDetails(),
-				sourceRecord == null ? Map.of() : sourceRecord.extensions());
+				parseLocalDate(this.dateAcquired.get(), rowNumber),
+				nullIfBlank(this.description.get()),
+				parseInteger(this.itemCount.get(), rowNumber),
+				parseBigDecimal(this.approxValueTotal.get(), rowNumber, "approx value"),
+				parseBigDecimal(this.accumulatedDepreciation.get(), rowNumber, "accumulated depreciation"),
+				this.sourceRecord == null ? null : this.sourceRecord.valuePerItem(),
+				this.itemType.get(),
+				this.sourceRecord == null ? null : this.sourceRecord.usedFor(),
+				this.sourceRecord == null ? null : this.sourceRecord.lotPaidTotal(),
+				this.sourceRecord == null ? null : this.sourceRecord.lotItemCount(),
+				this.sourceRecord == null ? null : this.sourceRecord.currentGuardian(),
+				this.sourceRecord == null ? null : this.sourceRecord.guardianshipDetails(),
+				this.sourceRecord == null ? null : this.sourceRecord.removalDetails(),
+				this.sourceRecord == null ? Map.of() : this.sourceRecord.extensions());
 		}
 
-		public String getAssetId() { return assetId.get(); }
-		public String getDateAcquired() { return dateAcquired.get(); }
-		public String getDescription() { return description.get(); }
-		public String getItemCount() { return itemCount.get(); }
-		public String getApproxValueTotal() { return approxValueTotal.get(); }
-		public AssetItemType getItemType() { return itemType.get(); }
-		public String getAccumulatedDepreciation() { return accumulatedDepreciation.get(); }
+		public String getAssetId() { return this.assetId.get(); }
+		public String getDateAcquired() { return this.dateAcquired.get(); }
+		public String getDescription() { return this.description.get(); }
+		public String getItemCount() { return this.itemCount.get(); }
+		public String getApproxValueTotal() { return this.approxValueTotal.get(); }
+		public AssetItemType getItemType() { return this.itemType.get(); }
+		public String getAccumulatedDepreciation() { return this.accumulatedDepreciation.get(); }
 
-		public SimpleStringProperty assetIdProperty() { return assetId; }
-		public SimpleStringProperty dateAcquiredProperty() { return dateAcquired; }
-		public SimpleStringProperty descriptionProperty() { return description; }
-		public SimpleStringProperty itemCountProperty() { return itemCount; }
-		public SimpleStringProperty approxValueTotalProperty() { return approxValueTotal; }
-		public SimpleObjectProperty<AssetItemType> itemTypeProperty() { return itemType; }
-		public SimpleStringProperty accumulatedDepreciationProperty() { return accumulatedDepreciation; }
+		public SimpleStringProperty assetIdProperty() { return this.assetId; }
+		public SimpleStringProperty dateAcquiredProperty() { return this.dateAcquired; }
+		public SimpleStringProperty descriptionProperty() { return this.description; }
+		public SimpleStringProperty itemCountProperty() { return this.itemCount; }
+		public SimpleStringProperty approxValueTotalProperty() { return this.approxValueTotal; }
+		public SimpleObjectProperty<AssetItemType> itemTypeProperty() { return this.itemType; }
+		public SimpleStringProperty accumulatedDepreciationProperty() { return this.accumulatedDepreciation; }
 
-		public void setAssetId(String value) { assetId.set(value == null ? "" : value); }
-		public void setDateAcquired(String value) { dateAcquired.set(value == null ? "" : value); }
-		public void setDescription(String value) { description.set(value == null ? "" : value); }
-		public void setItemCount(String value) { itemCount.set(value == null ? "" : value); }
-		public void setApproxValueTotal(String value) { approxValueTotal.set(value == null ? "" : value); }
-		public void setItemType(AssetItemType value) { itemType.set(value); }
-		public void setAccumulatedDepreciation(String value) { accumulatedDepreciation.set(value == null ? "" : value); }
+		public void setAssetId(String value) { this.assetId.set(value == null ? "" : value); }
+		public void setDateAcquired(String value) { this.dateAcquired.set(value == null ? "" : value); }
+		public void setDescription(String value) { this.description.set(value == null ? "" : value); }
+		public void setItemCount(String value) { this.itemCount.set(value == null ? "" : value); }
+		public void setApproxValueTotal(String value) { this.approxValueTotal.set(value == null ? "" : value); }
+		public void setItemType(AssetItemType value) { this.itemType.set(value); }
+		public void setAccumulatedDepreciation(String value) { this.accumulatedDepreciation.set(value == null ? "" : value); }
 
 		private String deleteKey()
 		{
@@ -309,7 +309,7 @@ public class AssetsRegisterPanel implements AppPanel
 			{
 				return currentAssetId.trim();
 			}
-			return sourceRecord != null ? sourceRecord.assetId() : "";
+			return this.sourceRecord != null ? this.sourceRecord.assetId() : "";
 		}
 
 		private static String nonBlankOrThrow(String raw, String field, int rowNumber)

@@ -25,16 +25,16 @@ public class BankStatementRecordService
 
     public void save(BankStatementRecord record) throws SQLException
     {
-        repository.upsert(record);
+        this.repository.upsert(record);
     }
 
     public List<BankStatementRecord> listAll() throws SQLException
     {
-        return repository.listAll();
+        return this.repository.listAll();
     }
 
     public int delete(String importId) throws SQLException
     {
-        return repository.deleteByImportId(importId);
+        return this.repository.deleteByImportId(importId);
     }
 }

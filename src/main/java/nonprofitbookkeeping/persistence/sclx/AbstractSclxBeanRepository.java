@@ -65,7 +65,7 @@ public abstract class AbstractSclxBeanRepository<T>
      */
     public void save(String id, T bean) throws SQLException
     {
-        jsonStorageRepository.save(composeStorageKey(id), serialize(bean));
+        this.jsonStorageRepository.save(composeStorageKey(id), serialize(bean));
     }
 
     /**
@@ -73,7 +73,7 @@ public abstract class AbstractSclxBeanRepository<T>
      */
     public Optional<T> load(String id) throws SQLException
     {
-        Optional<String> payload = jsonStorageRepository.load(composeStorageKey(id));
+        Optional<String> payload = this.jsonStorageRepository.load(composeStorageKey(id));
         if (payload.isEmpty())
         {
             return Optional.empty();
@@ -86,7 +86,7 @@ public abstract class AbstractSclxBeanRepository<T>
      */
     public void delete(String id) throws SQLException
     {
-        jsonStorageRepository.delete(composeStorageKey(id));
+        this.jsonStorageRepository.delete(composeStorageKey(id));
     }
 
     /**
@@ -95,7 +95,7 @@ public abstract class AbstractSclxBeanRepository<T>
     public Map<String, T> loadAll() throws SQLException
     {
         String sql = "SELECT storage_key, payload FROM json_storage WHERE storage_key LIKE ? ORDER BY storage_key";
-        String prefix = storageKeyPrefix + "::";
+        String prefix = this.storageKeyPrefix + "::";
         Map<String, T> rows = new LinkedHashMap<>();
 
         try (Connection connection = Database.get().getConnection();
@@ -122,15 +122,15 @@ public abstract class AbstractSclxBeanRepository<T>
         {
             throw new IllegalArgumentException("id must not be null or blank");
         }
-        return storageKeyPrefix + "::" + id;
+        return this.storageKeyPrefix + "::" + id;
     }
 
     private String extractId(String storageKey)
     {
-        String prefix = storageKeyPrefix + "::";
+        String prefix = this.storageKeyPrefix + "::";
         if (!storageKey.startsWith(prefix))
         {
-            throw new IllegalStateException("Unexpected storage key for prefix " + storageKeyPrefix + ": " + storageKey);
+            throw new IllegalStateException("Unexpected storage key for prefix " + this.storageKeyPrefix + ": " + storageKey);
         }
         return storageKey.substring(prefix.length());
     }
@@ -139,11 +139,11 @@ public abstract class AbstractSclxBeanRepository<T>
     {
         try
         {
-            return objectMapper.writeValueAsString(bean);
+            return this.objectMapper.writeValueAsString(bean);
         }
         catch (JsonProcessingException ex)
         {
-            throw new SQLException("Unable to serialize SCLX bean for key prefix: " + storageKeyPrefix, ex);
+            throw new SQLException("Unable to serialize SCLX bean for key prefix: " + this.storageKeyPrefix, ex);
         }
     }
 
@@ -151,11 +151,11 @@ public abstract class AbstractSclxBeanRepository<T>
     {
         try
         {
-            return objectMapper.readValue(payload, beanType);
+            return this.objectMapper.readValue(payload, this.beanType);
         }
         catch (JsonProcessingException ex)
         {
-            throw new SQLException("Unable to deserialize SCLX bean for key prefix: " + storageKeyPrefix, ex);
+            throw new SQLException("Unable to deserialize SCLX bean for key prefix: " + this.storageKeyPrefix, ex);
         }
     }
 }

@@ -143,7 +143,7 @@ public class BankingItem {
      */
     @JsonProperty("bankingItemId")
     public String getBankingItemId() {
-        return bankingItemId;
+        return this.bankingItemId;
     }
 
     /**
@@ -163,7 +163,7 @@ public class BankingItem {
      */
     @JsonProperty("kind")
     public BankingItem.BankingItemKind getKind() {
-        return kind;
+        return this.kind;
     }
 
     /**
@@ -178,7 +178,7 @@ public class BankingItem {
 
     @JsonProperty("bankAccountId")
     public String getBankAccountId() {
-        return bankAccountId;
+        return this.bankAccountId;
     }
 
     @JsonProperty("bankAccountId")
@@ -188,7 +188,7 @@ public class BankingItem {
 
     @JsonProperty("transactionId")
     public String getTransactionId() {
-        return transactionId;
+        return this.transactionId;
     }
 
     @JsonProperty("transactionId")
@@ -198,7 +198,7 @@ public class BankingItem {
 
     @JsonProperty("lineIds")
     public Set<String> getLineIds() {
-        return lineIds;
+        return this.lineIds;
     }
 
     @JsonProperty("lineIds")
@@ -213,7 +213,7 @@ public class BankingItem {
      */
     @JsonProperty("clearedDate")
     public String getClearedDate() {
-        return clearedDate;
+        return this.clearedDate;
     }
 
     /**
@@ -233,7 +233,7 @@ public class BankingItem {
      */
     @JsonProperty("amount")
     public String getAmount() {
-        return amount;
+        return this.amount;
     }
 
     /**
@@ -248,7 +248,7 @@ public class BankingItem {
 
     @JsonProperty("checkNumber")
     public String getCheckNumber() {
-        return checkNumber;
+        return this.checkNumber;
     }
 
     @JsonProperty("checkNumber")
@@ -258,7 +258,7 @@ public class BankingItem {
 
     @JsonProperty("payee")
     public String getPayee() {
-        return payee;
+        return this.payee;
     }
 
     @JsonProperty("payee")
@@ -268,7 +268,7 @@ public class BankingItem {
 
     @JsonProperty("depositDate")
     public String getDepositDate() {
-        return depositDate;
+        return this.depositDate;
     }
 
     @JsonProperty("depositDate")
@@ -278,7 +278,7 @@ public class BankingItem {
 
     @JsonProperty("payer")
     public String getPayer() {
-        return payer;
+        return this.payer;
     }
 
     @JsonProperty("payer")
@@ -288,7 +288,7 @@ public class BankingItem {
 
     @JsonProperty("depositId")
     public String getDepositId() {
-        return depositId;
+        return this.depositId;
     }
 
     @JsonProperty("depositId")
@@ -298,7 +298,7 @@ public class BankingItem {
 
     @JsonProperty("memo")
     public String getMemo() {
-        return memo;
+        return this.memo;
     }
 
     @JsonProperty("memo")
@@ -308,7 +308,7 @@ public class BankingItem {
 
     @JsonProperty("source")
     public BankingItem.BankingItemSource getSource() {
-        return source;
+        return this.source;
     }
 
     @JsonProperty("source")
@@ -318,7 +318,7 @@ public class BankingItem {
 
     @JsonProperty("status")
     public BankingItem.BankingItemStatus getStatus() {
-        return status;
+        return this.status;
     }
 
     @JsonProperty("status")
@@ -328,7 +328,7 @@ public class BankingItem {
 
     @JsonProperty("importId")
     public String getImportId() {
-        return importId;
+        return this.importId;
     }
 
     @JsonProperty("importId")
@@ -338,7 +338,7 @@ public class BankingItem {
 
     @JsonProperty("ofx")
     public OfxTransaction getOfx() {
-        return ofx;
+        return this.ofx;
     }
 
     @JsonProperty("ofx")
@@ -348,7 +348,7 @@ public class BankingItem {
 
     @JsonProperty("extensions")
     public Extensions getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     @JsonProperty("extensions")

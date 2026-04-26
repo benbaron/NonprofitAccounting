@@ -94,7 +94,7 @@ public class BudgetLine {
      */
     @JsonProperty("eventName")
     public String getEventName() {
-        return eventName;
+        return this.eventName;
     }
 
     /**
@@ -114,7 +114,7 @@ public class BudgetLine {
      */
     @JsonProperty("budgetedAmount")
     public String getBudgetedAmount() {
-        return budgetedAmount;
+        return this.budgetedAmount;
     }
 
     /**
@@ -134,7 +134,7 @@ public class BudgetLine {
      */
     @JsonProperty("revenueCategory")
     public BudgetLine.BudgetRevenueCategory getRevenueCategory() {
-        return revenueCategory;
+        return this.revenueCategory;
     }
 
     /**
@@ -154,7 +154,7 @@ public class BudgetLine {
      */
     @JsonProperty("expenseCategory")
     public BudgetLine.BudgetExpenseCategory getExpenseCategory() {
-        return expenseCategory;
+        return this.expenseCategory;
     }
 
     /**
@@ -169,7 +169,7 @@ public class BudgetLine {
 
     @JsonProperty("accountId")
     public String getAccountId() {
-        return accountId;
+        return this.accountId;
     }
 
     @JsonProperty("accountId")
@@ -179,7 +179,7 @@ public class BudgetLine {
 
     @JsonProperty("notes")
     public String getNotes() {
-        return notes;
+        return this.notes;
     }
 
     @JsonProperty("notes")
@@ -189,7 +189,7 @@ public class BudgetLine {
 
     @JsonProperty("extensions")
     public Extensions getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     @JsonProperty("extensions")

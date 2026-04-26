@@ -54,7 +54,7 @@ public class CoaFundIo
 
     public void exportFundsCsv(Path file) throws IOException
     {
-        try (EntityManager em = jpa.em();
+        try (EntityManager em = this.jpa.em();
              BufferedWriter w = Files.newBufferedWriter(file))
         {
             w.write("code,name,fund_type,parent_code,is_active,effective_from,effective_to,restriction_text\n");
@@ -75,7 +75,7 @@ public class CoaFundIo
         List<Map<String,String>> rows = readCsv(file);
 
         // Two-pass: create/update funds, then link parents.
-        try (EntityManager em = jpa.em())
+        try (EntityManager em = this.jpa.em())
         {
             em.getTransaction().begin();
 
@@ -131,7 +131,7 @@ public class CoaFundIo
 
     public void exportCoaJson(Path file) throws IOException
     {
-        try (EntityManager em = jpa.em())
+        try (EntityManager em = this.jpa.em())
         {
             List<ChartOfAccounts> charts = em.createQuery("select c from ChartOfAccounts c order by c.id", ChartOfAccounts.class).getResultList();
             List<Account> accts = em.createQuery("select a from Account a order by a.code", Account.class).getResultList();
@@ -140,7 +140,7 @@ public class CoaFundIo
             payload.put("charts", charts);
             payload.put("accounts", accts);
 
-            mapper.writerWithDefaultPrettyPrinter().writeValue(file.toFile(), payload);
+            this.mapper.writerWithDefaultPrettyPrinter().writeValue(file.toFile(), payload);
         }
     }
 
@@ -150,7 +150,7 @@ public class CoaFundIo
 
     public void exportAccountsCsv(Path file, long chartId) throws IOException
     {
-        try (EntityManager em = jpa.em();
+        try (EntityManager em = this.jpa.em();
              BufferedWriter w = Files.newBufferedWriter(file))
         {
             w.write("chart_id,code,name,account_type,subtype,opening_balance,normal_balance,parent_code,is_posting,is_active,effective_from,effective_to,description");
@@ -174,7 +174,7 @@ public class CoaFundIo
     {
         List<Map<String,String>> rows = readCsv(file);
 
-        try (EntityManager em = jpa.em())
+        try (EntityManager em = this.jpa.em())
         {
             em.getTransaction().begin();
 

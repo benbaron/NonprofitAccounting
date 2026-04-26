@@ -28,7 +28,7 @@ public class ChartOfAccountsPanel implements AppPanel
 
     public ChartOfAccountsPanel()
     {
-        root.setPadding(new Insets(8));
+        this.root.setPadding(new Insets(8));
 
         Label title = new Label("Chart of Accounts");
         title.getStyleClass().add("panel-title");
@@ -36,13 +36,13 @@ public class ChartOfAccountsPanel implements AppPanel
         Button add = new Button("+ Add");
         add.setOnAction(e -> onNew());
 
-        refresh = new Button("Refresh");
-        refresh.setOnAction(e -> reload());
+        this.refresh = new Button("Refresh");
+        this.refresh.setOnAction(e -> reload());
 
-        HBox actions = new HBox(8, add, refresh);
-        VBox header = new VBox(6, title, actions, status, new Separator());
+        HBox actions = new HBox(8, add, this.refresh);
+        VBox header = new VBox(6, title, actions, this.status, new Separator());
 
-        root.setTop(header);
+        this.root.setTop(header);
 
         TableColumn<Account, String> code = new TableColumn<>("Code");
         code.setCellValueFactory(v -> new SimpleStringProperty(v.getValue().getCode()));
@@ -56,15 +56,15 @@ public class ChartOfAccountsPanel implements AppPanel
         TableColumn<Account, String> subtype = new TableColumn<>("Subtype");
         subtype.setCellValueFactory(v -> new SimpleStringProperty(String.valueOf(v.getValue().getSubtype())));
 
-        table.getColumns().addAll(code, name, type, subtype);
-        table.setPlaceholder(new Label("No accounts found. Run the seed command to create starter data."));
-        root.setCenter(table);
+        this.table.getColumns().addAll(code, name, type, subtype);
+        this.table.setPlaceholder(new Label("No accounts found. Run the seed command to create starter data."));
+        this.root.setCenter(this.table);
 
         reload();
     }
 
     @Override public String title() { return "Chart of Accounts"; }
-    @Override public Node root() { return root; }
+    @Override public Node root() { return this.root; }
 
     @Override public void onNew() {
         new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION,
@@ -73,19 +73,19 @@ public class ChartOfAccountsPanel implements AppPanel
 
     private void reload()
     {
-        refresh.setDisable(true);
-        status.setText("Loading accounts...");
+        this.refresh.setDisable(true);
+        this.status.setText("Loading accounts...");
 
         UiAsync.run("coa-load",
             () -> UiServiceRegistry.accountLookup().listActivePostingAccounts(),
             rows -> {
-            table.getItems().setAll(rows);
-            status.setText("Loaded " + rows.size() + " posting account(s).");
-            refresh.setDisable(false);
+            this.table.getItems().setAll(rows);
+            this.status.setText("Loaded " + rows.size() + " posting account(s).");
+            this.refresh.setDisable(false);
             },
             ex -> {
-            status.setText("Failed to load accounts: " + UiErrors.safeMessage(ex));
-            refresh.setDisable(false);
+            this.status.setText("Failed to load accounts: " + UiErrors.safeMessage(ex));
+            this.refresh.setDisable(false);
             });
     }
 }

@@ -65,44 +65,44 @@ public class Account
     @Lob
     private String description;
 
-    public Long getId() { return id; }
-    public ChartOfAccounts getChart() { return chart; }
+    public Long getId() { return this.id; }
+    public ChartOfAccounts getChart() { return this.chart; }
     public void setChart(ChartOfAccounts chart) { this.chart = chart; }
 
-    public String getCode() { return code; }
+    public String getCode() { return this.code; }
     public void setCode(String code) { this.code = code; }
 
-    public String getName() { return name; }
+    public String getName() { return this.name; }
     public void setName(String name) { this.name = name; }
 
-    public AccountType getAccountType() { return accountType; }
+    public AccountType getAccountType() { return this.accountType; }
     public void setAccountType(AccountType accountType) { this.accountType = accountType; }
 
-    public NormalBalance getNormalBalance() { return normalBalance; }
+    public NormalBalance getNormalBalance() { return this.normalBalance; }
     public void setNormalBalance(NormalBalance normalBalance) { this.normalBalance = normalBalance; }
 
-    public Account getParent() { return parent; }
+    public Account getParent() { return this.parent; }
     public void setParent(Account parent) { this.parent = parent; }
 
-    public boolean isPosting() { return posting; }
+    public boolean isPosting() { return this.posting; }
     public void setPosting(boolean posting) { this.posting = posting; }
 
-    public boolean isActive() { return active; }
+    public boolean isActive() { return this.active; }
     public void setActive(boolean active) { this.active = active; }
 
-    public LocalDate getEffectiveFrom() { return effectiveFrom; }
+    public LocalDate getEffectiveFrom() { return this.effectiveFrom; }
     public void setEffectiveFrom(LocalDate effectiveFrom) { this.effectiveFrom = effectiveFrom; }
 
-    public LocalDate getEffectiveTo() { return effectiveTo; }
+    public LocalDate getEffectiveTo() { return this.effectiveTo; }
     public void setEffectiveTo(LocalDate effectiveTo) { this.effectiveTo = effectiveTo; }
 
-    public String getDescription() { return description; }
+    public String getDescription() { return this.description; }
     public void setDescription(String description) { this.description = description; }
 
-    public AccountSubtype getSubtype() { return subtype; }
+    public AccountSubtype getSubtype() { return this.subtype; }
     public void setSubtype(AccountSubtype subtype) { this.subtype = subtype; }
 
-    public BigDecimal getOpeningBalance() { return openingBalance; }
+    public BigDecimal getOpeningBalance() { return this.openingBalance; }
     public void setOpeningBalance(BigDecimal openingBalance) { this.openingBalance = openingBalance; }
 
 }

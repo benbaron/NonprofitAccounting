@@ -31,13 +31,13 @@ public class AccountReportSection
     @Column(name = "sign_policy", nullable = false, length = 20)
     private SignPolicy signPolicy = SignPolicy.NORMAL;
 
-    public Long getId() { return id; }
-    public Account getAccount() { return account; }
+    public Long getId() { return this.id; }
+    public Account getAccount() { return this.account; }
     public void setAccount(Account account) { this.account = account; }
-    public ReportSection getReportSection() { return reportSection; }
+    public ReportSection getReportSection() { return this.reportSection; }
     public void setReportSection(ReportSection reportSection) { this.reportSection = reportSection; }
-    public int getSortOrder() { return sortOrder; }
+    public int getSortOrder() { return this.sortOrder; }
     public void setSortOrder(int sortOrder) { this.sortOrder = sortOrder; }
-    public SignPolicy getSignPolicy() { return signPolicy; }
+    public SignPolicy getSignPolicy() { return this.signPolicy; }
     public void setSignPolicy(SignPolicy signPolicy) { this.signPolicy = signPolicy; }
 }

@@ -130,7 +130,7 @@ public class Account {
      */
     @JsonProperty("Number")
     public String getNumber() {
-        return number;
+        return this.number;
     }
 
     /**
@@ -150,7 +150,7 @@ public class Account {
      */
     @JsonProperty("Name")
     public String getName() {
-        return name;
+        return this.name;
     }
 
     /**
@@ -170,7 +170,7 @@ public class Account {
      */
     @JsonProperty("Type")
     public Account.AccountType getType() {
-        return type;
+        return this.type;
     }
 
     /**
@@ -185,7 +185,7 @@ public class Account {
 
     @JsonProperty("Parent")
     public String getParent() {
-        return parent;
+        return this.parent;
     }
 
     @JsonProperty("Parent")
@@ -200,7 +200,7 @@ public class Account {
      */
     @JsonProperty("IncreaseSide")
     public Account.IncreaseSide getIncreaseSide() {
-        return increaseSide;
+        return this.increaseSide;
     }
 
     /**
@@ -220,7 +220,7 @@ public class Account {
      */
     @JsonProperty("OpeningBalance")
     public String getOpeningBalance() {
-        return openingBalance;
+        return this.openingBalance;
     }
 
     /**
@@ -235,7 +235,7 @@ public class Account {
 
     @JsonProperty("SupplementalKinds")
     public Set<SupplementalKind> getSupplementalKinds() {
-        return supplementalKinds;
+        return this.supplementalKinds;
     }
 
     @JsonProperty("SupplementalKinds")
@@ -245,7 +245,7 @@ public class Account {
 
     @JsonProperty("accountId")
     public String getAccountId() {
-        return accountId;
+        return this.accountId;
     }
 
     @JsonProperty("accountId")
@@ -255,7 +255,7 @@ public class Account {
 
     @JsonProperty("code")
     public String getCode() {
-        return code;
+        return this.code;
     }
 
     @JsonProperty("code")
@@ -265,7 +265,7 @@ public class Account {
 
     @JsonProperty("subtype")
     public String getSubtype() {
-        return subtype;
+        return this.subtype;
     }
 
     @JsonProperty("subtype")
@@ -275,7 +275,7 @@ public class Account {
 
     @JsonProperty("active")
     public Boolean getActive() {
-        return active;
+        return this.active;
     }
 
     @JsonProperty("active")
@@ -285,7 +285,7 @@ public class Account {
 
     @JsonProperty("reportingTags")
     public Set<String> getReportingTags() {
-        return reportingTags;
+        return this.reportingTags;
     }
 
     @JsonProperty("reportingTags")
@@ -295,7 +295,7 @@ public class Account {
 
     @JsonProperty("extensions")
     public Extensions getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     @JsonProperty("extensions")

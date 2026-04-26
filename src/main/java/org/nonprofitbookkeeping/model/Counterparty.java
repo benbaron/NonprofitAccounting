@@ -36,17 +36,17 @@ public class Counterparty
     @Column(name = "is_active", nullable = false)
     private boolean active = true;
 
-    public Long getId() { return id; }
-    public String getDisplayName() { return displayName; }
+    public Long getId() { return this.id; }
+    public String getDisplayName() { return this.displayName; }
     public void setDisplayName(String displayName) { this.displayName = displayName; }
-    public CounterpartyKind getKind() { return kind; }
+    public CounterpartyKind getKind() { return this.kind; }
     public void setKind(CounterpartyKind kind) { this.kind = kind; }
-    public String getEmail() { return email; }
+    public String getEmail() { return this.email; }
     public void setEmail(String email) { this.email = email; }
-    public String getPhone() { return phone; }
+    public String getPhone() { return this.phone; }
     public void setPhone(String phone) { this.phone = phone; }
-    public String getNotes() { return notes; }
+    public String getNotes() { return this.notes; }
     public void setNotes(String notes) { this.notes = notes; }
-    public boolean isActive() { return active; }
+    public boolean isActive() { return this.active; }
     public void setActive(boolean active) { this.active = active; }
 }

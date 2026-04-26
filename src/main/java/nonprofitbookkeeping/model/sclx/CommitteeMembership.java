@@ -106,7 +106,7 @@ public class CommitteeMembership {
      */
     @JsonProperty("committeeMembershipId")
     public String getCommitteeMembershipId() {
-        return committeeMembershipId;
+        return this.committeeMembershipId;
     }
 
     /**
@@ -126,7 +126,7 @@ public class CommitteeMembership {
      */
     @JsonProperty("committeeType")
     public String getCommitteeType() {
-        return committeeType;
+        return this.committeeType;
     }
 
     /**
@@ -146,7 +146,7 @@ public class CommitteeMembership {
      */
     @JsonProperty("personId")
     public String getPersonId() {
-        return personId;
+        return this.personId;
     }
 
     /**
@@ -161,7 +161,7 @@ public class CommitteeMembership {
 
     @JsonProperty("organizationId")
     public String getOrganizationId() {
-        return organizationId;
+        return this.organizationId;
     }
 
     @JsonProperty("organizationId")
@@ -171,7 +171,7 @@ public class CommitteeMembership {
 
     @JsonProperty("roleTitle")
     public String getRoleTitle() {
-        return roleTitle;
+        return this.roleTitle;
     }
 
     @JsonProperty("roleTitle")
@@ -181,7 +181,7 @@ public class CommitteeMembership {
 
     @JsonProperty("membershipNumber")
     public String getMembershipNumber() {
-        return membershipNumber;
+        return this.membershipNumber;
     }
 
     @JsonProperty("membershipNumber")
@@ -191,7 +191,7 @@ public class CommitteeMembership {
 
     @JsonProperty("membershipExpiry")
     public String getMembershipExpiry() {
-        return membershipExpiry;
+        return this.membershipExpiry;
     }
 
     @JsonProperty("membershipExpiry")
@@ -201,7 +201,7 @@ public class CommitteeMembership {
 
     @JsonProperty("startDate")
     public String getStartDate() {
-        return startDate;
+        return this.startDate;
     }
 
     @JsonProperty("startDate")
@@ -211,7 +211,7 @@ public class CommitteeMembership {
 
     @JsonProperty("endDate")
     public String getEndDate() {
-        return endDate;
+        return this.endDate;
     }
 
     @JsonProperty("endDate")
@@ -226,7 +226,7 @@ public class CommitteeMembership {
      */
     @JsonProperty("active")
     public Boolean getActive() {
-        return active;
+        return this.active;
     }
 
     /**
@@ -241,7 +241,7 @@ public class CommitteeMembership {
 
     @JsonProperty("extensions")
     public Extensions getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     @JsonProperty("extensions")

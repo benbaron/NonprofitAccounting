@@ -57,29 +57,29 @@ public class AliasReviewQueue
     @Column(name = "resolution_note", length = 1000)
     private String resolutionNote;
 
-    public Long getId() { return id; }
-    public String getAliasDomain() { return aliasDomain; }
+    public Long getId() { return this.id; }
+    public String getAliasDomain() { return this.aliasDomain; }
     public void setAliasDomain(String aliasDomain) { this.aliasDomain = aliasDomain; }
-    public Long getAliasId() { return aliasId; }
+    public Long getAliasId() { return this.aliasId; }
     public void setAliasId(Long aliasId) { this.aliasId = aliasId; }
-    public String getAliasText() { return aliasText; }
+    public String getAliasText() { return this.aliasText; }
     public void setAliasText(String aliasText) { this.aliasText = aliasText; }
-    public String getNormalizationKey() { return normalizationKey; }
+    public String getNormalizationKey() { return this.normalizationKey; }
     public void setNormalizationKey(String normalizationKey) { this.normalizationKey = normalizationKey; }
-    public int getCandidateCount() { return candidateCount; }
+    public int getCandidateCount() { return this.candidateCount; }
     public void setCandidateCount(int candidateCount) { this.candidateCount = candidateCount; }
-    public String getCandidateIds() { return candidateIds; }
+    public String getCandidateIds() { return this.candidateIds; }
     public void setCandidateIds(String candidateIds) { this.candidateIds = candidateIds; }
-    public String getReason() { return reason; }
+    public String getReason() { return this.reason; }
     public void setReason(String reason) { this.reason = reason; }
-    public String getStatus() { return status; }
+    public String getStatus() { return this.status; }
     public void setStatus(String status) { this.status = status; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    public LocalDateTime getCreatedAt() { return this.createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-    public LocalDateTime getResolvedAt() { return resolvedAt; }
+    public LocalDateTime getResolvedAt() { return this.resolvedAt; }
     public void setResolvedAt(LocalDateTime resolvedAt) { this.resolvedAt = resolvedAt; }
-    public String getResolver() { return resolver; }
+    public String getResolver() { return this.resolver; }
     public void setResolver(String resolver) { this.resolver = resolver; }
-    public String getResolutionNote() { return resolutionNote; }
+    public String getResolutionNote() { return this.resolutionNote; }
     public void setResolutionNote(String resolutionNote) { this.resolutionNote = resolutionNote; }
 }

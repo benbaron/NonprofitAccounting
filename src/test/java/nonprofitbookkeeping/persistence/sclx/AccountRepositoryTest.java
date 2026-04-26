@@ -22,8 +22,8 @@ class AccountRepositoryTest
     @BeforeEach
     void setUp() throws SQLException
     {
-        TestDatabase.reset(tempDir);
-        repository = new AccountRepository();
+        TestDatabase.reset(this.tempDir);
+        this.repository = new AccountRepository();
     }
 
     @Test
@@ -31,8 +31,8 @@ class AccountRepositoryTest
     {
         Account account = sampleAccount("1000", "Cash");
 
-        repository.save(account);
-        Account loaded = repository.load().orElseThrow();
+        this.repository.save(account);
+        Account loaded = this.repository.load().orElseThrow();
 
         assertEquals("1000", loaded.getNumber());
         assertEquals("Cash", loaded.getName());
@@ -41,13 +41,13 @@ class AccountRepositoryTest
     @Test
     void saveAndLoadKeyedRecordsAndListAll() throws SQLException
     {
-        repository.save("a", sampleAccount("1100", "Checking"));
-        repository.save("b", sampleAccount("1200", "Savings"));
+        this.repository.save("a", sampleAccount("1100", "Checking"));
+        this.repository.save("b", sampleAccount("1200", "Savings"));
 
-        assertEquals("Checking", repository.load("a").orElseThrow().getName());
-        assertEquals("Savings", repository.load("b").orElseThrow().getName());
+        assertEquals("Checking", this.repository.load("a").orElseThrow().getName());
+        assertEquals("Savings", this.repository.load("b").orElseThrow().getName());
 
-        Map<String, Account> all = repository.loadAll();
+        Map<String, Account> all = this.repository.loadAll();
         assertEquals(2, all.size());
         assertEquals("Checking", all.get("a").getName());
         assertEquals("Savings", all.get("b").getName());
@@ -56,21 +56,21 @@ class AccountRepositoryTest
     @Test
     void deleteByIdRemovesOnlyThatRecord() throws SQLException
     {
-        repository.save("a", sampleAccount("1100", "Checking"));
-        repository.save("b", sampleAccount("1200", "Savings"));
+        this.repository.save("a", sampleAccount("1100", "Checking"));
+        this.repository.save("b", sampleAccount("1200", "Savings"));
 
-        repository.delete("a");
+        this.repository.delete("a");
 
-        assertTrue(repository.load("a").isEmpty());
-        assertTrue(repository.load("b").isPresent());
+        assertTrue(this.repository.load("a").isEmpty());
+        assertTrue(this.repository.load("b").isPresent());
     }
 
     @Test
     void blankIdIsRejected()
     {
-        assertThrows(IllegalArgumentException.class, () -> repository.save(" ", sampleAccount("1300", "Petty Cash")));
-        assertThrows(IllegalArgumentException.class, () -> repository.load(""));
-        assertThrows(IllegalArgumentException.class, () -> repository.delete(null));
+        assertThrows(IllegalArgumentException.class, () -> this.repository.save(" ", sampleAccount("1300", "Petty Cash")));
+        assertThrows(IllegalArgumentException.class, () -> this.repository.load(""));
+        assertThrows(IllegalArgumentException.class, () -> this.repository.delete(null));
     }
 
     private static Account sampleAccount(String number, String name)

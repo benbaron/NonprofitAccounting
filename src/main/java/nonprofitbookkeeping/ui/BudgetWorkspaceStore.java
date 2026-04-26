@@ -32,7 +32,7 @@ public class BudgetWorkspaceStore
 	public List<BudgetEditorPanel.BudgetRow> loadEditorRows() throws SQLException
 	{
 		List<BudgetEditorPanel.BudgetRow> rows = new ArrayList<>();
-		for (BudgetRecord budget : repository.listAll())
+		for (BudgetRecord budget : this.repository.listAll())
 		{
 			String fund = budget.fundId() == null ? "General" : budget.fundId();
 			for (BudgetRecord.BudgetLineRecord line : budget.lines())
@@ -79,7 +79,7 @@ public class BudgetWorkspaceStore
 				entry.getValue(),
 				Map.of("source", "budget-editor-ui"),
 				null);
-			repository.upsert(record);
+			this.repository.upsert(record);
 			written += entry.getValue().size();
 		}
 		return written;
@@ -88,7 +88,7 @@ public class BudgetWorkspaceStore
 	public List<BudgetVsActualPanel.GroupRow> loadBudgetVsActual() throws SQLException
 	{
 		Map<String, Map<String, BigDecimal>> byFundThenAccount = new LinkedHashMap<>();
-		for (BudgetRecord budget : repository.listAll())
+		for (BudgetRecord budget : this.repository.listAll())
 		{
 			String fund = defaultFund(budget.fundId());
 			Map<String, BigDecimal> accountTotals =

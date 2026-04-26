@@ -123,7 +123,7 @@ public class Asset {
      */
     @JsonProperty("assetId")
     public String getAssetId() {
-        return assetId;
+        return this.assetId;
     }
 
     /**
@@ -138,7 +138,7 @@ public class Asset {
 
     @JsonProperty("dateAcquired")
     public String getDateAcquired() {
-        return dateAcquired;
+        return this.dateAcquired;
     }
 
     @JsonProperty("dateAcquired")
@@ -148,7 +148,7 @@ public class Asset {
 
     @JsonProperty("description")
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     @JsonProperty("description")
@@ -158,7 +158,7 @@ public class Asset {
 
     @JsonProperty("itemCount")
     public Integer getItemCount() {
-        return itemCount;
+        return this.itemCount;
     }
 
     @JsonProperty("itemCount")
@@ -168,7 +168,7 @@ public class Asset {
 
     @JsonProperty("approxValueTotal")
     public String getApproxValueTotal() {
-        return approxValueTotal;
+        return this.approxValueTotal;
     }
 
     @JsonProperty("approxValueTotal")
@@ -178,7 +178,7 @@ public class Asset {
 
     @JsonProperty("valuePerItem")
     public String getValuePerItem() {
-        return valuePerItem;
+        return this.valuePerItem;
     }
 
     @JsonProperty("valuePerItem")
@@ -188,7 +188,7 @@ public class Asset {
 
     @JsonProperty("itemType")
     public String getItemType() {
-        return itemType;
+        return this.itemType;
     }
 
     @JsonProperty("itemType")
@@ -198,7 +198,7 @@ public class Asset {
 
     @JsonProperty("usedFor")
     public String getUsedFor() {
-        return usedFor;
+        return this.usedFor;
     }
 
     @JsonProperty("usedFor")
@@ -208,7 +208,7 @@ public class Asset {
 
     @JsonProperty("lotPaidTotal")
     public String getLotPaidTotal() {
-        return lotPaidTotal;
+        return this.lotPaidTotal;
     }
 
     @JsonProperty("lotPaidTotal")
@@ -218,7 +218,7 @@ public class Asset {
 
     @JsonProperty("lotItemCount")
     public Integer getLotItemCount() {
-        return lotItemCount;
+        return this.lotItemCount;
     }
 
     @JsonProperty("lotItemCount")
@@ -228,7 +228,7 @@ public class Asset {
 
     @JsonProperty("currentGuardian")
     public Guardian getCurrentGuardian() {
-        return currentGuardian;
+        return this.currentGuardian;
     }
 
     @JsonProperty("currentGuardian")
@@ -238,7 +238,7 @@ public class Asset {
 
     @JsonProperty("guardianshipDetails")
     public GuardianshipDetailsAsset getGuardianshipDetails() {
-        return guardianshipDetails;
+        return this.guardianshipDetails;
     }
 
     @JsonProperty("guardianshipDetails")
@@ -248,7 +248,7 @@ public class Asset {
 
     @JsonProperty("removalDetails")
     public RemovalDetailsAsset getRemovalDetails() {
-        return removalDetails;
+        return this.removalDetails;
     }
 
     @JsonProperty("removalDetails")
@@ -258,7 +258,7 @@ public class Asset {
 
     @JsonProperty("relatedTransactionIds")
     public Set<String> getRelatedTransactionIds() {
-        return relatedTransactionIds;
+        return this.relatedTransactionIds;
     }
 
     @JsonProperty("relatedTransactionIds")
@@ -268,7 +268,7 @@ public class Asset {
 
     @JsonProperty("relatedLineIds")
     public Set<String> getRelatedLineIds() {
-        return relatedLineIds;
+        return this.relatedLineIds;
     }
 
     @JsonProperty("relatedLineIds")
@@ -278,7 +278,7 @@ public class Asset {
 
     @JsonProperty("extensions")
     public Extensions getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     @JsonProperty("extensions")
@@ -288,7 +288,7 @@ public class Asset {
 
     @JsonProperty("appraisalDetails")
     public AppraisalDetails getAppraisalDetails() {
-        return appraisalDetails;
+        return this.appraisalDetails;
     }
 
     @JsonProperty("appraisalDetails")

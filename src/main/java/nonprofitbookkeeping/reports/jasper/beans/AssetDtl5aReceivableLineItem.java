@@ -10,7 +10,7 @@ public class AssetDtl5aReceivableLineItem
 
     public java.lang.String getReceivables_owed_from()
     {
-        return receivables_owed_from;
+        return this.receivables_owed_from;
     }
 
     public void setReceivables_owed_from(java.lang.String v)
@@ -20,7 +20,7 @@ public class AssetDtl5aReceivableLineItem
 
     public java.lang.String getReason()
     {
-        return reason;
+        return this.reason;
     }
 
     public void setReason(java.lang.String v)
@@ -30,7 +30,7 @@ public class AssetDtl5aReceivableLineItem
 
     public java.lang.String getSending_branch_or_reason()
     {
-        return sending_branch_or_reason;
+        return this.sending_branch_or_reason;
     }
 
     public void setSending_branch_or_reason(java.lang.String v)
@@ -40,7 +40,7 @@ public class AssetDtl5aReceivableLineItem
 
     public java.lang.String getPrior_amount()
     {
-        return prior_amount;
+        return this.prior_amount;
     }
 
     public void setPrior_amount(java.lang.String v)
@@ -50,7 +50,7 @@ public class AssetDtl5aReceivableLineItem
 
     public java.lang.String getCurrent_amount()
     {
-        return current_amount;
+        return this.current_amount;
     }
 
     public void setCurrent_amount(java.lang.String v)

@@ -35,7 +35,7 @@ public abstract class AbstractRepository<TModel, TId>
     {
         withConnection(connection -> {
             ensureSchema(connection);
-            try (PreparedStatement ps = connection.prepareStatement(upsertSql))
+            try (PreparedStatement ps = connection.prepareStatement(this.upsertSql))
             {
                 bindUpsert(ps, model);
                 ps.executeUpdate();
@@ -49,7 +49,7 @@ public abstract class AbstractRepository<TModel, TId>
         return withConnection(connection -> {
             ensureSchema(connection);
             List<TModel> rows = new ArrayList<>();
-            try (PreparedStatement ps = connection.prepareStatement(listAllSql);
+            try (PreparedStatement ps = connection.prepareStatement(this.listAllSql);
                  ResultSet rs = ps.executeQuery())
             {
                 while (rs.next())
@@ -65,7 +65,7 @@ public abstract class AbstractRepository<TModel, TId>
     {
         return withConnection(connection -> {
             ensureSchema(connection);
-            try (PreparedStatement ps = connection.prepareStatement(deleteSql))
+            try (PreparedStatement ps = connection.prepareStatement(this.deleteSql))
             {
                 bindDeleteId(ps, id);
                 return ps.executeUpdate();
@@ -106,7 +106,7 @@ public abstract class AbstractRepository<TModel, TId>
     {
         try (Statement statement = connection.createStatement())
         {
-            statement.execute(createSql);
+            statement.execute(this.createSql);
             afterEnsureSchema(connection);
         }
     }

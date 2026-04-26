@@ -672,7 +672,7 @@ public class AssetDtl5aReportBean
 
     public java.lang.Double getAsset_dtl_5a_r2c3()
     {
-        return asset_dtl_5a_r2c3;
+        return this.asset_dtl_5a_r2c3;
     }
 
     public void setAsset_dtl_5a_r2c3(java.lang.Double v)
@@ -682,7 +682,7 @@ public class AssetDtl5aReportBean
 
     public java.lang.Double getContents_b59()
     {
-        return contents_b59;
+        return this.contents_b59;
     }
 
     public void setContents_b59(java.lang.Double v)
@@ -692,7 +692,7 @@ public class AssetDtl5aReportBean
 
     public java.lang.Double getContents_e_3()
     {
-        return contents_e_3;
+        return this.contents_e_3;
     }
 
     public void setContents_e_3(java.lang.Double v)
@@ -702,7 +702,7 @@ public class AssetDtl5aReportBean
 
     public java.lang.Double getContents_e_4()
     {
-        return contents_e_4;
+        return this.contents_e_4;
     }
 
     public void setContents_e_4(java.lang.Double v)
@@ -712,7 +712,7 @@ public class AssetDtl5aReportBean
 
     public java.lang.Double getAmount_add_total_to_pg_3_i_a_end()
     {
-        return amount_add_total_to_pg_3_i_a_end;
+        return this.amount_add_total_to_pg_3_i_a_end;
     }
 
     public void setAmount_add_total_to_pg_3_i_a_end(java.lang.Double v)
@@ -722,7 +722,7 @@ public class AssetDtl5aReportBean
 
     public java.lang.Double getPrior_amount_total()
     {
-        return prior_amount_total;
+        return this.prior_amount_total;
     }
 
     public void setPrior_amount_total(java.lang.Double v)
@@ -732,7 +732,7 @@ public class AssetDtl5aReportBean
 
     public java.lang.Double getCurrent_amount_sum_f24_f34()
     {
-        return current_amount_sum_f24_f34;
+        return this.current_amount_sum_f24_f34;
     }
 
     public void setCurrent_amount_sum_f24_f34(java.lang.Double v)
@@ -742,7 +742,7 @@ public class AssetDtl5aReportBean
 
     public java.lang.Double getPrior_amount_17()
     {
-        return prior_amount_17;
+        return this.prior_amount_17;
     }
 
     public void setPrior_amount_17(java.lang.Double v)
@@ -752,7 +752,7 @@ public class AssetDtl5aReportBean
 
     public java.lang.Double getCurrent_amount_sum_f41_f45()
     {
-        return current_amount_sum_f41_f45;
+        return this.current_amount_sum_f41_f45;
     }
 
     public void setCurrent_amount_sum_f41_f45(java.lang.Double v)
@@ -762,7 +762,7 @@ public class AssetDtl5aReportBean
 
     public java.lang.Double getPrior_amount_26()
     {
-        return prior_amount_26;
+        return this.prior_amount_26;
     }
 
     public void setPrior_amount_26(java.lang.Double v)
@@ -772,7 +772,7 @@ public class AssetDtl5aReportBean
 
     public java.lang.Double getCurrent_amount_sum_f52_f59()
     {
-        return current_amount_sum_f52_f59;
+        return this.current_amount_sum_f52_f59;
     }
 
     public void setCurrent_amount_sum_f52_f59(java.lang.Double v)
@@ -782,7 +782,7 @@ public class AssetDtl5aReportBean
 
     public List<AssetDtl5aUndepositedFundsLineItem> getUndeposited_funds()
     {
-        return undeposited_funds;
+        return this.undeposited_funds;
     }
 
     public void setUndeposited_funds(
@@ -794,7 +794,7 @@ public class AssetDtl5aReportBean
 
     public List<AssetDtl5aReceivableLineItem> getReceivables()
     {
-        return receivables;
+        return this.receivables;
     }
 
     public void setReceivables(List<AssetDtl5aReceivableLineItem> v)
@@ -804,7 +804,7 @@ public class AssetDtl5aReportBean
 
     public List<AssetDtl5aPrepaidExpenseLineItem> getPrepaid_expenses()
     {
-        return prepaid_expenses;
+        return this.prepaid_expenses;
     }
 
     public void setPrepaid_expenses(
@@ -816,7 +816,7 @@ public class AssetDtl5aReportBean
 
     public List<AssetDtl5aOtherAssetLineItem> getOther_assets()
     {
-        return other_assets;
+        return this.other_assets;
     }
 
     public void setOther_assets(List<AssetDtl5aOtherAssetLineItem> v)
@@ -826,11 +826,11 @@ public class AssetDtl5aReportBean
 
     private AssetDtl5aUndepositedFundsLineItem getUndepositedAt(int index)
     {
-        if (undeposited_funds == null || undeposited_funds.size() <= index)
+        if (this.undeposited_funds == null || this.undeposited_funds.size() <= index)
         {
             return null;
         }
-        return undeposited_funds.get(index);
+        return this.undeposited_funds.get(index);
     }
 
     private java.lang.String getUndepositedLeftReason(int index)
@@ -865,11 +865,11 @@ public class AssetDtl5aReportBean
 
     private AssetDtl5aReceivableLineItem getReceivableAt(int index)
     {
-        if (receivables == null || receivables.size() <= index)
+        if (this.receivables == null || this.receivables.size() <= index)
         {
             return null;
         }
-        return receivables.get(index);
+        return this.receivables.get(index);
     }
 
     private java.lang.String getReceivableValue(
@@ -883,11 +883,11 @@ public class AssetDtl5aReportBean
 
     private AssetDtl5aPrepaidExpenseLineItem getPrepaidExpenseAt(int index)
     {
-        if (prepaid_expenses == null || prepaid_expenses.size() <= index)
+        if (this.prepaid_expenses == null || this.prepaid_expenses.size() <= index)
         {
             return null;
         }
-        return prepaid_expenses.get(index);
+        return this.prepaid_expenses.get(index);
     }
 
     private java.lang.String getPrepaidExpenseValue(
@@ -901,11 +901,11 @@ public class AssetDtl5aReportBean
 
     private AssetDtl5aOtherAssetLineItem getOtherAssetAt(int index)
     {
-        if (other_assets == null || other_assets.size() <= index)
+        if (this.other_assets == null || this.other_assets.size() <= index)
         {
             return null;
         }
-        return other_assets.get(index);
+        return this.other_assets.get(index);
     }
 
     private java.lang.String getOtherAssetValue(
