@@ -97,6 +97,10 @@ import nonprofitbookkeeping.model.Person;
  */
 public class JournalEntryWorkspaceFX extends BorderPane
 {
+	/** CSS class used when account cell references an unknown account. */
+	private static final String ACCOUNT_CELL_MISSING_CLASS =
+		"account-cell-missing";
+
 	/** Public row model so existing tests can reason about the table state. */
 	public static class Line
 	{
@@ -402,7 +406,6 @@ public class JournalEntryWorkspaceFX extends BorderPane
 		
 		Label heading = new Label(this.headingText);
 		heading.getStyleClass().add("journal-entry-heading");
-		heading.setStyle("-fx-font-size: 22px; -fx-font-weight: bold;");
 		
 		HBox titleRow = new HBox(12, heading);
 		titleRow.setAlignment(Pos.CENTER_LEFT);
@@ -448,11 +451,11 @@ public class JournalEntryWorkspaceFX extends BorderPane
 		
 		this.statusBadge.getStyleClass().add("status-badge");
 		this.statusBadge.setPadding(new Insets(4, 12, 4, 12));
-		this.statusBadge.setStyle(
-			"-fx-background-color: #666; -fx-text-fill: white; -fx-background-radius: 12;");
+		this.statusBadge.getStyleClass().add("state-neutral");
 		
 		this.validationMessage.setWrapText(true);
-		this.validationMessage.setStyle("-fx-text-fill: #cc3300;");
+		this.validationMessage.getStyleClass().addAll("state-inline",
+			"state-warning");
 		
 		Region spacer = new Region();
 		HBox.setHgrow(spacer, Priority.ALWAYS);
@@ -484,7 +487,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
 	private static Label boldLabel(String text)
 	{
 		Label label = new Label(text);
-		label.setStyle("-fx-font-weight: bold;");
+		label.getStyleClass().add("field-label");
 		return label;
 	}
 	
@@ -504,7 +507,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
 		ToolBar toolbar =
 			new ToolBar(this.addLineButton, this.duplicateLineButton,
 				this.removeLineButton);
-		toolbar.setStyle("-fx-background-color: transparent;");
+		toolbar.getStyleClass().add("toolbar-plain");
 		
 		this.addLineButton.setGraphic(null);
 		this.addLineButton.getStyleClass().add("btn-add-line");
@@ -659,15 +662,11 @@ public class JournalEntryWorkspaceFX extends BorderPane
 	private Node card(String title, Node content)
 	{
 		Label titleLabel = new Label(title);
-		titleLabel.setStyle("-fx-font-size: 13px; -fx-font-weight: bold;");
+		titleLabel.getStyleClass().add("card-title");
 		
 		VBox box = new VBox(10, titleLabel, content);
 		box.setPadding(new Insets(12));
-		box.setStyle(
-			"-fx-background-color: white;"
-			+ "-fx-border-color: #d0d7de;"
-			+ "-fx-border-radius: 6;"
-			+ "-fx-background-radius: 6;");
+		box.getStyleClass().add("npbk-card");
 		
 		return box;
 	}
@@ -681,7 +680,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
 	private Label sectionHeading(String text)
 	{
 		Label label = new Label(text);
-		label.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+		label.getStyleClass().add("section-heading");
 		return label;
 		
 	}
@@ -699,7 +698,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
 		ToolBar toolbar =
 			new ToolBar(this.addLineButton, this.duplicateLineButton,
 				this.removeLineButton);
-		toolbar.setStyle("-fx-background-color: transparent;");
+		toolbar.getStyleClass().add("toolbar-plain");
 		
 		this.addLineButton.setGraphic(null);
 		this.addLineButton.getStyleClass().add("btn-add-line");
@@ -781,7 +780,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
 	private static HBox labelledValue(String labelText, Label valueLabel)
 	{
 		Label label = new Label(labelText + ":");
-		label.setStyle("-fx-font-weight: bold;");
+		label.getStyleClass().add("value-label");
 		HBox box = new HBox(6, label, valueLabel);
 		box.setAlignment(Pos.CENTER_LEFT);
 		return box;
@@ -800,7 +799,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
 	private static void addDetailField(GridPane grid, int row, String labelText, Node field)
 	{
 		Label label = new Label(labelText);
-		label.setStyle("-fx-font-weight: bold;");
+		label.getStyleClass().add("field-label");
 		grid.add(label, 0, row);
 		grid.add(field, 1, row);
 		GridPane.setHgrow(field, Priority.ALWAYS);
@@ -929,7 +928,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
 				
 				if (empty)
 				{
-					setStyle("");
+					getStyleClass().remove(ACCOUNT_CELL_MISSING_CLASS);
 					setTooltip(null);
 					return;
 				}
@@ -945,13 +944,16 @@ public class JournalEntryWorkspaceFX extends BorderPane
 				
 				if (highlight)
 				{
-					setStyle("-fx-background-color: rgba(204, 51, 0, 0.25);");
+					if (!getStyleClass().contains(ACCOUNT_CELL_MISSING_CLASS))
+					{
+						getStyleClass().add(ACCOUNT_CELL_MISSING_CLASS);
+					}
 					setTooltip(new Tooltip(
 						"Account not found in the chart of accounts"));
 				}
 				else
 				{
-					setStyle("");
+					getStyleClass().remove(ACCOUNT_CELL_MISSING_CLASS);
 					setTooltip(null);
 				}
 				
@@ -976,7 +978,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
 		c.setCellFactory(param -> new FocusCommitTextFieldTableCell<>(
 			createCurrencyConverter()));
 		c.setEditable(true);
-		c.setStyle("-fx-alignment: CENTER-RIGHT;");
+		c.getStyleClass().add("table-column-numeric");
 		return c;
 		
 	}
@@ -1437,9 +1439,8 @@ public class JournalEntryWorkspaceFX extends BorderPane
 		this.validationMessage
 			.setText("Press Save to validate the entry totals.");
 		this.saveButton.setTooltip(null);
-		this.statusBadge.setText("Pending check");
-		this.statusBadge.setStyle(
-			"-fx-background-color: #666666; -fx-text-fill: white; -fx-background-radius: 12;");
+		setStatusBadgeState("Pending check", "state-neutral");
+		setValidationStateClass("state-warning");
 		
 	}
 	
@@ -1454,9 +1455,8 @@ public class JournalEntryWorkspaceFX extends BorderPane
 		this.validationMessage.setText(message);
 		this.saveErrorTooltip.setText(message);
 		this.saveButton.setTooltip(this.saveErrorTooltip);
-		this.statusBadge.setText("Needs attention");
-		this.statusBadge.setStyle(
-			"-fx-background-color: #cc3300; -fx-text-fill: white; -fx-background-radius: 12;");
+		setStatusBadgeState("Needs attention", "state-error");
+		setValidationStateClass("state-error");
 		
 	}
 	
@@ -1468,10 +1468,35 @@ public class JournalEntryWorkspaceFX extends BorderPane
 		this.saveButton.setDisable(false);
 		this.validationMessage.setText("");
 		this.saveButton.setTooltip(null);
-		this.statusBadge.setText("Balanced");
-		this.statusBadge.setStyle(
-			"-fx-background-color: #2e7d32; -fx-text-fill: white; -fx-background-radius: 12;");
+		setStatusBadgeState("Balanced", "state-valid");
+		setValidationStateClass("state-valid");
 		
+	}
+
+	/**
+	 * Applies a status class and text to the status badge.
+	 *
+	 * @param text badge text
+	 * @param stateClass status class
+	 */
+	private void setStatusBadgeState(String text, String stateClass)
+	{
+		this.statusBadge.setText(text);
+		this.statusBadge.getStyleClass().removeAll(
+			"state-neutral", "state-error", "state-valid", "state-warning");
+		this.statusBadge.getStyleClass().add(stateClass);
+	}
+
+	/**
+	 * Applies shared inline state classes to the validation message.
+	 *
+	 * @param stateClass semantic state class
+	 */
+	private void setValidationStateClass(String stateClass)
+	{
+		this.validationMessage.getStyleClass().removeAll("state-neutral",
+			"state-error", "state-valid", "state-warning");
+		this.validationMessage.getStyleClass().add(stateClass);
 	}
 	
 	/**

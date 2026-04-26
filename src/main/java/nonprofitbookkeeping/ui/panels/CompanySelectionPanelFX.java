@@ -29,6 +29,7 @@ import nonprofitbookkeeping.persistence.CompanyRepository;
 import nonprofitbookkeeping.persistence.CompanyRepository.CompanyRecord;
 import nonprofitbookkeeping.service.PreferencesService;
 import nonprofitbookkeeping.service.DemoCompanySeeder;
+import nonprofitbookkeeping.ui.UiSpacing;
 import nonprofitbookkeeping.ui.actions.CreateOrEditCompanyActionFX;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 
@@ -88,7 +89,7 @@ public class CompanySelectionPanelFX extends BorderPane
 	 */
 	public CompanySelectionPanelFX()
 	{
-		setPadding(new Insets(10));
+		setPadding(UiSpacing.pageInsets());
 		buildUI();
 		reloadCompanyList();
 		
@@ -180,8 +181,8 @@ public class CompanySelectionPanelFX extends BorderPane
 		demoBtn.setOnAction(e -> createDemoCompany());
 		deleteBtn.setOnAction(e -> deleteSelected());
 		
-		HBox buttons = new HBox(10, openBtn, createBtn, demoBtn, deleteBtn);
-		buttons.setPadding(new Insets(8));
+		HBox buttons = new HBox(UiSpacing.SECTION_SPACING, openBtn, createBtn, demoBtn, deleteBtn);
+		buttons.setPadding(new Insets(UiSpacing.SECTION_SPACING));
 		HBox.setHgrow(openBtn, Priority.NEVER);
 		HBox.setHgrow(createBtn, Priority.NEVER);
 		setBottom(buttons);

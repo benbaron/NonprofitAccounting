@@ -2,10 +2,14 @@
 package nonprofitbookkeeping.ui;
 
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.geometry.Orientation;
 
 import nonprofitbookkeeping.ui.panels.BalanceSheetPanelFX;
@@ -22,9 +26,15 @@ import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.ReportPeriodPreset;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import java.time.MonthDay;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Represents the main application view, structured as a {@link BorderPane}.
@@ -34,6 +44,17 @@ import java.time.MonthDay;
  */
 public class MainApplicationView extends BorderPane
 {
+	/** Logger for shell-level UI diagnostics. */
+	private static final Logger LOGGER =
+		LoggerFactory.getLogger(MainApplicationView.class);
+
+	/** Semantic group for shell hierarchy highlighting. */
+	private enum ShellGroup
+	{
+		REVIEW,
+		WORKFLOW,
+		REPORTING
+	}
 	
 	/**
 	 * Enum defining the different types of panels/tabs that can be displayed
@@ -69,6 +90,8 @@ public class MainApplicationView extends BorderPane
 	
 	/** The TabPane used to display different application sections. */
 	private TabPane tabPane;
+	/** Shell container that hosts hierarchy legend and top-level tabs. */
+	private VBox workspaceShell;
 	/** The main MenuBar for the application, set externally. */
 	private MenuBar menuBar;
 	
@@ -94,6 +117,16 @@ public class MainApplicationView extends BorderPane
 	private Tab assetsTab;
 	/** Tab for bank reconciliation. */
 	private Tab bankReconciliationTab;
+	/** Shell legend label for review surfaces. */
+	private Label reviewGroupLabel;
+	/** Shell legend label for operational workflow surfaces. */
+	private Label workflowGroupLabel;
+	/** Shell legend label for reporting surfaces. */
+	private Label reportingGroupLabel;
+	/** Explicit shell group mapping to avoid style-class inference drift. */
+	private final Map<Tab, ShellGroup> tabGroups;
+	/** Tracks which tabs have already emitted unmapped-group warnings. */
+	private final Set<Tab> warnedUnmappedTabs;
 	/** Embedded Chart of Accounts editor panel. */
 	private CoaEditorPanelFX coaEditorPanel;
 	/** Embedded Chart of Accounts tabular panel shown with the editor. */
@@ -119,7 +152,12 @@ public class MainApplicationView extends BorderPane
 		this.menuBar = null; // Initialize menuBar, will be set via setter
 		
 		this.tabPane = new TabPane();
+		this.tabPane.getStyleClass().add("main-shell-tabs");
+		this.workspaceShell = new VBox();
+		this.workspaceShell.getStyleClass().add("workspace-shell");
 		this.companySelectionPanel = new CompanySelectionPanelFX();
+		this.tabGroups = new HashMap<>();
+		this.warnedUnmappedTabs = new HashSet<>();
 		
 		// Create Tab instances
 		this.dashboardTab = new Tab("Dashboard", new SkeletonDashboardPanel());
@@ -151,7 +189,28 @@ public class MainApplicationView extends BorderPane
 		this.ledgerTab = new Tab("Ledger", new LedgerPanel());
 		this.assetsTab = new Tab("Assets", new AssetsPanel());
 		this.bankReconciliationTab = new Tab("Bank Reconciliation", new BankReconciliationPanelFX());
-		
+
+		registerShellTab(this.dashboardTab, ShellGroup.REVIEW, "tab-review",
+			"tab-readonly");
+		registerShellTab(this.journalTab, ShellGroup.WORKFLOW,
+			"tab-operational", "tab-workspace");
+		registerShellTab(this.coaTab, ShellGroup.WORKFLOW, "tab-operational",
+			"tab-workspace");
+		registerShellTab(this.budgetTab, ShellGroup.WORKFLOW,
+			"tab-operational", "tab-workspace");
+		registerShellTab(this.ledgerTab, ShellGroup.WORKFLOW,
+			"tab-operational", "tab-workspace");
+		registerShellTab(this.assetsTab, ShellGroup.WORKFLOW,
+			"tab-operational", "tab-workspace");
+		registerShellTab(this.bankReconciliationTab, ShellGroup.WORKFLOW,
+			"tab-operational", "tab-workspace");
+		registerShellTab(this.reportsTab, ShellGroup.REPORTING, "tab-reporting",
+			"tab-readonly");
+		registerShellTab(this.incomeStatementTab, ShellGroup.REPORTING,
+			"tab-reporting", "tab-readonly");
+		registerShellTab(this.balanceSheetTab, ShellGroup.REPORTING,
+			"tab-reporting", "tab-readonly");
+
 		// Set tabs to be non-closable
 		this.dashboardTab.setClosable(false);
 		this.journalTab.setClosable(false);
@@ -169,11 +228,15 @@ public class MainApplicationView extends BorderPane
 		this.accountDetailsTab =
 			new Tab("Account Details", this.accountDetailsPanel);
 		this.accountDetailsTab.setClosable(false);
-		
+		registerShellTab(this.accountDetailsTab, ShellGroup.REVIEW, "tab-review",
+			"tab-readonly");
+		this.journalTab.getStyleClass().add("tab-operational-start");
+		this.reportsTab.getStyleClass().add("tab-reporting-start");
 		
 		// Add tabs to the tabPane
 		this.tabPane.getTabs()
 			.addAll(this.dashboardTab,
+				this.accountDetailsTab,
 				this.journalTab,
 				this.coaTab,
 				this.budgetTab,
@@ -182,13 +245,111 @@ public class MainApplicationView extends BorderPane
 				this.bankReconciliationTab,
 				this.reportsTab,
 				this.incomeStatementTab,
-				this.balanceSheetTab,
-				this.accountDetailsTab
+				this.balanceSheetTab
 			);
+		this.reviewGroupLabel =
+			createShellGroupLabel("Review", "shell-group-review");
+		this.workflowGroupLabel =
+			createShellGroupLabel("Workflows", "shell-group-operational");
+		this.reportingGroupLabel =
+			createShellGroupLabel("Reporting", "shell-group-reporting");
+		HBox shellGroups = new HBox(12, this.reviewGroupLabel,
+			this.workflowGroupLabel, this.reportingGroupLabel);
+		shellGroups.getStyleClass().add("shell-nav-groups");
+		VBox.setVgrow(this.tabPane, Priority.ALWAYS);
+		this.workspaceShell.getChildren().setAll(shellGroups, this.tabPane);
+		this.tabPane.getSelectionModel().selectedItemProperty()
+			.addListener((obs, oldTab, newTab) -> updateShellGroupHighlight(newTab));
+		updateShellGroupHighlight(this.tabPane.getSelectionModel().getSelectedItem());
 		
 		// Default to the company selection view until a company is opened.
 		setCenter(this.companySelectionPanel);
 		
+	}
+
+	/**
+	 * Creates a shell-level hierarchy legend label.
+	 *
+	 * @param title legend text
+	 * @param styleClass semantic style class for legend color/weight
+	 * @return configured legend label
+	 */
+	private Label createShellGroupLabel(String title, String styleClass)
+	{
+		Label label = new Label(title);
+		label.getStyleClass().addAll("shell-nav-group-label", styleClass);
+		return label;
+	}
+
+	/**
+	 * Applies style semantics and explicit group mapping for one shell tab.
+	 *
+	 * @param tab shell tab
+	 * @param group explicit semantic group
+	 * @param tabClass tab style class
+	 * @param surfaceClass content-surface class
+	 */
+	private void registerShellTab(Tab tab, ShellGroup group, String tabClass,
+		String surfaceClass)
+	{
+		applyTabSemantics(tab, tabClass, surfaceClass);
+		this.tabGroups.put(tab, group);
+	}
+
+	/**
+	 * Highlights the active shell legend group based on the selected top-level tab.
+	 *
+	 * @param selectedTab currently selected tab
+	 */
+	private void updateShellGroupHighlight(Tab selectedTab)
+	{
+		this.reviewGroupLabel.getStyleClass().remove("shell-group-active");
+		this.workflowGroupLabel.getStyleClass().remove("shell-group-active");
+		this.reportingGroupLabel.getStyleClass().remove("shell-group-active");
+		if (selectedTab == null)
+		{
+			return;
+		}
+		ShellGroup group = this.tabGroups.get(selectedTab);
+		if (group == null)
+		{
+			group = ShellGroup.WORKFLOW;
+			if (this.warnedUnmappedTabs.add(selectedTab))
+			{
+				LOGGER.warn(
+					"Unmapped shell tab '{}' encountered; defaulting highlight group to WORKFLOW.",
+					selectedTab.getText());
+			}
+		}
+		switch (group)
+		{
+			case REVIEW:
+				this.reviewGroupLabel.getStyleClass().add("shell-group-active");
+				break;
+			case REPORTING:
+				this.reportingGroupLabel.getStyleClass().add("shell-group-active");
+				break;
+			case WORKFLOW:
+			default:
+				this.workflowGroupLabel.getStyleClass().add("shell-group-active");
+				break;
+		}
+	}
+
+	/**
+	 * Applies semantic style classes to a shell tab and its content surface.
+	 *
+	 * @param tab target shell tab
+	 * @param groupClass group classification (for example operational/reporting)
+	 * @param surfaceClass content surface classification (workspace/read-only)
+	 */
+	private void applyTabSemantics(Tab tab, String groupClass, String surfaceClass)
+	{
+		tab.getStyleClass().add(groupClass);
+		if (tab.getContent() != null)
+		{
+			tab.getContent().getStyleClass().add(surfaceClass);
+		}
 	}
 
 	/**
@@ -228,7 +389,7 @@ public class MainApplicationView extends BorderPane
 	/** Restores the workspace tab pane to the main content area. */
 	public void showWorkspaceTabs()
 	{
-		setCenter(this.tabPane);
+		setCenter(this.workspaceShell);
 		
 	}
 	

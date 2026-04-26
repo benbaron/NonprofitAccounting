@@ -14,6 +14,10 @@ public final class ThemeManager
 	private static String currentTheme = "System";
 	
 	/** The Constant LIGHT_CSS. */
+	private static final String UI_SYSTEM_CSS =
+		ThemeManager.class.getResource("/themes/ui-system.css").toExternalForm();
+
+	/** The Constant LIGHT_CSS. */
 	private static final String LIGHT_CSS =
 		ThemeManager.class.getResource("/themes/light.css").toExternalForm();
 	
@@ -48,6 +52,7 @@ public final class ThemeManager
 	{
 		currentTheme = theme == null ? "System" : theme;
 		scene.getStylesheets().clear();
+		scene.getStylesheets().add(UI_SYSTEM_CSS);
 		
 		switch(currentTheme.toLowerCase())
 		{

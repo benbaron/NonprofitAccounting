@@ -17,6 +17,7 @@ import org.nonprofitbookkeeping.bridge.dashboard.DashboardDataBridge;
 import org.nonprofitbookkeeping.service.FundBalanceRow;
 import org.nonprofitbookkeeping.ui.UiAsync;
 import org.nonprofitbookkeeping.ui.UiErrors;
+import org.nonprofitbookkeeping.ui.UiSpacing;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -39,7 +40,7 @@ public class DashboardPanelFX extends BorderPane
 
     public DashboardPanelFX()
     {
-        setPadding(new Insets(10));
+        setPadding(UiSpacing.pageInsets());
         buildTopBanner();
         buildTopFilters();
         buildTable();
@@ -50,9 +51,9 @@ public class DashboardPanelFX extends BorderPane
 
     private void buildTopBanner()
     {
-        HBox banner = new HBox(10, new Label("Context:"), companyLbl, reloadBtn);
-        banner.setPadding(new Insets(4));
-        banner.setStyle("-fx-background-color:#f0f0f0; -fx-border-color:lightgray;");
+        HBox banner = new HBox(UiSpacing.SECTION_SPACING, new Label("Context:"), companyLbl, reloadBtn);
+        banner.setPadding(new Insets(UiSpacing.SECTION_SPACING));
+        banner.getStyleClass().add("dashboard-banner");
         setTop(banner);
     }
 
@@ -64,13 +65,13 @@ public class DashboardPanelFX extends BorderPane
         Button apply = new Button("Apply");
         apply.setOnAction(e -> refresh());
 
-        HBox filterBox = new HBox(10,
+        HBox filterBox = new HBox(UiSpacing.SECTION_SPACING,
             new Label("Fund:"), accountSelector,
             new Label("Name:"), memoFilter,
             new Label("Min:"), amountFilter,
             apply);
-        filterBox.setPadding(new Insets(5));
-        filterBox.setStyle("-fx-border-color: lightgray;");
+        filterBox.setPadding(new Insets(UiSpacing.SECTION_SPACING));
+        filterBox.getStyleClass().add("dashboard-filter-box");
 
         Node currentTop = getTop();
         VBox topControls = new VBox(currentTop, filterBox);
