@@ -13,6 +13,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import nonprofitbookkeeping.model.Fund;
 import nonprofitbookkeeping.service.FundAccountingService;
+import nonprofitbookkeeping.ui.UiSpacing;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -56,7 +57,7 @@ public class FundsPanelFX extends BorderPane
 			ex.printStackTrace();
 		}
 		
-		setPadding(new Insets(10));
+		setPadding(UiSpacing.pageInsets());
 		buildTransferPane();
 		
 		buildTable();
@@ -118,12 +119,12 @@ public class FundsPanelFX extends BorderPane
 			}
 			
 		});
-		FlowPane fp = new FlowPane(10, 10,
+		FlowPane fp = new FlowPane(UiSpacing.SECTION_SPACING, UiSpacing.SECTION_SPACING,
 			new Label("From:"), fromField,
 			new Label("To:"), toField,
 			new Label("Amount:"), amtField,
 			transfer);
-		fp.setPadding(new Insets(8));
+		fp.setPadding(new Insets(UiSpacing.SECTION_SPACING));
 		TitledPane tp = new TitledPane("Transfer Funds", fp);
 		tp.setCollapsible(false);
 		setTop(tp);
@@ -164,8 +165,8 @@ public class FundsPanelFX extends BorderPane
 		Button del = new Button("Delete Fund");
 		add.setOnAction(e -> addFundDialog());
 		del.setOnAction(e -> deleteFundDialog());
-		HBox box = new HBox(10, add, del);
-		box.setPadding(new Insets(8));
+		HBox box = new HBox(UiSpacing.SECTION_SPACING, add, del);
+		box.setPadding(new Insets(UiSpacing.SECTION_SPACING));
 		TitledPane tp = new TitledPane("Fund Management", box);
 		tp.setCollapsible(false);
 		setBottom(tp);
