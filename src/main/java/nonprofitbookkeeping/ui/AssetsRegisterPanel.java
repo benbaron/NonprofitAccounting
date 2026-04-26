@@ -2,7 +2,18 @@ package nonprofitbookkeeping.ui;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.ComboBoxTableCell;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import nonprofitbookkeeping.model.records.AssetRecord;
 import nonprofitbookkeeping.model.records.AssetItemType;
 import nonprofitbookkeeping.service.AssetRecordService;
@@ -12,7 +23,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Map;
-import java.util.Set;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -32,12 +43,84 @@ public class AssetsRegisterPanel implements AppPanel
 				Set.of("extensions_json")));
 	}
 
-	AssetsRegisterPanel(AssetRecordService assetRecordService)
+	public AssetsRegisterPanel(AssetRecordService assetRecordService)
 	{
-		this();
+		this.assetRecordService = Objects.requireNonNull(assetRecordService, "assetRecordService");
+		root.setPadding(new Insets(8));
+
+		Label title = new Label("Asset Register");
+		title.getStyleClass().add("panel-title");
+
+		Button add = new Button("+ Add Asset");
+		Button delete = new Button("Delete Selected");
+		Button refresh = new Button("Refresh");
+		Button save = new Button("Save");
+		HBox actions = new HBox(8, add, delete, refresh, save);
+
+		root.setTop(new VBox(6, title, actions, new Separator()));
+		configureTable();
+		root.setCenter(table);
+		root.setBottom(new VBox(new Separator(), status));
+
+		add.setOnAction(e -> table.getItems().add(new AssetRow("asset-" + UUID.randomUUID(), "", "", "", "", null, "")));
+		delete.setOnAction(e -> onDeleteSelected());
+		refresh.setOnAction(e -> loadFromService());
+		save.setOnAction(e -> onSave());
+		loadFromService();
 	}
 
-	private AssetsRegisterPanel(GenericRecordEditorPanel delegate)
+	private void configureTable()
+	{
+		table.setEditable(true);
+		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+		table.getColumns().add(col("Asset ID", AssetRow::assetIdProperty, AssetRow::setAssetId));
+		table.getColumns().add(col("Acquired", AssetRow::dateAcquiredProperty, AssetRow::setDateAcquired));
+		table.getColumns().add(col("Description", AssetRow::descriptionProperty, AssetRow::setDescription));
+		table.getColumns().add(col("Count", AssetRow::itemCountProperty, AssetRow::setItemCount));
+		table.getColumns().add(col("Approx Value", AssetRow::approxValueTotalProperty, AssetRow::setApproxValueTotal));
+		table.getColumns().add(itemTypeCol("Item Type"));
+		table.getColumns().add(col("Accum Depreciation", AssetRow::accumulatedDepreciationProperty, AssetRow::setAccumulatedDepreciation));
+	}
+
+	private TableColumn<AssetRow, String> col(String name,
+		java.util.function.Function<AssetRow, SimpleStringProperty> propertyGetter,
+		java.util.function.BiConsumer<AssetRow, String> setter)
+	{
+		TableColumn<AssetRow, String> col = new TableColumn<>(name);
+		col.setCellValueFactory(v -> propertyGetter.apply(v.getValue()));
+		col.setCellFactory(c -> new FocusCommitTextFieldTableCell<>());
+		col.setOnEditCommit(event -> setter.accept(event.getRowValue(), event.getNewValue()));
+		return col;
+	}
+
+	private TableColumn<AssetRow, AssetItemType> itemTypeCol(String name)
+	{
+		TableColumn<AssetRow, AssetItemType> col = new TableColumn<>(name);
+		col.setCellValueFactory(v -> v.getValue().itemTypeProperty());
+		col.setCellFactory(column -> {
+			ComboBoxTableCell<AssetRow, AssetItemType> cell = new ComboBoxTableCell<>();
+			cell.getItems().setAll(AssetItemType.values());
+			cell.setConverter(new javafx.util.StringConverter<>()
+			{
+				@Override
+				public String toString(AssetItemType value)
+				{
+					return value == null ? "" : value.displayName();
+				}
+
+				@Override
+				public AssetItemType fromString(String text)
+				{
+					return AssetItemType.fromStorageValue(text);
+				}
+			});
+			return cell;
+		});
+		col.setOnEditCommit(event -> event.getRowValue().setItemType(event.getNewValue()));
+		return col;
+	}
+
+	private void loadFromService()
 	{
 		this.delegate = delegate;
 	}
@@ -58,6 +141,27 @@ public class AssetsRegisterPanel implements AppPanel
 	public void onSave()
 	{
 		delegate.onSave();
+	}
+
+	private void onDeleteSelected()
+	{
+		AssetRow selected = table.getSelectionModel().getSelectedItem();
+		if (selected == null)
+		{
+			status.setText("Select a row to delete.");
+			return;
+		}
+		try
+		{
+			int deleted = assetRecordService.delete(selected.deleteKey());
+			table.getItems().remove(selected);
+			status.setText(deleted > 0 ? "Deleted asset " + selected.deleteKey() : "Removed unsaved row.");
+		}
+		catch (SQLException | RuntimeException ex)
+		{
+			LOG.warn("Asset register delete failed", ex);
+			status.setText("Failed to delete asset: " + ex.getMessage());
+		}
 	}
 
 
@@ -159,6 +263,11 @@ public class AssetsRegisterPanel implements AppPanel
 		public void setApproxValueTotal(String value) { approxValueTotal.set(value == null ? "" : value); }
 		public void setItemType(AssetItemType value) { itemType.set(value); }
 		public void setAccumulatedDepreciation(String value) { accumulatedDepreciation.set(value == null ? "" : value); }
+
+		private String deleteKey()
+		{
+			return sourceRecord != null ? sourceRecord.assetId() : getAssetId();
+		}
 
 		private static String nonBlankOrThrow(String raw, String field, int rowNumber)
 		{
