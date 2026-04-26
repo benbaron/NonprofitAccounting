@@ -73,6 +73,10 @@ public class AssetRecordRepository
         FROM imported_asset_record
         """;
     private static final String DELETE_SQL = "DELETE FROM imported_asset_record WHERE asset_id = ?";
+    private static final String MIGRATE_ACCUMULATED_DEPRECIATION_SQL = """
+        ALTER TABLE imported_asset_record
+        ADD COLUMN IF NOT EXISTS accumulated_depreciation DECIMAL(19,2)
+        """;
 
     public void upsert(AssetRecord row) throws SQLException
     {
@@ -162,6 +166,10 @@ public class AssetRecordRepository
     private void ensureTable(Connection c) throws SQLException
     {
         try (PreparedStatement ps = c.prepareStatement(CREATE_SQL))
+        {
+            ps.execute();
+        }
+        try (PreparedStatement ps = c.prepareStatement(MIGRATE_ACCUMULATED_DEPRECIATION_SQL))
         {
             ps.execute();
         }

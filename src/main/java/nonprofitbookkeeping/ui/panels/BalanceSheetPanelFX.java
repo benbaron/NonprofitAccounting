@@ -115,6 +115,7 @@ public class BalanceSheetPanelFX extends BorderPane
 		TableColumn<BalanceRow, String> balanceCol =
 			new TableColumn<>("Balance");
 		balanceCol.setCellValueFactory(data -> data.getValue().balance);
+		balanceCol.getStyleClass().add("numeric-col");
 
 		this.table.getColumns().addAll(categoryCol, numberCol, nameCol,
 			balanceCol);

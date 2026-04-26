@@ -925,6 +925,10 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 			      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 			    )
 			""");
+		st.execute("""
+			    ALTER TABLE IF EXISTS imported_asset_record
+			    ADD COLUMN IF NOT EXISTS accumulated_depreciation DECIMAL(19,2)
+			""");
 	}
 
 	private void ensureOperationalLinkageTables(Statement st) throws SQLException

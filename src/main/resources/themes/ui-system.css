@@ -12,6 +12,7 @@
 
     -npbk-status-neutral-bg: #666666;
     -npbk-status-success-bg: #2e7d32;
+    -npbk-status-warning-bg: #b26a00;
     -npbk-status-error-bg: #cc3300;
     -npbk-status-text: white;
 
@@ -55,28 +56,83 @@
     -fx-background-radius: 12;
 }
 
-.status-badge-neutral {
+.state-neutral {
     -fx-background-color: -npbk-status-neutral-bg;
+    -fx-text-fill: -npbk-status-text;
 }
 
-.status-badge-error {
-    -fx-background-color: -npbk-status-error-bg;
-}
-
-.status-badge-valid {
+.state-valid {
     -fx-background-color: -npbk-status-success-bg;
+    -fx-text-fill: -npbk-status-text;
 }
 
-.validation-message-error {
+.state-warning {
+    -fx-background-color: -npbk-status-warning-bg;
+    -fx-text-fill: -npbk-status-text;
+}
+
+.state-error {
+    -fx-background-color: -npbk-status-error-bg;
+    -fx-text-fill: -npbk-status-text;
+}
+
+.state-inline {
+    -fx-font-weight: bold;
+}
+
+.state-inline.state-neutral {
+    -fx-background-color: transparent;
+    -fx-text-fill: -npbk-text-muted;
+}
+
+.state-inline.state-valid {
+    -fx-background-color: transparent;
+    -fx-text-fill: -npbk-status-success-bg;
+}
+
+.state-inline.state-warning {
+    -fx-background-color: transparent;
+    -fx-text-fill: -npbk-status-warning-bg;
+}
+
+.state-inline.state-error {
+    -fx-background-color: transparent;
     -fx-text-fill: -npbk-validation-error;
+}
+
+.validation-label {
+    -fx-wrap-text: true;
 }
 
 .account-cell-missing {
     -fx-background-color: -npbk-account-missing-bg;
 }
 
-.table-column-numeric {
+.table-column-numeric,
+.numeric-col {
     -fx-alignment: CENTER-RIGHT;
+}
+
+.table-view {
+    -fx-fixed-cell-size: 30px;
+}
+
+.table-view .column-header-background .label {
+    -fx-font-weight: bold;
+}
+
+.table-view .table-row-cell:hover {
+    -fx-background-color: -npbk-surface-muted;
+}
+
+.table-view .table-row-cell:filled:selected,
+.table-view .table-row-cell:filled:selected:hover {
+    -fx-background-color: -fx-accent;
+}
+
+.table-view .placeholder .label {
+    -fx-text-fill: -npbk-text-muted;
+    -fx-font-style: italic;
 }
 
 .dashboard-banner {
@@ -101,4 +157,97 @@
 
 .pending-row-text-dark {
     -fx-text-fill: -npbk-pending-row-text;
+}
+
+.main-shell-tabs {
+    -fx-tab-min-height: 34px;
+}
+
+.main-shell-tabs .tab-header-area {
+    -fx-padding: 4 8 0 8;
+    -fx-background-color: -npbk-surface-muted;
+    -fx-border-color: transparent transparent -npbk-border-default transparent;
+}
+
+.main-shell-tabs .tab {
+    -fx-background-color: -npbk-surface-default;
+    -fx-border-color: -npbk-border-default;
+    -fx-border-width: 1 1 0 1;
+    -fx-background-insets: 0;
+    -fx-padding: 0 12 0 12;
+}
+
+.main-shell-tabs .tab.tab-operational {
+    -fx-background-color: -npbk-surface-default;
+}
+
+.main-shell-tabs .tab.tab-review {
+    -fx-background-color: -npbk-surface-muted;
+}
+
+.main-shell-tabs .tab.tab-reporting {
+    -fx-background-color: -npbk-surface-muted;
+}
+
+.main-shell-tabs .tab.tab-operational-start,
+.main-shell-tabs .tab.tab-reporting-start {
+    -fx-border-width: 1 1 0 2;
+}
+
+.main-shell-tabs .tab.tab-operational-start .tab-label,
+.main-shell-tabs .tab.tab-reporting-start .tab-label {
+    -fx-padding: 0 0 0 4;
+}
+
+
+.workspace-shell {
+    -fx-background-color: -npbk-surface-default;
+}
+
+.shell-nav-groups {
+    -fx-padding: 6 12 2 12;
+    -fx-background-color: -npbk-surface-muted;
+    -fx-border-color: transparent transparent -npbk-border-default transparent;
+}
+
+.shell-nav-group-label {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -npbk-text-muted;
+}
+
+.shell-group-review {
+    -fx-opacity: 1.0;
+}
+
+.shell-nav-group-label.shell-group-active {
+    -fx-text-fill: -fx-accent;
+    -fx-underline: true;
+}
+
+.main-shell-tabs .tab:selected {
+    -fx-background-color: -npbk-surface-default;
+    -fx-border-color: -fx-accent;
+    -fx-border-width: 1 1 0 1;
+    -fx-background-insets: 0, 0 0 3 0;
+    -fx-background-radius: 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.main-shell-tabs .tab:selected .tab-label {
+    -fx-font-weight: bold;
+}
+
+.main-shell-tabs .tab.tab-reporting:selected,
+.main-shell-tabs .tab.tab-review:selected {
+    -fx-background-color: -npbk-surface-muted;
+}
+
+.tab-workspace {
+    -fx-background-color: -npbk-surface-default;
+}
+
+.tab-readonly {
+    -fx-background-color: -npbk-surface-muted;
 }

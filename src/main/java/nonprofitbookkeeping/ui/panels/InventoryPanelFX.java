@@ -98,13 +98,16 @@ public class InventoryPanelFX extends BorderPane
 		TableColumn<InventoryRow, BigDecimal> costCol =
 			new TableColumn<>("Cost");
 		costCol.setCellValueFactory(new PropertyValueFactory<>("cost"));
+		costCol.getStyleClass().add("numeric-col");
 		TableColumn<InventoryRow, String> dateCol = col("Acquired", "acquired");
 		TableColumn<InventoryRow, BigDecimal> depCol =
 			new TableColumn<>("Accum. Depr.");
 		depCol.setCellValueFactory(new PropertyValueFactory<>("accDep"));
+		depCol.getStyleClass().add("numeric-col");
 		TableColumn<InventoryRow, BigDecimal> nbvCol =
 			new TableColumn<>("Net Book Value");
 		nbvCol.setCellValueFactory(new PropertyValueFactory<>("netValue"));
+		nbvCol.getStyleClass().add("numeric-col");
 		this.table.getColumns().addAll(idCol, nameCol, costCol, dateCol, depCol,
 			nbvCol);
 		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);

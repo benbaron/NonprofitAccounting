@@ -98,6 +98,7 @@ public class IncomeStatementPanelFX extends BorderPane
 		TableColumn<StatementRow, String> balanceCol =
 			new TableColumn<>("Amount");
 		balanceCol.setCellValueFactory(data -> data.getValue().balance);
+		balanceCol.getStyleClass().add("numeric-col");
 
 		this.table.getColumns().addAll(categoryCol, numberCol, nameCol,
 			balanceCol);
