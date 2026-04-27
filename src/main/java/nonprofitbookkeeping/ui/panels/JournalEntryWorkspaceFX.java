@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -50,6 +51,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -72,7 +74,6 @@ import nonprofitbookkeeping.service.SettingsService;
 import nonprofitbookkeeping.core.Database;
 import java.io.IOException;
 import java.util.EnumMap;
-import java.util.EnumSet;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.helpers.FocusCommitTextFieldTableCell;
 import nonprofitbookkeeping.ui.javafx.supplemental.EntryRef;
@@ -197,6 +198,10 @@ public class JournalEntryWorkspaceFX extends BorderPane
 	/** The supplemental tabs. */
 	private final SupplementalLinesTabs supplementalTabs =
 		new SupplementalLinesTabs();
+	
+	/** Per-kind supplemental schedule selection checkboxes. */
+	private final Map<SupplementalLineKind, CheckBox> supplementalSelections =
+		new EnumMap<>(SupplementalLineKind.class);
 	
 	/** The heading text. */
 	private final String headingText;
@@ -585,12 +590,58 @@ public class JournalEntryWorkspaceFX extends BorderPane
 		block.setAlignment(Pos.TOP_LEFT);
 		
 		Label heading = sectionHeading("Supplemental Schedules");
+		FlowPane toggles = new FlowPane(8, 8);
+		toggles.setAlignment(Pos.CENTER_LEFT);
+		
+		for (SupplementalLineKind kind : SupplementalLineKind.values())
+		{
+			CheckBox checkBox = new CheckBox(formatSupplementalKindLabel(kind));
+			checkBox.setOnAction(e -> updateSupplementalTabAvailability());
+			this.supplementalSelections.put(kind, checkBox);
+			toggles.getChildren().add(checkBox);
+		}
+		
 		this.supplementalTabs.setMinHeight(180);
 		VBox.setVgrow(this.supplementalTabs, Priority.ALWAYS);
 		
-		block.getChildren().addAll(heading, this.supplementalTabs);
+		block.getChildren().addAll(heading, toggles, this.supplementalTabs);
 		return block;
 		
+	}
+	
+	/**
+	 * Format supplemental line kind label.
+	 *
+	 * @param kind the kind
+	 * @return the label
+	 */
+	private static String formatSupplementalKindLabel(SupplementalLineKind kind)
+	{
+		String base = kind.name().toLowerCase(Locale.ENGLISH).replace('_', ' ');
+		String[] words = base.split("\\s+");
+		StringBuilder out = new StringBuilder();
+		
+		for (String word : words)
+		{
+			if (word == null || word.isBlank())
+			{
+				continue;
+			}
+			
+			if (out.length() > 0)
+			{
+				out.append(' ');
+			}
+			
+			out.append(Character.toUpperCase(word.charAt(0)));
+			
+			if (word.length() > 1)
+			{
+				out.append(word.substring(1));
+			}
+		}
+		
+		return out.toString();
 	}
 	/**
 	 * Builds the budget card.
@@ -1249,46 +1300,24 @@ public class JournalEntryWorkspaceFX extends BorderPane
 	 */
 	private void updateSupplementalTabAvailability()
 	{
-		Set<SupplementalLineKind> enabledKinds =
-			EnumSet.noneOf(SupplementalLineKind.class);
-		
-		for (Line line : this.lines)
-		{
-			Account account = resolveAccount(line.account.get());
-			
-			if (account == null)
-			{
-				continue;
-			}
-			
-			enabledKinds.addAll(kindsForAccount(account));
-		}
-		
 		for (SupplementalLineKind kind : SupplementalLineKind.values())
 		{
-			boolean enabled = enabledKinds.contains(kind);
-			this.supplementalTabs.setEnabled(kind, enabled);
+			this.supplementalTabs.setEnabled(kind,
+				isSupplementalSelected(kind));
 		}
 		
 	}
 	
 	/**
-	 * Kinds for account.
+	 * Returns whether the supplemental checkbox is selected.
 	 *
-	 * @param account the account
-	 * @return the sets the
+	 * @param kind the kind
+	 * @return true, if selected
 	 */
-	private Set<SupplementalLineKind> kindsForAccount(Account account)
+	private boolean isSupplementalSelected(SupplementalLineKind kind)
 	{
-		
-		if (account == null || account.getSupplementalLineKinds() == null ||
-			account.getSupplementalLineKinds().isEmpty())
-		{
-			return EnumSet.noneOf(SupplementalLineKind.class);
-		}
-		
-		return EnumSet.copyOf(account.getSupplementalLineKinds());
-		
+		CheckBox checkBox = this.supplementalSelections.get(kind);
+		return checkBox != null && checkBox.isSelected();
 	}
 	
 	/**
@@ -1637,6 +1666,11 @@ public class JournalEntryWorkspaceFX extends BorderPane
 	 */
 	private BigDecimal expectedAmountForKind(SupplementalLineKind kind)
 	{
+		if (!isSupplementalSelected(kind))
+		{
+			return BigDecimal.ZERO;
+		}
+		
 		BigDecimal total = BigDecimal.ZERO;
 		
 		for (Line line : this.lines)
@@ -1644,11 +1678,6 @@ public class JournalEntryWorkspaceFX extends BorderPane
 			Account account = resolveAccount(line.account.get());
 			
 			if (account == null)
-			{
-				continue;
-			}
-			
-			if (!kindsForAccount(account).contains(kind))
 			{
 				continue;
 			}
@@ -1776,6 +1805,13 @@ public class JournalEntryWorkspaceFX extends BorderPane
 			if (editor != null)
 			{
 				editor.setRows(grouped.get(kind));
+			}
+			
+			CheckBox selection = this.supplementalSelections.get(kind);
+			
+			if (selection != null)
+			{
+				selection.setSelected(!grouped.get(kind).isEmpty());
 			}
 			
 		}
