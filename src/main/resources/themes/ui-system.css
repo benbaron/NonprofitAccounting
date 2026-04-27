@@ -1,8 +1,4 @@
 .root {
-    -npbk-font-size-heading: 22;
-    -npbk-font-size-section: 14;
-    -npbk-font-size-card-title: 13;
-
     -npbk-surface-default: -fx-control-inner-background;
     -npbk-surface-muted: derive(-fx-control-inner-background, -3%);
     -npbk-border-default: derive(-fx-base, -18%);
@@ -21,12 +17,12 @@
 }
 
 .journal-entry-heading {
-    -fx-font-size: -npbk-font-size-heading;
+    -fx-font-size: 22;
     -fx-font-weight: bold;
 }
 
 .section-heading {
-    -fx-font-size: -npbk-font-size-section;
+    -fx-font-size: 14;
     -fx-font-weight: bold;
 }
 
@@ -36,7 +32,7 @@
 }
 
 .card-title {
-    -fx-font-size: -npbk-font-size-card-title;
+    -fx-font-size: 13;
     -fx-font-weight: bold;
 }
 
