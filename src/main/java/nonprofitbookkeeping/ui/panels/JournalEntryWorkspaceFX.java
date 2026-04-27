@@ -199,8 +199,8 @@ public class JournalEntryWorkspaceFX extends BorderPane
 	private final SupplementalLinesTabs supplementalTabs =
 		new SupplementalLinesTabs();
 	
-	/** Optional per-kind manual supplemental enablement. */
-	private final Map<SupplementalLineKind, CheckBox> supplementalOverrides =
+	/** Per-kind supplemental schedule selection checkboxes. */
+	private final Map<SupplementalLineKind, CheckBox> supplementalSelections =
 		new EnumMap<>(SupplementalLineKind.class);
 	
 	/** The heading text. */
@@ -597,7 +597,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
 		{
 			CheckBox checkBox = new CheckBox(formatSupplementalKindLabel(kind));
 			checkBox.setOnAction(e -> updateSupplementalTabAvailability());
-			this.supplementalOverrides.put(kind, checkBox);
+			this.supplementalSelections.put(kind, checkBox);
 			toggles.getChildren().add(checkBox);
 		}
 		
@@ -1303,20 +1303,20 @@ public class JournalEntryWorkspaceFX extends BorderPane
 		for (SupplementalLineKind kind : SupplementalLineKind.values())
 		{
 			this.supplementalTabs.setEnabled(kind,
-				isSupplementalOverrideSelected(kind));
+				isSupplementalSelected(kind));
 		}
 		
 	}
 	
 	/**
-	 * Returns whether the manual supplemental checkbox is selected.
+	 * Returns whether the supplemental checkbox is selected.
 	 *
 	 * @param kind the kind
 	 * @return true, if selected
 	 */
-	private boolean isSupplementalOverrideSelected(SupplementalLineKind kind)
+	private boolean isSupplementalSelected(SupplementalLineKind kind)
 	{
-		CheckBox checkBox = this.supplementalOverrides.get(kind);
+		CheckBox checkBox = this.supplementalSelections.get(kind);
 		return checkBox != null && checkBox.isSelected();
 	}
 	
@@ -1666,7 +1666,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
 	 */
 	private BigDecimal expectedAmountForKind(SupplementalLineKind kind)
 	{
-		if (!isSupplementalOverrideSelected(kind))
+		if (!isSupplementalSelected(kind))
 		{
 			return BigDecimal.ZERO;
 		}
@@ -1807,11 +1807,11 @@ public class JournalEntryWorkspaceFX extends BorderPane
 				editor.setRows(grouped.get(kind));
 			}
 			
-			CheckBox override = this.supplementalOverrides.get(kind);
+			CheckBox selection = this.supplementalSelections.get(kind);
 			
-			if (override != null)
+			if (selection != null)
 			{
-				override.setSelected(!grouped.get(kind).isEmpty());
+				selection.setSelected(!grouped.get(kind).isEmpty());
 			}
 			
 		}
