@@ -8,6 +8,7 @@ import nonprofitbookkeeping.service.DocumentRecordService;
 import nonprofitbookkeeping.service.EventRecordService;
 import nonprofitbookkeeping.service.ExcelLedgerRowService;
 import nonprofitbookkeeping.service.FundRecordService;
+import nonprofitbookkeeping.service.GrantRecordService;
 import nonprofitbookkeeping.service.ImportedTransactionService;
 import nonprofitbookkeeping.service.OrganizationRecordService;
 import nonprofitbookkeeping.service.OtherAssetItemRecordService;
@@ -36,9 +37,10 @@ public final class RecordServicePanelRegistry
         bind(OtherAssetItemRecordService.class, "Other Asset Records", "Assets", AppPanelId.ASSETS_REGISTER, false, AssetsRegisterPanel::new);
 
         bind(BudgetRecordService.class, "Budget Records", "Budget", AppPanelId.BUDGET_EDITOR, false, BudgetEditorPanel::new);
-        bind(FundRecordService.class, "Fund Records", "Budget", AppPanelId.BUDGET_VS_ACTUAL, false, BudgetVsActualPanel::new);
+        bind(FundRecordService.class, "Fund Records", "Budget", AppPanelId.BUDGET_VS_ACTUAL, false, FundRecordsPanel::new);
+        bind(GrantRecordService.class, "Grant Records", "Budget", AppPanelId.BUDGET_VS_ACTUAL, false, GrantRecordsPanel::new);
 
-        bind(BankStatementRecordService.class, "Bank Statement Records", "Banking", AppPanelId.LEDGER_REGISTER, false, LedgerRegisterPanel::new);
+        bind(BankStatementRecordService.class, "Bank Statement Records", "Banking", AppPanelId.LEDGER_REGISTER, false, BankStatementRecordsPanel::new);
         bind(BankingItemRecordService.class, "Banking Item Records", "Banking", AppPanelId.LEDGER_REGISTER, false, LedgerRegisterPanel::new);
         bind(ImportedTransactionService.class, "Imported Transaction Records", "Banking", AppPanelId.LEDGER_REGISTER, false,
             LedgerRegisterPanel::new);
