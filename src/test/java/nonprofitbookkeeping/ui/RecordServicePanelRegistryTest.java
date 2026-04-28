@@ -8,6 +8,7 @@ import nonprofitbookkeeping.service.DocumentRecordService;
 import nonprofitbookkeeping.service.EventRecordService;
 import nonprofitbookkeeping.service.ExcelLedgerRowService;
 import nonprofitbookkeeping.service.FundRecordService;
+import nonprofitbookkeeping.service.GrantRecordService;
 import nonprofitbookkeeping.service.ImportedTransactionService;
 import nonprofitbookkeeping.service.OrganizationRecordService;
 import nonprofitbookkeeping.service.OtherAssetItemRecordService;
@@ -34,6 +35,7 @@ class RecordServicePanelRegistryTest
             EventRecordService.class,
             ExcelLedgerRowService.class,
             FundRecordService.class,
+            GrantRecordService.class,
             ImportedTransactionService.class,
             OrganizationRecordService.class,
             OtherAssetItemRecordService.class,

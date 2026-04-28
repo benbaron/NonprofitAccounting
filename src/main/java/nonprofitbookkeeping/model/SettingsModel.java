@@ -38,6 +38,8 @@ public class SettingsModel
 	@JsonProperty private String defaultExpenseAccount;
 	/** Whether vouchers/invoices should be auto-numbered. */
 	@JsonProperty private boolean autoNumberVouchers;
+	/** Edit policy for posted donations: in-place update or reverse-and-repost. */
+	@JsonProperty private String donationEditPostingPolicy = "UPDATE_IN_PLACE";
 	
 	// Autosave and filesystem preferences
 	/** Flag indicating whether background autosave is enabled. */
@@ -289,6 +291,26 @@ public class SettingsModel
 	{
 		this.defaultExpenseAccount = defaultExpenseAccount;
 		
+	}
+
+	/**
+	 * Gets the donation edit posting policy.
+	 *
+	 * @return posting policy value
+	 */
+	public String getDonationEditPostingPolicy()
+	{
+		return this.donationEditPostingPolicy;
+	}
+
+	/**
+	 * Sets the donation edit posting policy.
+	 *
+	 * @param donationEditPostingPolicy the posting policy value
+	 */
+	public void setDonationEditPostingPolicy(String donationEditPostingPolicy)
+	{
+		this.donationEditPostingPolicy = donationEditPostingPolicy;
 	}
 	
 	/**
