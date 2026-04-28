@@ -63,6 +63,7 @@ public class SettingsPanelFXTest extends JavaFXTestBase
                 this.model.setDefaultCurrency("EUR");
                 this.model.setDefaultIncomeAccount("Donations");
                 this.model.setDefaultExpenseAccount("Supplies");
+                this.model.setDonationEditPostingPolicy("REVERSE_AND_REPOST");
                 this.model.setAutosaveEnabled(false);
                 this.model.setAutosaveIntervalMinutes(15);
                 this.model.setDefaultCompanyDirectory("/tmp/nonprofit");
@@ -108,20 +109,24 @@ public class SettingsPanelFXTest extends JavaFXTestBase
 
                 ComboBox<String> incomeBox = castComboBox(lookupComboBoxByLabel("Default Income Account:"));
                 ComboBox<String> expenseBox = castComboBox(lookupComboBoxByLabel("Default Expense Account:"));
+                ComboBox<String> donationPolicyBox = castComboBox(lookupComboBoxByLabel("Donation Edit Posting:"));
 
                 verifyThat(incomeBox, hasComboBoxValue("Donations"));
                 verifyThat(expenseBox, hasComboBoxValue("Supplies"));
+                verifyThat(donationPolicyBox, hasComboBoxValue("REVERSE_AND_REPOST"));
 
                 Platform.runLater(() -> {
                         incomeBox.getItems().setAll("Donations", "Memberships");
                         expenseBox.getItems().setAll("Supplies", "Utilities");
                         incomeBox.setValue("Memberships");
                         expenseBox.setValue("Utilities");
+                        donationPolicyBox.setValue("UPDATE_IN_PLACE");
                 });
                 WaitForAsyncUtils.waitForFxEvents();
 
                 verifyThat(incomeBox, hasComboBoxValue("Memberships"));
                 verifyThat(expenseBox, hasComboBoxValue("Utilities"));
+                verifyThat(donationPolicyBox, hasComboBoxValue("UPDATE_IN_PLACE"));
         }
 
         @Test public void testApplicationTab_reflectsAutosaveAndReportPreferences()
