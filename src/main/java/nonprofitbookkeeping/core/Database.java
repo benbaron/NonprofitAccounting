@@ -1034,6 +1034,31 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 			    )
 			""");
 		st.execute("""
+			    CREATE TABLE IF NOT EXISTS donation_record(
+			      donation_id VARCHAR(255) PRIMARY KEY,
+			      donor_external_id VARCHAR(64),
+			      donation_date DATE,
+			      amount DECIMAL(19,2) NOT NULL,
+			      memo VARCHAR(500),
+			      cash_account_number VARCHAR(64) NOT NULL,
+			      revenue_account_number VARCHAR(64) NOT NULL,
+			      fund_number VARCHAR(64),
+			      journal_txn_id INT,
+			      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+			      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+			    )
+			""");
+		st.execute("""
+			    CREATE TABLE IF NOT EXISTS donation_journal_link(
+			      donation_id VARCHAR(255) NOT NULL,
+			      journal_txn_id INT NOT NULL,
+			      link_role VARCHAR(16) DEFAULT 'ORIGINAL' NOT NULL,
+			      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+			      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+			      PRIMARY KEY (donation_id, journal_txn_id, link_role)
+			    )
+			""");
+		st.execute("""
 			    ALTER TABLE ledger_record
 			    ADD CONSTRAINT IF NOT EXISTS fk_ledger_record_journal_entry
 			    FOREIGN KEY (journal_entry_id) REFERENCES journal_entry(id) ON DELETE SET NULL
@@ -1058,6 +1083,35 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 			    ADD CONSTRAINT IF NOT EXISTS fk_banking_txn_fund
 			    FOREIGN KEY (fund_id) REFERENCES fund(id) ON DELETE SET NULL
 			""");
+		st.execute("""
+			    ALTER TABLE donation_record
+			    ADD CONSTRAINT IF NOT EXISTS fk_donation_record_journal
+			    FOREIGN KEY (journal_txn_id) REFERENCES journal_transaction(id) ON DELETE SET NULL
+			""");
+		st.execute("""
+			    ALTER TABLE donation_record
+			    ADD CONSTRAINT IF NOT EXISTS fk_donation_record_donor
+			    FOREIGN KEY (donor_external_id) REFERENCES donor(external_id) ON DELETE SET NULL
+			""");
+		st.execute("""
+			    ALTER TABLE donation_journal_link
+			    ADD CONSTRAINT IF NOT EXISTS fk_donation_link_donation
+			    FOREIGN KEY (donation_id) REFERENCES donation_record(donation_id) ON DELETE CASCADE
+			""");
+		st.execute("""
+			    ALTER TABLE donation_journal_link
+			    ADD CONSTRAINT IF NOT EXISTS fk_donation_link_journal
+			    FOREIGN KEY (journal_txn_id) REFERENCES journal_transaction(id) ON DELETE CASCADE
+			""");
+		st.execute("""
+			    ALTER TABLE donation_journal_link
+			    ADD CONSTRAINT IF NOT EXISTS ck_donation_link_role
+			    CHECK (link_role IN ('ORIGINAL','REVERSAL','ADJUSTMENT'))
+			""");
+		st.execute(
+			"CREATE INDEX IF NOT EXISTS ix_donation_record_journal ON donation_record(journal_txn_id);");
+		st.execute(
+			"CREATE INDEX IF NOT EXISTS ix_donation_link_journal ON donation_journal_link(journal_txn_id);");
 		st.execute("""
 			    ALTER TABLE asset_record_detail
 			    ADD CONSTRAINT IF NOT EXISTS fk_asset_record_journal
