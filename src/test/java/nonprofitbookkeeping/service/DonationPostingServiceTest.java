@@ -30,7 +30,10 @@ class DonationPostingServiceTest
 		seedAccounts();
 		seedDonor();
 
-		DonationPostingService service = new DonationPostingService();
+		DonationPostingService service = new DonationPostingService(
+			new nonprofitbookkeeping.persistence.DonationRecordRepository(),
+			new nonprofitbookkeeping.persistence.JournalRepository(),
+			DonationPostingService.DonationEditPostingPolicy.UPDATE_IN_PLACE);
 		DonationRecord donation = new DonationRecord();
 		donation.setDonationId("don-001");
 		donation.setDonorExternalId("d-001");
@@ -50,6 +53,55 @@ class DonationPostingServiceTest
 		assertEquals("don-001", readTxnInfo(posted.getJournalTxnId(), "domain_record_id"));
 		assertEquals(2, readJournalEntryCount(posted.getJournalTxnId()));
 		assertEquals(1, readDonationLinkCount("don-001", posted.getJournalTxnId()));
+	}
+
+	@Test
+	void editDonation_reverseAndRepost_policyCreatesReversalAndAdjustment()
+		throws Exception
+	{
+		Path dbPath = tempDir.resolve("donation-reverse-policy");
+		Database.init(dbPath);
+		Database.get().ensureSchema();
+		seedAccounts();
+		seedDonor();
+
+		DonationPostingService service = new DonationPostingService(
+			new nonprofitbookkeeping.persistence.DonationRecordRepository(),
+			new nonprofitbookkeeping.persistence.JournalRepository(),
+			DonationPostingService.DonationEditPostingPolicy.REVERSE_AND_REPOST);
+
+		DonationRecord first = new DonationRecord();
+		first.setDonationId("don-002");
+		first.setDonorExternalId("d-001");
+		first.setDonationDate(LocalDate.of(2026, 4, 20));
+		first.setAmount(new BigDecimal("120.00"));
+		first.setMemo("Initial gift");
+		first.setCashAccountNumber("1000");
+		first.setRevenueAccountNumber("4000");
+		first.setFundNumber("FUND-1");
+		DonationRecord original = service.postDonation(first);
+
+		DonationRecord edited = new DonationRecord();
+		edited.setDonationId("don-002");
+		edited.setDonorExternalId("d-001");
+		edited.setDonationDate(LocalDate.of(2026, 4, 21));
+		edited.setAmount(new BigDecimal("175.00"));
+		edited.setMemo("Adjusted gift");
+		edited.setCashAccountNumber("1000");
+		edited.setRevenueAccountNumber("4000");
+		edited.setFundNumber("FUND-1");
+		DonationRecord adjusted = service.postDonation(edited);
+
+		assertTrue(adjusted.getJournalTxnId() != null);
+		assertTrue(adjusted.getJournalTxnId() > original.getJournalTxnId());
+		assertEquals(3, readDonationLinksByRole("don-002", "ORIGINAL")
+			+ readDonationLinksByRole("don-002", "REVERSAL")
+			+ readDonationLinksByRole("don-002", "ADJUSTMENT"));
+		assertEquals(1, readDonationLinksByRole("don-002", "ORIGINAL"));
+		assertEquals(1, readDonationLinksByRole("don-002", "REVERSAL"));
+		assertEquals(1, readDonationLinksByRole("don-002", "ADJUSTMENT"));
+		assertEquals("ADJUSTMENT",
+			readTxnInfo(adjusted.getJournalTxnId(), "link_role"));
 	}
 
 	private void seedAccounts() throws Exception
@@ -126,6 +178,23 @@ class DonationPostingServiceTest
 		{
 			ps.setString(1, donationId);
 			ps.setInt(2, journalTxnId);
+			try (ResultSet rs = ps.executeQuery())
+			{
+				rs.next();
+				return rs.getInt(1);
+			}
+		}
+	}
+
+	private int readDonationLinksByRole(String donationId, String linkRole)
+		throws Exception
+	{
+		try (Connection c = Database.get().getConnection();
+			 PreparedStatement ps = c.prepareStatement(
+				 "SELECT COUNT(*) FROM donation_journal_link WHERE donation_id = ? AND link_role = ?"))
+		{
+			ps.setString(1, donationId);
+			ps.setString(2, linkRole);
 			try (ResultSet rs = ps.executeQuery())
 			{
 				rs.next();

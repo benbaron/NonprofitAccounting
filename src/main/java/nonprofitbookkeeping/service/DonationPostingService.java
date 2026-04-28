@@ -5,9 +5,11 @@ import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.DonationRecord;
+import nonprofitbookkeeping.model.SettingsModel;
 import nonprofitbookkeeping.persistence.DonationRecordRepository;
 import nonprofitbookkeeping.persistence.JournalRepository;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -24,34 +26,64 @@ import java.util.Optional;
  */
 public class DonationPostingService
 {
+	/** Edit policy for posted donations. */
+	public enum DonationEditPostingPolicy
+	{
+		UPDATE_IN_PLACE,
+		REVERSE_AND_REPOST
+	}
+
+	private static final String LINK_ORIGINAL = "ORIGINAL";
+	private static final String LINK_REVERSAL = "REVERSAL";
+	private static final String LINK_ADJUSTMENT = "ADJUSTMENT";
+
 	private final DonationRecordRepository donationRecordRepository;
 	private final JournalRepository journalRepository;
+	private final DonationEditPostingPolicy editPostingPolicy;
 
 	public DonationPostingService()
 	{
-		this(new DonationRecordRepository(), new JournalRepository());
+		this(new DonationRecordRepository(), new JournalRepository(),
+			resolvePolicyFromSettings());
 	}
 
 	DonationPostingService(DonationRecordRepository donationRecordRepository,
 		JournalRepository journalRepository)
 	{
+		this(donationRecordRepository, journalRepository,
+			DonationEditPostingPolicy.UPDATE_IN_PLACE);
+	}
+
+	DonationPostingService(DonationRecordRepository donationRecordRepository,
+		JournalRepository journalRepository,
+		DonationEditPostingPolicy editPostingPolicy)
+	{
 		this.donationRecordRepository = donationRecordRepository;
 		this.journalRepository = journalRepository;
+		this.editPostingPolicy = editPostingPolicy == null ?
+			DonationEditPostingPolicy.UPDATE_IN_PLACE : editPostingPolicy;
 	}
 
 	/**
-	 * Posts and upserts a donation. New donations allocate a journal transaction id;
-	 * edited donations overwrite their existing linked transaction for phase-1 adoption.
+	 * Posts and upserts a donation.
 	 */
 	public DonationRecord postDonation(DonationRecord donation) throws SQLException
 	{
 		requireValid(donation);
-		int journalTxnId = resolveJournalTxnId(donation);
-		AccountingTransaction txn = toTransaction(donation, journalTxnId);
+		Optional<DonationRecord> existing = this.donationRecordRepository
+			.findByDonationId(donation.getDonationId());
+		if (shouldReverseAndRepost(existing, donation))
+		{
+			return reverseAndRepost(existing.orElseThrow(), donation);
+		}
+		int journalTxnId = resolveJournalTxnId(donation, existing);
+		AccountingTransaction txn = toTransaction(donation, journalTxnId,
+			LINK_ORIGINAL);
 		this.journalRepository.upsertTransaction(txn);
 		donation.setJournalTxnId(journalTxnId);
 		this.donationRecordRepository.upsert(donation);
-		upsertDonationJournalLink(donation.getDonationId(), journalTxnId, "ORIGINAL");
+		upsertDonationJournalLink(donation.getDonationId(), journalTxnId,
+			LINK_ORIGINAL);
 		return donation;
 	}
 
@@ -59,6 +91,58 @@ public class DonationPostingService
 		throws SQLException
 	{
 		return this.donationRecordRepository.findByJournalTxnId(journalTxnId);
+	}
+
+	private DonationRecord reverseAndRepost(DonationRecord existing,
+		DonationRecord updated) throws SQLException
+	{
+		int reversalTxnId = nextJournalTxnId();
+		AccountingTransaction reversalTxn = toReverseTransaction(existing,
+			reversalTxnId);
+		this.journalRepository.upsertTransaction(reversalTxn);
+		upsertDonationJournalLink(existing.getDonationId(), reversalTxnId,
+			LINK_REVERSAL);
+
+		int adjustedTxnId = nextJournalTxnId();
+		AccountingTransaction adjustedTxn = toTransaction(updated,
+			adjustedTxnId, LINK_ADJUSTMENT);
+		this.journalRepository.upsertTransaction(adjustedTxn);
+		updated.setJournalTxnId(adjustedTxnId);
+		this.donationRecordRepository.upsert(updated);
+		upsertDonationJournalLink(updated.getDonationId(), adjustedTxnId,
+			LINK_ADJUSTMENT);
+		return updated;
+	}
+
+	private boolean shouldReverseAndRepost(Optional<DonationRecord> existing,
+		DonationRecord updated)
+	{
+		if (this.editPostingPolicy !=
+			DonationEditPostingPolicy.REVERSE_AND_REPOST)
+		{
+			return false;
+		}
+		if (existing.isEmpty() || existing.get().getJournalTxnId() == null)
+		{
+			return false;
+		}
+		return donationChanged(existing.get(), updated);
+	}
+
+	private static boolean donationChanged(DonationRecord a, DonationRecord b)
+	{
+		if (a == null || b == null)
+		{
+			return true;
+		}
+		return !Objects.equals(a.getDonationDate(), b.getDonationDate()) ||
+			!Objects.equals(a.getAmount(), b.getAmount()) ||
+			!Objects.equals(a.getMemo(), b.getMemo()) ||
+			!Objects.equals(a.getCashAccountNumber(), b.getCashAccountNumber()) ||
+			!Objects.equals(a.getRevenueAccountNumber(),
+				b.getRevenueAccountNumber()) ||
+			!Objects.equals(a.getFundNumber(), b.getFundNumber()) ||
+			!Objects.equals(a.getDonorExternalId(), b.getDonorExternalId());
 	}
 
 	private void requireValid(DonationRecord donation)
@@ -76,7 +160,8 @@ public class DonationPostingService
 		{
 			throw new IllegalArgumentException("revenueAccountNumber is required");
 		}
-		if (donation.getAmount() == null || donation.getAmount().compareTo(BigDecimal.ZERO) <= 0)
+		if (donation.getAmount() == null ||
+			donation.getAmount().compareTo(BigDecimal.ZERO) <= 0)
 		{
 			throw new IllegalArgumentException("amount must be > 0");
 		}
@@ -87,14 +172,13 @@ public class DonationPostingService
 		return s == null || s.isBlank();
 	}
 
-	private int resolveJournalTxnId(DonationRecord donation) throws SQLException
+	private int resolveJournalTxnId(DonationRecord donation,
+		Optional<DonationRecord> existing) throws SQLException
 	{
 		if (donation.getJournalTxnId() != null)
 		{
 			return donation.getJournalTxnId();
 		}
-		Optional<DonationRecord> existing =
-			this.donationRecordRepository.findByDonationId(donation.getDonationId());
 		if (existing.isPresent() && existing.get().getJournalTxnId() != null)
 		{
 			return existing.get().getJournalTxnId();
@@ -114,12 +198,32 @@ public class DonationPostingService
 		}
 	}
 
-	private AccountingTransaction toTransaction(DonationRecord donation,
+	private AccountingTransaction toReverseTransaction(DonationRecord donation,
 		int journalTxnId)
+	{
+		AccountingTransaction txn = toTransaction(donation, journalTxnId,
+			LINK_REVERSAL);
+		LinkedHashSet<AccountingEntry> reversed = new LinkedHashSet<>();
+		AccountingEntry creditCash = new AccountingEntry(donation.getAmount(),
+			donation.getCashAccountNumber(), AccountSide.CREDIT);
+		creditCash.setFundNumber(donation.getFundNumber());
+		reversed.add(creditCash);
+		AccountingEntry debitRevenue = new AccountingEntry(donation.getAmount(),
+			donation.getRevenueAccountNumber(), AccountSide.DEBIT);
+		debitRevenue.setFundNumber(donation.getFundNumber());
+		reversed.add(debitRevenue);
+		txn.setEntries(reversed);
+		txn.setMemo("Reversal of donation " + donation.getDonationId());
+		return txn;
+	}
+
+	private AccountingTransaction toTransaction(DonationRecord donation,
+		int journalTxnId, String linkRole)
 	{
 		AccountingTransaction txn = new AccountingTransaction();
 		txn.setId(journalTxnId);
-		LocalDate date = donation.getDonationDate() == null ? LocalDate.now() : donation.getDonationDate();
+		LocalDate date = donation.getDonationDate() == null ? LocalDate.now() :
+			donation.getDonationDate();
 		txn.setDate(date.toString());
 		txn.setBookingDateTimestamp(System.currentTimeMillis());
 		txn.setMemo(buildMemo(donation));
@@ -127,7 +231,7 @@ public class DonationPostingService
 		txn.setInfo(Map.of(
 			"module", "DONATION",
 			"domain_record_id", donation.getDonationId(),
-			"link_role", "ORIGINAL",
+			"link_role", linkRole,
 			"idempotency_key", "DONATION:" + donation.getDonationId()));
 
 		LinkedHashSet<AccountingEntry> entries = new LinkedHashSet<>();
@@ -152,8 +256,29 @@ public class DonationPostingService
 		return donation.getMemo();
 	}
 
-	private static void upsertDonationJournalLink(String donationId, int journalTxnId,
-		String linkRole) throws SQLException
+	private static DonationEditPostingPolicy resolvePolicyFromSettings()
+	{
+		SettingsService settingsService = new SettingsService();
+		try
+		{
+			settingsService.loadSettings(null);
+			SettingsModel settings = settingsService.getSettings();
+			String value = settings == null ? null :
+				settings.getDonationEditPostingPolicy();
+			if ("REVERSE_AND_REPOST".equalsIgnoreCase(value))
+			{
+				return DonationEditPostingPolicy.REVERSE_AND_REPOST;
+			}
+		}
+		catch (IOException ignored)
+		{
+			// Fall back to legacy behavior.
+		}
+		return DonationEditPostingPolicy.UPDATE_IN_PLACE;
+	}
+
+	private static void upsertDonationJournalLink(String donationId,
+		int journalTxnId, String linkRole) throws SQLException
 	{
 		String sql = """
 			MERGE INTO donation_journal_link(donation_id, journal_txn_id, link_role, updated_at)
