@@ -152,11 +152,61 @@ All enforced in one place.
 - Grant panel maintains compliance/status metadata and references to posted txns.
 - Budget vs actual by grant derives actuals from journal entries tagged to grant/fund dimensions.
 
+### Grants panel specification (Phase 1 implementation contract)
+
+#### Data/link contract
+
+- Primary record source = `grant_record`.
+- Posted-link requirement for finance-impacting states:
+  - `journal_txn_id` must be populated for posted grant events.
+- Optional granular link source = `grant_posting_link` for one-to-many posting traceability.
+
+#### Panel operations
+
+- **Create award/drawdown/recognition event**
+  - Build a posting command and call Posting API.
+  - Persist resulting `journal_txn_id` to `grant_record`.
+  - Persist line-level links in `grant_posting_link` when available.
+- **Edit posted grant financial fields**
+  - Reverse existing linked posting and post adjusted replacement.
+  - Update effective `journal_txn_id`; preserve prior links as historical roles.
+- **Non-financial edits**
+  - Update compliance/workflow metadata only; no posting mutation.
+
+#### Traceability expectations
+
+- `grant_record -> journal_transaction` via `journal_txn_id`.
+- `journal_transaction/journal_entry -> grant_record` via `grant_posting_link` or
+  `transaction_info.domain_record_id`.
+
 ## 3) Funds / Fund Accounting
 
 - Fund transfers produce paired journal lines with fund dimensions.
 - Fund balances are computed from Journal, not from mutable “fund balance” fields.
 - Fund panel can cache read models, but recomputation source remains Journal.
+
+### Funds panel specification (Phase 1 implementation contract)
+
+#### Data/link contract
+
+- Operational transfer/workflow state remains in fund transfer domain tables.
+- Every posted transfer must carry a journal reference (or canonical posted txn reference mapped to journal lineage).
+
+#### Panel operations
+
+- **Create fund transfer**
+  - Build transfer posting command with equal/opposite fund-dimension lines.
+  - Post through Posting API.
+  - Persist posted transaction reference in transfer row.
+- **Edit posted transfer amount/fund dimensions**
+  - Reverse prior posting; post adjusted transfer; update active link.
+- **Status-only workflow changes (approve/review)**
+  - No posting write unless financial dimensions changed.
+
+#### Traceability expectations
+
+- Transfer row -> posted transaction id -> journal lines.
+- Journal lines include fund dimensions to support deterministic fund balance recomputation.
 
 ## 4) Budget + Budget vs Actual
 
@@ -180,10 +230,58 @@ All enforced in one place.
 - Optional adjustment entries (bank fees, interest, corrections) must be posted via Posting API.
 - Locked reconciled periods disallow destructive edits; require dated adjusting entries.
 
+### Bank Reconciliation panel specification (Phase 1 implementation contract)
+
+#### Data/link contract
+
+- `banking_transaction_record.journal_txn_id` is the required linkage for matched posted items.
+- Reconciliation status metadata remains operational (`match_status`, `matched_at`, statement identifiers).
+
+#### Panel operations
+
+- **Import/match flow**
+  - For ledger-backed items, attach/retain `journal_txn_id`.
+  - Mark match status without mutating posted amounts.
+- **Post reconciliation adjustment**
+  - Create adjustment command (fees/interest/corrections), post via Posting API.
+  - Store resulting `journal_txn_id` on created/updated banking record.
+- **Void/undo match**
+  - Update workflow status links only; do not destructive-edit prior posted entries.
+
+#### Traceability expectations
+
+- Bank item -> `journal_txn_id` -> journal transaction.
+- Journal transaction -> matched banking rows via `banking_transaction_record`.
+
 ## 7) Inventory / Depreciation / other operational modules
 
 - Operational event creates accounting command(s) through Posting API.
 - Module persists operational metadata and references to resulting txns.
+
+### Inventory / Depreciation panel specification (Phase 1 implementation contract)
+
+#### Data/link contract
+
+- Inventory/asset events persist operational metadata in module tables.
+- Posted events must persist journal linkage:
+  - acquisition/disposal links in asset detail records
+  - depreciation links in `depreciation_record.posted_journal_txn_id` (and reversal id when applicable)
+
+#### Panel operations
+
+- **Acquisition/disposal**
+  - Post through Posting API and persist journal reference on asset records.
+- **Depreciation run post**
+  - Post run entries via Posting API/journal service.
+  - Persist posted journal txn ids per generated depreciation row.
+- **Depreciation reversal/void**
+  - Create reversal postings and persist reversal journal ids.
+  - Keep immutable history for original and reversal links.
+
+#### Traceability expectations
+
+- Asset/depreciation row -> posted journal ids -> journal entries.
+- Journal entries -> originating asset/run ids via linkage columns and posting metadata.
 
 ---
 
