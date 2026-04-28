@@ -97,6 +97,55 @@ All enforced in one place.
 - Editing amount/accounting dimensions => reverse original + post adjusted transaction.
 - Deleting after posting => soft-delete donation + reversal entry.
 
+### Donations panel specification (Phase 1 implementation contract)
+
+#### Data contract
+
+- Panel row model = `DonationRecord`:
+  - `donation_id`
+  - `donor_external_id`
+  - `donation_date`
+  - `amount`
+  - `memo`
+  - `cash_account_number`
+  - `revenue_account_number`
+  - `fund_number`
+  - `journal_txn_id`
+- Persistence source = `donation_record` table.
+- Link/audit source = `donation_journal_link` (`ORIGINAL`, `REVERSAL`, `ADJUSTMENT`).
+
+#### Panel operations
+
+- **Refresh**
+  - Read rows from `DonationRecordRepository.listAll()`.
+- **Add donation**
+  - Build `DonationRecord` from dialog/form input.
+  - Post via `DonationPostingService.postDonation(record)`.
+  - Persist link role `ORIGINAL`.
+- **Edit donation**
+  - Reuse same `donation_id`.
+  - Post via `DonationPostingService.postDonation(record)` and apply configured edit policy:
+    - `UPDATE_IN_PLACE` => update existing linked txn in place.
+    - `REVERSE_AND_REPOST` => create `REVERSAL` + `ADJUSTMENT` links and update `journal_txn_id` to the adjusted txn.
+- **Trace from panel to journal**
+  - Use `journal_txn_id` column on each row.
+- **Trace from journal to panel**
+  - Lookup by `DonationRecordRepository.findByJournalTxnId(...)`.
+
+#### Settings dependency
+
+- Panel/accounting behavior consumes `SettingsModel.donationEditPostingPolicy`.
+- UI must expose this preference as a user-selectable setting:
+  - `UPDATE_IN_PLACE`
+  - `REVERSE_AND_REPOST`
+
+#### Validation/UX requirements
+
+- Amount required and `> 0`.
+- Cash and revenue account numbers required.
+- Posting failures are non-destructive to existing saved rows.
+- Successful posts show resulting `journal_txn_id` in the grid.
+
 ## 2) Grants
 
 - Grant awards, drawdowns, and recognition events post through Posting API.
