@@ -9,7 +9,6 @@ import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.budget.BudgetLine;
 import nonprofitbookkeeping.service.*; // Import all from service
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ApplicationContextImpl.
  */
