@@ -58,6 +58,12 @@ class H2SchemaMigratorTest
                 assertTrue(rs.next());
                 assertTrue(rs.getInt(1) >= 0);
             }
+            try (ResultSet rs = st.executeQuery(
+                "SELECT COUNT(*) FROM schema_migration_history WHERE migration_key = 'operational-link-backfill-v1'"))
+            {
+                assertTrue(rs.next());
+                assertTrue(rs.getInt(1) >= 1);
+            }
             try (ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM legacy_probe"))
             {
                 assertTrue(rs.next());

@@ -29,6 +29,7 @@ public final class Database
 	private static final String MIGRATION_RECONCILED_BACKFILL_V1 = "reconciled-backfill-v1";
 	private static final String MIGRATION_BANKING_RECON_SCHEMA_V1 = "banking-reconciliation-schema-v1";
 	private static final String MIGRATION_REPORTING_SCHEDULE_CONFIG_V1 = "reporting-schedule-config-v1";
+	private static final String MIGRATION_OPERATIONAL_LINK_BACKFILL_V1 = "operational-link-backfill-v1";
 
 	private static final String SQL_COUNTERPARTY_FROM_PERSON =
 		"INSERT INTO counterparty(display_name, kind, email, phone, is_active) " +
@@ -186,6 +187,7 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 			runReconciledDataBackfill(c);
 			ensureRemainingLegacyTables(st);
 			ensureOperationalLinkageTables(st);
+			runOperationalLinkBackfillMigration(c);
 			runReportingScheduleConfigurationMigration(c);
 			runBankingReconciliationSchemaMigration(c);
 		}
@@ -1932,6 +1934,63 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 				""");
 		}
 		markMigrationApplied(c, MIGRATION_REPORTING_SCHEDULE_CONFIG_V1);
+	}
+
+	private void runOperationalLinkBackfillMigration(Connection c)
+		throws SQLException
+	{
+		if (isMigrationApplied(c, MIGRATION_OPERATIONAL_LINK_BACKFILL_V1))
+		{
+			return;
+		}
+		try (Statement st = c.createStatement())
+		{
+			st.execute("""
+				    UPDATE donation_record d
+				    SET journal_txn_id = (
+				      SELECT MIN(jt.id)
+				      FROM journal_transaction jt
+				      JOIN journal_entry je
+				        ON je.txn_id = jt.id
+				       AND UPPER(COALESCE(je.account_side, 'DEBIT')) = 'CREDIT'
+				       AND je.amount = d.amount
+				       AND je.account_number = d.revenue_account_number
+				      WHERE COALESCE(jt.date_text, '') = COALESCE(CAST(d.donation_date AS VARCHAR(32)), '')
+				        AND COALESCE(jt.to_from, '') = COALESCE(d.donor_external_id, '')
+				        AND NOT EXISTS (
+				          SELECT 1
+				          FROM donation_record dx
+				          WHERE dx.donation_id <> d.donation_id
+				            AND dx.journal_txn_id = jt.id
+				        )
+				    )
+				    WHERE d.journal_txn_id IS NULL
+				""");
+			st.execute("""
+				    INSERT INTO donation_journal_link(donation_id, journal_txn_id, link_role, created_at, updated_at)
+				    SELECT d.donation_id, d.journal_txn_id, 'ORIGINAL', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+				    FROM donation_record d
+				    WHERE d.journal_txn_id IS NOT NULL
+				      AND NOT EXISTS (
+				        SELECT 1
+				        FROM donation_journal_link l
+				        WHERE l.donation_id = d.donation_id
+				          AND l.journal_txn_id = d.journal_txn_id
+				          AND l.link_role = 'ORIGINAL'
+				      )
+				""");
+			st.execute("""
+				    UPDATE grant_record g
+				    SET journal_txn_id = (
+				      SELECT MIN(ti.txn_id)
+				      FROM transaction_info ti
+				      WHERE ti.k = 'domain_record_id'
+				        AND ti.v = g.grant_record_id
+				    )
+				    WHERE g.journal_txn_id IS NULL
+				""");
+		}
+		markMigrationApplied(c, MIGRATION_OPERATIONAL_LINK_BACKFILL_V1);
 	}
 	
 	private void updateTxnDatesFromLegacyText(Connection c) throws SQLException
