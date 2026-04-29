@@ -18,6 +18,7 @@ import org.nonprofitbookkeeping.ui.AppPanel;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -113,6 +114,10 @@ public class BankStatementRecordsPanel implements AppPanel
             }
             this.status.setText("Saved " + this.table.getItems().size() + " bank statement row(s).");
         }
+        catch (IllegalArgumentException ex)
+        {
+            this.status.setText("Validation failed: " + ex.getMessage());
+        }
         catch (SQLException | RuntimeException ex)
         {
             this.status.setText("Failed to save bank statement rows: " + ex.getMessage());
@@ -194,9 +199,9 @@ public class BankStatementRecordsPanel implements AppPanel
 
         BankStatementRecord toRecord()
         {
-            LocalDate startDate = (this.start.get() == null || this.start.get().isBlank()) ? null : LocalDate.parse(this.start.get());
-            LocalDate endDate = (this.end.get() == null || this.end.get().isBlank()) ? null : LocalDate.parse(this.end.get());
-            BigDecimal ledger = new BigDecimal(this.ledgerBalance.get() == null || this.ledgerBalance.get().isBlank() ? "0" : this.ledgerBalance.get());
+            LocalDate startDate = parseDate(this.start.get(), "start");
+            LocalDate endDate = parseDate(this.end.get(), "end");
+            BigDecimal ledger = parseAmount(this.ledgerBalance.get(), "ledgerBalance");
             return new BankStatementRecord(
                 this.importId.get(),
                 BankStatementRecord.SourceFormat.OTHER,
@@ -211,6 +216,40 @@ public class BankStatementRecordsPanel implements AppPanel
                 null,
                 Map.of(),
                 null);
+        }
+
+        private static LocalDate parseDate(String value, String fieldName)
+        {
+            if (value == null || value.isBlank())
+            {
+                return null;
+            }
+            try
+            {
+                return LocalDate.parse(value);
+            }
+            catch (DateTimeParseException ex)
+            {
+                throw new IllegalArgumentException(
+                    "Invalid " + fieldName + " date '" + value + "' (expected YYYY-MM-DD).");
+            }
+        }
+
+        private static BigDecimal parseAmount(String value, String fieldName)
+        {
+            if (value == null || value.isBlank())
+            {
+                return BigDecimal.ZERO;
+            }
+            try
+            {
+                return new BigDecimal(value.trim());
+            }
+            catch (NumberFormatException ex)
+            {
+                throw new IllegalArgumentException(
+                    "Invalid " + fieldName + " amount '" + value + "'.");
+            }
         }
 
         SimpleStringProperty importIdProperty(){ return this.importId; }

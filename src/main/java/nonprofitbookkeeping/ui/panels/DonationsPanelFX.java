@@ -151,8 +151,16 @@ public class DonationsPanelFX extends BorderPane
 			{
 				return null;
 			}
-			return toDonationRecord(idField, datePicker, donorField, amountField,
-				memoField, cashField, revenueField, fundField);
+			try
+			{
+				return toDonationRecord(idField, datePicker, donorField, amountField,
+					memoField, cashField, revenueField, fundField);
+			}
+			catch (IllegalArgumentException ex)
+			{
+				new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();
+				return null;
+			}
 		});
 
 		dlg.showAndWait().ifPresent(this::saveDonation);
@@ -163,12 +171,23 @@ public class DonationsPanelFX extends BorderPane
 		TextField memoField, TextField cashField, TextField revenueField,
 		TextField fundField)
 	{
+		String donationId =
+			idField.getText() == null ? "" : idField.getText().trim();
+		if (donationId.isBlank())
+		{
+			throw new IllegalArgumentException("Donation ID is required.");
+		}
+		BigDecimal amount = parseAmount(amountField.getText());
+		if (datePicker.getValue() == null)
+		{
+			throw new IllegalArgumentException("Donation date is required.");
+		}
 		DonationRecord out = new DonationRecord();
-		out.setDonationId(idField.getText() == null ? "" : idField.getText().trim());
+		out.setDonationId(donationId);
 		out.setDonationDate(datePicker.getValue());
 		out.setDonorExternalId(donorField.getText() == null ? "" :
 			donorField.getText().trim());
-		out.setAmount(new BigDecimal(amountField.getText().trim()));
+		out.setAmount(amount);
 		out.setMemo(memoField.getText());
 		out.setCashAccountNumber(cashField.getText() == null ? "" :
 			cashField.getText().trim());
@@ -176,6 +195,29 @@ public class DonationsPanelFX extends BorderPane
 			revenueField.getText().trim());
 		out.setFundNumber(fundField.getText());
 		return out;
+	}
+
+	private static BigDecimal parseAmount(String value)
+	{
+		if (value == null || value.isBlank())
+		{
+			throw new IllegalArgumentException("Amount is required.");
+		}
+		try
+		{
+			BigDecimal parsed = new BigDecimal(value.trim());
+			if (parsed.signum() <= 0)
+			{
+				throw new IllegalArgumentException(
+					"Amount must be greater than zero.");
+			}
+			return parsed;
+		}
+		catch (NumberFormatException ex)
+		{
+			throw new IllegalArgumentException(
+				"Amount must be a valid decimal number.");
+		}
 	}
 
 	private void saveDonation(DonationRecord donation)

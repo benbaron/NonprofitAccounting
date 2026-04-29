@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -67,9 +68,22 @@ public class FundRecordsPanel implements AppPanel
         this.table.getColumns().setAll(
             col("Fund ID", FundRow::fundIdProperty, FundRow::setFundId),
             col("Name", FundRow::nameProperty, FundRow::setName),
-            col("Restricted", FundRow::restrictedProperty, FundRow::setRestricted),
+            restrictedCol("Restricted"),
             col("Description", FundRow::descriptionProperty, FundRow::setDescription)
         );
+    }
+
+    private TableColumn<FundRow, String> restrictedCol(String name)
+    {
+        TableColumn<FundRow, String> col = new TableColumn<>(name);
+        col.setCellValueFactory(v -> v.getValue().restrictedProperty());
+        col.setCellFactory(column -> {
+            ComboBoxTableCell<FundRow, String> cell = new ComboBoxTableCell<>();
+            cell.getItems().setAll("true", "false");
+            return cell;
+        });
+        col.setOnEditCommit(event -> event.getRowValue().setRestricted(event.getNewValue()));
+        return col;
     }
 
     private TableColumn<FundRow, String> col(String name,
