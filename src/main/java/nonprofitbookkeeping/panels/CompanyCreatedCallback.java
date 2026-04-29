@@ -1,9 +1,8 @@
 
-package nonprofitbookkeeping.api;
+package nonprofitbookkeeping.panels;
 
 import nonprofitbookkeeping.model.CompanyProfileModel;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface CompanyCreatedCallback.
  */

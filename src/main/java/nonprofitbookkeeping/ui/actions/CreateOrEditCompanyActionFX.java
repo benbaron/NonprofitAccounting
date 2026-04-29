@@ -19,8 +19,8 @@ import java.io.IOException;
  */
 public class CreateOrEditCompanyActionFX
 {
-        private final DemoCompanySeeder demoCompanySeeder = new DemoCompanySeeder();
-
+	private final DemoCompanySeeder demoCompanySeeder = new DemoCompanySeeder();
+	
 	
 	/**  
 	 * Constructs and executes the action to create or edit a company profile.
@@ -50,58 +50,63 @@ public class CreateOrEditCompanyActionFX
 	 * @param primaryStage The primary {@link Stage} of the JavaFX application, used as the
 	 *                     owner for the dialog window.
 	 */
-        public CreateOrEditCompanyActionFX(Stage primaryStage)
-        {
-                Company existingCompany = CurrentCompany.getCompany();
-
-                if (existingCompany == null)
-                {
-                        existingCompany = new Company();
-                }
-
-                Stage dialog = new Stage();
-                dialog.initOwner(primaryStage);
-                dialog.setTitle(CurrentCompany.isOpen() ? "Edit Company" : "Create Company");
-
-                CreateOrEditCompanyPanelFX panel = new CreateOrEditCompanyPanelFX(existingCompany,
-                        (created, seedDemoData) ->
-                        {
-                                Company target = CurrentCompany.getCompany();
-
-                                if (target == null)
-                                {
-                                        target = new Company();
-                                        CurrentCompany.forceCompanyLoad(target);
-                                }
-
-                                boolean isNewCompany = CurrentCompany.getCurrentCompanyId() == null;
-
-                                target.setCompanyProfileModel(checkNotNull(created));
-
-                                if (seedDemoData && isNewCompany)
-                                {
-                                        this.demoCompanySeeder.seed(target);
-                                }
-
-                                try
-                                {
-                                        CurrentCompany.persist();
-                                        PreferencesService.setLastUsedCompanyId(CurrentCompany.getCurrentCompanyId());
-                                        CurrentCompany.markCompanyOpen();
-                                }
-                                catch (IOException e)
-                                {
-                                        e.printStackTrace();
-                                }
-
-                                dialog.close();
-                        });
-
-                panel.setDemoSeedingAvailable(!CurrentCompany.isOpen());
-
-                dialog.setScene(new Scene(panel, 800, 600));
-                dialog.show();
-        }
+	public CreateOrEditCompanyActionFX(Stage primaryStage)
+	{
+		Company existingCompany = CurrentCompany.getCompany();
+		
+		if (existingCompany == null)
+		{
+			existingCompany = new Company();
+		}
+		
+		Stage dialog = new Stage();
+		dialog.initOwner(primaryStage);
+		dialog.setTitle(
+			CurrentCompany.isOpen() ? "Edit Company" : "Create Company");
+		
+		CreateOrEditCompanyPanelFX panel =
+			new CreateOrEditCompanyPanelFX(existingCompany,
+				(created, seedDemoData) ->
+				{
+					Company target = CurrentCompany.getCompany();
+					
+					if (target == null)
+					{
+						target = new Company();
+						CurrentCompany.forceCompanyLoad(target);
+					}
+					
+					boolean isNewCompany =
+						CurrentCompany.getCurrentCompanyId() == null;
+					
+					target.setCompanyProfileModel(checkNotNull(created));
+					
+					if (seedDemoData && isNewCompany)
+					{
+						this.demoCompanySeeder.seed(target);
+					}
+					
+					try
+					{
+						CurrentCompany.persist();
+						PreferencesService.setLastUsedCompanyId(
+							CurrentCompany.getCurrentCompanyId());
+						CurrentCompany.markCompanyOpen();
+					}
+					catch (IOException e)
+					{
+						e.printStackTrace();
+					}
+					
+					dialog.close();
+				});
+				
+		panel.setDemoSeedingAvailable(!CurrentCompany.isOpen());
+		
+		dialog.setScene(new Scene(panel, 800, 600));
+		dialog.show();
+		
+	}
 	
 	
 }

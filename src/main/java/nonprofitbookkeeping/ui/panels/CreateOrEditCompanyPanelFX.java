@@ -8,9 +8,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import nonprofitbookkeeping.api.CompanyCreatedCallback;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CompanyProfileModel;
+import nonprofitbookkeeping.panels.CompanyCreatedCallback;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
