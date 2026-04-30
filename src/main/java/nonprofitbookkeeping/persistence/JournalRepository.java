@@ -73,6 +73,7 @@ import org.slf4j.LoggerFactory;
 public class JournalRepository
 {
 	private static final Object NEXT_TXN_ID_MONITOR = new Object();
+	private static int LAST_RESERVED_TXN_ID = 0;
 	
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER =
@@ -185,21 +186,117 @@ public class JournalRepository
 	public Optional<AccountingTransaction> findTransactionById(int txnId)
 		throws SQLException
 	{
-		return listTransactions().stream().filter(t -> t.getId() == txnId)
-			.findFirst();
+		try (Connection c = Database.get().getConnection();
+			 PreparedStatement ps = c.prepareStatement("""
+				 SELECT id, booking_ts, date_text, memo, to_from, check_number,
+				        clear_bank, bank_name, reconciled, budget_tracking, associated_fund_name
+				 FROM journal_transaction
+				 WHERE id = ?
+			 """))
+		{
+			ps.setInt(1, txnId);
+			try (ResultSet rs = ps.executeQuery())
+			{
+				if (!rs.next())
+				{
+					return Optional.empty();
+				}
+				AccountingTransaction txn = new AccountingTransaction();
+				txn.setId(rs.getInt("id"));
+				txn.setBookingDateTimestamp(rs.getLong("booking_ts"));
+				txn.setDate(rs.getString("date_text"));
+				txn.setMemo(rs.getString("memo"));
+				txn.setToFrom(rs.getString("to_from"));
+				txn.setCheckNumber(rs.getString("check_number"));
+				txn.setClearBank(rs.getString("clear_bank"));
+				txn.setBank(rs.getString("bank_name"));
+				txn.setReconciled(rs.getBoolean("reconciled"));
+				txn.setBudgetTracking(rs.getString("budget_tracking"));
+				txn.setAssociatedFundName(rs.getString("associated_fund_name"));
+				txn.setEntries(new LinkedHashSet<>());
+				txn.setInfo(new LinkedHashMap<>());
+				loadEntriesAndInfo(c, txn);
+				return Optional.of(txn);
+			}
+		}
 	}
 
 	public int reserveNextTransactionId() throws SQLException
 	{
 		synchronized (NEXT_TXN_ID_MONITOR)
 		{
-			try (Connection c = Database.get().getConnection();
-				 PreparedStatement ps = c.prepareStatement(
-					 "SELECT COALESCE(MAX(id), 0) + 1 FROM journal_transaction");
-				 ResultSet rs = ps.executeQuery())
+			try (Connection c = Database.get().getConnection())
 			{
-				rs.next();
-				return rs.getInt(1);
+				boolean originalAutoCommit = c.getAutoCommit();
+				c.setAutoCommit(false);
+				try (Statement lockStmt = c.createStatement();
+					 PreparedStatement ps = c.prepareStatement(
+						 "SELECT COALESCE(MAX(id), 0) + 1 FROM journal_transaction");
+					 ResultSet rs = ps.executeQuery())
+				{
+					try (ResultSet ignored = lockStmt.executeQuery(
+						"SELECT id FROM journal_transaction ORDER BY id DESC LIMIT 1 FOR UPDATE"))
+					{
+						// Lock acquisition side-effect only.
+					}
+						rs.next();
+						int dbNext = rs.getInt(1);
+						int next = Math.max(dbNext, LAST_RESERVED_TXN_ID + 1);
+						LAST_RESERVED_TXN_ID = next;
+						c.commit();
+						return next;
+				}
+				catch (SQLException ex)
+				{
+					c.rollback();
+					throw ex;
+				}
+				finally
+				{
+					c.setAutoCommit(originalAutoCommit);
+				}
+			}
+		}
+	}
+
+	private void loadEntriesAndInfo(Connection c, AccountingTransaction txn)
+		throws SQLException
+	{
+		try (PreparedStatement ps = c.prepareStatement("""
+			SELECT amount, account_number, account_side, account_name, fund_number
+			FROM journal_entry
+			WHERE txn_id = ?
+			ORDER BY id
+		"""))
+		{
+			ps.setInt(1, txn.getId());
+			try (ResultSet rs = ps.executeQuery())
+			{
+				while (rs.next())
+				{
+					AccountSide side = AccountSide.fromString(
+						rs.getString("account_side"));
+					AccountingEntry entry = new AccountingEntry(
+						rs.getBigDecimal("amount"),
+						rs.getString("account_number"),
+						side,
+						rs.getString("account_name"));
+					entry.setFundNumber(rs.getString("fund_number"));
+					txn.addEntry(entry);
+				}
+			}
+		}
+		try (PreparedStatement ps = c.prepareStatement("""
+			SELECT k, v FROM transaction_info WHERE txn_id = ?
+		"""))
+		{
+			ps.setInt(1, txn.getId());
+			try (ResultSet rs = ps.executeQuery())
+			{
+				while (rs.next())
+				{
+					txn.getInfo().put(rs.getString("k"), rs.getString("v"));
+				}
 			}
 		}
 	}

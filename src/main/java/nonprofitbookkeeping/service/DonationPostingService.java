@@ -214,14 +214,7 @@ public class DonationPostingService
 
 	private static int nextJournalTxnId() throws SQLException
 	{
-		try (Connection c = Database.get().getConnection();
-			 PreparedStatement ps = c.prepareStatement(
-				 "SELECT COALESCE(MAX(id), 0) + 1 FROM journal_transaction");
-			 ResultSet rs = ps.executeQuery())
-		{
-			rs.next();
-			return rs.getInt(1);
-		}
+		return new JournalRepository().reserveNextTransactionId();
 	}
 
 	private AccountingTransaction toReverseTransaction(DonationRecord donation,
