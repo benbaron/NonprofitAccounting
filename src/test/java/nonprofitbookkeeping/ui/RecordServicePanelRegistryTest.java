@@ -54,16 +54,10 @@ class RecordServicePanelRegistryTest
                 "Display name should be present for: " + service.getSimpleName());
             assertFalse(bindingOpt.get().category().isBlank(),
                 "Category should be present for: " + service.getSimpleName());
-            if (bindingOpt.get().proposedPanel())
-            {
-                assertTrue(bindingOpt.get().workspacePanelId() == null,
-                    "Proposed panels should not require a workspace panel id: " + service.getSimpleName());
-            }
-            else
-            {
-                assertTrue(bindingOpt.get().workspacePanelId() != null,
-                    "Existing panels should route to a workspace panel id: " + service.getSimpleName());
-            }
+            assertFalse(bindingOpt.get().proposedPanel(),
+                "Phase-2 registry should expose concrete panels for: " + service.getSimpleName());
+            assertTrue(bindingOpt.get().workspacePanelId() != null,
+                "Concrete panels should route to a workspace panel id: " + service.getSimpleName());
         }
     }
 }

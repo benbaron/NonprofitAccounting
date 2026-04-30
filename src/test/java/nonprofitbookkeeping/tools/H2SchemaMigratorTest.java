@@ -94,6 +94,8 @@ class H2SchemaMigratorTest
             assertDoesNotThrow(() -> st.executeQuery("SELECT donation_id, donor_external_id, cash_account_number, revenue_account_number, journal_txn_id FROM donation_record"));
             assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM donation_journal_link"));
             assertDoesNotThrow(() -> st.executeQuery("SELECT donation_id, journal_txn_id, link_role FROM donation_journal_link"));
+            assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM operational_link_backfill_queue"));
+            assertDoesNotThrow(() -> st.executeQuery("SELECT module_name, domain_id, issue_code, resolved_at FROM operational_link_backfill_queue"));
             assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM sale_record"));
             assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM config_release"));
             assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM statement_section"));
