@@ -39,11 +39,13 @@ public class DonationPostingService
 
 	private final DonationRecordRepository donationRecordRepository;
 	private final JournalRepository journalRepository;
+	private final PostingFacade postingFacade;
 	private final DonationEditPostingPolicy editPostingPolicy;
 
 	public DonationPostingService()
 	{
 		this(new DonationRecordRepository(), new JournalRepository(),
+			new DefaultPostingFacade(),
 			resolvePolicyFromSettings());
 	}
 
@@ -51,15 +53,33 @@ public class DonationPostingService
 		JournalRepository journalRepository)
 	{
 		this(donationRecordRepository, journalRepository,
-			DonationEditPostingPolicy.UPDATE_IN_PLACE);
+			new DefaultPostingFacade(journalRepository,
+				new NoOpPostingDatePolicyValidator(),
+				new NoOpAccountFundRestrictionValidator(),
+				new NoOpPostingLockValidator()),
+				DonationEditPostingPolicy.UPDATE_IN_PLACE);
 	}
 
 	DonationPostingService(DonationRecordRepository donationRecordRepository,
 		JournalRepository journalRepository,
 		DonationEditPostingPolicy editPostingPolicy)
 	{
+		this(donationRecordRepository, journalRepository,
+			new DefaultPostingFacade(journalRepository,
+				new NoOpPostingDatePolicyValidator(),
+				new NoOpAccountFundRestrictionValidator(),
+				new NoOpPostingLockValidator()),
+			editPostingPolicy);
+	}
+
+	DonationPostingService(DonationRecordRepository donationRecordRepository,
+		JournalRepository journalRepository,
+		PostingFacade postingFacade,
+		DonationEditPostingPolicy editPostingPolicy)
+	{
 		this.donationRecordRepository = donationRecordRepository;
 		this.journalRepository = journalRepository;
+		this.postingFacade = postingFacade;
 		this.editPostingPolicy = editPostingPolicy == null ?
 			DonationEditPostingPolicy.UPDATE_IN_PLACE : editPostingPolicy;
 	}
@@ -79,7 +99,7 @@ public class DonationPostingService
 		int journalTxnId = resolveJournalTxnId(donation, existing);
 		AccountingTransaction txn = toTransaction(donation, journalTxnId,
 			LINK_ORIGINAL);
-		this.journalRepository.upsertTransaction(txn);
+		this.postingFacade.post(toCommand(txn, donation, LINK_ORIGINAL));
 		donation.setJournalTxnId(journalTxnId);
 		this.donationRecordRepository.upsert(donation);
 		upsertDonationJournalLink(donation.getDonationId(), journalTxnId,
@@ -97,21 +117,27 @@ public class DonationPostingService
 		DonationRecord updated) throws SQLException
 	{
 		int reversalTxnId = nextJournalTxnId();
-		AccountingTransaction reversalTxn = toReverseTransaction(existing,
-			reversalTxnId);
-		this.journalRepository.upsertTransaction(reversalTxn);
+		AccountingTransaction reversalTxn = toReverseTransaction(existing, reversalTxnId);
+		this.postingFacade.post(toCommand(reversalTxn, existing, LINK_REVERSAL));
 		upsertDonationJournalLink(existing.getDonationId(), reversalTxnId,
 			LINK_REVERSAL);
 
 		int adjustedTxnId = nextJournalTxnId();
 		AccountingTransaction adjustedTxn = toTransaction(updated,
 			adjustedTxnId, LINK_ADJUSTMENT);
-		this.journalRepository.upsertTransaction(adjustedTxn);
+		this.postingFacade.post(toCommand(adjustedTxn, updated, LINK_ADJUSTMENT));
 		updated.setJournalTxnId(adjustedTxnId);
 		this.donationRecordRepository.upsert(updated);
 		upsertDonationJournalLink(updated.getDonationId(), adjustedTxnId,
 			LINK_ADJUSTMENT);
 		return updated;
+	}
+
+	private PostingCommand toCommand(AccountingTransaction txn,
+		DonationRecord donation, String linkRole)
+	{
+		return new PostingCommand(txn, "DONATION", donation.getDonationId(),
+			linkRole, "DONATION:" + donation.getDonationId());
 	}
 
 	private boolean shouldReverseAndRepost(Optional<DonationRecord> existing,
@@ -188,14 +214,7 @@ public class DonationPostingService
 
 	private static int nextJournalTxnId() throws SQLException
 	{
-		try (Connection c = Database.get().getConnection();
-			 PreparedStatement ps = c.prepareStatement(
-				 "SELECT COALESCE(MAX(id), 0) + 1 FROM journal_transaction");
-			 ResultSet rs = ps.executeQuery())
-		{
-			rs.next();
-			return rs.getInt(1);
-		}
+		return new JournalRepository().reserveNextTransactionId();
 	}
 
 	private AccountingTransaction toReverseTransaction(DonationRecord donation,
