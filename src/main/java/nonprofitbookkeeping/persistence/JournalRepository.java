@@ -18,6 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,6 +72,7 @@ import org.slf4j.LoggerFactory;
 @ApplicationScoped
 public class JournalRepository
 {
+	private static final Object NEXT_TXN_ID_MONITOR = new Object();
 	
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER =
@@ -178,6 +180,28 @@ public class JournalRepository
 			closeQuietly(c, "Connection (upsertTransaction)");
 		}
 		
+	}
+
+	public Optional<AccountingTransaction> findTransactionById(int txnId)
+		throws SQLException
+	{
+		return listTransactions().stream().filter(t -> t.getId() == txnId)
+			.findFirst();
+	}
+
+	public int reserveNextTransactionId() throws SQLException
+	{
+		synchronized (NEXT_TXN_ID_MONITOR)
+		{
+			try (Connection c = Database.get().getConnection();
+				 PreparedStatement ps = c.prepareStatement(
+					 "SELECT COALESCE(MAX(id), 0) + 1 FROM journal_transaction");
+				 ResultSet rs = ps.executeQuery())
+			{
+				rs.next();
+				return rs.getInt(1);
+			}
+		}
 	}
 	
 	
