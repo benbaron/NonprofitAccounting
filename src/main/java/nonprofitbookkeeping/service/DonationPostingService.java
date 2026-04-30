@@ -57,7 +57,19 @@ public class DonationPostingService
 				new NoOpPostingDatePolicyValidator(),
 				new NoOpAccountFundRestrictionValidator(),
 				new NoOpPostingLockValidator()),
-			DonationEditPostingPolicy.UPDATE_IN_PLACE);
+				DonationEditPostingPolicy.UPDATE_IN_PLACE);
+	}
+
+	DonationPostingService(DonationRecordRepository donationRecordRepository,
+		JournalRepository journalRepository,
+		DonationEditPostingPolicy editPostingPolicy)
+	{
+		this(donationRecordRepository, journalRepository,
+			new DefaultPostingFacade(journalRepository,
+				new NoOpPostingDatePolicyValidator(),
+				new NoOpAccountFundRestrictionValidator(),
+				new NoOpPostingLockValidator()),
+			editPostingPolicy);
 	}
 
 	DonationPostingService(DonationRecordRepository donationRecordRepository,

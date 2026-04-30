@@ -49,11 +49,9 @@ public class DefaultPostingFacade implements PostingFacade
 
     public PostingReference reverse(int journalTxnId, String reason) throws SQLException
     {
-        AccountingTransaction source = journalRepository.listTransactions().stream()
-            .filter(t -> t.getId() == journalTxnId)
-            .findFirst()
+        AccountingTransaction source = journalRepository.findTransactionById(journalTxnId)
             .orElseThrow(() -> new IllegalArgumentException("journalTxnId not found: " + journalTxnId));
-        AccountingTransaction reversal = copyWithReversedEntries(source, nextJournalTxnId(), reason);
+        AccountingTransaction reversal = copyWithReversedEntries(source, journalRepository.reserveNextTransactionId(), reason);
         return post(new PostingCommand(reversal,
             source.getInfo().getOrDefault("module", "JOURNAL"),
             source.getInfo().get("domain_record_id"),
@@ -64,8 +62,24 @@ public class DefaultPostingFacade implements PostingFacade
     public PostingReference amend(int oldJournalTxnId, PostingCommand newCommand,
         String reason) throws SQLException
     {
-        reverse(oldJournalTxnId, reason);
-        return post(newCommand);
+        PostingReference reversal = reverse(oldJournalTxnId, reason);
+        try
+        {
+            return post(newCommand);
+        }
+        catch (SQLException | RuntimeException ex)
+        {
+            try
+            {
+                reverse(reversal.journalTxnId(),
+                    "Compensating reversal for failed amend of txn " + oldJournalTxnId);
+            }
+            catch (Exception compensationEx)
+            {
+                ex.addSuppressed(compensationEx);
+            }
+            throw ex;
+        }
     }
 
     private static void requireValid(AccountingTransaction txn)
@@ -80,6 +94,16 @@ public class DefaultPostingFacade implements PostingFacade
     {
         AccountingTransaction txn = command.transaction();
         Map<String, String> info = txn.getInfo();
+        if (info == null)
+        {
+            info = new java.util.LinkedHashMap<>();
+            txn.setInfo(info);
+        }
+        else if (!(info instanceof java.util.LinkedHashMap))
+        {
+            info = new java.util.LinkedHashMap<>(info);
+            txn.setInfo(info);
+        }
         info.putIfAbsent("module", command.module());
         info.putIfAbsent("domain_record_id", command.domainRecordId());
         info.putIfAbsent("link_role", command.linkRole());
@@ -115,14 +139,4 @@ public class DefaultPostingFacade implements PostingFacade
         return txn;
     }
 
-    private static int nextJournalTxnId() throws SQLException
-    {
-        try (java.sql.Connection c = nonprofitbookkeeping.core.Database.get().getConnection();
-             java.sql.PreparedStatement ps = c.prepareStatement("SELECT COALESCE(MAX(id), 0) + 1 FROM journal_transaction");
-             java.sql.ResultSet rs = ps.executeQuery())
-        {
-            rs.next();
-            return rs.getInt(1);
-        }
-    }
 }
