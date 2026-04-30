@@ -56,6 +56,9 @@ public class SettingsPanelFX extends BorderPane
 	/** The expense account box. */
 	private ComboBox<String> expenseAccountBox;
 	
+	/** Donation edit posting policy selector. */
+	private ComboBox<String> donationEditPolicyBox;
+	
 	/** The theme combo. */
 	private ComboBox<String> themeCombo;
 	
@@ -305,6 +308,9 @@ public class SettingsPanelFX extends BorderPane
 		GridPane grid = grid(2, 2);
 		this.incomeAccountBox = new ComboBox<>();
 		this.expenseAccountBox = new ComboBox<>();
+		this.donationEditPolicyBox = new ComboBox<>();
+		this.donationEditPolicyBox.getItems().addAll("UPDATE_IN_PLACE",
+			"REVERSE_AND_REPOST");
 		
 		ChartOfAccounts coa = CurrentCompany.getCompany() != null ?
 			CurrentCompany.getCompany().getChartOfAccounts() : null;
@@ -328,12 +334,24 @@ public class SettingsPanelFX extends BorderPane
 				this.incomeAccountBox.setValue(m.getDefaultIncomeAccount());
 			if (m.getDefaultExpenseAccount() != null)
 				this.expenseAccountBox.setValue(m.getDefaultExpenseAccount());
+			if (m.getDonationEditPostingPolicy() != null &&
+				!m.getDonationEditPostingPolicy().isBlank())
+			{
+				this.donationEditPolicyBox
+					.setValue(m.getDonationEditPostingPolicy());
+			}
+		}
+		if (this.donationEditPolicyBox.getValue() == null)
+		{
+			this.donationEditPolicyBox.setValue("UPDATE_IN_PLACE");
 		}
 		
 		grid.add(new Label("Default Income Account:"), 0, 0);
 		grid.add(this.incomeAccountBox, 1, 0);
 		grid.add(new Label("Default Expense Account:"), 0, 1);
 		grid.add(this.expenseAccountBox, 1, 1);
+		grid.add(new Label("Donation Edit Posting:"), 0, 2);
+		grid.add(this.donationEditPolicyBox, 1, 2);
 		
 		TitledPane wrapper = titled("Accounting Settings", grid);
 		return new Tab("Accounting", wrapper);
@@ -824,6 +842,11 @@ public class SettingsPanelFX extends BorderPane
 		if (this.expenseAccountBox != null &&
 			this.expenseAccountBox.getValue() != null)
 			m.setDefaultExpenseAccount(this.expenseAccountBox.getValue());
+		if (this.donationEditPolicyBox != null &&
+			this.donationEditPolicyBox.getValue() != null)
+		{
+			m.setDonationEditPostingPolicy(this.donationEditPolicyBox.getValue());
+		}
 		
 		if (this.themeCombo != null && this.themeCombo.getValue() != null)
 			m.setTheme(this.themeCombo.getValue());
