@@ -1,0 +1,128 @@
+package nonprofitbookkeeping.service;
+
+import nonprofitbookkeeping.model.AccountSide;
+import nonprofitbookkeeping.model.AccountingEntry;
+import nonprofitbookkeeping.model.AccountingTransaction;
+import nonprofitbookkeeping.persistence.JournalRepository;
+
+import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Objects;
+
+public class DefaultPostingFacade implements PostingFacade
+{
+    private final JournalRepository journalRepository;
+    private final PostingDatePolicyValidator postingDatePolicyValidator;
+    private final AccountFundRestrictionValidator accountFundRestrictionValidator;
+    private final PostingLockValidator postingLockValidator;
+
+    public DefaultPostingFacade()
+    {
+        this(new JournalRepository(), new NoOpPostingDatePolicyValidator(),
+            new NoOpAccountFundRestrictionValidator(), new NoOpPostingLockValidator());
+    }
+
+    DefaultPostingFacade(JournalRepository journalRepository,
+        PostingDatePolicyValidator postingDatePolicyValidator,
+        AccountFundRestrictionValidator accountFundRestrictionValidator,
+        PostingLockValidator postingLockValidator)
+    {
+        this.journalRepository = journalRepository;
+        this.postingDatePolicyValidator = postingDatePolicyValidator;
+        this.accountFundRestrictionValidator = accountFundRestrictionValidator;
+        this.postingLockValidator = postingLockValidator;
+    }
+
+    public PostingReference post(PostingCommand command) throws SQLException
+    {
+        Objects.requireNonNull(command, "command");
+        requireValid(command.transaction());
+        postingDatePolicyValidator.validate(command);
+        accountFundRestrictionValidator.validate(command);
+        postingLockValidator.validate(command);
+        enrichInfo(command);
+        journalRepository.upsertTransaction(command.transaction());
+        return referenceFor(command.transaction().getId());
+    }
+
+    public PostingReference reverse(int journalTxnId, String reason) throws SQLException
+    {
+        AccountingTransaction source = journalRepository.listTransactions().stream()
+            .filter(t -> t.getId() == journalTxnId)
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("journalTxnId not found: " + journalTxnId));
+        AccountingTransaction reversal = copyWithReversedEntries(source, nextJournalTxnId(), reason);
+        return post(new PostingCommand(reversal,
+            source.getInfo().getOrDefault("module", "JOURNAL"),
+            source.getInfo().get("domain_record_id"),
+            "REVERSAL",
+            "REVERSAL:" + journalTxnId));
+    }
+
+    public PostingReference amend(int oldJournalTxnId, PostingCommand newCommand,
+        String reason) throws SQLException
+    {
+        reverse(oldJournalTxnId, reason);
+        return post(newCommand);
+    }
+
+    private static void requireValid(AccountingTransaction txn)
+    {
+        if (txn == null || !txn.isBalanced())
+        {
+            throw new IllegalArgumentException("Posting requires a balanced transaction");
+        }
+    }
+
+    private static void enrichInfo(PostingCommand command)
+    {
+        AccountingTransaction txn = command.transaction();
+        Map<String, String> info = txn.getInfo();
+        info.putIfAbsent("module", command.module());
+        info.putIfAbsent("domain_record_id", command.domainRecordId());
+        info.putIfAbsent("link_role", command.linkRole());
+        info.putIfAbsent("idempotency_key", command.idempotencyKey());
+    }
+
+    private PostingReference referenceFor(int txnId)
+    {
+        return new PostingReference(txnId, "journal_transaction:" + txnId);
+    }
+
+    private static AccountingTransaction copyWithReversedEntries(AccountingTransaction source,
+        int newId, String reason)
+    {
+        AccountingTransaction txn = new AccountingTransaction();
+        txn.setId(newId);
+        txn.setDate(source.getDate());
+        txn.setBookingDateTimestamp(System.currentTimeMillis());
+        txn.setMemo("Reversal of txn " + source.getId() + (reason == null ? "" : " - " + reason));
+        txn.setToFrom(source.getToFrom());
+        txn.setInfo(source.getInfo() == null ? new java.util.LinkedHashMap<>() : new java.util.LinkedHashMap<>(source.getInfo()));
+        LinkedHashSet<AccountingEntry> reversed = new LinkedHashSet<>();
+        for (AccountingEntry e : source.getEntries())
+        {
+            AccountingEntry r = new AccountingEntry(e.getAmount() == null ? BigDecimal.ZERO : e.getAmount(),
+                e.getAccountNumber(),
+                e.getAccountSide() == AccountSide.DEBIT ? AccountSide.CREDIT : AccountSide.DEBIT,
+                e.getAccountName());
+            r.setFundNumber(e.getFundNumber());
+            reversed.add(r);
+        }
+        txn.setEntries(reversed);
+        return txn;
+    }
+
+    private static int nextJournalTxnId() throws SQLException
+    {
+        try (java.sql.Connection c = nonprofitbookkeeping.core.Database.get().getConnection();
+             java.sql.PreparedStatement ps = c.prepareStatement("SELECT COALESCE(MAX(id), 0) + 1 FROM journal_transaction");
+             java.sql.ResultSet rs = ps.executeQuery())
+        {
+            rs.next();
+            return rs.getInt(1);
+        }
+    }
+}
