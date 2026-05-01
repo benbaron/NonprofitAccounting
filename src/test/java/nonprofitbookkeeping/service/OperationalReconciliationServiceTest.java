@@ -81,6 +81,23 @@ class OperationalReconciliationServiceTest
 		assertEquals("ops-account-1", readStatementAccountLabel("Ops Bank"));
 	}
 
+	@Test
+	void postAdjustment_postsThroughFacade_and_linksBankTransaction() throws Exception
+	{
+		Path dbPath = tempDir.resolve("operational-reconciliation-adjustment");
+		Database.init(dbPath);
+		Database.get().ensureSchema();
+		seedBankId();
+		seedAccounts();
+		seedJournalTxn(101, 555000333L);
+		seedBankingTxn("btx-ops-3", "bank-ops-1", 101);
+		OperationalReconciliationService service = new OperationalReconciliationService();
+		PostingCommand cmd = DepreciationPostingFactory.build("adj-btx-ops-3", new BigDecimal("12.34"), LocalDate.of(2026, 4, 15));
+		PostingReference ref = service.postAdjustment("btx-ops-3", cmd);
+		assertEquals("ADJUSTED", readMatchStatus("btx-ops-3"));
+		assertEquals(ref.journalTxnId(), readJournalTxnId("btx-ops-3"));
+	}
+
 	private void seedBankId() throws Exception
 	{
 		try (Connection c = Database.get().getConnection();
@@ -143,6 +160,32 @@ class OperationalReconciliationServiceTest
 			ps.setBigDecimal(5, new BigDecimal("1200.00"));
 			ps.setString(6, "UNMATCHED");
 			ps.executeUpdate();
+		}
+	}
+
+	private int readJournalTxnId(String bankingRecordId) throws Exception
+	{
+		try (Connection c = Database.get().getConnection();
+			 PreparedStatement ps = c.prepareStatement(
+				 "SELECT journal_txn_id FROM banking_transaction_record WHERE banking_record_id = ?"))
+		{
+			ps.setString(1, bankingRecordId);
+			try (var rs = ps.executeQuery())
+			{
+				assertEquals(true, rs.next());
+				return rs.getInt(1);
+			}
+		}
+	}
+
+	private void seedAccounts() throws Exception
+	{
+		try (Connection c = Database.get().getConnection();
+			 PreparedStatement ps = c.prepareStatement("MERGE INTO account(account_number, name, account_type, subtype, increase_side) KEY(account_number) VALUES (?,?,?,?,?)"))
+		{
+			ps.setString(1, "6100"); ps.setString(2, "Depreciation Expense"); ps.setString(3, "EXPENSE"); ps.setString(4, null); ps.setString(5, "DEBIT"); ps.addBatch();
+			ps.setString(1, "1700"); ps.setString(2, "Accumulated Depreciation"); ps.setString(3, "ASSET"); ps.setString(4, "ACCUMULATED_DEPRECIATION"); ps.setString(5, "CREDIT"); ps.addBatch();
+			ps.executeBatch();
 		}
 	}
 
