@@ -31,7 +31,7 @@ final class DepreciationPostingFactory
         txn.setInfo(Map.of());
         LinkedHashSet<AccountingEntry> entries = new LinkedHashSet<>();
         entries.add(new AccountingEntry(amount,
-            resolveAccountNumber(AccountType.EXPENSE.name(), null, "Depreciation Expense"),
+            resolveAccountNumberByType(AccountType.EXPENSE.name(), "Depreciation Expense"),
             AccountSide.DEBIT, "Depreciation Expense"));
         entries.add(new AccountingEntry(amount,
             resolveAccountNumberByKind(AccountType.ASSET.name(), SupplementalLineKind.OTHER_ASSET,
@@ -41,25 +41,19 @@ final class DepreciationPostingFactory
         return new PostingCommand(txn, "DEPRECIATION", recordId, "ORIGINAL", "depr:" + recordId);
     }
 
-    private static String resolveAccountNumber(String accountType, String subtype, String label) throws SQLException
+    private static String resolveAccountNumberByType(String accountType, String label) throws SQLException
     {
-        String sql = (subtype == null)
-            ? "SELECT account_number FROM account WHERE account_type = ? ORDER BY account_number LIMIT 1"
-            : "SELECT account_number FROM account WHERE account_type = ? AND subtype = ? ORDER BY account_number LIMIT 1";
         try (Connection c = Database.get().getConnection();
-             PreparedStatement ps = c.prepareStatement(sql))
+             PreparedStatement ps = c.prepareStatement(
+                 "SELECT account_number FROM account WHERE account_type = ? ORDER BY account_number LIMIT 1"))
         {
             ps.setString(1, accountType);
-            if (subtype != null)
-            {
-                ps.setString(2, subtype);
-            }
             try (ResultSet rs = ps.executeQuery())
             {
                 if (!rs.next())
                 {
                     throw new IllegalStateException("Missing posting account for " + label +
-                        " account_type=" + accountType + (subtype == null ? "" : " subtype=" + subtype));
+                        " account_type=" + accountType);
                 }
                 return rs.getString(1);
             }
