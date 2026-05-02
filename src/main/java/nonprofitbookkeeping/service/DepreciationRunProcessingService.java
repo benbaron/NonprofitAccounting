@@ -25,6 +25,17 @@ public final class DepreciationRunProcessingService
 {
     private static final BigDecimal DEFAULT_SALVAGE = BigDecimal.ZERO;
     private static final int DEFAULT_USEFUL_LIFE_MONTHS = 60;
+    private final PostingFacade postingFacade;
+
+    public DepreciationRunProcessingService()
+    {
+        this(new DefaultPostingFacade());
+    }
+
+    DepreciationRunProcessingService(PostingFacade postingFacade)
+    {
+        this.postingFacade = postingFacade;
+    }
 
     public enum DeleteMode
     {
@@ -217,6 +228,103 @@ public final class DepreciationRunProcessingService
                 c.setAutoCommit(autoCommit);
             }
         }
+    }
+
+    public int postRun(String runId, String actor) throws SQLException
+    {
+        try (Connection c = Database.get().getConnection())
+        {
+            RunMeta run = loadRun(c, runId);
+            if (run == null) throw new IllegalArgumentException("Depreciation run not found: " + runId);
+            if (run.isLocked()) throw new IllegalStateException("Run is locked: " + runId);
+            if (!"CALCULATED".equals(run.status())) throw new IllegalStateException("Run must be CALCULATED before posting");
+        }
+        int posted = 0;
+        try (Connection c = Database.get().getConnection();
+             PreparedStatement ps = c.prepareStatement("""
+                 SELECT depreciation_record_id, net_depreciation, posted_journal_txn_id, period_start, period_end
+                 FROM depreciation_record
+                 WHERE depreciation_run_id = ?
+                 ORDER BY sequence_in_run
+             """))
+        {
+            ps.setString(1, runId);
+            try (ResultSet rs = ps.executeQuery())
+            {
+                while (rs.next())
+                {
+                    String recordId = rs.getString(1);
+                    BigDecimal amount = rs.getBigDecimal(2);
+                    Integer postedTxn = (Integer) rs.getObject(3);
+                    LocalDate periodStart = rs.getDate(4).toLocalDate();
+                    LocalDate periodEnd = rs.getDate(5).toLocalDate();
+                    if (postedTxn != null)
+                    {
+                        continue;
+                    }
+                    if (periodEnd.isBefore(periodStart))
+                    {
+                        throw new IllegalStateException("Invalid depreciation period for record " + recordId);
+                    }
+                    PostingReference ref = postingFacade.post(
+                        DepreciationPostingFactory.build(recordId, amount, periodEnd));
+                    try (PreparedStatement up = c.prepareStatement("""
+                        UPDATE depreciation_record
+                        SET posted_journal_txn_id = ?
+                        WHERE depreciation_record_id = ? AND posted_journal_txn_id IS NULL
+                    """))
+                    {
+                        up.setInt(1, ref.journalTxnId());
+                        up.setString(2, recordId);
+                        posted += up.executeUpdate();
+                    }
+                }
+            }
+            appendRunEvent(c, runId, "RUN_POSTED", "count=" + posted + ", actor=" + safe(actor), actor);
+        }
+        return posted;
+    }
+
+    public int reversePostedRun(String runId, String actor, String reason) throws SQLException
+    {
+        int reversed = 0;
+        try (Connection c = Database.get().getConnection();
+             PreparedStatement ps = c.prepareStatement("""
+                 SELECT depreciation_record_id, posted_journal_txn_id, reversal_journal_txn_id
+                 FROM depreciation_record
+                 WHERE depreciation_run_id = ?
+                 ORDER BY sequence_in_run
+             """))
+        {
+            ps.setString(1, runId);
+            try (ResultSet rs = ps.executeQuery())
+            {
+                while (rs.next())
+                {
+                    String recordId = rs.getString(1);
+                    Integer postedTxn = (Integer) rs.getObject(2);
+                    Integer reversalTxn = (Integer) rs.getObject(3);
+                    if (postedTxn == null || reversalTxn != null)
+                    {
+                        continue;
+                    }
+                    PostingReference ref = postingFacade.reverse(postedTxn,
+                        reason == null ? "Depreciation run reversal " + runId : reason);
+                    try (PreparedStatement up = c.prepareStatement("""
+                        UPDATE depreciation_record
+                        SET reversal_journal_txn_id = ?
+                        WHERE depreciation_record_id = ? AND reversal_journal_txn_id IS NULL
+                    """))
+                    {
+                        up.setInt(1, ref.journalTxnId());
+                        up.setString(2, recordId);
+                        reversed += up.executeUpdate();
+                    }
+                }
+            }
+            appendRunEvent(c, runId, "RUN_REVERSED", "count=" + reversed + ", actor=" + safe(actor), actor);
+        }
+        return reversed;
     }
 
     private List<PreviewLine> calculate(Connection c, RunMeta run) throws SQLException
