@@ -181,10 +181,10 @@ class OperationalReconciliationServiceTest
 	private void seedAccounts() throws Exception
 	{
 		try (Connection c = Database.get().getConnection();
-			 PreparedStatement ps = c.prepareStatement("MERGE INTO account(account_number, name, account_type, supplemental_kinds, increase_side) KEY(account_number) VALUES (?,?,?,?,?)"))
+			 PreparedStatement ps = c.prepareStatement("MERGE INTO account(account_number, name, account_code, account_type, supplemental_kinds, increase_side) KEY(account_number) VALUES (?,?,?,?,?,?)"))
 		{
-			ps.setString(1, "6100"); ps.setString(2, "Depreciation Expense"); ps.setString(3, "EXPENSE"); ps.setString(4, null); ps.setString(5, "DEBIT"); ps.addBatch();
-			ps.setString(1, "1700"); ps.setString(2, "Accumulated Depreciation"); ps.setString(3, "ASSET"); ps.setString(4, "OTHER_ASSET"); ps.setString(5, "CREDIT"); ps.addBatch();
+			ps.setString(1, "6100"); ps.setString(2, "Depreciation Expense"); ps.setString(3, "DEPRECIATION_EXPENSE"); ps.setString(4, "EXPENSE"); ps.setString(5, null); ps.setString(6, "DEBIT"); ps.addBatch();
+			ps.setString(1, "1700"); ps.setString(2, "Accumulated Depreciation"); ps.setString(3, "ACCUMULATED_DEPRECIATION"); ps.setString(4, "ASSET"); ps.setString(5, "OTHER_ASSET"); ps.setString(6, "CREDIT"); ps.addBatch();
 			ps.executeBatch();
 		}
 	}

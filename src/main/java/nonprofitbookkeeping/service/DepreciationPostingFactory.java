@@ -31,36 +31,42 @@ final class DepreciationPostingFactory
         txn.setInfo(Map.of());
         LinkedHashSet<AccountingEntry> entries = new LinkedHashSet<>();
         entries.add(new AccountingEntry(amount,
-            resolveAccountNumberByType(AccountType.EXPENSE.name(), "Depreciation Expense"),
+            resolveAccountNumberByCode(AccountType.EXPENSE.name(), DepreciationPostingRoles.expenseCode(),
+                "Depreciation Expense"),
             AccountSide.DEBIT, "Depreciation Expense"));
         entries.add(new AccountingEntry(amount,
-            resolveAccountNumberByKind(AccountType.ASSET.name(), SupplementalLineKind.OTHER_ASSET,
+            resolveAccountNumberByCodeAndKind(AccountType.ASSET.name(), DepreciationPostingRoles.accumulatedDepreciationCode(),
+                SupplementalLineKind.OTHER_ASSET,
                 "Accumulated Depreciation"),
             AccountSide.CREDIT, "Accumulated Depreciation"));
         txn.setEntries(entries);
         return new PostingCommand(txn, "DEPRECIATION", recordId, "ORIGINAL", "depr:" + recordId);
     }
 
-    private static String resolveAccountNumberByType(String accountType, String label) throws SQLException
+    private static String resolveAccountNumberByCode(String accountType,
+        String accountCode,
+        String label) throws SQLException
     {
         try (Connection c = Database.get().getConnection();
              PreparedStatement ps = c.prepareStatement(
-                 "SELECT account_number FROM account WHERE account_type = ? ORDER BY account_number LIMIT 1"))
+                 "SELECT account_number FROM account WHERE account_type = ? AND account_code = ? ORDER BY account_number LIMIT 1"))
         {
             ps.setString(1, accountType);
+            ps.setString(2, accountCode);
             try (ResultSet rs = ps.executeQuery())
             {
                 if (!rs.next())
                 {
                     throw new IllegalStateException("Missing posting account for " + label +
-                        " account_type=" + accountType);
+                        " account_type=" + accountType + " account_code=" + accountCode);
                 }
                 return rs.getString(1);
             }
         }
     }
 
-    private static String resolveAccountNumberByKind(String accountType,
+    private static String resolveAccountNumberByCodeAndKind(String accountType,
+        String accountCode,
         SupplementalLineKind kind,
         String label) throws SQLException
     {
@@ -69,6 +75,7 @@ final class DepreciationPostingFactory
                  SELECT account_number
                  FROM account
                  WHERE account_type = ?
+                   AND account_code = ?
                    AND (supplemental_kinds = ?
                         OR supplemental_kinds LIKE ?
                         OR supplemental_kinds LIKE ?
@@ -79,16 +86,18 @@ final class DepreciationPostingFactory
         {
             String encoded = kind.name();
             ps.setString(1, accountType);
-            ps.setString(2, encoded);
-            ps.setString(3, encoded + ",%");
-            ps.setString(4, "%," + encoded + ",%");
-            ps.setString(5, "%," + encoded);
+            ps.setString(2, accountCode);
+            ps.setString(3, encoded);
+            ps.setString(4, encoded + ",%");
+            ps.setString(5, "%," + encoded + ",%");
+            ps.setString(6, "%," + encoded);
             try (ResultSet rs = ps.executeQuery())
             {
                 if (!rs.next())
                 {
                     throw new IllegalStateException("Missing posting account for " + label +
-                        " account_type=" + accountType + " supplemental_kind=" + encoded);
+                        " account_type=" + accountType + " account_code=" + accountCode +
+                        " supplemental_kind=" + encoded);
                 }
                 return rs.getString(1);
             }
