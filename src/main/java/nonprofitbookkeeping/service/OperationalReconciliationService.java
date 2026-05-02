@@ -17,6 +17,18 @@ import java.util.Optional;
 
 public class OperationalReconciliationService
 {
+	private final PostingFacade postingFacade;
+
+	public OperationalReconciliationService()
+	{
+		this(new DefaultPostingFacade());
+	}
+
+	OperationalReconciliationService(PostingFacade postingFacade)
+	{
+		this.postingFacade = postingFacade;
+	}
+
 	public void confirmMatch(LedgerMatchRecord link) throws SQLException
 	{
 		if (link == null || link.getBankingRecordId() == null || link.getLedgerRecordId() == null)
@@ -73,6 +85,54 @@ public class OperationalReconciliationService
 			BankingTransactionRepository.transitionMatchStatus(
 				bankingRecordId,
 				"UNMATCHED");
+		}
+	}
+
+	public PostingReference postAdjustment(String bankingRecordId,
+		PostingCommand command) throws SQLException
+	{
+		if (bankingRecordId == null || bankingRecordId.isBlank())
+		{
+			throw new IllegalArgumentException("bankingRecordId is required");
+		}
+		enforceStatementUnlocked(bankingRecordId);
+		PostingReference ref = postingFacade.post(command);
+		try (var c = nonprofitbookkeeping.core.Database.get().getConnection();
+			 var ps = c.prepareStatement("""
+				UPDATE banking_transaction_record
+				   SET journal_txn_id = ?,
+				       match_status = 'ADJUSTED',
+				       matched_at = CURRENT_TIMESTAMP
+				 WHERE banking_record_id = ?
+				"""))
+		{
+			ps.setInt(1, ref.journalTxnId());
+			ps.setString(2, bankingRecordId);
+			ps.executeUpdate();
+		}
+		return ref;
+	}
+
+	private void enforceStatementUnlocked(String bankingRecordId)
+		throws SQLException
+	{
+		try (var c = nonprofitbookkeeping.core.Database.get().getConnection();
+			 var ps = c.prepareStatement("""
+				SELECT bs.status
+				FROM banking_transaction_record btr
+				LEFT JOIN bank_statement bs ON bs.id = btr.statement_id
+				WHERE btr.banking_record_id = ?
+				"""))
+		{
+			ps.setString(1, bankingRecordId);
+			try (var rs = ps.executeQuery())
+			{
+				if (rs.next() && "LOCKED".equalsIgnoreCase(rs.getString(1)))
+				{
+					throw new IllegalStateException(
+						"Cannot modify transaction in locked statement period");
+				}
+			}
 		}
 	}
 }

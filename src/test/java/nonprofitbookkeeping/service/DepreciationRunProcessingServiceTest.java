@@ -25,6 +25,7 @@ class DepreciationRunProcessingServiceTest
     void calculateRun_updatesAccumulatedAndCreatesPreviewLines() throws Exception
     {
         initDb();
+        seedPostingAccounts();
         seedAsset("asset-1", new BigDecimal("1200.00"), BigDecimal.ZERO);
         DepreciationRunLifecycleService lifecycle = new DepreciationRunLifecycleService();
         DepreciationRunProcessingService svc = new DepreciationRunProcessingService();
@@ -66,6 +67,7 @@ class DepreciationRunProcessingServiceTest
     void unlockAndDeleteRun_rollsBackAccumulated() throws Exception
     {
         initDb();
+        seedPostingAccounts();
         seedAsset("asset-2", new BigDecimal("600.00"), new BigDecimal("50.00"));
         DepreciationRunLifecycleService lifecycle = new DepreciationRunLifecycleService();
         DepreciationRunProcessingService svc = new DepreciationRunProcessingService();
@@ -109,6 +111,33 @@ class DepreciationRunProcessingServiceTest
         }
     }
 
+    @Test
+    void postAndReverseRun_persistsImmutableLineage() throws Exception
+    {
+        initDb();
+        seedPostingAccounts();
+        seedAsset("asset-3", new BigDecimal("1200.00"), BigDecimal.ZERO);
+        DepreciationRunLifecycleService lifecycle = new DepreciationRunLifecycleService();
+        DepreciationRunProcessingService svc = new DepreciationRunProcessingService();
+        String runId = "run-post-reverse-001";
+        lifecycle.createDraftRun(runId, LocalDate.of(2026, 3, 1), LocalDate.of(2026, 3, 31), "march close");
+        svc.calculateAndMarkCalculated(runId, "tester");
+        assertEquals(1, svc.postRun(runId, "poster"));
+        assertEquals(1, svc.reversePostedRun(runId, "poster", "void"));
+        try (Connection c = Database.get().getConnection();
+             PreparedStatement ps = c.prepareStatement(
+                 "SELECT posted_journal_txn_id, reversal_journal_txn_id FROM depreciation_record WHERE depreciation_run_id = ?"))
+        {
+            ps.setString(1, runId);
+            try (ResultSet rs = ps.executeQuery())
+            {
+                assertTrue(rs.next());
+                assertTrue(rs.getInt(1) > 0);
+                assertTrue(rs.getInt(2) > 0);
+            }
+        }
+    }
+
     private void seedAsset(String assetId, BigDecimal approxValue, BigDecimal accumulated) throws Exception
     {
         ensureImportedAssetTable();
@@ -144,6 +173,17 @@ class DepreciationRunProcessingServiceTest
              """))
         {
             ps.execute();
+        }
+    }
+
+    private void seedPostingAccounts() throws Exception
+    {
+        try (Connection c = Database.get().getConnection();
+             PreparedStatement ps = c.prepareStatement("MERGE INTO account(account_number, name, account_type, supplemental_kinds, increase_side) KEY(account_number) VALUES (?,?,?,?,?)"))
+        {
+            ps.setString(1, "6100"); ps.setString(2, "Depreciation Expense"); ps.setString(3, "EXPENSE"); ps.setString(4, null); ps.setString(5, "DEBIT"); ps.addBatch();
+            ps.setString(1, "1700"); ps.setString(2, "Accumulated Depreciation"); ps.setString(3, "ASSET"); ps.setString(4, "OTHER_ASSET"); ps.setString(5, "CREDIT"); ps.addBatch();
+            ps.executeBatch();
         }
     }
 }
