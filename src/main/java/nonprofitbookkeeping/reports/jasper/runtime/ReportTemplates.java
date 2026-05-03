@@ -8,7 +8,7 @@ import java.util.Map;
 
 import nonprofitbookkeeping.service.ReportService.ReportType;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Registry of available Jasper report templates.
  * Each entry maps a user facing display name to the JRXML template

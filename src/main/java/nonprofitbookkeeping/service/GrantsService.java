@@ -21,7 +21,7 @@ import nonprofitbookkeeping.model.Grant;
 import nonprofitbookkeeping.persistence.GrantRecordRepository;
 import nonprofitbookkeeping.persistence.JsonStorageRepository;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Service class for managing {@link Grant} objects.
  * This service provides an in-memory storage solution for grants

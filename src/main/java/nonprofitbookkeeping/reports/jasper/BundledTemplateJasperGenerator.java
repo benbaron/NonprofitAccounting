@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Generator used when only bundle metadata is available on the classpath.
  */

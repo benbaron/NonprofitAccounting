@@ -14,7 +14,7 @@ import nonprofitbookkeeping.model.Ledger;
 
 import nonprofitbookkeeping.model.Account;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Service class for managing {@link Account} objects. Provides methods for
  * retrieving and manipulating accounts. Accounts are stored in an in-memory

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Repository responsible for persisting and retrieving {@link Company} aggregates
  * from the shared H2 database.  The entire aggregate is serialized into a binary

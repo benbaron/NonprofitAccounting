@@ -3,7 +3,7 @@ package nonprofitbookkeeping.ui.javafx.supplemental;
 
 import java.math.BigDecimal;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class EntryRef.
  */

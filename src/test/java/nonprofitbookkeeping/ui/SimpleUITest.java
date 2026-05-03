@@ -12,7 +12,7 @@ import org.testfx.assertions.api.Assertions;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class SimpleUITest.
  */

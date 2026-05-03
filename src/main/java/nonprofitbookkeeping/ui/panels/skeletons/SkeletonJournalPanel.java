@@ -56,7 +56,7 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * A JavaFX panel that displays journal entries from the current company's ledger.
  * It provides a table view ({@link #journalDisplayTable}) for individual debit/credit entries

@@ -2,7 +2,7 @@ package nonprofitbookkeeping.ui.actions.scaledger;
 
 import java.math.BigDecimal;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * One accounting leg ("split") from a single ledger row.
  *

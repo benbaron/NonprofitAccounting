@@ -8,7 +8,7 @@ import java.util.Optional;
 import nonprofitbookkeeping.model.*;
 import nonprofitbookkeeping.model.supplemental.SupplementalLineKind;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Thin façade over {@link ChartOfAccounts} that provides CRUD helpers used by
  * the UI layer as well as import/export utilities. It wraps a {@link ChartOfAccounts}

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import nonprofitbookkeeping.model.supplemental.SupplementalLineKind;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class TxnSupplementalLineRecord.
  */

@@ -22,7 +22,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Plugin for handling SCA Ledger functionalities.
  * This plugin provides UI elements and actions to load, process, and save

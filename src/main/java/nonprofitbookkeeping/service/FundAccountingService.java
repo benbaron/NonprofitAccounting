@@ -19,7 +19,7 @@ import java.util.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import nonprofitbookkeeping.persistence.DocumentRepository;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Service class for managing fund accounting operations.
  * This includes managing funds and accounts, their relationships,

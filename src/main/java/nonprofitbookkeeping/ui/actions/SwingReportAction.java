@@ -26,7 +26,7 @@ import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
 import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.service.ReportService.ReportType;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Swing {@link javax.swing.Action} base class that generates Jasper reports
  * using the {@link ReportService}. Subclasses specify the {@link ReportType}

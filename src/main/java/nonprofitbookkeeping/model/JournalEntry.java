@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Represents a single entry within a journal, detailing a transaction's impact
  * on a specific account. This typically includes the date, affected account,

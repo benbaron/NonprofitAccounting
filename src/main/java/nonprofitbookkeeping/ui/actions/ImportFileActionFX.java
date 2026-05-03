@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Handles the action of importing a financial statement file in a JavaFX
  * application.  The action prompts the user to choose a file (OFX, QFX or QIF),

@@ -39,7 +39,7 @@ import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.helpers.TableExportUtils;
 import nonprofitbookkeeping.model.ReportPeriodPreset;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * A JavaFX {@link BorderPane} that displays transaction details for a selected account
  * within a specified date range. It allows users to choose an account and date range,

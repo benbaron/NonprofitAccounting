@@ -19,7 +19,7 @@ import nonprofitbookkeeping.service.InventoryService;
 import nonprofitbookkeeping.ui.UiSpacing;
 import nonprofitbookkeeping.util.FormatUtils;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * JavaFX port of {@code InventoryPanel}. Shows capital assets / inventory with
  * add, edit, delete and a simple "Apply Depreciation" button that calls the

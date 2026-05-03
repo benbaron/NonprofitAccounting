@@ -33,7 +33,7 @@ import nonprofitbookkeeping.model.ofx.OfxV2Writer.CreditCardInfo;
 import nonprofitbookkeeping.model.ofx.OfxV2Writer.SignonData;
 import nonprofitbookkeeping.model.ofx.OfxV2Writer.TransactionData;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Handles exporting ledger data to OFX/QFX statement files.
  */

@@ -86,7 +86,7 @@ import nonprofitbookkeeping.util.FormatUtils;
 import nonprofitbookkeeping.service.PersonService;
 import nonprofitbookkeeping.model.Person;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Shared workspace UI for creating or editing general journal entries.
  *

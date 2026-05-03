@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.panels.CompanySelectionPanelFX;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Presents a dialog that lists companies stored inside the application database and allows
  * the user to open one. Once a company is selected it is loaded into the {@link CurrentCompany}

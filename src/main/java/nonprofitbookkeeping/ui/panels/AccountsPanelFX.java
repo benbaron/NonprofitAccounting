@@ -19,7 +19,7 @@ import nonprofitbookkeeping.model.CurrentCompany; // Added for listener
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.ui.UiSpacing;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * JavaFX port of {@code AccountsPanel}. Shows the chart of accounts and basic
  * add/edit/delete row operations. It uses an {@link AccountService} to fetch account data

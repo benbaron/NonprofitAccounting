@@ -11,7 +11,7 @@ import javafx.beans.property.StringProperty;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class SupplementalLineRow.
  */

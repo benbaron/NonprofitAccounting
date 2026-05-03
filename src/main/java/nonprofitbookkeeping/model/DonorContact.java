@@ -4,7 +4,7 @@ package nonprofitbookkeeping.model;
 import java.io.Serializable;
 import java.util.Objects;
 
-// TODO: Auto-generated Javadoc
+
 /** 
  * Simple contact information for a donor. 
  */

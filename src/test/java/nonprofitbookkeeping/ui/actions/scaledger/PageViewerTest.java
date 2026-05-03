@@ -19,7 +19,7 @@ import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class PageViewerTest.
  */

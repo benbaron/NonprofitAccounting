@@ -25,7 +25,7 @@ import nonprofitbookkeeping.service.SettingsService;
 import nonprofitbookkeeping.ui.ThemeManager;
 import nonprofitbookkeeping.util.FormatUtils;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * JavaFX port of the original Swing {@code SettingsPanel}.
  */

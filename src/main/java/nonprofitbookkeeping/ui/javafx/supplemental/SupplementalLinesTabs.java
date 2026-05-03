@@ -9,7 +9,7 @@ import java.util.Map;
 
 import nonprofitbookkeeping.model.supplemental.SupplementalLineKind;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class SupplementalLinesTabs.
  */

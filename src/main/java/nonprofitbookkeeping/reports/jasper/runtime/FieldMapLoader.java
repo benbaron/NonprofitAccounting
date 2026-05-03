@@ -12,7 +12,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Loader for the *_fieldmap.csv files emitted by the Excelâ†’JRXML/bean generator.
  *

@@ -42,7 +42,7 @@ import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.Start;
 import org.testfx.util.WaitForAsyncUtils;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class SkeletonPanelResetTest.
  */

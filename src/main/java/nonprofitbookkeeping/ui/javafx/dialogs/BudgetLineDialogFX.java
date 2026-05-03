@@ -22,7 +22,7 @@ import nonprofitbookkeeping.util.FormatUtils;
 import java.util.stream.Collectors;
 import java.math.RoundingMode;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class BudgetLineDialogFX.
  */

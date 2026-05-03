@@ -6,7 +6,7 @@ import java.time.MonthDay;
 import java.time.YearMonth;
 import java.util.Locale;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Preset periods that can be applied to reporting and analytical views.
  */

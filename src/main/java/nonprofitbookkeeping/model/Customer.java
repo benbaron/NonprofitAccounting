@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Represents a customer in the nonprofit bookkeeping system.
  * This class stores information about customers, such as their ID and name.

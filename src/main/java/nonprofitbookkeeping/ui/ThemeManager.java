@@ -3,7 +3,7 @@ package nonprofitbookkeeping.ui;
 
 import javafx.scene.Scene;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Simple helper for applying a UI theme across scenes.
  */

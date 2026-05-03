@@ -20,7 +20,7 @@ import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.persistence.CompanyDataRepository;
 import nonprofitbookkeeping.persistence.CompanyRepository;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Manages the currently active {@link Company} instance in the application.
  * This class provides static methods to access, load, save, and manage the state

@@ -33,7 +33,7 @@ import nonprofitbookkeeping.ui.UiSpacing;
 import nonprofitbookkeeping.ui.actions.CreateOrEditCompanyActionFX;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Lists the companies stored inside the shared database and allows the user to preview
  * and open them. The legacy file-based workflow has been replaced with database-backed

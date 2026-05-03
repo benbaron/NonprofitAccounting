@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Repository responsible for CRUD operations on the {@code donor} table.
  * Donors are keyed by their stable {@link DonorContact#getId() external id}

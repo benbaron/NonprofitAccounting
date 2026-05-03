@@ -1,6 +1,5 @@
 package nonprofitbookkeeping.model.supplemental;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class PayablesLine.
  */

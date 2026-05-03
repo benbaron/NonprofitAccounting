@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import nonprofitbookkeeping.ui.help.HelpContent;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Handles the action of displaying help content in a JavaFX application.
  * This class implements {@link EventHandler} for {@link ActionEvent} to trigger

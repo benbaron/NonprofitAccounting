@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.LinkedHashMap;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Logical representation of a single Excel sheet, including layout items and
  * the discovered dynamic fields.

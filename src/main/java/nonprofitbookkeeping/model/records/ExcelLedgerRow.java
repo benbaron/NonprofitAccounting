@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Represents a single row from an imported Excel ledger.
  * The row contains general transaction info and up to four

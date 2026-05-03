@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class Journal.
  */

@@ -24,7 +24,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * JavaFX action that runs the full ledger import pipeline and persists
  * transactions into the application's journal tables.

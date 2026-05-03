@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Holds the mapping from dropdown labels in the ledger
  * to canonical chart-of-accounts strings.

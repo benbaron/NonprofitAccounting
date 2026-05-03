@@ -24,7 +24,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Action for generating a single-sheet Excel template report.
  */

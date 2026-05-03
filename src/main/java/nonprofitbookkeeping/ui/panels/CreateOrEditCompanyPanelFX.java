@@ -14,7 +14,7 @@ import nonprofitbookkeeping.panels.CompanyCreatedCallback;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * JavaFX wizard for creating or editing a company profile.
  * Replaces the Swing {@code CreateCompanyPanel}.

@@ -9,7 +9,7 @@ import nonprofitbookkeeping.model.supplemental.ReceivablesLine;
 import nonprofitbookkeeping.model.supplemental.SupplementalLineKind;
 import nonprofitbookkeeping.model.supplemental.TxnSupplementalLineBase;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class TxnSupplementalLineMapper.
  */

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Represents the application settings model.
  * This class encapsulates the different configuration options persisted for the

@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class SupplementalLinesEditor.
  */

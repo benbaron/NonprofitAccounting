@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * One-time utility that converts legacy {@code .npbk} archives into an H2
  * database script.  The generated script can later be imported by the

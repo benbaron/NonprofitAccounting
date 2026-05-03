@@ -1,7 +1,7 @@
 
 package nonprofitbookkeeping.ui.javafx.supplemental;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class PersonRef.
  */

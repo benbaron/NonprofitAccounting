@@ -5,7 +5,7 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.Properties;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Manages application preferences, such as default directories and last used files.
  * Preferences are stored in a ".properties" file located in a ".nonprofitbookkeeping"

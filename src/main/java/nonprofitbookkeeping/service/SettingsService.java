@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import nonprofitbookkeeping.util.FormatUtils;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Service for loading and saving application settings.
  */

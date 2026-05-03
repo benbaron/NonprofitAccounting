@@ -20,7 +20,7 @@ import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 import javafx.scene.Node; // For iterating over toolbar items
 import nonprofitbookkeeping.ui.UiSpacing;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * JavaFX rewrite of {@code ReportsPanel}. Lets the user generate a new report
  * (opens {@link GenerateReportPanelFX}) and shows previously generated reports

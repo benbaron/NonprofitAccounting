@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * DocumentStorageService manages attachment and retrieval of document files
  * associated with transactions.

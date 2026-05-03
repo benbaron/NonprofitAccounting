@@ -8,7 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Wrapper that collapses multiple data rows into a single Jasper bean.
  * The first row's properties are promoted to top-level fields, while the

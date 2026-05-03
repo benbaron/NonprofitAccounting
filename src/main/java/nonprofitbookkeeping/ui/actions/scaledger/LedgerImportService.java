@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Coordinates loading ledger spreadsheets and persisting the mapped
  * transactions through the supplied persistence gateway.

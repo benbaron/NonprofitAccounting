@@ -21,7 +21,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Facade that provides a configurable way to query transactions and map the
  * results into arbitrary JavaBeans (including the SCA report beans).

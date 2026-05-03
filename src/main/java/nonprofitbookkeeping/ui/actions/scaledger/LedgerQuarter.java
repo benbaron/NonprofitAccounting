@@ -3,7 +3,7 @@ package nonprofitbookkeeping.ui.actions.scaledger;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Represents all ledger rows from one quarter sheet
  * (for example "Ledger_Q4").

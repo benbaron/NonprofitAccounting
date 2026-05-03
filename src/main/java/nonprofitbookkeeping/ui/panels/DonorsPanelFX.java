@@ -15,7 +15,7 @@ import nonprofitbookkeeping.model.DonorContact;
 
 import java.util.UUID;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * JavaFX port of {@code DonorsPanel}. Manages donor records (name, email, phone).
  */

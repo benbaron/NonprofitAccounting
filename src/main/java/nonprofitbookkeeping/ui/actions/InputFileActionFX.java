@@ -17,7 +17,7 @@ import nonprofitbookkeeping.ui.helpers.AlertBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * JavaFX replacement for the Swing {@code InputFileAction}. Opens a native file
  * chooser, remembers the last directory via {@link PreferencesManager}.

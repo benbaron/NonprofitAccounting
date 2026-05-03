@@ -4,7 +4,7 @@ package nonprofitbookkeeping.ui.actions;
 import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.service.ReportService.ReportType;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Generates a cash flow statement.
  */

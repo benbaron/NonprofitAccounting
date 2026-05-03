@@ -23,7 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * JRXML -> XSD validator (portable Java, no external deps)
  *

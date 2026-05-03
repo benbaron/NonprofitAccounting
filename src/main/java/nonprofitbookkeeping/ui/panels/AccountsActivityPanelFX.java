@@ -29,7 +29,7 @@ import nonprofitbookkeeping.model.Ledger;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 import nonprofitbookkeeping.service.ReconciliationService;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * A JavaFX panel that displays account activity (transactions) from a given {@link Ledger}.
  * It provides UI controls for selecting an account and filtering transactions by date,

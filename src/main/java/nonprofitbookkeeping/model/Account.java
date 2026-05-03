@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.model.supplemental.SupplementalLineKind;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Represents an account with entries and a many-to-many relationship with
  * {@link Fund}s.

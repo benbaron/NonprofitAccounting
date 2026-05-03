@@ -15,7 +15,7 @@ import nonprofitbookkeeping.model.Fund;
 import nonprofitbookkeeping.service.FundAccountingService;
 import nonprofitbookkeeping.ui.UiSpacing;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * JavaFX translation of the Swing {@code FundsPanel}. Supports:
  * <ul>

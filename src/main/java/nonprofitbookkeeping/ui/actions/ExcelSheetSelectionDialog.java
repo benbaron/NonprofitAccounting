@@ -18,7 +18,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.service.ExcelLedgerImportService;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Utility for selecting ledger sheets from an Excel workbook.
  */

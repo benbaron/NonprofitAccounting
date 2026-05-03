@@ -32,7 +32,7 @@ import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.supplemental.SupplementalLineKind;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Interactive ladder view for editing a company's Chart of Accounts.
  *

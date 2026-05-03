@@ -3,7 +3,7 @@ package nonprofitbookkeeping.ui.javafx.supplemental;
 
 import nonprofitbookkeeping.model.supplemental.SupplementalLineKind;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class SupplementalLineConfig.
  */

@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Simple repository that persists arbitrary JSON payloads inside the shared H2 database.
  * Values are stored by logical keys so multiple services can share the same underlying

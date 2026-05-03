@@ -13,7 +13,7 @@ import nonprofitbookkeeping.model.scaledger.LedgerMetadata;
 import java.io.*;
 import java.util.*;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Utility class for loading data from SCA  formatted
  * Excel spreadsheets into Java objects using JXLS Reader.

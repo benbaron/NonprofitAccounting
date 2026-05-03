@@ -3,7 +3,7 @@ package nonprofitbookkeeping.model;
 import java.io.Serializable;
 import java.util.Objects;
 
-// TODO: Auto-generated Javadoc
+
 /** 
  * Basic person record used for supplemental schedule counterparty selection. 
  */

@@ -27,7 +27,7 @@ import java.util.zip.ZipEntry;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class JacksonDataStorerZipTest.
  */

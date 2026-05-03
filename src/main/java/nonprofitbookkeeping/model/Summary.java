@@ -11,7 +11,7 @@ import lombok.Setter;
 import lombok.AllArgsConstructor;
 import lombok.ToString;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class Summary.
  */

@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class SummaryAccount.
  */

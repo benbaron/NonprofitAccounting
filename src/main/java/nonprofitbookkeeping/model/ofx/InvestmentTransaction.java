@@ -11,7 +11,7 @@ import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Ledger;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Represents an investment transaction, extending the basic {@link Transaction} class.
  * This class is intended to hold details specific to investment activities such as

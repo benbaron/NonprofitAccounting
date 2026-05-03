@@ -40,7 +40,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * JRXML validator (v5.1):
  * 1) XML well-formedness (DOM parse; no network)

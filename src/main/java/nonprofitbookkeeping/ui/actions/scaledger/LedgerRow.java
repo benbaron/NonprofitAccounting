@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * One transaction row from Ledger_Q1 / Ledger_Q2 / Ledger_Q3 / Ledger_Q4.
  *

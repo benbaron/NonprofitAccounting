@@ -26,7 +26,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * JavaFX action that exports account activity to OFX/QFX files.
  */
