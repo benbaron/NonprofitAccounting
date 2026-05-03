@@ -119,6 +119,38 @@ Specific modification name: **Schema Unification Prompt Pack (v1)**
 
 Use the prompts below with GPT to drive focused design reviews. Each prompt names a concrete schema section and asks for actionable outputs.
 
+## Proposal Status Review (as of 2026-05-03)
+
+Legend: **Current** = still an active roadmap item, **Partially Implemented** = design/SQL exists but rollout/application wiring is incomplete, **OBE** = superseded by delivered artifacts and no longer needs prompt-level design work.
+
+| Prompt | Area | Current Status | Evidence | Notes |
+|---|---|---|---|---|
+| A | Transaction model convergence | **Partially Implemented** | `doc/transaction-model-convergence-plan.md`, `scripts/sql/txn_convergence_*` | Canonical target and compatibility views are specified; production cutover and full read-path migration remain active. |
+| B | Account/Fund master-data harmonization | **Partially Implemented** | `scripts/sql/master_data_harmonization_*`, `scripts/sql/master_data_harmonization_proposal.md` | Constraint/index and validation package exists; alias governance/backfill execution is still environment-dependent. |
+| C | Operational banking reconciliation | **Partially Implemented** | `doc/prompt-c-operational-banking-reconciliation.md`, `scripts/sql/operational_banking_reconciliation_*` | Initial migration/rollback/validation/risk artifacts now exist; service-layer state machine and import/backfill wiring remain active. |
+| D | Fund transfer integrity | **Partially Implemented** | `doc/prompt-d-fund-transfer-integrity.md`, `scripts/sql/fund_transfer_integrity_*` | Integrity rules and repair queue scripts exist; rollout/validation in live datasets remains active. |
+| E | Reporting/schedule configuration | **Partially Implemented** | `scripts/sql/reporting_schedule_configuration_*`, service usage in `ScheduleEligibilityService` | Versioned configuration model is implemented in schema assets; broad report-engine adoption remains active. |
+| F | Asset/depreciation audit readiness | **Partially Implemented** | `scripts/sql/asset_depreciation_audit_readiness_*` | Strong forward/rollback/validation set exists; operational close checklist adoption still active. |
+| G | Grant/donor/program traceability | **Partially Implemented** | `doc/prompt-g-grant-donor-program-traceability.md`, `scripts/sql/grant_traceability_*` | Traceability model and checks exist; historical cleanup and strict enforcement rollout remain active. |
+| H | Logical relationship hardening | **Partially Implemented** | `doc/prompt-h-logical-relationship-hardening.md`, `scripts/sql/logical_relationship_hardening_*` | FK hardening plan and scripts exist; phased NOT VALID->VALIDATE rollout remains active. |
+
+### OBE Determination
+
+- The **prompt-only design step** for A/B/D/E/F/G/H is effectively **OBE** because concrete response docs and migration assets are now checked in.
+- Prompt C is still **not OBE** operationally: scaffold SQL artifacts now exist, but full service enforcement, backfill logic, and production rollout are still pending.
+
+## Action Plan (Implementation Backlog)
+
+1. **Create migration runbook index** consolidating forward/rollback/validation scripts by proposal and rollout order.
+2. **Define acceptance gates** (preflight clean, migration apply, validation pass, rollback smoke-test) for each proposal family.
+3. **Prioritize live rollout sequence**: H (hardening preflight) -> B (master data) -> D (fund transfer) -> E (reporting config) -> F (assets) -> G (grants) -> A/C (transaction+banking cutover).
+4. **Add ownership matrix** mapping each proposal to service/module owners and release milestones.
+5. **Execute and log dry-runs** in CI against H2/Postgres compatibility targets where applicable.
+
+## Initial Implementation Started
+
+To begin executing the action plan, this document now includes a status matrix and ordered backlog so work can be tracked against concrete rollout phases instead of re-running prompt design.
+
 **Required deliverables checklist for every prompt response**
 - Provide target-state recommendation(s) and tradeoff rationale.
 - Provide forward migration SQL outline (DDL/index/constraint changes).
