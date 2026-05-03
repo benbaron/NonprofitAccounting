@@ -190,6 +190,7 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 			runOperationalLinkBackfillMigration(c);
 			runReportingScheduleConfigurationMigration(c);
 			runBankingReconciliationSchemaMigration(c);
+			runFinancePostingEnforcementPreflight(c);
 		}
 		
 	}
@@ -1570,6 +1571,38 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 			      GROUP BY gpl.grant_record_id
 			    ) pa ON pa.grant_record_id = gr.grant_record_id
 			""");
+
+		st.execute("""
+			    CREATE OR REPLACE VIEW v_finance_posting_enforcement_exceptions AS
+			    SELECT 'fund_transfer' AS domain_table, CAST(id AS VARCHAR) AS domain_id,
+			           status AS state_value, 'posted_txn_id_missing_or_unexpected' AS issue
+			    FROM fund_transfer
+			    WHERE (status = 'POSTED' AND posted_txn_id IS NULL)
+			       OR (status <> 'POSTED' AND posted_txn_id IS NOT NULL)
+			    UNION ALL
+			    SELECT 'depreciation_run' AS domain_table, depreciation_run_id AS domain_id,
+			           run_status AS state_value, 'posted_txn_id_missing_or_unexpected' AS issue
+			    FROM depreciation_run
+			    WHERE (run_status = 'POSTED' AND posted_txn_id IS NULL)
+			       OR (run_status <> 'POSTED' AND posted_txn_id IS NOT NULL)
+			    UNION ALL
+			    SELECT 'grant_record' AS domain_table, gr.grant_record_id AS domain_id,
+			           COALESCE(gr.status, '') AS state_value, 'canonical_txn_missing_posting_link' AS issue
+			    FROM grant_record gr
+			    WHERE gr.canonical_txn_id IS NOT NULL
+			      AND NOT EXISTS (
+			          SELECT 1 FROM grant_posting_link gpl
+			          LEFT JOIN journal_entry je ON je.id = gpl.journal_entry_id
+			          WHERE gpl.grant_record_id = gr.grant_record_id
+			            AND je.txn_id = gr.canonical_txn_id
+			      )
+		""");
+		st.execute("""
+			    CREATE OR REPLACE VIEW v_finance_posting_enforcement_dashboard AS
+			    SELECT domain_table, issue, COUNT(*) AS exception_count
+			    FROM v_finance_posting_enforcement_exceptions
+			    GROUP BY domain_table, issue
+		""");
 		st.execute("""
 			    CREATE TABLE IF NOT EXISTS sale_record(
 			      sale_id VARCHAR(255) PRIMARY KEY,
@@ -1587,6 +1620,25 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 			"CREATE INDEX IF NOT EXISTS sale_record_date_idx ON sale_record(sale_date_text);");
 	}
 	
+	private void runFinancePostingEnforcementPreflight(Connection c) throws SQLException
+	{
+		String mode = System.getProperty("nonprofitbookkeeping.financeWriteEnforcement", "enforce");
+		try (Statement st = c.createStatement();
+		     ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM v_finance_posting_enforcement_exceptions"))
+		{
+			rs.next();
+			int count = rs.getInt(1);
+			if (count > 0)
+			{
+				System.err.println("[FINANCE_ENFORCEMENT_PREFLIGHT] Exceptions found: " + count);
+				if ("enforce".equalsIgnoreCase(mode))
+				{
+					throw new SQLException("Finance posting enforcement preflight failed; review v_finance_posting_enforcement_exceptions.");
+				}
+			}
+		}
+	}
+
 	private void runReconciledDataBackfill(Connection c) throws SQLException
 	{
 		if (isMigrationApplied(c, MIGRATION_RECONCILED_BACKFILL_V1))

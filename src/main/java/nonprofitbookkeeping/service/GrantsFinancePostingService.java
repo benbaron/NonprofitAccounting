@@ -54,9 +54,23 @@ public class GrantsFinancePostingService {
             "GRANTS", grantRecordId, "ORIGINAL",
             "GRANTS:" + grantRecordId + ":" + eventType);
         PostingReference ref = postingFacade.post(cmd);
-        persistEffectivePosting(grantRecordId, ref.journalTxnId());
-        populateGrantPostingLink(grantRecordId, ref.journalTxnId(), amount,
-            eventDate, eventType);
+        try
+        {
+            FinanceWriteEnforcement.runWithinFacadeScope(() -> {
+                persistEffectivePosting(grantRecordId, ref.journalTxnId());
+                populateGrantPostingLink(grantRecordId, ref.journalTxnId(), amount,
+                    eventDate, eventType);
+            });
+        }
+        catch (RuntimeException e)
+        {
+            throw e;
+        }
+        catch (Exception e)
+        {
+            if (e instanceof SQLException sql) throw sql;
+            throw new IllegalStateException(e);
+        }
         return ref;
     }
 
@@ -79,9 +93,23 @@ public class GrantsFinancePostingService {
             "GRANTS:" + grantRecordId + ":A:" + eventType);
         PostingReference ref = postingFacade.amend(existingTxnId, cmd,
             "Grant financial edit");
-        persistEffectivePosting(grantRecordId, ref.journalTxnId());
-        populateGrantPostingLink(grantRecordId, ref.journalTxnId(), amount,
-            eventDate, eventType);
+        try
+        {
+            FinanceWriteEnforcement.runWithinFacadeScope(() -> {
+                persistEffectivePosting(grantRecordId, ref.journalTxnId());
+                populateGrantPostingLink(grantRecordId, ref.journalTxnId(), amount,
+                    eventDate, eventType);
+            });
+        }
+        catch (RuntimeException e)
+        {
+            throw e;
+        }
+        catch (Exception e)
+        {
+            if (e instanceof SQLException sql) throw sql;
+            throw new IllegalStateException(e);
+        }
         return ref;
     }
 
@@ -110,6 +138,7 @@ public class GrantsFinancePostingService {
 
     private void persistEffectivePosting(String grantRecordId, int txnId)
         throws SQLException {
+        FinanceWriteEnforcement.requireFacadeScope("grant_record.canonical_txn_id");
         String sql = "UPDATE grant_record SET canonical_txn_id=? WHERE grant_record_id=?";
         try (Connection c = Database.get().getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
@@ -126,6 +155,7 @@ public class GrantsFinancePostingService {
                                           BigDecimal amount, LocalDate date,
                                           GrantEventType type)
         throws SQLException {
+        FinanceWriteEnforcement.requireFacadeScope("grant_posting_link insert");
         String role = switch (type) {
             case AWARD -> "DEFERRAL";
             case DRAWDOWN -> "RELEASE";
