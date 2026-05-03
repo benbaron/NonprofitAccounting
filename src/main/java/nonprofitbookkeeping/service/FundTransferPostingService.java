@@ -54,8 +54,18 @@ public class FundTransferPostingService {
                 "FUNDS", String.valueOf(transferId), "ORIGINAL",
                 "FUNDS:" + transferId);
             PostingReference posted = postingFacade.post(command);
-            lifecycleService.transitionStatus(transferId, "POSTED",
-                (long) posted.journalTxnId(), "posted via facade");
+            try
+            {
+                FinanceWriteEnforcement.runWithinFacadeScope(() ->
+                    lifecycleService.transitionStatus(transferId, "POSTED",
+                        (long) posted.journalTxnId(), "posted via facade"));
+            }
+            catch (Exception e)
+            {
+                if (e instanceof SQLException sql) throw sql;
+                if (e instanceof RuntimeException re) throw re;
+                throw new IllegalStateException(e);
+            }
             return posted;
         } catch (RuntimeException | SQLException ex) {
             lifecycleService.transitionStatus(transferId, "FAILED", null,
