@@ -805,6 +805,45 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 	private void ensureCompatibilityViews(Statement st) throws SQLException
 	{
 		st.execute("""
+			    CREATE TABLE IF NOT EXISTS rm_donation_summary(
+			      txn_id BIGINT PRIMARY KEY,
+			      total_amount DECIMAL(19,2) NOT NULL DEFAULT 0,
+			      line_count INT NOT NULL DEFAULT 0,
+			      refreshed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+			    )
+			""");
+		st.execute("""
+			    CREATE TABLE IF NOT EXISTS rm_grant_summary(
+			      txn_id BIGINT PRIMARY KEY,
+			      grant_link_count INT NOT NULL DEFAULT 0,
+			      refreshed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+			    )
+			""");
+		st.execute("""
+			    CREATE TABLE IF NOT EXISTS rm_fund_summary(
+			      txn_id BIGINT PRIMARY KEY,
+			      primary_fund_code VARCHAR(64),
+			      net_amount DECIMAL(19,2) NOT NULL DEFAULT 0,
+			      refreshed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+			    )
+			""");
+		st.execute("""
+			    CREATE TABLE IF NOT EXISTS rm_reconciliation_summary(
+			      txn_id BIGINT PRIMARY KEY,
+			      absolute_amount DECIMAL(19,2) NOT NULL DEFAULT 0,
+			      split_count INT NOT NULL DEFAULT 0,
+			      refreshed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+			    )
+			""");
+		st.execute("""
+			    CREATE TABLE IF NOT EXISTS rm_depreciation_summary(
+			      depreciation_run_id VARCHAR(255) PRIMARY KEY,
+			      record_count INT NOT NULL DEFAULT 0,
+			      net_depreciation_total DECIMAL(19,2) NOT NULL DEFAULT 0,
+			      refreshed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+			    )
+			""");
+		st.execute("""
 			    CREATE OR REPLACE VIEW v_journal_transaction AS
 			    SELECT
 			      COALESCE(m.legacy_txn_id, t.id) AS id,

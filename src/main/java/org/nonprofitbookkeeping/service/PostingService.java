@@ -12,6 +12,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -32,8 +34,11 @@ import java.util.Objects;
 @ApplicationScoped
 public class PostingService
 {
+    private static final Logger log = LoggerFactory.getLogger(PostingService.class);
     @Inject
     private Jpa jpa;
+    @Inject
+    private ReadModelMaintenanceService readModelMaintenanceService;
 
     public record SplitInput(Long accountId,
                              Long fundId,
@@ -124,6 +129,17 @@ public class PostingService
             }
 
             em.getTransaction().commit();
+            if (readModelMaintenanceService != null && txn.getId() != null)
+            {
+                try
+                {
+                    readModelMaintenanceService.refreshForTxn(txn.getId());
+                }
+                catch (RuntimeException ex)
+                {
+                    log.warn("Read-model refresh failed after canonical post commit for txnId={}", txn.getId(), ex);
+                }
+            }
             return txn;
         }
     }
