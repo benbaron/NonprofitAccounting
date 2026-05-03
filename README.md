@@ -114,3 +114,35 @@ especially:
 - single-sided or net-unbalanced SCLX transactions are balanced to the configured Cash account
 - `BudgetRecord`, `BankingItemRecord`, and `BankStatementRecord` are imported concretely, not only archived as raw collection JSON
 - the repositories are intentionally staging-oriented so these records can later be merged/promoted into richer native models
+
+## Read model maintenance (Phase 5)
+
+Canonical ledger posting remains `txn` + `txn_split`. Fast panel reads are materialized into denormalized tables:
+
+- `rm_donation_summary`
+- `rm_grant_summary`
+- `rm_fund_summary`
+- `rm_reconciliation_summary`
+- `rm_depreciation_summary`
+
+### Incremental refresh
+
+`org.nonprofitbookkeeping.service.PostingService` now triggers a read-model refresh hook after each successful canonical post commit.
+
+### Full rebuild / recovery procedure
+
+Use `org.nonprofitbookkeeping.service.ReadModelMaintenanceService#rebuildAll()` to rebuild all read models from canonical postings and metadata links.
+For operators, use:
+
+```bash
+java -cp target/classes org.nonprofitbookkeeping.service.ReadModelMaintenanceTool <db-path> rebuild
+java -cp target/classes org.nonprofitbookkeeping.service.ReadModelMaintenanceTool <db-path> drift
+```
+
+Recommended recovery flow when stale/incorrect panels are suspected:
+
+1. Run drift checks with `ReadModelMaintenanceService#detectDrift()`.
+2. If any category drift is non-zero, run `rebuildAll()`.
+3. Re-run `detectDrift()` and confirm all drifts are zero.
+
+This guarantees stale read-model recovery without changing canonical postings.

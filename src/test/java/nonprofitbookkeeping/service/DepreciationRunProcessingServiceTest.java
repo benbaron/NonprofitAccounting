@@ -14,6 +14,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DepreciationRunProcessingServiceTest
@@ -25,6 +26,7 @@ class DepreciationRunProcessingServiceTest
     void calculateRun_updatesAccumulatedAndCreatesPreviewLines() throws Exception
     {
         initDb();
+        seedPostingAccounts();
         seedAsset("asset-1", new BigDecimal("1200.00"), BigDecimal.ZERO);
         DepreciationRunLifecycleService lifecycle = new DepreciationRunLifecycleService();
         DepreciationRunProcessingService svc = new DepreciationRunProcessingService();
@@ -66,6 +68,7 @@ class DepreciationRunProcessingServiceTest
     void unlockAndDeleteRun_rollsBackAccumulated() throws Exception
     {
         initDb();
+        seedPostingAccounts();
         seedAsset("asset-2", new BigDecimal("600.00"), new BigDecimal("50.00"));
         DepreciationRunLifecycleService lifecycle = new DepreciationRunLifecycleService();
         DepreciationRunProcessingService svc = new DepreciationRunProcessingService();
@@ -109,6 +112,56 @@ class DepreciationRunProcessingServiceTest
         }
     }
 
+    @Test
+    void postAndReverseRun_persistsImmutableLineage() throws Exception
+    {
+        initDb();
+        seedPostingAccounts();
+        seedAsset("asset-3", new BigDecimal("1200.00"), BigDecimal.ZERO);
+        DepreciationRunLifecycleService lifecycle = new DepreciationRunLifecycleService();
+        DepreciationRunProcessingService svc = new DepreciationRunProcessingService();
+        String runId = "run-post-reverse-001";
+        lifecycle.createDraftRun(runId, LocalDate.of(2026, 3, 1), LocalDate.of(2026, 3, 31), "march close");
+        svc.calculateAndMarkCalculated(runId, "tester");
+        assertEquals(1, svc.postRun(runId, "poster"));
+        assertEquals(1, svc.reversePostedRun(runId, "poster", "void"));
+        try (Connection c = Database.get().getConnection();
+             PreparedStatement ps = c.prepareStatement(
+                 "SELECT posted_journal_txn_id, reversal_journal_txn_id FROM depreciation_record WHERE depreciation_run_id = ?"))
+        {
+            ps.setString(1, runId);
+            try (ResultSet rs = ps.executeQuery())
+            {
+                assertTrue(rs.next());
+                assertTrue(rs.getInt(1) > 0);
+                assertTrue(rs.getInt(2) > 0);
+            }
+        }
+    }
+
+    @Test
+    void postRun_missingPostingRoleCode_failsFast() throws Exception
+    {
+        initDb();
+        seedPostingAccounts();
+        try (Connection c = Database.get().getConnection();
+             PreparedStatement ps = c.prepareStatement(
+                 "UPDATE account SET account_code = NULL WHERE account_number IN ('6100','1700')"))
+        {
+            ps.executeUpdate();
+        }
+        seedAsset("asset-4", new BigDecimal("1200.00"), BigDecimal.ZERO);
+        DepreciationRunLifecycleService lifecycle = new DepreciationRunLifecycleService();
+        DepreciationRunProcessingService svc = new DepreciationRunProcessingService();
+        String runId = "run-post-missing-code-001";
+        lifecycle.createDraftRun(runId, LocalDate.of(2026, 4, 1), LocalDate.of(2026, 4, 30), "apr close");
+        svc.calculateAndMarkCalculated(runId, "tester");
+
+        IllegalStateException ex = assertThrows(IllegalStateException.class,
+            () -> svc.postRun(runId, "poster"));
+        assertTrue(ex.getMessage().contains("account_code"));
+    }
+
     private void seedAsset(String assetId, BigDecimal approxValue, BigDecimal accumulated) throws Exception
     {
         ensureImportedAssetTable();
@@ -144,6 +197,17 @@ class DepreciationRunProcessingServiceTest
              """))
         {
             ps.execute();
+        }
+    }
+
+    private void seedPostingAccounts() throws Exception
+    {
+        try (Connection c = Database.get().getConnection();
+             PreparedStatement ps = c.prepareStatement("MERGE INTO account(account_number, name, account_code, account_type, supplemental_kinds, increase_side) KEY(account_number) VALUES (?,?,?,?,?,?)"))
+        {
+            ps.setString(1, "6100"); ps.setString(2, "Depreciation Expense"); ps.setString(3, "DEPRECIATION_EXPENSE"); ps.setString(4, "EXPENSE"); ps.setString(5, null); ps.setString(6, "DEBIT"); ps.addBatch();
+            ps.setString(1, "1700"); ps.setString(2, "Accumulated Depreciation"); ps.setString(3, "ACCUMULATED_DEPRECIATION"); ps.setString(4, "ASSET"); ps.setString(5, "OTHER_ASSET"); ps.setString(6, "CREDIT"); ps.addBatch();
+            ps.executeBatch();
         }
     }
 }

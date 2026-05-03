@@ -53,6 +53,10 @@ public final class FundTransferLifecycleService
                 {
                     throw new IllegalArgumentException("Only POSTED status may include postedTxnId.");
                 }
+                if ("POSTED".equals(toStatus))
+                {
+                    FinanceWriteEnforcement.requireFacadeScope("fund_transfer.status/posted_txn_id");
+                }
 
                 String updateSql = """
                     UPDATE fund_transfer

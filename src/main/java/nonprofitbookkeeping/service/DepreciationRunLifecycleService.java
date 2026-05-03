@@ -44,6 +44,10 @@ public final class DepreciationRunLifecycleService
                 }
                 validateTransition(current.status(), toStatus);
                 validatePostedLink(toStatus, postedTxnId);
+                if ("POSTED".equals(toStatus))
+                {
+                    FinanceWriteEnforcement.requireFacadeScope("depreciation_run.run_status/posted_txn_id");
+                }
 
                 try (PreparedStatement ps = c.prepareStatement("""
                     UPDATE depreciation_run
