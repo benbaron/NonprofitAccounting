@@ -20,7 +20,7 @@ public class MainApp extends Application
     @Override
     public void start(Stage stage)
     {
-        String uiVariant = System.getProperty("npbk.ui.variant", "classic").trim().toLowerCase();
+        String uiVariant = System.getProperty("npbk.ui.variant", "alternate").trim().toLowerCase();
         boolean alternate = "alternate".equals(uiVariant);
         javafx.scene.Parent root = alternate ? new MainWindowAlternate() : new MainWindow();
 
