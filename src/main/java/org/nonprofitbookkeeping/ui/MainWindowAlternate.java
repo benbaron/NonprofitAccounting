@@ -28,8 +28,15 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.nonprofitbookkeeping.ui.alternate.AlternateChartOfAccountsView;
 import org.nonprofitbookkeeping.ui.alternate.AlternateInventoryTransferOrdersView;
@@ -272,7 +279,26 @@ public class MainWindowAlternate extends BorderPane
         Button browse = new Button("Browse...");
         Button open = new Button("Open Database");
         Label state = new Label("No file selected.");
-        open.setOnAction(e -> alternateStatus.setText("Database selected:\n" + dbPath.getText()));
+        browse.setOnAction(e -> {
+            FileChooser chooser = new FileChooser();
+            chooser.setTitle("Select database file");
+            chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Database files", "*.db", "*.mv.db", "*.h2.db"));
+            File selected = chooser.showOpenDialog(getScene() == null ? null : getScene().getWindow());
+            if (selected != null)
+            {
+                dbPath.setText(selected.getAbsolutePath());
+                state.setText("Selected: " + selected.getName());
+            }
+        });
+        open.setOnAction(e -> {
+            String value = dbPath.getText();
+            if (value == null || value.isBlank())
+            {
+                alternateStatus.setText("No database selected.");
+                return;
+            }
+            alternateStatus.setText("Database selected:\n" + value);
+        });
         databaseSelectorPane.getChildren().setAll(new Label("Open Database (.db)"), new HBox(8, dbPath, browse), open, state);
         databaseSelectorPane.setPadding(new Insets(12));
         databaseSelectorPane.setSpacing(10);
@@ -281,16 +307,53 @@ public class MainWindowAlternate extends BorderPane
 
     private VBox buildCompanySelectorPane()
     {
-        ComboBox<String> companies = new ComboBox<>(FXCollections.observableArrayList("Purine Inc.", "John's Inc.", "San Crescent Accounting"));
+        ComboBox<String> companies = new ComboBox<>(FXCollections.observableArrayList(loadAvailableCompanies()));
         companies.setPromptText("Select company");
-        ListView<String> recent = new ListView<>(FXCollections.observableArrayList("Purine Inc.", "John's Inc.", "Demo Nonprofit"));
+        ListView<String> recent = new ListView<>(FXCollections.observableArrayList(loadAvailableCompanies()));
         recent.setPrefHeight(140);
         Button open = new Button("Open Company");
-        open.setOnAction(e -> alternateStatus.setText("Company selected:\n" + companies.getValue()));
+        open.setOnAction(e -> {
+            String selected = companies.getValue();
+            if (selected == null || selected.isBlank())
+            {
+                alternateStatus.setText("No company selected.");
+                return;
+            }
+            alternateStatus.setText("Company selected:\n" + selected);
+        });
         companySelectorPane.getChildren().setAll(new Label("Open Company"), companies, new Label("Recent Companies"), recent, open);
         companySelectorPane.setPadding(new Insets(12));
         companySelectorPane.setSpacing(10);
         return companySelectorPane;
+    }
+
+    private List<String> loadAvailableCompanies()
+    {
+        Path root = Paths.get(".").toAbsolutePath().normalize();
+        int maxDepth = Integer.getInteger("npbk.company.scan.depth", 3);
+        try (var stream = Files.find(root, maxDepth, (path, attrs) -> attrs.isRegularFile() && isDatabaseLike(path)))
+        {
+            List<String> matches = stream
+                .map(root::relativize)
+                .map(Path::toString)
+                .sorted()
+                .collect(Collectors.toList());
+            if (!matches.isEmpty())
+            {
+                return matches;
+            }
+        }
+        catch (Exception ignored)
+        {
+            // fallback below
+        }
+        return List.of("Purine Inc.", "John's Inc.", "San Crescent Accounting");
+    }
+
+    private boolean isDatabaseLike(Path path)
+    {
+        String name = path.getFileName().toString().toLowerCase();
+        return name.endsWith(".db") || name.endsWith(".mv.db") || name.endsWith(".h2.db");
     }
 
     private void openDatabaseSelector()
