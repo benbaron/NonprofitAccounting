@@ -10,6 +10,9 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
@@ -51,6 +54,8 @@ public class MainWindowAlternate extends BorderPane
     private final StackPane workspaceSurface = new StackPane();
     private final VBox alternateSettingsPane = new VBox();
     private final StackPane alternateContentPane = new StackPane();
+    private final VBox databaseSelectorPane = new VBox();
+    private final VBox companySelectorPane = new VBox();
 
     public MainWindowAlternate()
     {
@@ -64,7 +69,7 @@ public class MainWindowAlternate extends BorderPane
 
     private Node buildIconRail()
     {
-        VBox rail = new VBox(10, iconButton("◉"), iconButton("⌂"), iconButton("⌕"), iconButton("⚙"));
+        VBox rail = new VBox(14, iconButton("◉"), iconButton("⌂"), iconButton("⌕"), iconButton("⚙"));
         rail.setPadding(new Insets(14, 8, 14, 8));
         rail.setStyle("-fx-background-color: #1f2431; -fx-background-radius: 14;");
         return rail;
@@ -73,8 +78,8 @@ public class MainWindowAlternate extends BorderPane
     private Button iconButton(String text)
     {
         Button button = new Button(text);
-        button.setMinSize(34, 34);
-        button.setStyle("-fx-background-color: #2c3347; -fx-text-fill: white; -fx-background-radius: 10;");
+        button.setMinSize(46, 46);
+        button.setStyle("-fx-background-color: #2c3347; -fx-text-fill: white; -fx-background-radius: 12; -fx-font-size: 20px;");
         return button;
     }
 
@@ -127,15 +132,17 @@ public class MainWindowAlternate extends BorderPane
     private VBox buildLeftNavigation()
     {
         VBox navButtons = new VBox(6,
-            navButton("Dashboard", AppPanelId.DASHBOARD),
-            navButton("Chart of Accounts", AppPanelId.CHART_OF_ACCOUNTS),
-            navButton("Journal", AppPanelId.LEDGER_REGISTER),
-            navButton("Inventory", AppPanelId.INVENTORY),
-            navButton("Funds", AppPanelId.FUNDS),
-            navButton("Reports", AppPanelId.REPORTS_WORKSPACE),
-            navButton("Schedules", AppPanelId.SCHEDULES),
-            navButton("Budget", AppPanelId.BUDGET_EDITOR),
-            navButton("Settings", AppPanelId.SETTINGS));
+            navButton("⌂  Dashboard", AppPanelId.DASHBOARD),
+            navButton("🗂  Chart of Accounts", AppPanelId.CHART_OF_ACCOUNTS),
+            navButton("🧾  Journal", AppPanelId.LEDGER_REGISTER),
+            navButton("📦  Inventory", AppPanelId.INVENTORY),
+            navButton("💰  Funds", AppPanelId.FUNDS),
+            navButton("📊  Reports", AppPanelId.REPORTS_WORKSPACE),
+            navButton("🗓  Schedules", AppPanelId.SCHEDULES),
+            navButton("📈  Budget", AppPanelId.BUDGET_EDITOR),
+            navButton("⚙  Settings", AppPanelId.SETTINGS),
+            navActionButton("🗄  Open Database", this::openDatabaseSelector),
+            navActionButton("🏢  Open Company", this::openCompanySelector));
 
         TitledPane imports = new TitledPane("Import & Tools", new VBox(6,
             navButton("Assets Register", AppPanelId.ASSETS_REGISTER),
@@ -155,6 +162,15 @@ public class MainWindowAlternate extends BorderPane
         Button button = new Button(label);
         button.setMaxWidth(Double.MAX_VALUE);
         button.setOnAction(e -> openPanel(id));
+        return button;
+    }
+
+
+    private Button navActionButton(String label, Runnable action)
+    {
+        Button button = new Button(label);
+        button.setMaxWidth(Double.MAX_VALUE);
+        button.setOnAction(e -> action.run());
         return button;
     }
 
@@ -247,6 +263,61 @@ public class MainWindowAlternate extends BorderPane
         return alternateSettingsPane;
     }
 
+
+
+    private VBox buildDatabaseSelectorPane()
+    {
+        TextField dbPath = new TextField();
+        dbPath.setPromptText("/path/to/file.db");
+        Button browse = new Button("Browse...");
+        Button open = new Button("Open Database");
+        Label state = new Label("No file selected.");
+        open.setOnAction(e -> alternateStatus.setText("Database selected:\n" + dbPath.getText()));
+        databaseSelectorPane.getChildren().setAll(new Label("Open Database (.db)"), new HBox(8, dbPath, browse), open, state);
+        databaseSelectorPane.setPadding(new Insets(12));
+        databaseSelectorPane.setSpacing(10);
+        return databaseSelectorPane;
+    }
+
+    private VBox buildCompanySelectorPane()
+    {
+        ComboBox<String> companies = new ComboBox<>(FXCollections.observableArrayList("Purine Inc.", "John's Inc.", "San Crescent Accounting"));
+        companies.setPromptText("Select company");
+        ListView<String> recent = new ListView<>(FXCollections.observableArrayList("Purine Inc.", "John's Inc.", "Demo Nonprofit"));
+        recent.setPrefHeight(140);
+        Button open = new Button("Open Company");
+        open.setOnAction(e -> alternateStatus.setText("Company selected:\n" + companies.getValue()));
+        companySelectorPane.getChildren().setAll(new Label("Open Company"), companies, new Label("Recent Companies"), recent, open);
+        companySelectorPane.setPadding(new Insets(12));
+        companySelectorPane.setSpacing(10);
+        return companySelectorPane;
+    }
+
+    private void openDatabaseSelector()
+    {
+        dashboardCanvas.setVisible(false);
+        dashboardCanvas.setManaged(false);
+        alternateSettingsPane.setVisible(false);
+        alternateSettingsPane.setManaged(false);
+        panelHost.setVisible(false);
+        panelHost.setManaged(false);
+        alternateContentPane.setVisible(true);
+        alternateContentPane.setManaged(true);
+        alternateContentPane.getChildren().setAll(buildDatabaseSelectorPane());
+    }
+
+    private void openCompanySelector()
+    {
+        dashboardCanvas.setVisible(false);
+        dashboardCanvas.setManaged(false);
+        alternateSettingsPane.setVisible(false);
+        alternateSettingsPane.setManaged(false);
+        panelHost.setVisible(false);
+        panelHost.setManaged(false);
+        alternateContentPane.setVisible(true);
+        alternateContentPane.setManaged(true);
+        alternateContentPane.getChildren().setAll(buildCompanySelectorPane());
+    }
 
     private void openPanel(AppPanelId id)
     {
