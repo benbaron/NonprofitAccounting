@@ -20,7 +20,9 @@ public class MainApp extends Application
     @Override
     public void start(Stage stage)
     {
-        MainWindow root = new MainWindow();
+        String uiVariant = System.getProperty("npbk.ui.variant", "classic").trim().toLowerCase();
+        boolean alternate = "alternate".equals(uiVariant);
+        javafx.scene.Parent root = alternate ? new MainWindowAlternate() : new MainWindow();
 
         Scene scene = new Scene(root, 1200, 800);
 
@@ -30,7 +32,10 @@ public class MainApp extends Application
             scene.getStylesheets().add(stylesheet.toExternalForm());
         }
 
-        GlobalShortcuts.install(scene, root);
+        if (!alternate)
+        {
+            GlobalShortcuts.install(scene, (MainWindow) root);
+        }
 
         stage.setTitle("SCA Ledger (H2 + Jakarta) — Prototype");
         stage.setScene(scene);
