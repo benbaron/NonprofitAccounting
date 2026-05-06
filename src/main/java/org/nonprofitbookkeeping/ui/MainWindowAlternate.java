@@ -65,6 +65,8 @@ public class MainWindowAlternate extends BorderPane
     private final StackPane alternateContentPane = new StackPane();
     private final VBox databaseSelectorPane = new VBox();
     private final VBox companySelectorPane = new VBox();
+    private final VBox profilePane = new VBox();
+    private final VBox searchPane = new VBox();
     private final WorkspaceRouter workspaceRouter = new WorkspaceRouter();
 
     public MainWindowAlternate()
@@ -79,16 +81,21 @@ public class MainWindowAlternate extends BorderPane
 
     private Node buildIconRail()
     {
-        VBox rail = new VBox(14, iconButton("◉"), iconButton("⌂"), iconButton("⌕"), iconButton("⚙"));
+        VBox rail = new VBox(14,
+            iconButton("◉", this::openProfilePage),
+            iconButton("⌂", () -> openPanel(AppPanelId.DASHBOARD)),
+            iconButton("⌕", this::openSearchPage),
+            iconButton("⚙", () -> openPanel(AppPanelId.SETTINGS)));
         rail.setPadding(new Insets(14, 8, 14, 8));
         rail.setStyle("-fx-background-color: #1f2431; -fx-background-radius: 14;");
         return rail;
     }
 
-    private Button iconButton(String text)
+    private Button iconButton(String text, Runnable action)
     {
         Button button = new Button(text);
         button.setMinSize(46, 46);
+        button.setOnAction(e -> action.run());
         button.setStyle("-fx-background-color: #2c3347; -fx-text-fill: white; -fx-background-radius: 12; -fx-font-size: 20px;");
         return button;
     }
@@ -357,6 +364,73 @@ public class MainWindowAlternate extends BorderPane
     {
         String name = path.getFileName().toString().toLowerCase();
         return name.endsWith(".db") || name.endsWith(".mv.db") || name.endsWith(".h2.db");
+    }
+
+
+    private VBox buildProfilePane()
+    {
+        Label title = new Label("User Profile");
+        title.setStyle("-fx-font-size: 18px; -fx-font-weight: 700;");
+        profilePane.getChildren().setAll(
+            title,
+            new Separator(),
+            new Label("Signed in user"),
+            new Label("Role: Accountant"),
+            new Label("Preferences and account details will be wired in a later phase."));
+        profilePane.setPadding(new Insets(12));
+        profilePane.setSpacing(10);
+        profilePane.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
+        return profilePane;
+    }
+
+    private VBox buildSearchPane()
+    {
+        TextField query = new TextField();
+        query.setPromptText("Search accounts, transactions, reports...");
+        Button search = new Button("Search");
+        Label status = new Label("Enter a query to search.");
+        search.setOnAction(e -> {
+            String value = query.getText();
+            status.setText((value == null || value.isBlank())
+                ? "Enter a query to search."
+                : "Search is staged for Phase 5 command surface. Query: " + value);
+        });
+        searchPane.getChildren().setAll(
+            new Label("Search"),
+            new Separator(),
+            query,
+            search,
+            status);
+        searchPane.setPadding(new Insets(12));
+        searchPane.setSpacing(10);
+        searchPane.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
+        return searchPane;
+    }
+
+    private void openProfilePage()
+    {
+        dashboardCanvas.setVisible(false);
+        dashboardCanvas.setManaged(false);
+        alternateSettingsPane.setVisible(false);
+        alternateSettingsPane.setManaged(false);
+        panelHost.setVisible(false);
+        panelHost.setManaged(false);
+        alternateContentPane.setVisible(true);
+        alternateContentPane.setManaged(true);
+        alternateContentPane.getChildren().setAll(buildProfilePane());
+    }
+
+    private void openSearchPage()
+    {
+        dashboardCanvas.setVisible(false);
+        dashboardCanvas.setManaged(false);
+        alternateSettingsPane.setVisible(false);
+        alternateSettingsPane.setManaged(false);
+        panelHost.setVisible(false);
+        panelHost.setManaged(false);
+        alternateContentPane.setVisible(true);
+        alternateContentPane.setManaged(true);
+        alternateContentPane.getChildren().setAll(buildSearchPane());
     }
 
     private void openDatabaseSelector()
