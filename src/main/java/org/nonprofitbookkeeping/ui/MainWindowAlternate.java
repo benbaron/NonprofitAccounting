@@ -42,6 +42,8 @@ import org.nonprofitbookkeeping.ui.alternate.AlternateChartOfAccountsView;
 import org.nonprofitbookkeeping.ui.alternate.AlternateInventoryTransferOrdersView;
 import org.nonprofitbookkeeping.ui.alternate.AlternateManualJournalView;
 import org.nonprofitbookkeeping.ui.alternate.AlternateReportsOverviewView;
+import org.nonprofitbookkeeping.ui.routing.WorkspaceRouteDecision;
+import org.nonprofitbookkeeping.ui.routing.WorkspaceRouter;
 
 /**
  * Alternate dashboard-first UI shell that preserves current panel APIs.
@@ -63,6 +65,7 @@ public class MainWindowAlternate extends BorderPane
     private final StackPane alternateContentPane = new StackPane();
     private final VBox databaseSelectorPane = new VBox();
     private final VBox companySelectorPane = new VBox();
+    private final WorkspaceRouter workspaceRouter = new WorkspaceRouter();
 
     public MainWindowAlternate()
     {
@@ -384,25 +387,26 @@ public class MainWindowAlternate extends BorderPane
 
     private void openPanel(AppPanelId id)
     {
-        boolean dashboard = id == AppPanelId.DASHBOARD;
-        boolean settings = id == AppPanelId.SETTINGS;
-        boolean alternateTemplate = id == AppPanelId.CHART_OF_ACCOUNTS || id == AppPanelId.LEDGER_REGISTER || id == AppPanelId.INVENTORY || id == AppPanelId.REPORTS_WORKSPACE;
-        boolean workspacePanel = !dashboard && !settings && !alternateTemplate;
+        WorkspaceRouteDecision decision = workspaceRouter.decide(id);
+
+        boolean dashboard = decision.isDashboard();
+        boolean alternateCustomPane = decision.isAlternateCustomPane();
+        boolean panelHostBackedPanel = decision.isPanelHost();
 
         dashboardCanvas.setVisible(dashboard);
         dashboardCanvas.setManaged(dashboard);
-        alternateSettingsPane.setVisible(settings);
-        alternateSettingsPane.setManaged(settings);
-        alternateContentPane.setVisible(alternateTemplate);
-        alternateContentPane.setManaged(alternateTemplate);
-        panelHost.setVisible(workspacePanel);
-        panelHost.setManaged(workspacePanel);
+        alternateSettingsPane.setVisible(id == AppPanelId.SETTINGS);
+        alternateSettingsPane.setManaged(id == AppPanelId.SETTINGS);
+        alternateContentPane.setVisible(alternateCustomPane && id != AppPanelId.SETTINGS);
+        alternateContentPane.setManaged(alternateCustomPane && id != AppPanelId.SETTINGS);
+        panelHost.setVisible(panelHostBackedPanel);
+        panelHost.setManaged(panelHostBackedPanel);
 
-        if (settings)
+        if (id == AppPanelId.SETTINGS)
         {
             buildAlternateSettingsPane();
         }
-        else if (alternateTemplate)
+        else if (alternateCustomPane)
         {
             Node template = switch (id)
             {
@@ -414,7 +418,7 @@ public class MainWindowAlternate extends BorderPane
             };
             alternateContentPane.getChildren().setAll(template);
         }
-        else if (workspacePanel)
+        else if (panelHostBackedPanel)
         {
             panelHost.show(id);
         }
