@@ -42,6 +42,8 @@ import org.nonprofitbookkeeping.ui.alternate.AlternateChartOfAccountsView;
 import org.nonprofitbookkeeping.ui.alternate.AlternateInventoryTransferOrdersView;
 import org.nonprofitbookkeeping.ui.alternate.AlternateManualJournalView;
 import org.nonprofitbookkeeping.ui.alternate.AlternateReportsOverviewView;
+import org.nonprofitbookkeeping.ui.routing.WorkspaceRouteDecision;
+import org.nonprofitbookkeeping.ui.routing.WorkspaceRouter;
 
 /**
  * Alternate dashboard-first UI shell that preserves current panel APIs.
@@ -63,6 +65,9 @@ public class MainWindowAlternate extends BorderPane
     private final StackPane alternateContentPane = new StackPane();
     private final VBox databaseSelectorPane = new VBox();
     private final VBox companySelectorPane = new VBox();
+    private final VBox profilePane = new VBox();
+    private final VBox searchPane = new VBox();
+    private final WorkspaceRouter workspaceRouter = new WorkspaceRouter();
 
     public MainWindowAlternate()
     {
@@ -76,16 +81,21 @@ public class MainWindowAlternate extends BorderPane
 
     private Node buildIconRail()
     {
-        VBox rail = new VBox(14, iconButton("◉"), iconButton("⌂"), iconButton("⌕"), iconButton("⚙"));
+        VBox rail = new VBox(14,
+            iconButton("◉", this::openProfilePage),
+            iconButton("⌂", () -> openPanel(AppPanelId.DASHBOARD)),
+            iconButton("⌕", this::openSearchPage),
+            iconButton("⚙", () -> openPanel(AppPanelId.SETTINGS)));
         rail.setPadding(new Insets(14, 8, 14, 8));
         rail.setStyle("-fx-background-color: #1f2431; -fx-background-radius: 14;");
         return rail;
     }
 
-    private Button iconButton(String text)
+    private Button iconButton(String text, Runnable action)
     {
         Button button = new Button(text);
         button.setMinSize(46, 46);
+        button.setOnAction(e -> action.run());
         button.setStyle("-fx-background-color: #2c3347; -fx-text-fill: white; -fx-background-radius: 12; -fx-font-size: 20px;");
         return button;
     }
@@ -356,21 +366,65 @@ public class MainWindowAlternate extends BorderPane
         return name.endsWith(".db") || name.endsWith(".mv.db") || name.endsWith(".h2.db");
     }
 
+
+    private VBox buildProfilePane()
+    {
+        Label title = new Label("User Profile");
+        title.setStyle("-fx-font-size: 18px; -fx-font-weight: 700;");
+        profilePane.getChildren().setAll(
+            title,
+            new Separator(),
+            new Label("Signed in user"),
+            new Label("Role: Accountant"),
+            new Label("Preferences and account details will be wired in a later phase."));
+        profilePane.setPadding(new Insets(12));
+        profilePane.setSpacing(10);
+        profilePane.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
+        return profilePane;
+    }
+
+    private VBox buildSearchPane()
+    {
+        TextField query = new TextField();
+        query.setPromptText("Search accounts, transactions, reports...");
+        Button search = new Button("Search");
+        Label status = new Label("Enter a query to search.");
+        search.setOnAction(e -> status.setText(executeSearchQuery(query.getText())));
+        searchPane.getChildren().setAll(
+            new Label("Search"),
+            new Separator(),
+            query,
+            search,
+            status);
+        searchPane.setPadding(new Insets(12));
+        searchPane.setSpacing(10);
+        searchPane.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
+        return searchPane;
+    }
+
+    private void openProfilePage()
+    {
+        showAlternatePane(buildProfilePane());
+    }
+
+    private void openSearchPage()
+    {
+        showAlternatePane(buildSearchPane());
+    }
+
     private void openDatabaseSelector()
     {
-        dashboardCanvas.setVisible(false);
-        dashboardCanvas.setManaged(false);
-        alternateSettingsPane.setVisible(false);
-        alternateSettingsPane.setManaged(false);
-        panelHost.setVisible(false);
-        panelHost.setManaged(false);
-        alternateContentPane.setVisible(true);
-        alternateContentPane.setManaged(true);
-        alternateContentPane.getChildren().setAll(buildDatabaseSelectorPane());
+        showAlternatePane(buildDatabaseSelectorPane());
     }
 
     private void openCompanySelector()
     {
+        showAlternatePane(buildCompanySelectorPane());
+    }
+
+
+    private void showAlternatePane(Node content)
+    {
         dashboardCanvas.setVisible(false);
         dashboardCanvas.setManaged(false);
         alternateSettingsPane.setVisible(false);
@@ -379,30 +433,42 @@ public class MainWindowAlternate extends BorderPane
         panelHost.setManaged(false);
         alternateContentPane.setVisible(true);
         alternateContentPane.setManaged(true);
-        alternateContentPane.getChildren().setAll(buildCompanySelectorPane());
+        alternateContentPane.getChildren().setAll(content);
+    }
+
+    private String executeSearchQuery(String value)
+    {
+        if (value == null || value.isBlank())
+        {
+            return "Enter a query to search.";
+        }
+        String query = value.trim();
+        openInspectorForSelection("Search", "Query staged for shared command surface:\n" + query);
+        return "Query staged for shared command surface: " + query;
     }
 
     private void openPanel(AppPanelId id)
     {
-        boolean dashboard = id == AppPanelId.DASHBOARD;
-        boolean settings = id == AppPanelId.SETTINGS;
-        boolean alternateTemplate = id == AppPanelId.CHART_OF_ACCOUNTS || id == AppPanelId.LEDGER_REGISTER || id == AppPanelId.INVENTORY || id == AppPanelId.REPORTS_WORKSPACE;
-        boolean workspacePanel = !dashboard && !settings && !alternateTemplate;
+        WorkspaceRouteDecision decision = workspaceRouter.decide(id);
+
+        boolean dashboard = decision.isDashboard();
+        boolean alternateCustomPane = decision.isAlternateCustomPane();
+        boolean panelHostBackedPanel = decision.isPanelHost();
 
         dashboardCanvas.setVisible(dashboard);
         dashboardCanvas.setManaged(dashboard);
-        alternateSettingsPane.setVisible(settings);
-        alternateSettingsPane.setManaged(settings);
-        alternateContentPane.setVisible(alternateTemplate);
-        alternateContentPane.setManaged(alternateTemplate);
-        panelHost.setVisible(workspacePanel);
-        panelHost.setManaged(workspacePanel);
+        alternateSettingsPane.setVisible(id == AppPanelId.SETTINGS);
+        alternateSettingsPane.setManaged(id == AppPanelId.SETTINGS);
+        alternateContentPane.setVisible(alternateCustomPane && id != AppPanelId.SETTINGS);
+        alternateContentPane.setManaged(alternateCustomPane && id != AppPanelId.SETTINGS);
+        panelHost.setVisible(panelHostBackedPanel);
+        panelHost.setManaged(panelHostBackedPanel);
 
-        if (settings)
+        if (id == AppPanelId.SETTINGS)
         {
             buildAlternateSettingsPane();
         }
-        else if (alternateTemplate)
+        else if (alternateCustomPane)
         {
             Node template = switch (id)
             {
@@ -414,7 +480,7 @@ public class MainWindowAlternate extends BorderPane
             };
             alternateContentPane.getChildren().setAll(template);
         }
-        else if (workspacePanel)
+        else if (panelHostBackedPanel)
         {
             panelHost.show(id);
         }

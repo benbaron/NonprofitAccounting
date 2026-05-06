@@ -1,0 +1,29 @@
+# Alternate UI Parity Matrix
+
+This matrix inventories current parity across the classic `MainWindow` shell and `MainWindowAlternate`.
+
+| Feature | Classic location | Alternate location | Status | Notes | Priority |
+|---|---|---|---|---|---|
+| Dashboard landing view | `MainWindow.openPanel(DASHBOARD)` + `PanelHost.create(DASHBOARD)` | `MainWindowAlternate.openPanel(DASHBOARD)` custom dashboard canvas | implemented | Alternate has dedicated dashboard-first canvas; classic uses `DashboardPanel` through `PanelHost`. | P0 |
+| Chart of Accounts route | `NavigationPane` + `PanelHost.create(CHART_OF_ACCOUNTS)` | `MainWindowAlternate.openPanel(CHART_OF_ACCOUNTS)` -> `AlternateChartOfAccountsView` | partial | Alternate uses template view, not the real `ChartOfAccountsPanel`. | P0 |
+| Ledger Register route | `NavigationPane` + `PanelHost.create(LEDGER_REGISTER)` | `MainWindowAlternate.openPanel(LEDGER_REGISTER)` -> `AlternateManualJournalView` | partial | Alternate uses journal template instead of `LedgerRegisterPanel`. | P0 |
+| Inventory route | `NavigationPane` + `PanelHost.create(INVENTORY)` | `MainWindowAlternate.openPanel(INVENTORY)` -> `AlternateInventoryTransferOrdersView` | partial | Alternate keeps placeholder transfer-order-focused view. | P0 |
+| Reports Workspace route | `NavigationPane` + `PanelHost.create(REPORTS_WORKSPACE)` | `MainWindowAlternate.openPanel(REPORTS_WORKSPACE)` -> `AlternateReportsOverviewView` | partial | Alternate overview is placeholder composition; no full reports wiring. | P0 |
+| Funds panel route | `NavigationPane` + `PanelHost.create(FUNDS)` | `MainWindowAlternate.openPanel(FUNDS)` -> `PanelHost.show(FUNDS)` | implemented | Alternate delegates to shared `PanelHost` panel creation for Funds. | P1 |
+| Schedules panel route | `NavigationPane` + `PanelHost.create(SCHEDULES)` | `MainWindowAlternate.openPanel(SCHEDULES)` -> `PanelHost.show(SCHEDULES)` | implemented | Uses shared panel implementation in both shells. | P1 |
+| Budget Editor route | `NavigationPane` + `PanelHost.create(BUDGET_EDITOR)` | `MainWindowAlternate.openPanel(BUDGET_EDITOR)` -> `PanelHost.show(BUDGET_EDITOR)` | implemented | Routed through shared `PanelHost`. | P1 |
+| Budget vs Actual route | `NavigationPane` + `PanelHost.create(BUDGET_VS_ACTUAL)` | `MainWindowAlternate` import/tools nav button -> `PanelHost.show(BUDGET_VS_ACTUAL)` | implemented | Available in alternate under Import & Tools group. | P1 |
+| Assets Register route | `NavigationPane` + `PanelHost.create(ASSETS_REGISTER)` | `MainWindowAlternate` import/tools nav button -> `PanelHost.show(ASSETS_REGISTER)` | implemented | Shared panel host behavior preserved. | P1 |
+| Depreciation Runs route | `NavigationPane` + `PanelHost.create(DEPRECIATION_RUNS)` | `MainWindowAlternate` import/tools nav button -> `PanelHost.show(DEPRECIATION_RUNS)` | implemented | Shared panel host behavior preserved. | P1 |
+| Settings route | `NavigationPane` + `PanelHost.create(SETTINGS)` (and classic menu Settings panel) | `MainWindowAlternate.openPanel(SETTINGS)` -> custom alternate settings pane | partial | Alternate has custom shell settings card, not parity with classic `SettingsPanel` behavior. | P0 |
+| File menu command surface | `MainWindow.buildMenuBar()` File menu actions | No equivalent command menu in alternate shell | missing | Alternate currently relies on left nav and dedicated DB/company actions only. | P0 |
+| Edit menu command surface | `MainWindow.buildMenuBar()` Edit menu actions | No equivalent command menu in alternate shell | missing | Missing command palette/action drawer in alternate. | P1 |
+| Run menu command surface | `MainWindow.buildMenuBar()` Run menu actions | Partial via alternate navigation buttons | partial | Only subset exposed by nav; many run actions absent. | P0 |
+| Database menu command surface | `MainWindow.buildMenuBar()` Database menu actions | `Open Database` action opens selector pane | partial | Alternate selector currently sets status text only and does not run DB action pipeline. | P0 |
+| Reports menu shortcuts | `MainWindow.buildMenuBar()` Reports menu items | `Reports` nav button to alternate reports template | partial | Route exists but report-specific actions are not mapped. | P1 |
+| Fundraising menu commands | `MainWindow.buildMenuBar()` Fundraising actions (`Donors`, `Donations`, `Grants`, `Funds`) | Only `Funds` panel route exists | missing | Donor/donation/grants action entry points not exposed in alternate. | P1 |
+| Help menu | `MainWindow.buildMenuBar()` Help action -> `HelpPanelFX` | No alternate help entry point | missing | No visible alternate route for help workflow. | P2 |
+| Toolbar New/Save/Find/Journal | `MainWindow.buildToolBar()` | No equivalent toolbar in alternate shell | missing | Alternate lacks global top toolbar commands. | P1 |
+| Record services registry navigation | `NavigationPane` Record Services tree with `RecordServicePanelRegistry` | Same shared `NavigationPane` in alternate shell | implemented | Registry items still open workspace route or placeholder inspector callback. | P1 |
+| Context inspector behavior | `MainWindow` right-side `InspectorPane` | `MainWindowAlternate.alternateStatus` text area | partial | Alternate only updates status label, not full inspector pane UX. | P2 |
+| Open Company workflow | `MainWindow` File menu -> `OpenCompanyFileActionFX` path | `MainWindowAlternate.openCompanySelector()` custom selector | partial | Alternate selector currently status-only; no real context switch yet. | P0 |

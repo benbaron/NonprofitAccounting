@@ -297,3 +297,24 @@ Alternate UI is complete when:
 3. Reports/actions/shortcuts/plugins are parity-complete.
 4. Automated tests pass and parity matrix is fully green.
 5. Classic fallback remains available for risk-managed rollout.
+
+---
+
+## Round 1 status (Phase 0 + Phase 1)
+
+### Implemented this round
+- Added a concrete parity matrix at `docs/alternate-ui-parity-matrix.md` that inventories classic vs alternate feature coverage, including status and priority.
+- Added shared routing core classes:
+  - `org.nonprofitbookkeeping.ui.routing.WorkspaceRouteDecision`
+  - `org.nonprofitbookkeeping.ui.routing.WorkspaceRouter`
+- Refactored `MainWindowAlternate.openPanel(...)` to delegate route decisions to `WorkspaceRouter` while preserving existing runtime behavior (dashboard/custom alternate panes/panel-host-backed routes).
+
+### Remaining for Phase 2
+- Wire alternate Open Database and Open Company flows to real classic context-switch logic.
+- Persist and reload recent database/company choices.
+- Refresh active workspace content after context switches.
+
+### Known risks
+- Route mapping currently hardcodes which `AppPanelId` values are alternate custom panes; future additions require updating `WorkspaceRouter` to avoid drift.
+- Alternate settings and several alternate template screens still do not host real production panel content, so parity remains partial.
+- Database/company selector actions in alternate remain status-only and may mislead users until functional wiring lands in Phase 2.
