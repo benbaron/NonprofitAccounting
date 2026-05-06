@@ -389,12 +389,7 @@ public class MainWindowAlternate extends BorderPane
         query.setPromptText("Search accounts, transactions, reports...");
         Button search = new Button("Search");
         Label status = new Label("Enter a query to search.");
-        search.setOnAction(e -> {
-            String value = query.getText();
-            status.setText((value == null || value.isBlank())
-                ? "Enter a query to search."
-                : "Search is staged for Phase 5 command surface. Query: " + value);
-        });
+        search.setOnAction(e -> status.setText(executeSearchQuery(query.getText())));
         searchPane.getChildren().setAll(
             new Label("Search"),
             new Separator(),
@@ -409,44 +404,26 @@ public class MainWindowAlternate extends BorderPane
 
     private void openProfilePage()
     {
-        dashboardCanvas.setVisible(false);
-        dashboardCanvas.setManaged(false);
-        alternateSettingsPane.setVisible(false);
-        alternateSettingsPane.setManaged(false);
-        panelHost.setVisible(false);
-        panelHost.setManaged(false);
-        alternateContentPane.setVisible(true);
-        alternateContentPane.setManaged(true);
-        alternateContentPane.getChildren().setAll(buildProfilePane());
+        showAlternatePane(buildProfilePane());
     }
 
     private void openSearchPage()
     {
-        dashboardCanvas.setVisible(false);
-        dashboardCanvas.setManaged(false);
-        alternateSettingsPane.setVisible(false);
-        alternateSettingsPane.setManaged(false);
-        panelHost.setVisible(false);
-        panelHost.setManaged(false);
-        alternateContentPane.setVisible(true);
-        alternateContentPane.setManaged(true);
-        alternateContentPane.getChildren().setAll(buildSearchPane());
+        showAlternatePane(buildSearchPane());
     }
 
     private void openDatabaseSelector()
     {
-        dashboardCanvas.setVisible(false);
-        dashboardCanvas.setManaged(false);
-        alternateSettingsPane.setVisible(false);
-        alternateSettingsPane.setManaged(false);
-        panelHost.setVisible(false);
-        panelHost.setManaged(false);
-        alternateContentPane.setVisible(true);
-        alternateContentPane.setManaged(true);
-        alternateContentPane.getChildren().setAll(buildDatabaseSelectorPane());
+        showAlternatePane(buildDatabaseSelectorPane());
     }
 
     private void openCompanySelector()
+    {
+        showAlternatePane(buildCompanySelectorPane());
+    }
+
+
+    private void showAlternatePane(Node content)
     {
         dashboardCanvas.setVisible(false);
         dashboardCanvas.setManaged(false);
@@ -456,7 +433,18 @@ public class MainWindowAlternate extends BorderPane
         panelHost.setManaged(false);
         alternateContentPane.setVisible(true);
         alternateContentPane.setManaged(true);
-        alternateContentPane.getChildren().setAll(buildCompanySelectorPane());
+        alternateContentPane.getChildren().setAll(content);
+    }
+
+    private String executeSearchQuery(String value)
+    {
+        if (value == null || value.isBlank())
+        {
+            return "Enter a query to search.";
+        }
+        String query = value.trim();
+        openInspectorForSelection("Search", "Query staged for shared command surface:\n" + query);
+        return "Query staged for shared command surface: " + query;
     }
 
     private void openPanel(AppPanelId id)
