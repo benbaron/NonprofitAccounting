@@ -318,3 +318,18 @@ Alternate UI is complete when:
 - Route mapping currently hardcodes which `AppPanelId` values are alternate custom panes; future additions require updating `WorkspaceRouter` to avoid drift.
 - Alternate settings and several alternate template screens still do not host real production panel content, so parity remains partial.
 - Database/company selector actions in alternate remain status-only and may mislead users until functional wiring lands in Phase 2.
+
+## Round 2 status
+
+### Implemented
+- Alternate shell Open Database and Open Company selectors now invoke real data-context switching through a shared `AlternateDataContextService` that uses existing core/database/company persistence flows.
+- Alternate selectors now persist and reload recent database paths and company IDs.
+- Alternate shell refreshes the active workspace route after DB/company context changes so current content rebinds to updated context.
+
+### Remaining for Phase 3
+- Replace placeholder alternate templates for Chart of Accounts, Journal, Inventory, Reports, and Settings subsections with real panel-backed data views.
+- Expand alternate status/inspector parity and richer contextual feedback beyond simple status text.
+
+### Known risks
+- Company recents are currently stored by company ID and displayed opportunistically from current DB listings; IDs that no longer exist in a selected DB are shown as fallback labels.
+- Active-route refresh currently re-runs route presentation and may not trigger deeper model-level refresh hooks for every legacy panel.

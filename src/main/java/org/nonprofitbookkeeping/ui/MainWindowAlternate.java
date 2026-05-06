@@ -14,6 +14,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TitledPane;
@@ -31,9 +32,9 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 
 import java.io.File;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -68,6 +69,8 @@ public class MainWindowAlternate extends BorderPane
     private final VBox profilePane = new VBox();
     private final VBox searchPane = new VBox();
     private final WorkspaceRouter workspaceRouter = new WorkspaceRouter();
+    private final AlternateDataContextService contextService = new AlternateDataContextService();
+    private AppPanelId activePanelId = AppPanelId.DASHBOARD;
 
     public MainWindowAlternate()
     {
@@ -285,14 +288,22 @@ public class MainWindowAlternate extends BorderPane
     private VBox buildDatabaseSelectorPane()
     {
         TextField dbPath = new TextField();
-        dbPath.setPromptText("/path/to/file.db");
+        dbPath.setPromptText("/path/to/file.mv.db");
+        ListView<String> recent = new ListView<>(FXCollections.observableArrayList(contextService.recentDatabasePaths()));
+        recent.setPrefHeight(120);
+        recent.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null)
+            {
+                dbPath.setText(newVal);
+            }
+        });
         Button browse = new Button("Browse...");
         Button open = new Button("Open Database");
         Label state = new Label("No file selected.");
         browse.setOnAction(e -> {
             FileChooser chooser = new FileChooser();
             chooser.setTitle("Select database file");
-            chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Database files", "*.db", "*.mv.db", "*.h2.db"));
+            chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Database files", "*.mv.db", "*.db", "*.h2.db"));
             File selected = chooser.showOpenDialog(getScene() == null ? null : getScene().getWindow());
             if (selected != null)
             {
@@ -307,9 +318,19 @@ public class MainWindowAlternate extends BorderPane
                 alternateStatus.setText("No database selected.");
                 return;
             }
-            alternateStatus.setText("Database selected:\n" + value);
+            try
+            {
+                contextService.openDatabase(Paths.get(value.trim()));
+                alternateStatus.setText("Database opened:\n" + value.trim());
+                openPanel(activePanelId);
+                openDatabaseSelector();
+            }
+            catch (Exception ex)
+            {
+                alternateStatus.setText("Failed to open database: " + ex.getMessage());
+            }
         });
-        databaseSelectorPane.getChildren().setAll(new Label("Open Database (.db)"), new HBox(8, dbPath, browse), open, state);
+        databaseSelectorPane.getChildren().setAll(new Label("Open Database (.mv.db/.db)"), new HBox(8, dbPath, browse), new Label("Recent Databases"), recent, open, state);
         databaseSelectorPane.setPadding(new Insets(12));
         databaseSelectorPane.setSpacing(10);
         return databaseSelectorPane;
@@ -317,55 +338,65 @@ public class MainWindowAlternate extends BorderPane
 
     private VBox buildCompanySelectorPane()
     {
-        ComboBox<String> companies = new ComboBox<>(FXCollections.observableArrayList(loadAvailableCompanies()));
+        Map<String, Long> companiesByName = new LinkedHashMap<>();
+        try
+        {
+            for (var record : contextService.listCompanies())
+            {
+                companiesByName.put(record.name() + " (ID: " + record.id() + ")", record.id());
+            }
+        }
+        catch (Exception ex)
+        {
+            alternateStatus.setText("Failed to load companies: " + ex.getMessage());
+        }
+
+        ComboBox<String> companies = new ComboBox<>(FXCollections.observableArrayList(companiesByName.keySet()));
         companies.setPromptText("Select company");
-        ListView<String> recent = new ListView<>(FXCollections.observableArrayList(loadAvailableCompanies()));
+
+        ListView<String> recent = new ListView<>();
+        recent.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         recent.setPrefHeight(140);
+        try
+        {
+            Map<Long, String> labelsById = companiesByName.entrySet().stream().collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+            recent.setItems(FXCollections.observableArrayList(contextService.recentCompanies().stream()
+                .map(choice -> labelsById.getOrDefault(choice.id(), choice.label()))
+                .toList()));
+        }
+        catch (Exception ignored)
+        {
+            recent.setItems(FXCollections.observableArrayList());
+        }
+
+        recent.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> companies.setValue(newVal));
+
         Button open = new Button("Open Company");
         open.setOnAction(e -> {
             String selected = companies.getValue();
-            if (selected == null || selected.isBlank())
+            Long companyId = companiesByName.get(selected);
+            if (companyId == null)
             {
                 alternateStatus.setText("No company selected.");
                 return;
             }
-            alternateStatus.setText("Company selected:\n" + selected);
+            try
+            {
+                contextService.openCompany(companyId, selected);
+                alternateStatus.setText("Company opened:\n" + selected);
+                openPanel(activePanelId);
+                openCompanySelector();
+            }
+            catch (Exception ex)
+            {
+                alternateStatus.setText("Failed to open company: " + ex.getMessage());
+            }
         });
         companySelectorPane.getChildren().setAll(new Label("Open Company"), companies, new Label("Recent Companies"), recent, open);
         companySelectorPane.setPadding(new Insets(12));
         companySelectorPane.setSpacing(10);
         return companySelectorPane;
     }
-
-    private List<String> loadAvailableCompanies()
-    {
-        Path root = Paths.get(".").toAbsolutePath().normalize();
-        int maxDepth = Integer.getInteger("npbk.company.scan.depth", 3);
-        try (var stream = Files.find(root, maxDepth, (path, attrs) -> attrs.isRegularFile() && isDatabaseLike(path)))
-        {
-            List<String> matches = stream
-                .map(root::relativize)
-                .map(Path::toString)
-                .sorted()
-                .collect(Collectors.toList());
-            if (!matches.isEmpty())
-            {
-                return matches;
-            }
-        }
-        catch (Exception ignored)
-        {
-            // fallback below
-        }
-        return List.of("Purine Inc.", "John's Inc.", "San Crescent Accounting");
-    }
-
-    private boolean isDatabaseLike(Path path)
-    {
-        String name = path.getFileName().toString().toLowerCase();
-        return name.endsWith(".db") || name.endsWith(".mv.db") || name.endsWith(".h2.db");
-    }
-
 
     private VBox buildProfilePane()
     {
@@ -449,6 +480,7 @@ public class MainWindowAlternate extends BorderPane
 
     private void openPanel(AppPanelId id)
     {
+        activePanelId = id;
         WorkspaceRouteDecision decision = workspaceRouter.decide(id);
 
         boolean dashboard = decision.isDashboard();
