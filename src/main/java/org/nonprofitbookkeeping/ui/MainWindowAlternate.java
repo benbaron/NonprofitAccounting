@@ -30,6 +30,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+
+import nonprofitbookkeeping.ui.actions.ExcelTemplateReportActionFX;
+import nonprofitbookkeeping.ui.panels.HelpPanelFX;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -467,24 +471,37 @@ public class MainWindowAlternate extends BorderPane
     private void openReportsWorkspaceWithPrintHint()
     {
         openPanel(AppPanelId.REPORTS_WORKSPACE);
-        openInspectorForSelection("Reports", "Print command opened Reports Workspace. Direct print wiring is the next parity step.");
+        openInspectorForSelection("Reports", "Print action is available from the Reports workspace panel context.");
     }
 
     private void openReportsWorkspaceWithExportHint()
     {
-        openPanel(AppPanelId.REPORTS_WORKSPACE);
-        openInspectorForSelection("Reports", "Export command opened Reports Workspace. Direct export wiring is the next parity step.");
+        Stage owner = getOwningStage();
+        if (owner == null)
+        {
+            openInspectorForSelection("Reports", "Export action requires an active window; open Reports workspace and try again.");
+            return;
+        }
+        new ExcelTemplateReportActionFX(owner).handle(null);
+        openInspectorForSelection("Reports", "Export action launched via Excel template report workflow.");
     }
 
     private void openReportsWorkspaceWithScheduleHint()
     {
         openPanel(AppPanelId.REPORTS_WORKSPACE);
-        openInspectorForSelection("Reports", "Schedule command opened Reports Workspace. Scheduling workflow wiring is the next parity step.");
+        openInspectorForSelection("Reports", "Schedule workflow is not yet wired in alternate shell. Use Reports workspace for report setup.");
     }
 
     private void openHelpHint()
     {
-        openInspectorForSelection("Help", "Help route is not yet parity-complete in alternate shell. Use classic mode for full Help panel access.");
+        Stage owner = getOwningStage();
+        showAlternatePane(new HelpPanelFX(owner));
+        openInspectorForSelection("Help", "Help content opened in alternate shell.");
+    }
+
+    private Stage getOwningStage()
+    {
+        return getScene() != null && getScene().getWindow() instanceof Stage stage ? stage : null;
     }
 
     private Button actionButton(String label, Runnable action)
