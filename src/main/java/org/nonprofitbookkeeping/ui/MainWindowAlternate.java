@@ -456,10 +456,16 @@ public class MainWindowAlternate extends BorderPane
             actionButton("Export", this::openReportsWorkspaceWithExportHint),
             actionButton("Schedule", this::openReportsWorkspaceWithScheduleHint));
 
+        Button newButton = actionButton("New", this::runNewAction);
+        Button saveButton = actionButton("Save", this::runSaveAction);
+        boolean panelCommandAvailable = hasActivePanelCommandTarget();
+        newButton.setDisable(!panelCommandAvailable);
+        saveButton.setDisable(!panelCommandAvailable);
+
         VBox quickActions = new VBox(6,
             new Label("Toolbar-style actions"),
-            actionButton("New", this::runNewAction),
-            actionButton("Save", this::runSaveAction),
+            newButton,
+            saveButton,
             actionButton("Find", this::openSearchPage),
             actionButton("Journal", () -> openPanel(AppPanelId.LEDGER_REGISTER)));
 
@@ -513,14 +519,29 @@ public class MainWindowAlternate extends BorderPane
 
     private void runNewAction()
     {
+        if (!hasActivePanelCommandTarget())
+        {
+            openInspectorForSelection("Command", "New is unavailable until a panel-host workspace is active.");
+            return;
+        }
         panelHost.newItemActive();
-        openInspectorForSelection("Command", "New action sent to active workspace panel.");
+        openInspectorForSelection("Command", "New action sent to active workspace panel: " + panelHost.getActiveTitle());
     }
 
     private void runSaveAction()
     {
+        if (!hasActivePanelCommandTarget())
+        {
+            openInspectorForSelection("Command", "Save is unavailable until a panel-host workspace is active.");
+            return;
+        }
         panelHost.saveActive();
-        openInspectorForSelection("Command", "Save action sent to active workspace panel.");
+        openInspectorForSelection("Command", "Save action sent to active workspace panel: " + panelHost.getActiveTitle());
+    }
+
+    private boolean hasActivePanelCommandTarget()
+    {
+        return workspaceRouter.decide(activePanelId).isPanelHost();
     }
 
     private Button actionButton(String label, Runnable action)
