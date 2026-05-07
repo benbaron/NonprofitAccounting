@@ -333,3 +333,18 @@ Alternate UI is complete when:
 ### Known risks
 - Company recents are currently stored by company ID and displayed opportunistically from current DB listings; IDs that no longer exist in a selected DB are shown as fallback labels.
 - Active-route refresh currently re-runs route presentation and may not trigger deeper model-level refresh hooks for every legacy panel.
+
+## Round 3 status
+
+### Implemented
+- Split alternate context responsibilities by extracting `AlternateDatabaseContextSwitcher` for DB init/schema/repair orchestration and `AlternateRecentsStore` for recent database/company persistence + parsing.
+- Simplified `AlternateDataContextService` into a thin coordination layer that normalizes context paths, delegates DB switching, and delegates recents behavior.
+- Kept alternate selector routes and panel refresh behavior unchanged, preserving existing `MainWindowAlternate` UX and panel-host-backed navigation behavior.
+
+### Test additions
+- Added `AlternateRecentsStoreTest` coverage for per-database recent-company scoping, invalid recent entry filtering, and recents de-duplication ordering.
+- Expanded `AlternateDataContextServiceTest` with an explicit DB-context transition test validating active-path normalization plus recent DB persistence after `openDatabase(...)`.
+
+### Residual risks
+- `openCompany(...)` still relies on legacy static persistence calls (`CurrentCompany` / `PreferencesService`), which remain harder to isolate in pure unit tests.
+- Route-level refresh in alternate still depends on shell re-open semantics and may not fully exercise deeper panel-model refresh hooks in every legacy panel.
