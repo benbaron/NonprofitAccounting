@@ -26,10 +26,6 @@ public class WorkspaceRouter
 
     private boolean isAlternateCustomPane(AppPanelId id)
     {
-        return id == AppPanelId.SETTINGS
-            || id == AppPanelId.CHART_OF_ACCOUNTS
-            || id == AppPanelId.LEDGER_REGISTER
-            || id == AppPanelId.INVENTORY
-            || id == AppPanelId.REPORTS_WORKSPACE;
+        return id == AppPanelId.SETTINGS;
     }
 }

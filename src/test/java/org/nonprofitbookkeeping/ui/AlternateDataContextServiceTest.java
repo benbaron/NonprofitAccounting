@@ -4,16 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
 import nonprofitbookkeeping.persistence.CompanyRepository;
-import nonprofitbookkeeping.preferences.PreferencesManager;
 
 class AlternateDataContextServiceTest
 {
@@ -41,40 +36,44 @@ class AlternateDataContextServiceTest
     }
 
     @Test
-    void recentCompaniesAreScopedToCurrentDatabaseAndIgnoreInvalidEntries()
+    void openDatabaseTransitionsActiveContextAndRemembersRecent() throws Exception
     {
-        Map<String, String> backing = new HashMap<>();
-        AlternateDataContextService.PreferencesStore store = new AlternateDataContextService.PreferencesStore()
+        RecordingSwitcher switcher = new RecordingSwitcher();
+        AlternateRecentsStore recentsStore = new AlternateRecentsStore(new InMemoryStore());
+        AlternateDataContextService service = new AlternateDataContextService(new CompanyRepository(), recentsStore, switcher);
+
+        service.openDatabase(Path.of("/tmp/context.mv.db"));
+
+        assertEquals(Path.of("/tmp/context").toAbsolutePath().normalize(), service.activeDatabaseBasePath());
+        assertEquals(Path.of("/tmp/context").toAbsolutePath().normalize(), switcher.lastOpenedBasePath);
+        assertEquals(List.of(Path.of("/tmp/context").toAbsolutePath().normalize().toString()), service.recentDatabasePaths());
+    }
+
+    private static final class RecordingSwitcher extends AlternateDatabaseContextSwitcher
+    {
+        private Path lastOpenedBasePath;
+
+        @Override
+        void openDatabase(Path basePath)
         {
-            @Override
-            public String get(String key, String defaultValue)
-            {
-                return backing.getOrDefault(key, defaultValue);
-            }
+            this.lastOpenedBasePath = basePath;
+        }
+    }
 
-            @Override
-            public void put(String key, String value)
-            {
-                backing.put(key, value);
-            }
-        };
+    private static final class InMemoryStore implements AlternateDataContextService.PreferencesStore
+    {
+        private final java.util.Map<String, String> values = new java.util.HashMap<>();
 
-        PreferencesManager.setLastDatabasePath("/tmp/a.mv.db");
-        String keyA = "alternate.recent.companies.v4." +
-            Base64.getUrlEncoder().withoutPadding()
-                .encodeToString("/tmp/a".getBytes(StandardCharsets.UTF_8));
-        backing.put(keyA, "abc\n10\tAcme Co");
+        @Override
+        public String get(String key, String defaultValue)
+        {
+            return values.getOrDefault(key, defaultValue);
+        }
 
-        PreferencesManager.setLastDatabasePath("/tmp/b.mv.db");
-        String keyB = "alternate.recent.companies.v4." +
-            Base64.getUrlEncoder().withoutPadding()
-                .encodeToString("/tmp/b".getBytes(StandardCharsets.UTF_8));
-        backing.put(keyB, "20\tBeta Co");
-
-        AlternateDataContextService service = new AlternateDataContextService(new CompanyRepository(), store);
-        List<AlternateDataContextService.RecentCompanyChoice> scoped = service.recentCompanies();
-        assertEquals(1, scoped.size());
-        assertEquals(20L, scoped.get(0).id());
-        assertEquals("Beta Co", scoped.get(0).label());
+        @Override
+        public void put(String key, String value)
+        {
+            values.put(key, value);
+        }
     }
 }
