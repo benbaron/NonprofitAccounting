@@ -419,3 +419,25 @@ Output required:
 ### Residual risks
 - Report action-surface parity (print/export/schedule shortcuts and command mappings) still depends on broader command-surface work outside route wiring.
 - `SETTINGS` remains alternate custom content and does not yet mirror classic Settings panel behavior.
+
+
+## Review update (2026-05-07)
+
+### 1) Are changes so far correct?
+- **Mostly yes**: routing and tests are consistent with current implementation. `WorkspaceRouter` sends only `SETTINGS` to alternate-custom panes and routes `REPORTS_WORKSPACE` to `PANEL_HOST`, which matches `WorkspaceRouterTest` and the current `MainWindowAlternate.openPanel(...)` flow.
+- **Issue found (documentation drift)**: parity docs still described Reports as an alternate template in one row. This is now corrected in `docs/alternate-ui-parity-matrix.md`.
+
+### 2) Is the current plan correct?
+- **Partially**. The phase structure remains sound, but some items are now OBE and should be removed from immediate scope:
+  - OBE: “replace alternate reports template route” (already done in Round 5).
+  - OBE: “core route rewiring for CHART_OF_ACCOUNTS / LEDGER_REGISTER / INVENTORY / REPORTS_WORKSPACE” (already complete).
+- **Needs repair/focus shift**:
+  - Move remaining Reports work to **action parity**, not route parity (print/export/schedule + command mappings).
+  - Keep **SETTINGS parity** as explicit unresolved P0 item (still alternate custom pane).
+  - Keep command-surface parity (File/Edit/Run/Database/Reports/Fundraising/Help + toolbar equivalents) as primary functional gap.
+
+### Updated near-term execution focus (replacement for stale Phase 3/4 references)
+1. Implement shell command surface parity (menu/toolbar equivalents + shortcut target abstraction).
+2. Complete Reports action parity (print/export/schedule and discoverability).
+3. Implement Settings parity strategy (embed/wrap classic panel or complete persistence-backed alternate controls).
+4. Verify RecordService + plugin workflows remain reachable from alternate surfaces.
