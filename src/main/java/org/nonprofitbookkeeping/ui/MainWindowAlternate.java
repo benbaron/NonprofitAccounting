@@ -456,11 +456,18 @@ public class MainWindowAlternate extends BorderPane
             actionButton("Export", this::openReportsWorkspaceWithExportHint),
             actionButton("Schedule", this::openReportsWorkspaceWithScheduleHint));
 
+        VBox quickActions = new VBox(6,
+            new Label("Toolbar-style actions"),
+            actionButton("New", this::runNewAction),
+            actionButton("Save", this::runSaveAction),
+            actionButton("Find", this::openSearchPage),
+            actionButton("Journal", () -> openPanel(AppPanelId.LEDGER_REGISTER)));
+
         VBox helpGroup = new VBox(6,
             new Label("Help"),
             actionButton("Help Center", this::openHelpHint));
 
-        VBox pane = new VBox(10, new Label("Command Center"), new Separator(), fileGroup, new Separator(), runGroup, new Separator(), reportActions, new Separator(), helpGroup);
+        VBox pane = new VBox(10, new Label("Command Center"), new Separator(), fileGroup, new Separator(), runGroup, new Separator(), reportActions, new Separator(), quickActions, new Separator(), helpGroup);
         pane.setPadding(new Insets(12));
         pane.setSpacing(10);
         pane.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
@@ -502,6 +509,18 @@ public class MainWindowAlternate extends BorderPane
     private Stage getOwningStage()
     {
         return getScene() != null && getScene().getWindow() instanceof Stage stage ? stage : null;
+    }
+
+    private void runNewAction()
+    {
+        panelHost.newItemActive();
+        openInspectorForSelection("Command", "New action sent to active workspace panel.");
+    }
+
+    private void runSaveAction()
+    {
+        panelHost.saveActive();
+        openInspectorForSelection("Command", "Save action sent to active workspace panel.");
     }
 
     private Button actionButton(String label, Runnable action)
