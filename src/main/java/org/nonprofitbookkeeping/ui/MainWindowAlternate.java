@@ -39,10 +39,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.nonprofitbookkeeping.ui.alternate.AlternateChartOfAccountsView;
-import org.nonprofitbookkeeping.ui.alternate.AlternateInventoryTransferOrdersView;
-import org.nonprofitbookkeeping.ui.alternate.AlternateManualJournalView;
-import org.nonprofitbookkeeping.ui.alternate.AlternateReportsOverviewView;
 import org.nonprofitbookkeeping.ui.routing.WorkspaceRouteDecision;
 import org.nonprofitbookkeeping.ui.routing.WorkspaceRouter;
 
@@ -502,15 +498,7 @@ public class MainWindowAlternate extends BorderPane
         }
         else if (alternateCustomPane)
         {
-            Node template = switch (id)
-            {
-                case CHART_OF_ACCOUNTS -> AlternateChartOfAccountsView.build();
-                case LEDGER_REGISTER -> AlternateManualJournalView.build();
-                case INVENTORY -> AlternateInventoryTransferOrdersView.build();
-                case REPORTS_WORKSPACE -> AlternateReportsOverviewView.build();
-                default -> new Label("Template pending");
-            };
-            alternateContentPane.getChildren().setAll(template);
+            alternateContentPane.getChildren().setAll(new Label("Template pending"));
         }
         else if (panelHostBackedPanel)
         {

@@ -348,3 +348,74 @@ Alternate UI is complete when:
 ### Residual risks
 - `openCompany(...)` still relies on legacy static persistence calls (`CurrentCompany` / `PreferencesService`), which remain harder to isolate in pure unit tests.
 - Route-level refresh in alternate still depends on shell re-open semantics and may not fully exercise deeper panel-model refresh hooks in every legacy panel.
+
+## Next metaprompt (Phase 3 execution)
+
+```text
+You are working in the NonprofitAccounting repo.
+
+Context:
+- Phase 0/1/2 are complete, including Phase 2 hardening (service split for DB switching and recents persistence/parsing).
+- Current focus is Phase 3: replacing remaining alternate placeholder routes with real panel-backed behavior while preserving classic-shell behavior.
+
+Scope:
+Implement a focused “Phase 3 core panel real-data plumbing pass”.
+
+Goals:
+1) Replace placeholder-only alternate routes with real panel-backed content for:
+   - CHART_OF_ACCOUNTS
+   - LEDGER_REGISTER
+   - INVENTORY
+   - SETTINGS subsections where feasible in this pass
+2) Preserve PanelHost creation semantics and classic MainWindow behavior.
+3) Keep alternate-specific layout/chrome where needed, but reuse production panel roots instead of duplicating business logic.
+4) Add test coverage for routing decisions and panel-host delegation for touched routes.
+
+Requirements:
+- Do not regress existing alternate routes that are already panel-host-backed (Funds/Schedules/Budget/etc.).
+- Do not introduce test-only hooks in production classes.
+- Keep changes reviewable and backward compatible.
+- If user-visible behavior changes, update docs/alternate-ui-parity-matrix.md accordingly.
+- Append a brief “Round 4 status” section to docs/alternate-ui-completion-plan.md covering:
+  - refactors/rewiring done,
+  - tests added/updated,
+  - residual risks.
+
+Validation:
+- Run: mvn test -q
+- Report exact result.
+
+Output required:
+1) changed files list
+2) test result
+3) short code review (risks, technical debt, recommended next fixes)
+4) offer to fix review issues and failing tests immediately
+```
+
+
+## Round 4 status
+
+### Implemented
+- Routed alternate `CHART_OF_ACCOUNTS`, `LEDGER_REGISTER`, and `INVENTORY` through shared `PanelHost` panels by updating `WorkspaceRouter` and `MainWindowAlternate` route handling.
+- Kept alternate custom-pane behavior unchanged for `SETTINGS` and `REPORTS_WORKSPACE`, preserving current alternate-only surfaces there.
+
+### Test additions
+- Added `WorkspaceRouterTest` to verify panel-host routing for CHART_OF_ACCOUNTS/LEDGER_REGISTER/INVENTORY and continued alternate-custom routing for SETTINGS/REPORTS_WORKSPACE.
+
+### Residual risks
+- `REPORTS_WORKSPACE` remains alternate-placeholder-backed and still requires full parity wiring.
+- `SETTINGS` remains alternate custom content and does not yet mirror classic Settings panel behavior.
+
+
+## Round 5 status
+
+### Implemented
+- Routed alternate `REPORTS_WORKSPACE` through shared `PanelHost` by removing it from alternate-custom routing decisions.
+- Simplified alternate route handling so only `SETTINGS` remains an alternate-custom pane route.
+
+### Test additions
+- Updated `WorkspaceRouterTest` expectations to assert `REPORTS_WORKSPACE` now routes to panel-host panels while `SETTINGS` remains alternate-custom.
+
+### Residual risks
+- Report action-surface parity (print/export/schedule shortcuts and command mappings) still depends on broader command-surface work outside route wiring.
+- `SETTINGS` remains alternate custom content and does not yet mirror classic Settings panel behavior.
