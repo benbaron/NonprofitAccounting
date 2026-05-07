@@ -469,11 +469,18 @@ public class MainWindowAlternate extends BorderPane
             actionButton("Find", this::openSearchPage),
             actionButton("Journal", () -> openPanel(AppPanelId.LEDGER_REGISTER)));
 
+        VBox fundraisingGroup = new VBox(6,
+            new Label("Fundraising"),
+            actionButton("Donors", () -> openFundraisingHint("Donors")),
+            actionButton("Donations", () -> openFundraisingHint("Donations")),
+            actionButton("Grants", () -> openFundraisingHint("Grants")),
+            actionButton("Funds", () -> openPanel(AppPanelId.FUNDS)));
+
         VBox helpGroup = new VBox(6,
             new Label("Help"),
             actionButton("Help Center", this::openHelpHint));
 
-        VBox pane = new VBox(10, new Label("Command Center"), new Separator(), fileGroup, new Separator(), runGroup, new Separator(), reportActions, new Separator(), quickActions, new Separator(), helpGroup);
+        VBox pane = new VBox(10, new Label("Command Center"), new Separator(), fileGroup, new Separator(), runGroup, new Separator(), reportActions, new Separator(), quickActions, new Separator(), fundraisingGroup, new Separator(), helpGroup);
         pane.setPadding(new Insets(12));
         pane.setSpacing(10);
         pane.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
@@ -510,6 +517,11 @@ public class MainWindowAlternate extends BorderPane
         Stage owner = getOwningStage();
         showAlternatePane(new HelpPanelFX(owner));
         openInspectorForSelection("Help", "Help content opened in alternate shell.");
+    }
+
+    private void openFundraisingHint(String area)
+    {
+        openInspectorForSelection("Fundraising", area + " command is discovered in alternate mode; full panel parity is pending.");
     }
 
     private Stage getOwningStage()
