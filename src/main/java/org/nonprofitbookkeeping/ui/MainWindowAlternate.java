@@ -84,6 +84,7 @@ public class MainWindowAlternate extends BorderPane
             iconButton("◉", this::openProfilePage),
             iconButton("⌂", () -> openPanel(AppPanelId.DASHBOARD)),
             iconButton("⌕", this::openSearchPage),
+            iconButton("☰", this::openCommandCenter),
             iconButton("⚙", () -> openPanel(AppPanelId.SETTINGS)));
         rail.setPadding(new Insets(14, 8, 14, 8));
         rail.setStyle("-fx-background-color: #1f2431; -fx-background-radius: 14;");
@@ -157,6 +158,7 @@ public class MainWindowAlternate extends BorderPane
             navButton("🗓  Schedules", AppPanelId.SCHEDULES),
             navButton("📈  Budget", AppPanelId.BUDGET_EDITOR),
             navButton("⚙  Settings", AppPanelId.SETTINGS),
+            navActionButton("☰  Command Center", this::openCommandCenter),
             navActionButton("🗄  Open Database", this::openDatabaseSelector),
             navActionButton("🏢  Open Company", this::openCompanySelector));
 
@@ -429,6 +431,46 @@ public class MainWindowAlternate extends BorderPane
         return searchPane;
     }
 
+
+    private VBox buildCommandCenterPane()
+    {
+        VBox fileGroup = new VBox(6,
+            new Label("File"),
+            actionButton("Open Database", this::openDatabaseSelector),
+            actionButton("Open Company", this::openCompanySelector));
+
+        VBox runGroup = new VBox(6,
+            new Label("Run"),
+            actionButton("Chart of Accounts", () -> openPanel(AppPanelId.CHART_OF_ACCOUNTS)),
+            actionButton("Journal", () -> openPanel(AppPanelId.LEDGER_REGISTER)),
+            actionButton("Inventory", () -> openPanel(AppPanelId.INVENTORY)),
+            actionButton("Reports Workspace", () -> openPanel(AppPanelId.REPORTS_WORKSPACE)));
+
+        VBox reportActions = new VBox(6,
+            new Label("Reports actions"),
+            actionButton("Print (planned)", () -> openInspectorForSelection("Reports", "Print action is planned for command-surface parity.")),
+            actionButton("Export (planned)", () -> openInspectorForSelection("Reports", "Export action is planned for command-surface parity.")),
+            actionButton("Schedule (planned)", () -> openInspectorForSelection("Reports", "Schedule action is planned for command-surface parity.")));
+
+        VBox helpGroup = new VBox(6,
+            new Label("Help"),
+            actionButton("Help Center", () -> openInspectorForSelection("Help", "Help workflow is pending alternate-shell route integration.")));
+
+        VBox pane = new VBox(10, new Label("Command Center"), new Separator(), fileGroup, new Separator(), runGroup, new Separator(), reportActions, new Separator(), helpGroup);
+        pane.setPadding(new Insets(12));
+        pane.setSpacing(10);
+        pane.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
+        return pane;
+    }
+
+    private Button actionButton(String label, Runnable action)
+    {
+        Button button = new Button(label);
+        button.setMaxWidth(Double.MAX_VALUE);
+        button.setOnAction(e -> action.run());
+        return button;
+    }
+
     private void openProfilePage()
     {
         showAlternatePane(buildProfilePane());
@@ -437,6 +479,11 @@ public class MainWindowAlternate extends BorderPane
     private void openSearchPage()
     {
         showAlternatePane(buildSearchPane());
+    }
+
+    private void openCommandCenter()
+    {
+        showAlternatePane(buildCommandCenterPane());
     }
 
     private void openDatabaseSelector()
