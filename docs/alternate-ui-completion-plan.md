@@ -508,3 +508,114 @@ Output required:
 3) short code review (risks, technical debt, recommended next fixes)
 4) offer to fix review issues and failing tests immediately
 ```
+
+## Round 7 status (Reports + Banking action parity)
+
+### Implemented actions
+- Kept alternate reports actions fully executable in Command Center: direct Print actions (Income Statement, Balance Sheet, Trial Balance), direct Schedule dialog workflow, and existing Export workflow via `ExcelTemplateReportActionFX`.
+- Added stronger operator feedback for reports export and banking actions with explicit success/failure inspector messages.
+- Updated alternate banking command labels to align with classic Run menu naming (`Reconcile Accounts`, `Undeposited Funds`, `Documents & Attachments`) and retained shared-panel/shared-service reuse.
+- Preserved routing behavior (`WorkspaceRouter` semantics unchanged: `SETTINGS` alternate-custom; core routes panel-host-backed).
+
+### Tests run
+- `mvn test -q` (pass).
+
+### Residual risks
+1. Report print/export actions are UI/event-driven and currently validated by integration test suite only; there are no focused alternate-shell action unit tests for failure branch assertions.
+2. Schedule persistence is preferences-backed and local to alternate shell; no shared scheduling engine/job execution parity yet with any future enterprise scheduler.
+3. Banking command entries open shared panels, but deeper classic flows (bank-link/auth/provider sync) remain outside current alternate command-center pass.
+
+## Next metaprompt (Phase 6B: Alternate action hardening + tests)
+
+```text
+You are working in the NonprofitAccounting repo.
+
+Context:
+- Round 7 delivered Reports + Banking action parity wiring in MainWindowAlternate.
+- Review feedback calls out missing focused tests around alternate command-center parity and scheduled-report persistence behavior.
+
+Scope:
+Implement a focused reliability pass for alternate command-center parity.
+
+Goals:
+1) Add targeted automated tests that lock in:
+   - classic banking command labels in alternate Command Center (`Reconcile Accounts`, `Undeposited Funds`, `Documents & Attachments`);
+   - scheduled report persistence ordering behavior (new entries prepend older entries).
+2) Keep implementation behavior unchanged (test-only hardening unless a blocker is discovered).
+3) Preserve WorkspaceRouter semantics and classic MainWindow behavior.
+
+Validation:
+- Run: mvn test -q
+- Report exact result.
+```
+
+## Round 8 status (Alternate action hardening + tests)
+
+### Implemented
+- Added `MainWindowAlternateCommandCenterTest` with focused checks for Command Center banking action labels matching classic workflow naming.
+- Added focused test coverage for `saveScheduledReport(...)` persistence ordering to verify new scheduled entries prepend older entries.
+
+### Tests run
+- `mvn test -q` (pass).
+
+### Residual risks
+1. Alternate report-print/export action failure-branch UI feedback still lacks dedicated assertions.
+2. Current tests use reflection for private helper access, which can be brittle during internal refactors.
+
+## Round 8.1 parity-matrix audit (deficiencies + remediation)
+
+### Audit scope
+- Reviewed `MainWindowAlternate` behavior against `docs/alternate-ui-parity-matrix.md` parity claims for:
+  - Command Center parity row (partial),
+  - Banking command surface row (partial),
+  - Reports menu shortcuts row (partial),
+  - Settings route row (partial/mismatch risk).
+
+### Deficiencies confirmed
+1. **Row-level status inflation risk for Reports/Banking parity language**
+   - Matrix notes are directionally accurate, but they can be read as “feature complete” while status remains `partial`.
+   - Deficiency: no explicit acceptance checklist in docs that defines what is still missing for each `partial` row.
+
+2. **Insufficient hard guarantees for operator feedback parity**
+   - Runtime code emits inspector success/failure messages for key report/banking actions, but parity docs do not tie this to objective test criteria.
+   - Deficiency: no explicit test coverage requirement for action-failure feedback branches in alternate shell.
+
+3. **Test brittleness not reflected as a tracked completion blocker**
+   - `MainWindowAlternateCommandCenterTest` currently uses reflection to access private helpers/state.
+   - Deficiency: completion plan references brittleness as risk, but not yet as a concrete tracked remediation item with exit criteria.
+
+4. **Settings parity remains a top unresolved behavior mismatch**
+   - Matrix already marks Settings as partial, but completion sequencing can more strongly prioritize parity strategy (embed classic settings panel vs complete alternate equivalent).
+   - Deficiency: missing explicit short-term decision gate and owner deliverable in the plan.
+
+### Completion-plan updates (actionable remediation)
+- Add a **parity acceptance checklist** for each `partial` P0/P1 row before status can move to `implemented`.
+- Add a **test hardening sub-phase** focused on:
+  - report export failure feedback assertions,
+  - report print failure feedback assertions,
+  - banking panel-open failure feedback assertions.
+- Add a **reflection-reduction sub-phase**:
+  - extract package-private helpers or collaborator classes for command-center composition and schedule persistence,
+  - migrate tests off private reflection.
+- Add a **Settings parity decision gate**:
+  - choose between classic-panel embedding and alternate-complete implementation,
+  - define measurable parity acceptance criteria and target round.
+
+## Round 9 status (Remediation pass: acceptance criteria + feedback test hardening)
+
+### Implemented remediation
+1. Added explicit **parity acceptance checklist** for remaining `partial` high-priority rows:
+   - Alternate command center (P0): all classic-critical Run/Reports/Banking actions directly executable or explicitly deferred with rationale; feedback assertions covered by tests; no guidance-only dead-end actions.
+   - Run menu command surface (P0): documented mapping table from classic Run entries to alternate entry points, with each mapping tagged implemented/deferred.
+   - Banking command surface (P0): reconcile/undeposited/documents commands open shared panels/services and include deterministic feedback for unavailable context.
+   - Reports menu shortcuts (P1): print/export/schedule actions execute from alternate shell and include test coverage for at least one failure/precondition branch.
+2. Followed the prior plan’s next step by adding a focused alternate-shell feedback test:
+   - new test verifies Reports Export action emits explicit guidance when no owning stage is available.
+
+### Validation run
+- `mvn test -q` (pass).
+
+### Remaining deficiencies after this pass
+1. Failure-path tests for banking action exceptions still rely on runtime conditions and are not directly asserted.
+2. Reflection usage remains in alternate-shell tests; extraction of package-private collaborators is still pending.
+3. Settings parity decision gate remains open and should be resolved in next round before broad parity “implemented” claims.
