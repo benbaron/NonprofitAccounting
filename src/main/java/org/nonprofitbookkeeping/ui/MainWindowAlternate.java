@@ -11,6 +11,9 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
@@ -30,6 +33,25 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+
+import nonprofitbookkeeping.ui.actions.ExcelTemplateReportActionFX;
+import nonprofitbookkeeping.ui.actions.GenerateIncomeStatementAction;
+import nonprofitbookkeeping.ui.actions.GenerateBalanceSheetAction;
+import nonprofitbookkeeping.ui.actions.GenerateTrialBalanceAction;
+import nonprofitbookkeeping.service.ReportService;
+import nonprofitbookkeeping.ui.panels.HelpPanelFX;
+import nonprofitbookkeeping.ui.panels.LedgerReconcilePanelFX;
+import nonprofitbookkeeping.service.ReconciliationService;
+import nonprofitbookkeeping.service.UndepositedFundsService;
+import nonprofitbookkeeping.service.DocumentStorageService;
+import nonprofitbookkeeping.ui.panels.UndepositedFundsPanelFX;
+import nonprofitbookkeeping.ui.panels.DocumentsPanelFX;
+import nonprofitbookkeeping.ui.panels.DonorsPanelFX;
+import nonprofitbookkeeping.ui.panels.DonationsPanelFX;
+import nonprofitbookkeeping.ui.panels.GrantsPanelFX;
+import nonprofitbookkeeping.service.DonorService;
+import nonprofitbookkeeping.service.GrantsService;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -38,6 +60,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.prefs.Preferences;
 
 import org.nonprofitbookkeeping.ui.routing.WorkspaceRouteDecision;
 import org.nonprofitbookkeeping.ui.routing.WorkspaceRouter;
@@ -67,6 +90,8 @@ public class MainWindowAlternate extends BorderPane
     private final WorkspaceRouter workspaceRouter = new WorkspaceRouter();
     private final AlternateDataContextService contextService = new AlternateDataContextService();
     private AppPanelId activePanelId = AppPanelId.DASHBOARD;
+    private static final String SCHEDULED_REPORTS_KEY = "alternate.scheduled.reports";
+    private final Preferences alternatePreferences = Preferences.userNodeForPackage(MainWindowAlternate.class);
 
     public MainWindowAlternate()
     {
@@ -84,6 +109,7 @@ public class MainWindowAlternate extends BorderPane
             iconButton("◉", this::openProfilePage),
             iconButton("⌂", () -> openPanel(AppPanelId.DASHBOARD)),
             iconButton("⌕", this::openSearchPage),
+            iconButton("☰", this::openCommandCenter),
             iconButton("⚙", () -> openPanel(AppPanelId.SETTINGS)));
         rail.setPadding(new Insets(14, 8, 14, 8));
         rail.setStyle("-fx-background-color: #1f2431; -fx-background-radius: 14;");
@@ -157,6 +183,7 @@ public class MainWindowAlternate extends BorderPane
             navButton("🗓  Schedules", AppPanelId.SCHEDULES),
             navButton("📈  Budget", AppPanelId.BUDGET_EDITOR),
             navButton("⚙  Settings", AppPanelId.SETTINGS),
+            navActionButton("☰  Command Center", this::openCommandCenter),
             navActionButton("🗄  Open Database", this::openDatabaseSelector),
             navActionButton("🏢  Open Company", this::openCompanySelector));
 
@@ -429,6 +456,247 @@ public class MainWindowAlternate extends BorderPane
         return searchPane;
     }
 
+
+    private VBox buildCommandCenterPane()
+    {
+        VBox fileGroup = new VBox(6,
+            new Label("File"),
+            actionButton("Open Database", this::openDatabaseSelector),
+            actionButton("Open Company", this::openCompanySelector));
+
+        VBox runGroup = new VBox(6,
+            new Label("Run"),
+            actionButton("Chart of Accounts", () -> openPanel(AppPanelId.CHART_OF_ACCOUNTS)),
+            actionButton("Journal", () -> openPanel(AppPanelId.LEDGER_REGISTER)),
+            actionButton("Inventory", () -> openPanel(AppPanelId.INVENTORY)),
+            actionButton("Reports Workspace", () -> openPanel(AppPanelId.REPORTS_WORKSPACE)));
+
+        VBox reportActions = new VBox(6,
+            new Label("Reports actions"),
+            actionButton("Print Income Statement", this::printIncomeStatementDirect),
+            actionButton("Print Balance Sheet", this::printBalanceSheetDirect),
+            actionButton("Print Trial Balance", this::printTrialBalanceDirect),
+            actionButton("Export", this::openReportsWorkspaceWithExportHint),
+            actionButton("Schedule", this::openReportsScheduleDirect));
+
+        Button newButton = actionButton("New", this::runNewAction);
+        Button saveButton = actionButton("Save", this::runSaveAction);
+        boolean panelCommandAvailable = hasActivePanelCommandTarget();
+        newButton.setDisable(!panelCommandAvailable);
+        saveButton.setDisable(!panelCommandAvailable);
+
+        VBox quickActions = new VBox(6,
+            new Label("Toolbar-style actions"),
+            newButton,
+            saveButton,
+            actionButton("Find", this::openSearchPage),
+            actionButton("Journal", () -> openPanel(AppPanelId.LEDGER_REGISTER)));
+
+        VBox fundraisingGroup = new VBox(6,
+            new Label("Fundraising"),
+            actionButton("Donors", this::openDonorsDirect),
+            actionButton("Donations", this::openDonationsDirect),
+            actionButton("Grants", this::openGrantsDirect),
+            actionButton("Funds", () -> openPanel(AppPanelId.FUNDS)));
+
+        VBox bankingGroup = new VBox(6,
+            new Label("Banking"),
+            actionButton("Bank Connect", this::openReconcileAccountsDirect),
+            actionButton("Undeposited Funds", this::openUndepositedFundsDirect),
+            actionButton("Documents & Attachments", this::openDocumentsDirect),
+            actionButton("Account Activity", () -> openPanel(AppPanelId.LEDGER_REGISTER)),
+            actionButton("Transactions", () -> openPanel(AppPanelId.LEDGER_REGISTER)));
+
+        VBox helpGroup = new VBox(6,
+            new Label("Help"),
+            actionButton("Help Center", this::openHelpHint));
+
+        VBox pane = new VBox(10, new Label("Command Center"), new Separator(), fileGroup, new Separator(), runGroup, new Separator(), reportActions, new Separator(), quickActions, new Separator(), fundraisingGroup, new Separator(), bankingGroup, new Separator(), helpGroup);
+        pane.setPadding(new Insets(12));
+        pane.setSpacing(10);
+        pane.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
+        return pane;
+    }
+
+
+    private void printIncomeStatementDirect()
+    {
+        try
+        {
+            new GenerateIncomeStatementAction(new ReportService()).actionPerformed(null);
+            openInspectorForSelection("Reports", "Printed Income Statement.");
+        }
+        catch (Exception ex)
+        {
+            openInspectorForSelection("Reports", "Income Statement print failed: " + ex.getMessage());
+        }
+    }
+
+    private void printBalanceSheetDirect()
+    {
+        try
+        {
+            new GenerateBalanceSheetAction(new ReportService()).actionPerformed(null);
+            openInspectorForSelection("Reports", "Printed Balance Sheet.");
+        }
+        catch (Exception ex)
+        {
+            openInspectorForSelection("Reports", "Balance Sheet print failed: " + ex.getMessage());
+        }
+    }
+
+    private void printTrialBalanceDirect()
+    {
+        try
+        {
+            new GenerateTrialBalanceAction(new ReportService()).actionPerformed(null);
+            openInspectorForSelection("Reports", "Printed Trial Balance.");
+        }
+        catch (Exception ex)
+        {
+            openInspectorForSelection("Reports", "Trial Balance print failed: " + ex.getMessage());
+        }
+    }
+
+    private void openReportsWorkspaceWithExportHint()
+    {
+        Stage owner = getOwningStage();
+        if (owner == null)
+        {
+            openInspectorForSelection("Reports", "Export action requires an active window; open Reports workspace and try again.");
+            return;
+        }
+        new ExcelTemplateReportActionFX(owner).handle(null);
+        openInspectorForSelection("Reports", "Export action launched via Excel template report workflow.");
+    }
+
+    private void openReportsScheduleDirect()
+    {
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Schedule Report");
+        dialog.setHeaderText("Create scheduled report run");
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        ComboBox<String> reportType = new ComboBox<>(FXCollections.observableArrayList(
+            "Income Statement", "Balance Sheet", "Trial Balance"));
+        reportType.setValue("Income Statement");
+        ComboBox<String> frequency = new ComboBox<>(FXCollections.observableArrayList(
+            "Daily", "Weekly", "Monthly", "Quarterly"));
+        frequency.setValue("Monthly");
+        DatePicker nextRun = new DatePicker(java.time.LocalDate.now().plusDays(1));
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(8);
+        grid.addRow(0, new Label("Report"), reportType);
+        grid.addRow(1, new Label("Frequency"), frequency);
+        grid.addRow(2, new Label("Next run"), nextRun);
+        dialog.getDialogPane().setContent(grid);
+
+        ButtonType selected = dialog.showAndWait().orElse(ButtonType.CANCEL);
+        if (selected == ButtonType.OK)
+        {
+            String entry = reportType.getValue() + "|" + frequency.getValue() + "|" + nextRun.getValue();
+            saveScheduledReport(entry);
+            openInspectorForSelection("Reports", "Scheduled " + reportType.getValue() + " (" + frequency.getValue() + ") starting " + nextRun.getValue() + ".");
+        }
+        else
+        {
+            openInspectorForSelection("Reports", "Schedule action cancelled.");
+        }
+    }
+
+    private void saveScheduledReport(String entry)
+    {
+        String existing = alternatePreferences.get(SCHEDULED_REPORTS_KEY, "");
+        String updated = existing == null || existing.isBlank() ? entry : entry + "\n" + existing;
+        alternatePreferences.put(SCHEDULED_REPORTS_KEY, updated);
+    }
+
+    private void openReconcileAccountsDirect()
+    {
+        showAlternatePane(new LedgerReconcilePanelFX(new ReconciliationService()));
+        openInspectorForSelection("Banking", "Reconcile Accounts opened in alternate shell.");
+    }
+
+    private void openUndepositedFundsDirect()
+    {
+        showAlternatePane(new UndepositedFundsPanelFX(new UndepositedFundsService()));
+        openInspectorForSelection("Banking", "Undeposited Funds opened in alternate shell.");
+    }
+
+    private void openDocumentsDirect()
+    {
+        showAlternatePane(new DocumentsPanelFX(new DocumentStorageService()));
+        openInspectorForSelection("Banking", "Documents & Attachments opened in alternate shell.");
+    }
+
+    private void openHelpHint()
+    {
+        Stage owner = getOwningStage();
+        showAlternatePane(new HelpPanelFX(owner));
+        openInspectorForSelection("Help", "Help content opened in alternate shell.");
+    }
+
+    private void openDonorsDirect()
+    {
+        showAlternatePane(new DonorsPanelFX(new DonorService(), null));
+        openInspectorForSelection("Fundraising", "Donors panel opened in alternate shell.");
+    }
+
+    private void openDonationsDirect()
+    {
+        Stage owner = getOwningStage();
+        showAlternatePane(new DonationsPanelFX(owner));
+        openInspectorForSelection("Fundraising", "Donations panel opened in alternate shell.");
+    }
+
+    private void openGrantsDirect()
+    {
+        showAlternatePane(new GrantsPanelFX(new GrantsService()));
+        openInspectorForSelection("Fundraising", "Grants panel opened in alternate shell.");
+    }
+
+    private Stage getOwningStage()
+    {
+        return getScene() != null && getScene().getWindow() instanceof Stage stage ? stage : null;
+    }
+
+    private void runNewAction()
+    {
+        if (!hasActivePanelCommandTarget())
+        {
+            openInspectorForSelection("Command", "New is unavailable until a panel-host workspace is active.");
+            return;
+        }
+        panelHost.newItemActive();
+        openInspectorForSelection("Command", "New action sent to active workspace panel: " + panelHost.getActiveTitle());
+    }
+
+    private void runSaveAction()
+    {
+        if (!hasActivePanelCommandTarget())
+        {
+            openInspectorForSelection("Command", "Save is unavailable until a panel-host workspace is active.");
+            return;
+        }
+        panelHost.saveActive();
+        openInspectorForSelection("Command", "Save action sent to active workspace panel: " + panelHost.getActiveTitle());
+    }
+
+    private boolean hasActivePanelCommandTarget()
+    {
+        return workspaceRouter.decide(activePanelId).isPanelHost();
+    }
+
+    private Button actionButton(String label, Runnable action)
+    {
+        Button button = new Button(label);
+        button.setMaxWidth(Double.MAX_VALUE);
+        button.setOnAction(e -> action.run());
+        return button;
+    }
+
     private void openProfilePage()
     {
         showAlternatePane(buildProfilePane());
@@ -437,6 +705,11 @@ public class MainWindowAlternate extends BorderPane
     private void openSearchPage()
     {
         showAlternatePane(buildSearchPane());
+    }
+
+    private void openCommandCenter()
+    {
+        showAlternatePane(buildCommandCenterPane());
     }
 
     private void openDatabaseSelector()
