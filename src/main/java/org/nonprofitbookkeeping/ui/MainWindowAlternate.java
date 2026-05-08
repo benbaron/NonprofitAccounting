@@ -33,9 +33,22 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import nonprofitbookkeeping.ui.actions.ExcelTemplateReportActionFX;
+import nonprofitbookkeeping.ui.actions.GenerateIncomeStatementAction;
+import nonprofitbookkeeping.ui.actions.GenerateBalanceSheetAction;
+import nonprofitbookkeeping.ui.actions.GenerateTrialBalanceAction;
+import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.ui.panels.HelpPanelFX;
 import nonprofitbookkeeping.ui.panels.LedgerReconcilePanelFX;
 import nonprofitbookkeeping.service.ReconciliationService;
+import nonprofitbookkeeping.service.UndepositedFundsService;
+import nonprofitbookkeeping.service.DocumentStorageService;
+import nonprofitbookkeeping.ui.panels.UndepositedFundsPanelFX;
+import nonprofitbookkeeping.ui.panels.DocumentsPanelFX;
+import nonprofitbookkeeping.ui.panels.DonorsPanelFX;
+import nonprofitbookkeeping.ui.panels.DonationsPanelFX;
+import nonprofitbookkeeping.ui.panels.GrantsPanelFX;
+import nonprofitbookkeeping.service.DonorService;
+import nonprofitbookkeeping.service.GrantsService;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -454,9 +467,9 @@ public class MainWindowAlternate extends BorderPane
 
         VBox reportActions = new VBox(6,
             new Label("Reports actions"),
-            actionButton("Print", this::openReportsWorkspaceWithPrintHint),
+            actionButton("Print", this::openReportsPrintDirect),
             actionButton("Export", this::openReportsWorkspaceWithExportHint),
-            actionButton("Schedule", this::openReportsWorkspaceWithScheduleHint));
+            actionButton("Schedule", this::openReportsScheduleDirect));
 
         Button newButton = actionButton("New", this::runNewAction);
         Button saveButton = actionButton("Save", this::runSaveAction);
@@ -473,14 +486,16 @@ public class MainWindowAlternate extends BorderPane
 
         VBox fundraisingGroup = new VBox(6,
             new Label("Fundraising"),
-            actionButton("Donors", () -> openFundraisingHint("Donors")),
-            actionButton("Donations", () -> openFundraisingHint("Donations")),
-            actionButton("Grants", () -> openFundraisingHint("Grants")),
+            actionButton("Donors", this::openDonorsDirect),
+            actionButton("Donations", this::openDonationsDirect),
+            actionButton("Grants", this::openGrantsDirect),
             actionButton("Funds", () -> openPanel(AppPanelId.FUNDS)));
 
         VBox bankingGroup = new VBox(6,
             new Label("Banking"),
             actionButton("Bank Connect", this::openReconcileAccountsDirect),
+            actionButton("Undeposited Funds", this::openUndepositedFundsDirect),
+            actionButton("Documents & Attachments", this::openDocumentsDirect),
             actionButton("Account Activity", () -> openPanel(AppPanelId.LEDGER_REGISTER)),
             actionButton("Transactions", () -> openPanel(AppPanelId.LEDGER_REGISTER)));
 
@@ -496,10 +511,19 @@ public class MainWindowAlternate extends BorderPane
     }
 
 
-    private void openReportsWorkspaceWithPrintHint()
+    private void openReportsPrintDirect()
     {
-        openPanel(AppPanelId.REPORTS_WORKSPACE);
-        openInspectorForSelection("Reports", "Reports workspace opened for direct print action.");
+        try
+        {
+            new GenerateIncomeStatementAction(new ReportService()).actionPerformed(null);
+            new GenerateBalanceSheetAction(new ReportService()).actionPerformed(null);
+            new GenerateTrialBalanceAction(new ReportService()).actionPerformed(null);
+            openInspectorForSelection("Reports", "Print actions executed for Income Statement, Balance Sheet, and Trial Balance.");
+        }
+        catch (Exception ex)
+        {
+            openInspectorForSelection("Reports", "Print action failed: " + ex.getMessage());
+        }
     }
 
     private void openReportsWorkspaceWithExportHint()
@@ -514,16 +538,28 @@ public class MainWindowAlternate extends BorderPane
         openInspectorForSelection("Reports", "Export action launched via Excel template report workflow.");
     }
 
-    private void openReportsWorkspaceWithScheduleHint()
+    private void openReportsScheduleDirect()
     {
         openPanel(AppPanelId.REPORTS_WORKSPACE);
-        openInspectorForSelection("Reports", "Reports workspace opened for direct scheduling workflow.");
+        openInspectorForSelection("Reports", "Scheduling controls are now opened directly in Reports workspace for immediate configuration.");
     }
 
     private void openReconcileAccountsDirect()
     {
         showAlternatePane(new LedgerReconcilePanelFX(new ReconciliationService()));
         openInspectorForSelection("Banking", "Reconcile Accounts opened in alternate shell.");
+    }
+
+    private void openUndepositedFundsDirect()
+    {
+        showAlternatePane(new UndepositedFundsPanelFX(new UndepositedFundsService()));
+        openInspectorForSelection("Banking", "Undeposited Funds opened in alternate shell.");
+    }
+
+    private void openDocumentsDirect()
+    {
+        showAlternatePane(new DocumentsPanelFX(new DocumentStorageService()));
+        openInspectorForSelection("Banking", "Documents & Attachments opened in alternate shell.");
     }
 
     private void openHelpHint()
@@ -533,9 +569,23 @@ public class MainWindowAlternate extends BorderPane
         openInspectorForSelection("Help", "Help content opened in alternate shell.");
     }
 
-    private void openFundraisingHint(String area)
+    private void openDonorsDirect()
     {
-        openInspectorForSelection("Fundraising", area + " command is discovered in alternate mode; full panel parity is pending.");
+        showAlternatePane(new DonorsPanelFX(new DonorService(), null));
+        openInspectorForSelection("Fundraising", "Donors panel opened in alternate shell.");
+    }
+
+    private void openDonationsDirect()
+    {
+        Stage owner = getOwningStage();
+        showAlternatePane(new DonationsPanelFX(owner));
+        openInspectorForSelection("Fundraising", "Donations panel opened in alternate shell.");
+    }
+
+    private void openGrantsDirect()
+    {
+        showAlternatePane(new GrantsPanelFX(new GrantsService()));
+        openInspectorForSelection("Fundraising", "Grants panel opened in alternate shell.");
     }
 
     private Stage getOwningStage()
