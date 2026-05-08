@@ -11,6 +11,9 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
@@ -57,6 +60,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.prefs.Preferences;
 
 import org.nonprofitbookkeeping.ui.routing.WorkspaceRouteDecision;
 import org.nonprofitbookkeeping.ui.routing.WorkspaceRouter;
@@ -86,6 +90,8 @@ public class MainWindowAlternate extends BorderPane
     private final WorkspaceRouter workspaceRouter = new WorkspaceRouter();
     private final AlternateDataContextService contextService = new AlternateDataContextService();
     private AppPanelId activePanelId = AppPanelId.DASHBOARD;
+    private static final String SCHEDULED_REPORTS_KEY = "alternate.scheduled.reports";
+    private final Preferences alternatePreferences = Preferences.userNodeForPackage(MainWindowAlternate.class);
 
     public MainWindowAlternate()
     {
@@ -467,7 +473,9 @@ public class MainWindowAlternate extends BorderPane
 
         VBox reportActions = new VBox(6,
             new Label("Reports actions"),
-            actionButton("Print", this::openReportsPrintDirect),
+            actionButton("Print Income Statement", this::printIncomeStatementDirect),
+            actionButton("Print Balance Sheet", this::printBalanceSheetDirect),
+            actionButton("Print Trial Balance", this::printTrialBalanceDirect),
             actionButton("Export", this::openReportsWorkspaceWithExportHint),
             actionButton("Schedule", this::openReportsScheduleDirect));
 
@@ -511,18 +519,42 @@ public class MainWindowAlternate extends BorderPane
     }
 
 
-    private void openReportsPrintDirect()
+    private void printIncomeStatementDirect()
     {
         try
         {
             new GenerateIncomeStatementAction(new ReportService()).actionPerformed(null);
-            new GenerateBalanceSheetAction(new ReportService()).actionPerformed(null);
-            new GenerateTrialBalanceAction(new ReportService()).actionPerformed(null);
-            openInspectorForSelection("Reports", "Print actions executed for Income Statement, Balance Sheet, and Trial Balance.");
+            openInspectorForSelection("Reports", "Printed Income Statement.");
         }
         catch (Exception ex)
         {
-            openInspectorForSelection("Reports", "Print action failed: " + ex.getMessage());
+            openInspectorForSelection("Reports", "Income Statement print failed: " + ex.getMessage());
+        }
+    }
+
+    private void printBalanceSheetDirect()
+    {
+        try
+        {
+            new GenerateBalanceSheetAction(new ReportService()).actionPerformed(null);
+            openInspectorForSelection("Reports", "Printed Balance Sheet.");
+        }
+        catch (Exception ex)
+        {
+            openInspectorForSelection("Reports", "Balance Sheet print failed: " + ex.getMessage());
+        }
+    }
+
+    private void printTrialBalanceDirect()
+    {
+        try
+        {
+            new GenerateTrialBalanceAction(new ReportService()).actionPerformed(null);
+            openInspectorForSelection("Reports", "Printed Trial Balance.");
+        }
+        catch (Exception ex)
+        {
+            openInspectorForSelection("Reports", "Trial Balance print failed: " + ex.getMessage());
         }
     }
 
@@ -540,8 +572,45 @@ public class MainWindowAlternate extends BorderPane
 
     private void openReportsScheduleDirect()
     {
-        openPanel(AppPanelId.REPORTS_WORKSPACE);
-        openInspectorForSelection("Reports", "Scheduling controls are now opened directly in Reports workspace for immediate configuration.");
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Schedule Report");
+        dialog.setHeaderText("Create scheduled report run");
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        ComboBox<String> reportType = new ComboBox<>(FXCollections.observableArrayList(
+            "Income Statement", "Balance Sheet", "Trial Balance"));
+        reportType.setValue("Income Statement");
+        ComboBox<String> frequency = new ComboBox<>(FXCollections.observableArrayList(
+            "Daily", "Weekly", "Monthly", "Quarterly"));
+        frequency.setValue("Monthly");
+        DatePicker nextRun = new DatePicker(java.time.LocalDate.now().plusDays(1));
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(8);
+        grid.addRow(0, new Label("Report"), reportType);
+        grid.addRow(1, new Label("Frequency"), frequency);
+        grid.addRow(2, new Label("Next run"), nextRun);
+        dialog.getDialogPane().setContent(grid);
+
+        ButtonType selected = dialog.showAndWait().orElse(ButtonType.CANCEL);
+        if (selected == ButtonType.OK)
+        {
+            String entry = reportType.getValue() + "|" + frequency.getValue() + "|" + nextRun.getValue();
+            saveScheduledReport(entry);
+            openInspectorForSelection("Reports", "Scheduled " + reportType.getValue() + " (" + frequency.getValue() + ") starting " + nextRun.getValue() + ".");
+        }
+        else
+        {
+            openInspectorForSelection("Reports", "Schedule action cancelled.");
+        }
+    }
+
+    private void saveScheduledReport(String entry)
+    {
+        String existing = alternatePreferences.get(SCHEDULED_REPORTS_KEY, "");
+        String updated = existing == null || existing.isBlank() ? entry : entry + "\n" + existing;
+        alternatePreferences.put(SCHEDULED_REPORTS_KEY, updated);
     }
 
     private void openReconcileAccountsDirect()
