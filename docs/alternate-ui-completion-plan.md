@@ -524,3 +524,40 @@ Output required:
 1. Report print/export actions are UI/event-driven and currently validated by integration test suite only; there are no focused alternate-shell action unit tests for failure branch assertions.
 2. Schedule persistence is preferences-backed and local to alternate shell; no shared scheduling engine/job execution parity yet with any future enterprise scheduler.
 3. Banking command entries open shared panels, but deeper classic flows (bank-link/auth/provider sync) remain outside current alternate command-center pass.
+
+## Next metaprompt (Phase 6B: Alternate action hardening + tests)
+
+```text
+You are working in the NonprofitAccounting repo.
+
+Context:
+- Round 7 delivered Reports + Banking action parity wiring in MainWindowAlternate.
+- Review feedback calls out missing focused tests around alternate command-center parity and scheduled-report persistence behavior.
+
+Scope:
+Implement a focused reliability pass for alternate command-center parity.
+
+Goals:
+1) Add targeted automated tests that lock in:
+   - classic banking command labels in alternate Command Center (`Reconcile Accounts`, `Undeposited Funds`, `Documents & Attachments`);
+   - scheduled report persistence ordering behavior (new entries prepend older entries).
+2) Keep implementation behavior unchanged (test-only hardening unless a blocker is discovered).
+3) Preserve WorkspaceRouter semantics and classic MainWindow behavior.
+
+Validation:
+- Run: mvn test -q
+- Report exact result.
+```
+
+## Round 8 status (Alternate action hardening + tests)
+
+### Implemented
+- Added `MainWindowAlternateCommandCenterTest` with focused checks for Command Center banking action labels matching classic workflow naming.
+- Added focused test coverage for `saveScheduledReport(...)` persistence ordering to verify new scheduled entries prepend older entries.
+
+### Tests run
+- `mvn test -q` (pass).
+
+### Residual risks
+1. Alternate report-print/export action failure-branch UI feedback still lacks dedicated assertions.
+2. Current tests use reflection for private helper access, which can be brittle during internal refactors.
