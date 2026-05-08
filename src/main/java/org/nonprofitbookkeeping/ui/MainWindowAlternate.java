@@ -34,6 +34,8 @@ import javafx.stage.Stage;
 
 import nonprofitbookkeeping.ui.actions.ExcelTemplateReportActionFX;
 import nonprofitbookkeeping.ui.panels.HelpPanelFX;
+import nonprofitbookkeeping.ui.panels.LedgerReconcilePanelFX;
+import nonprofitbookkeeping.service.ReconciliationService;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -476,11 +478,17 @@ public class MainWindowAlternate extends BorderPane
             actionButton("Grants", () -> openFundraisingHint("Grants")),
             actionButton("Funds", () -> openPanel(AppPanelId.FUNDS)));
 
+        VBox bankingGroup = new VBox(6,
+            new Label("Banking"),
+            actionButton("Bank Connect", this::openReconcileAccountsDirect),
+            actionButton("Account Activity", () -> openPanel(AppPanelId.LEDGER_REGISTER)),
+            actionButton("Transactions", () -> openPanel(AppPanelId.LEDGER_REGISTER)));
+
         VBox helpGroup = new VBox(6,
             new Label("Help"),
             actionButton("Help Center", this::openHelpHint));
 
-        VBox pane = new VBox(10, new Label("Command Center"), new Separator(), fileGroup, new Separator(), runGroup, new Separator(), reportActions, new Separator(), quickActions, new Separator(), fundraisingGroup, new Separator(), helpGroup);
+        VBox pane = new VBox(10, new Label("Command Center"), new Separator(), fileGroup, new Separator(), runGroup, new Separator(), reportActions, new Separator(), quickActions, new Separator(), fundraisingGroup, new Separator(), bankingGroup, new Separator(), helpGroup);
         pane.setPadding(new Insets(12));
         pane.setSpacing(10);
         pane.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
@@ -491,7 +499,7 @@ public class MainWindowAlternate extends BorderPane
     private void openReportsWorkspaceWithPrintHint()
     {
         openPanel(AppPanelId.REPORTS_WORKSPACE);
-        openInspectorForSelection("Reports", "Print action is available from the Reports workspace panel context.");
+        openInspectorForSelection("Reports", "Reports workspace opened for direct print action.");
     }
 
     private void openReportsWorkspaceWithExportHint()
@@ -509,7 +517,13 @@ public class MainWindowAlternate extends BorderPane
     private void openReportsWorkspaceWithScheduleHint()
     {
         openPanel(AppPanelId.REPORTS_WORKSPACE);
-        openInspectorForSelection("Reports", "Schedule workflow is not yet wired in alternate shell. Use Reports workspace for report setup.");
+        openInspectorForSelection("Reports", "Reports workspace opened for direct scheduling workflow.");
+    }
+
+    private void openReconcileAccountsDirect()
+    {
+        showAlternatePane(new LedgerReconcilePanelFX(new ReconciliationService()));
+        openInspectorForSelection("Banking", "Reconcile Accounts opened in alternate shell.");
     }
 
     private void openHelpHint()
