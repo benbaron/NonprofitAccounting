@@ -419,3 +419,92 @@ Output required:
 ### Residual risks
 - Report action-surface parity (print/export/schedule shortcuts and command mappings) still depends on broader command-surface work outside route wiring.
 - `SETTINGS` remains alternate custom content and does not yet mirror classic Settings panel behavior.
+
+
+## Review update (2026-05-07)
+
+### 1) Are changes so far correct?
+- **Mostly yes**: routing and tests are consistent with current implementation. `WorkspaceRouter` sends only `SETTINGS` to alternate-custom panes and routes `REPORTS_WORKSPACE` to `PANEL_HOST`, which matches `WorkspaceRouterTest` and the current `MainWindowAlternate.openPanel(...)` flow.
+- **Issue found (documentation drift)**: parity docs still described Reports as an alternate template in one row. This is now corrected in `docs/alternate-ui-parity-matrix.md`.
+
+### 2) Is the current plan correct?
+- **Partially**. The phase structure remains sound, but some items are now OBE and should be removed from immediate scope:
+  - OBE: “replace alternate reports template route” (already done in Round 5).
+  - OBE: “core route rewiring for CHART_OF_ACCOUNTS / LEDGER_REGISTER / INVENTORY / REPORTS_WORKSPACE” (already complete).
+- **Needs repair/focus shift**:
+  - Move remaining Reports work to **action parity**, not route parity (print/export/schedule + command mappings).
+  - Keep **SETTINGS parity** as explicit unresolved P0 item (still alternate custom pane).
+  - Keep command-surface parity (File/Edit/Run/Database/Reports/Fundraising/Help + toolbar equivalents) as primary functional gap.
+
+### Updated near-term execution focus (replacement for stale Phase 3/4 references)
+1. Implement shell command surface parity (menu/toolbar equivalents + shortcut target abstraction).
+2. Complete Reports action parity (print/export/schedule and discoverability).
+3. Implement Settings parity strategy (embed/wrap classic panel or complete persistence-backed alternate controls).
+4. Verify RecordService + plugin workflows remain reachable from alternate surfaces.
+
+## Round 6 status (Command Center parity pass)
+
+### Implemented
+- Added and expanded alternate `Command Center` in `MainWindowAlternate` with grouped action surfaces for File, Run, Reports, Toolbar-style actions, Fundraising, and Help.
+- Wired alternate Help entry to real `HelpPanelFX` rendering inside alternate content.
+- Wired Reports Export shortcut to existing `ExcelTemplateReportActionFX` flow (stage-aware), while Print/Schedule currently route users into Reports workspace with explicit guidance.
+- Added active-panel-aware gating for New/Save command actions so these are enabled only when panel-host-backed routes are active.
+- Added Fundraising command discovery entries (Donors/Donations/Grants guidance + Funds route).
+
+### Validation status
+- Repeated `mvn test -q` runs were successful during this round while introducing command-surface changes and doc updates.
+
+### Remaining gaps (priority-ordered)
+1. **Reports action parity**: direct Print and Schedule wiring remains incomplete.
+2. **Banking parity**: reconcile/undeposited-funds/documents actions from classic Run menu are not yet surfaced in alternate command center.
+3. **Fundraising parity depth**: donor/donation/grants entries are discoverable but still guidance-first, not direct panel workflow parity.
+4. **Settings parity**: alternate custom settings pane still does not mirror full classic `SettingsPanel` behavior.
+5. **Perceived live-data parity**: alternate dashboard cards/charts remain static demo values and should be backed by real summary services.
+
+## Next metaprompt (Phase 6A: Reports + Banking action parity)
+
+```text
+You are working in the NonprofitAccounting repo.
+
+Context:
+- Alternate route parity for core panels is largely complete (panel-host-backed for reports/journal/inventory/ledger routes).
+- Command Center exists and now provides command discovery + partial action wiring.
+- Remaining highest-value gap is action parity, especially Reports and Banking workflows.
+
+Scope:
+Implement a focused "Reports + Banking action parity" pass in MainWindowAlternate.
+
+Goals:
+1) Reports action parity:
+   - Replace guidance-only Print and Schedule command-center actions with real executable flows.
+   - Keep Export flow intact and consistent with new actions.
+2) Banking action parity:
+   - Add alternate command-center entries for classic Run-menu banking workflows:
+     - Reconcile Accounts
+     - Undeposited Funds
+     - Documents & Attachments
+   - Reuse existing classic panels/services where available; avoid duplicating business logic.
+3) Keep routing behavior stable:
+   - Do not regress current WorkspaceRouter semantics (SETTINGS custom; core routes panel-host-backed).
+4) Improve operator feedback:
+   - Add clear success/failure feedback for each newly wired action.
+
+Requirements:
+- Preserve classic MainWindow behavior unchanged.
+- Prefer shared panel/action/service reuse instead of alternate-only implementations.
+- Update docs/alternate-ui-parity-matrix.md rows touched by this work.
+- Append "Round 7 status" to docs/alternate-ui-completion-plan.md with:
+  - implemented actions,
+  - tests run,
+  - residual risks.
+
+Validation:
+- Run: mvn test -q
+- Report exact result.
+
+Output required:
+1) changed files list
+2) test result
+3) short code review (risks, technical debt, recommended next fixes)
+4) offer to fix review issues and failing tests immediately
+```
