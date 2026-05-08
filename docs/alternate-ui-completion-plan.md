@@ -508,3 +508,19 @@ Output required:
 3) short code review (risks, technical debt, recommended next fixes)
 4) offer to fix review issues and failing tests immediately
 ```
+
+## Round 7 status (Reports + Banking action parity)
+
+### Implemented actions
+- Kept alternate reports actions fully executable in Command Center: direct Print actions (Income Statement, Balance Sheet, Trial Balance), direct Schedule dialog workflow, and existing Export workflow via `ExcelTemplateReportActionFX`.
+- Added stronger operator feedback for reports export and banking actions with explicit success/failure inspector messages.
+- Updated alternate banking command labels to align with classic Run menu naming (`Reconcile Accounts`, `Undeposited Funds`, `Documents & Attachments`) and retained shared-panel/shared-service reuse.
+- Preserved routing behavior (`WorkspaceRouter` semantics unchanged: `SETTINGS` alternate-custom; core routes panel-host-backed).
+
+### Tests run
+- `mvn test -q` (pass).
+
+### Residual risks
+1. Report print/export actions are UI/event-driven and currently validated by integration test suite only; there are no focused alternate-shell action unit tests for failure branch assertions.
+2. Schedule persistence is preferences-backed and local to alternate shell; no shared scheduling engine/job execution parity yet with any future enterprise scheduler.
+3. Banking command entries open shared panels, but deeper classic flows (bank-link/auth/provider sync) remain outside current alternate command-center pass.
