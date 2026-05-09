@@ -3,6 +3,8 @@ package org.nonprofitbookkeeping.ui;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
+
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -26,7 +28,7 @@ class MainWindowAlternateCommandCenterTest
     }
 
     @Test
-    void commandCenterIncludesClassicBankingWorkflowLabels() throws Exception
+    void commandCenterIncludesClassicBankingWorkflowLabelsInClassicOrder() throws Exception
     {
         CountDownLatch latch = new CountDownLatch(1);
         Throwable[] error = new Throwable[1];
@@ -36,10 +38,18 @@ class MainWindowAlternateCommandCenterTest
             {
                 MainWindowAlternate window = new MainWindowAlternate();
                 var buttonLabels = window.commandCenterActionLabelsForTest();
+                var bankingLabels = new ArrayList<String>();
+                for (String label : buttonLabels)
+                {
+                    if (label.equals("Reconcile Accounts")
+                        || label.equals("Undeposited Funds")
+                        || label.equals("Documents & Attachments"))
+                    {
+                        bankingLabels.add(label);
+                    }
+                }
 
-                assertTrue(buttonLabels.contains("Reconcile Accounts"));
-                assertTrue(buttonLabels.contains("Undeposited Funds"));
-                assertTrue(buttonLabels.contains("Documents & Attachments"));
+                assertEquals(List.of("Reconcile Accounts", "Undeposited Funds", "Documents & Attachments"), bankingLabels);
             }
             catch (Throwable t)
             {
@@ -115,12 +125,16 @@ class MainWindowAlternateCommandCenterTest
     @Test
     void scheduledReportEntriesArePrependedInPreferences()
     {
-        MainWindowAlternate window = new MainWindowAlternate();
-        window.testClearScheduledReports();
-        window.testSaveScheduledReport("Income Statement|Monthly|2026-05-09");
-        window.testSaveScheduledReport("Balance Sheet|Weekly|2026-05-10");
+        MainWindowAlternate writer = new MainWindowAlternate();
+        writer.testClearScheduledReports();
+        writer.testSaveScheduledReport("Income Statement|Monthly|2026-05-09");
+        writer.testSaveScheduledReport("Balance Sheet|Weekly|2026-05-10");
+
+        MainWindowAlternate reader = new MainWindowAlternate();
 
         assertEquals("Balance Sheet|Weekly|2026-05-10\nIncome Statement|Monthly|2026-05-09",
-            window.testScheduledReportsValue());
+            reader.testScheduledReportsValue());
+
+        reader.testClearScheduledReports();
     }
 }
