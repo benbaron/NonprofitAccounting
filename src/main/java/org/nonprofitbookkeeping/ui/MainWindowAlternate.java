@@ -88,13 +88,48 @@ public class MainWindowAlternate extends BorderPane
     private final VBox profilePane = new VBox();
     private final VBox searchPane = new VBox();
     private final WorkspaceRouter workspaceRouter = new WorkspaceRouter();
+    private final BankingPanelFactory bankingPanelFactory;
     private final AlternateDataContextService contextService = new AlternateDataContextService();
     private AppPanelId activePanelId = AppPanelId.DASHBOARD;
     private static final String SCHEDULED_REPORTS_KEY = "alternate.scheduled.reports";
     private final Preferences alternatePreferences = Preferences.userNodeForPackage(MainWindowAlternate.class);
 
+
+    interface BankingPanelFactory
+    {
+        Node createReconcilePanel();
+
+        Node createUndepositedFundsPanel();
+
+        Node createDocumentsPanel();
+    }
+
+    static class DefaultBankingPanelFactory implements BankingPanelFactory
+    {
+        public Node createReconcilePanel()
+        {
+            return new LedgerReconcilePanelFX(new ReconciliationService());
+        }
+
+        public Node createUndepositedFundsPanel()
+        {
+            return new UndepositedFundsPanelFX(new UndepositedFundsService());
+        }
+
+        public Node createDocumentsPanel()
+        {
+            return new DocumentsPanelFX(new DocumentStorageService());
+        }
+    }
+
     public MainWindowAlternate()
     {
+        this(new DefaultBankingPanelFactory());
+    }
+
+    MainWindowAlternate(BankingPanelFactory bankingPanelFactory)
+    {
+        this.bankingPanelFactory = bankingPanelFactory;
         setTop(buildHeader());
         setCenter(buildWorkspace());
         setLeft(buildIconRail());
@@ -624,7 +659,7 @@ public class MainWindowAlternate extends BorderPane
     {
         try
         {
-            showAlternatePane(new LedgerReconcilePanelFX(new ReconciliationService()));
+            showAlternatePane(bankingPanelFactory.createReconcilePanel());
             openInspectorForSelection("Banking", "Reconcile Accounts opened in alternate shell.");
         }
         catch (Exception ex)
@@ -637,7 +672,7 @@ public class MainWindowAlternate extends BorderPane
     {
         try
         {
-            showAlternatePane(new UndepositedFundsPanelFX(new UndepositedFundsService()));
+            showAlternatePane(bankingPanelFactory.createUndepositedFundsPanel());
             openInspectorForSelection("Banking", "Undeposited Funds opened in alternate shell.");
         }
         catch (Exception ex)
@@ -650,7 +685,7 @@ public class MainWindowAlternate extends BorderPane
     {
         try
         {
-            showAlternatePane(new DocumentsPanelFX(new DocumentStorageService()));
+            showAlternatePane(bankingPanelFactory.createDocumentsPanel());
             openInspectorForSelection("Banking", "Documents & Attachments opened in alternate shell.");
         }
         catch (Exception ex)
@@ -823,4 +858,40 @@ public class MainWindowAlternate extends BorderPane
         AppPanel panel = binding.panelFactory().get();
         openInspectorForSelection(binding.displayName(), panel.title() + " opened in alternate shell.");
     }
+
+    void testOpenReconcileAccountsDirect()
+    {
+        openReconcileAccountsDirect();
+    }
+
+    void testOpenUndepositedFundsDirect()
+    {
+        openUndepositedFundsDirect();
+    }
+
+    void testOpenDocumentsDirect()
+    {
+        openDocumentsDirect();
+    }
+
+    String testAlternateStatusText()
+    {
+        return alternateStatus.getText();
+    }
+
+    void testClearScheduledReports()
+    {
+        alternatePreferences.remove(SCHEDULED_REPORTS_KEY);
+    }
+
+    void testSaveScheduledReport(String entry)
+    {
+        saveScheduledReport(entry);
+    }
+
+    String testScheduledReportsValue()
+    {
+        return alternatePreferences.get(SCHEDULED_REPORTS_KEY, "");
+    }
+
 }

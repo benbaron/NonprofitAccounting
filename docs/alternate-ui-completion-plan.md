@@ -619,3 +619,24 @@ Validation:
 1. Failure-path tests for banking action exceptions still rely on runtime conditions and are not directly asserted.
 2. Reflection usage remains in alternate-shell tests; extraction of package-private collaborators is still pending.
 3. Settings parity decision gate remains open and should be resolved in next round before broad parity “implemented” claims.
+
+## Round 11 status (stabilization pass)
+
+### Settings parity decision gate (resolved)
+- **Decision**: proceed with **approach (a) embed/wrap classic `SettingsPanel` behavior** by hosting `SettingsPanelFX` in the alternate workspace surface with alternate shell chrome wrapper, rather than building/maintaining a second alternate-only settings implementation.
+- **Why**:
+  1. Lowest behavior-drift risk for persistence and defaults (`SettingsService` remains the single source of truth).
+  2. Faster parity closure for P0 settings mismatch in parity matrix.
+  3. Reduced long-term maintenance compared with duplicate controls/validation.
+
+### Acceptance criteria
+1. Alternate `SETTINGS` route renders the real settings panel content (not placeholder controls).
+2. Save in alternate settings persists via existing settings service and triggers same downstream effects as classic (theme/currency/organization metadata refresh paths).
+3. No regression to `WorkspaceRouter` semantics: route decisioning stays unchanged and classic shell behavior remains unchanged.
+4. Focused tests cover at least one settings save path in alternate-hosted settings wrapper and one error feedback path.
+
+### Near-term implementation steps
+1. Introduce `AlternateSettingsHost` wrapper (layout/chrome only) around `SettingsPanelFX` root.
+2. Replace `buildAlternateSettingsPane()` placeholder content with hosted `SettingsPanelFX` wrapper and status bridge callbacks.
+3. Add alternate-shell tests for successful save feedback + service error feedback.
+4. Update parity matrix status to implemented once acceptance criteria pass.
