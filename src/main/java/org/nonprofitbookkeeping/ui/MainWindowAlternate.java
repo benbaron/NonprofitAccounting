@@ -45,6 +45,8 @@ import nonprofitbookkeeping.ui.panels.LedgerReconcilePanelFX;
 import nonprofitbookkeeping.service.ReconciliationService;
 import nonprofitbookkeeping.service.UndepositedFundsService;
 import nonprofitbookkeeping.service.DocumentStorageService;
+import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.ui.panels.UndepositedFundsPanelFX;
 import nonprofitbookkeeping.ui.panels.DocumentsPanelFX;
 import nonprofitbookkeeping.ui.panels.DonorsPanelFX;
@@ -90,6 +92,8 @@ public class MainWindowAlternate extends BorderPane
     private final WorkspaceRouter workspaceRouter = new WorkspaceRouter();
     private final BankingPanelFactory bankingPanelFactory;
     private final AlternateDataContextService contextService = new AlternateDataContextService();
+    private final Label headerTitle = new Label("Dashboard");
+    private final Label headerSubtitle = new Label("No company open");
     private AppPanelId activePanelId = AppPanelId.DASHBOARD;
     private static final String SCHEDULED_REPORTS_KEY = "alternate.scheduled.reports";
     private final Preferences alternatePreferences = Preferences.userNodeForPackage(MainWindowAlternate.class);
@@ -162,12 +166,10 @@ public class MainWindowAlternate extends BorderPane
 
     private Node buildHeader()
     {
-        Label title = new Label("Dashboard");
-        title.setStyle("-fx-font-size: 22px; -fx-font-weight: 700;");
-        Label subtitle = new Label("San Crescent Accounting");
-        subtitle.setStyle("-fx-text-fill: #5c6482;");
+        headerTitle.setStyle("-fx-font-size: 22px; -fx-font-weight: 700;");
+        headerSubtitle.setStyle("-fx-text-fill: #5c6482;");
 
-        VBox heading = new VBox(2, title, subtitle);
+        VBox heading = new VBox(2, headerTitle, headerSubtitle);
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
@@ -874,6 +876,7 @@ public class MainWindowAlternate extends BorderPane
     private void openPanel(AppPanelId id)
     {
         activePanelId = id;
+        refreshHeaderLabels();
         WorkspaceRouteDecision decision = workspaceRouter.decide(id);
 
         boolean dashboard = decision.isDashboard();
@@ -902,6 +905,39 @@ public class MainWindowAlternate extends BorderPane
             panelHost.show(id);
         }
         nav.highlight(id);
+    }
+
+    private void refreshHeaderLabels()
+    {
+        headerTitle.setText(panelTitle(activePanelId));
+        headerSubtitle.setText(activeCompanyName());
+    }
+
+    private String activeCompanyName()
+    {
+        Company company = CurrentCompany.getCompany();
+        if (company == null || company.getName() == null || company.getName().isBlank())
+        {
+            return "No company open";
+        }
+        return company.getName();
+    }
+
+    private String panelTitle(AppPanelId panelId)
+    {
+        return switch (panelId)
+        {
+            case DASHBOARD -> "Dashboard";
+            case CHART_OF_ACCOUNTS -> "Chart of Accounts";
+            case LEDGER_REGISTER -> "Journal";
+            case INVENTORY -> "Inventory";
+            case FUNDS -> "Funds";
+            case REPORTS_WORKSPACE -> "Reports";
+            case SCHEDULES -> "Schedules";
+            case BUDGET_EDITOR -> "Budget";
+            case SETTINGS -> "Settings";
+            default -> panelId.name().replace('_', ' ');
+        };
     }
 
     private void openInspectorForSelection(String title, String body)
