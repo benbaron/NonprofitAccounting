@@ -518,6 +518,16 @@ public class MainWindowAlternate extends BorderPane
         return pane;
     }
 
+    List<String> commandCenterActionLabelsForTest()
+    {
+        return buildCommandCenterPane().getChildren().stream()
+            .filter(VBox.class::isInstance)
+            .flatMap(group -> ((VBox) group).getChildren().stream())
+            .filter(Button.class::isInstance)
+            .map(node -> ((Button) node).getText())
+            .toList();
+    }
+
 
     private void printIncomeStatementDirect()
     {
@@ -618,6 +628,31 @@ public class MainWindowAlternate extends BorderPane
         String existing = alternatePreferences.get(SCHEDULED_REPORTS_KEY, "");
         String updated = existing == null || existing.isBlank() ? entry : entry + "\n" + existing;
         alternatePreferences.put(SCHEDULED_REPORTS_KEY, updated);
+    }
+
+    void saveScheduledReportForTest(String entry)
+    {
+        saveScheduledReport(entry);
+    }
+
+    void clearScheduledReportsForTest()
+    {
+        alternatePreferences.remove(SCHEDULED_REPORTS_KEY);
+    }
+
+    String scheduledReportsSnapshotForTest()
+    {
+        return alternatePreferences.get(SCHEDULED_REPORTS_KEY, "");
+    }
+
+    void triggerReportExportActionForTest()
+    {
+        openReportsWorkspaceWithExportHint();
+    }
+
+    String alternateStatusTextForTest()
+    {
+        return alternateStatus.getText();
     }
 
     private void openReconcileAccountsDirect()
