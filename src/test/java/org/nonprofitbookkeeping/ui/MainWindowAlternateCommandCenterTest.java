@@ -93,4 +93,41 @@ class MainWindowAlternateCommandCenterTest
         assertEquals("Balance Sheet|Weekly|2026-05-10\nIncome Statement|Monthly|2026-05-09",
             prefs.get(key, ""));
     }
+
+    @Test
+    void exportActionReportsGuidanceWhenNoOwningStageIsAvailable() throws Exception
+    {
+        CountDownLatch latch = new CountDownLatch(1);
+        Throwable[] error = new Throwable[1];
+
+        Platform.runLater(() -> {
+            try
+            {
+                MainWindowAlternate window = new MainWindowAlternate();
+                Method exportAction = MainWindowAlternate.class
+                    .getDeclaredMethod("openReportsWorkspaceWithExportHint");
+                exportAction.setAccessible(true);
+                exportAction.invoke(window);
+
+                Field statusField = MainWindowAlternate.class.getDeclaredField("alternateStatus");
+                statusField.setAccessible(true);
+                javafx.scene.control.TextArea status = (javafx.scene.control.TextArea) statusField.get(window);
+                assertTrue(status.getText().contains("Export action requires an active window"));
+            }
+            catch (Throwable t)
+            {
+                error[0] = t;
+            }
+            finally
+            {
+                latch.countDown();
+            }
+        });
+
+        assertTrue(latch.await(20, TimeUnit.SECONDS));
+        if (error[0] != null)
+        {
+            throw new AssertionError("MainWindowAlternate export guidance test failed", error[0]);
+        }
+    }
 }
