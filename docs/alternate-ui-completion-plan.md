@@ -634,3 +634,39 @@ Validation:
 ### Remaining deficiencies
 1. Banking action exception-path assertions are still pending deterministic test seams.
 2. Settings parity decision gate remains unresolved (classic embed vs alternate-complete implementation).
+
+## Next metaprompt (Phase 6C: deterministic banking-failure tests + settings decision gate)
+
+```text
+You are working in the NonprofitAccounting repo.
+
+Context:
+- Alternate Command Center parity for Reports/Banking is functionally wired.
+- Round 10 reduced reflection in alternate-shell tests by introducing package-private helper hooks.
+- Remaining gaps are deterministic banking failure-path tests and unresolved Settings parity strategy.
+
+Scope:
+Implement a focused stabilization pass that closes the two highest-risk residual gaps.
+
+Goals:
+1) Deterministic banking failure-path coverage:
+   - Add lightweight seams/collaborators so `Reconcile Accounts`, `Undeposited Funds`, and `Documents & Attachments` failure branches can be asserted without flaky runtime forcing.
+   - Add tests that verify inspector failure messages for each banking action branch.
+2) Settings parity decision gate:
+   - Choose one concrete approach for alternate settings parity:
+     a) embed/wrap classic `SettingsPanel`, or
+     b) complete alternate settings implementation with equivalent persistence/behavior.
+   - Document the decision, acceptance criteria, and near-term implementation steps in completion plan + parity matrix notes.
+3) Keep runtime behavior stable:
+   - Preserve WorkspaceRouter semantics and existing classic MainWindow behavior.
+
+Validation:
+- Run: mvn test -q
+- Report exact result.
+
+Output required:
+1) changed files list
+2) test result
+3) short code review (risks, technical debt, recommended next fixes)
+4) offer to fix review issues and failing tests immediately
+```
