@@ -501,7 +501,7 @@ public class MainWindowAlternate extends BorderPane
 
         VBox bankingGroup = new VBox(6,
             new Label("Banking"),
-            actionButton("Bank Connect", this::openReconcileAccountsDirect),
+            actionButton("Reconcile Accounts", this::openReconcileAccountsDirect),
             actionButton("Undeposited Funds", this::openUndepositedFundsDirect),
             actionButton("Documents & Attachments", this::openDocumentsDirect),
             actionButton("Account Activity", () -> openPanel(AppPanelId.LEDGER_REGISTER)),
@@ -516,6 +516,16 @@ public class MainWindowAlternate extends BorderPane
         pane.setSpacing(10);
         pane.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
         return pane;
+    }
+
+    List<String> commandCenterActionLabelsForTest()
+    {
+        return buildCommandCenterPane().getChildren().stream()
+            .filter(VBox.class::isInstance)
+            .flatMap(group -> ((VBox) group).getChildren().stream())
+            .filter(Button.class::isInstance)
+            .map(node -> ((Button) node).getText())
+            .toList();
     }
 
 
@@ -566,8 +576,15 @@ public class MainWindowAlternate extends BorderPane
             openInspectorForSelection("Reports", "Export action requires an active window; open Reports workspace and try again.");
             return;
         }
-        new ExcelTemplateReportActionFX(owner).handle(null);
-        openInspectorForSelection("Reports", "Export action launched via Excel template report workflow.");
+        try
+        {
+            new ExcelTemplateReportActionFX(owner).handle(null);
+            openInspectorForSelection("Reports", "Export action launched via Excel template report workflow.");
+        }
+        catch (Exception ex)
+        {
+            openInspectorForSelection("Reports", "Export action failed: " + ex.getMessage());
+        }
     }
 
     private void openReportsScheduleDirect()
@@ -613,22 +630,68 @@ public class MainWindowAlternate extends BorderPane
         alternatePreferences.put(SCHEDULED_REPORTS_KEY, updated);
     }
 
+    void saveScheduledReportForTest(String entry)
+    {
+        saveScheduledReport(entry);
+    }
+
+    void clearScheduledReportsForTest()
+    {
+        alternatePreferences.remove(SCHEDULED_REPORTS_KEY);
+    }
+
+    String scheduledReportsSnapshotForTest()
+    {
+        return alternatePreferences.get(SCHEDULED_REPORTS_KEY, "");
+    }
+
+    void triggerReportExportActionForTest()
+    {
+        openReportsWorkspaceWithExportHint();
+    }
+
+    String alternateStatusTextForTest()
+    {
+        return alternateStatus.getText();
+    }
+
     private void openReconcileAccountsDirect()
     {
-        showAlternatePane(new LedgerReconcilePanelFX(new ReconciliationService()));
-        openInspectorForSelection("Banking", "Reconcile Accounts opened in alternate shell.");
+        try
+        {
+            showAlternatePane(new LedgerReconcilePanelFX(new ReconciliationService()));
+            openInspectorForSelection("Banking", "Reconcile Accounts opened in alternate shell.");
+        }
+        catch (Exception ex)
+        {
+            openInspectorForSelection("Banking", "Reconcile Accounts failed: " + ex.getMessage());
+        }
     }
 
     private void openUndepositedFundsDirect()
     {
-        showAlternatePane(new UndepositedFundsPanelFX(new UndepositedFundsService()));
-        openInspectorForSelection("Banking", "Undeposited Funds opened in alternate shell.");
+        try
+        {
+            showAlternatePane(new UndepositedFundsPanelFX(new UndepositedFundsService()));
+            openInspectorForSelection("Banking", "Undeposited Funds opened in alternate shell.");
+        }
+        catch (Exception ex)
+        {
+            openInspectorForSelection("Banking", "Undeposited Funds failed: " + ex.getMessage());
+        }
     }
 
     private void openDocumentsDirect()
     {
-        showAlternatePane(new DocumentsPanelFX(new DocumentStorageService()));
-        openInspectorForSelection("Banking", "Documents & Attachments opened in alternate shell.");
+        try
+        {
+            showAlternatePane(new DocumentsPanelFX(new DocumentStorageService()));
+            openInspectorForSelection("Banking", "Documents & Attachments opened in alternate shell.");
+        }
+        catch (Exception ex)
+        {
+            openInspectorForSelection("Banking", "Documents & Attachments failed: " + ex.getMessage());
+        }
     }
 
     private void openHelpHint()
