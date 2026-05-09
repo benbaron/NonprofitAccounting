@@ -458,18 +458,22 @@ public class MainWindowAlternate extends BorderPane
             if (companyId == null)
             {
                 alternateStatus.setText("No company selected.");
+                state.setText("No company selected.");
                 return;
             }
             try
             {
                 contextService.openCompany(companyId, selected);
-                alternateStatus.setText("Company opened:\n" + selected);
-                openPanel(activePanelId);
-                openCompanySelector();
+                String openedMessage = "Company opened: " + selected;
+                alternateStatus.setText(openedMessage);
+                state.setText(openedMessage);
+                openPanel(AppPanelId.DASHBOARD);
             }
             catch (Exception ex)
             {
-                alternateStatus.setText("Failed to open company: " + ex.getMessage());
+                String failedMessage = "Failed to open company: " + ex.getMessage();
+                alternateStatus.setText(failedMessage);
+                state.setText(failedMessage);
             }
         });
         companySelectorPane.getChildren().setAll(new Label("Open Company"), companies, new Label("Recent Companies"), recent, open, state);
