@@ -2,6 +2,7 @@ package org.nonprofitbookkeeping.ui;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.LinkedHashSet;
@@ -87,8 +88,22 @@ class AlternateRecentsStore
 
     private static String encodeKey(String value)
     {
-        return Base64.getUrlEncoder().withoutPadding()
-            .encodeToString(value.getBytes(StandardCharsets.UTF_8));
+        try
+        {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(value.getBytes(StandardCharsets.UTF_8));
+            StringBuilder encoded = new StringBuilder("sha256.");
+            for (int i = 0; i < 12; i++)
+            {
+                encoded.append(String.format("%02x", hash[i]));
+            }
+            return encoded.toString();
+        }
+        catch (Exception ex)
+        {
+            return Base64.getUrlEncoder().withoutPadding()
+                .encodeToString(value.getBytes(StandardCharsets.UTF_8));
+        }
     }
 
     private AlternateDataContextService.RecentCompanyChoice parseRecentCompany(String value)

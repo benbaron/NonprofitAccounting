@@ -45,6 +45,8 @@ import nonprofitbookkeeping.ui.panels.LedgerReconcilePanelFX;
 import nonprofitbookkeeping.service.ReconciliationService;
 import nonprofitbookkeeping.service.UndepositedFundsService;
 import nonprofitbookkeeping.service.DocumentStorageService;
+import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.ui.panels.UndepositedFundsPanelFX;
 import nonprofitbookkeeping.ui.panels.DocumentsPanelFX;
 import nonprofitbookkeeping.ui.panels.DonorsPanelFX;
@@ -90,6 +92,8 @@ public class MainWindowAlternate extends BorderPane
     private final WorkspaceRouter workspaceRouter = new WorkspaceRouter();
     private final BankingPanelFactory bankingPanelFactory;
     private final AlternateDataContextService contextService = new AlternateDataContextService();
+    private final Label headerTitle = new Label("Dashboard");
+    private final Label headerSubtitle = new Label("No company open");
     private AppPanelId activePanelId = AppPanelId.DASHBOARD;
     private static final String SCHEDULED_REPORTS_KEY = "alternate.scheduled.reports";
     private final Preferences alternatePreferences = Preferences.userNodeForPackage(MainWindowAlternate.class);
@@ -162,12 +166,10 @@ public class MainWindowAlternate extends BorderPane
 
     private Node buildHeader()
     {
-        Label title = new Label("Dashboard");
-        title.setStyle("-fx-font-size: 22px; -fx-font-weight: 700;");
-        Label subtitle = new Label("San Crescent Accounting");
-        subtitle.setStyle("-fx-text-fill: #5c6482;");
+        headerTitle.setStyle("-fx-font-size: 22px; -fx-font-weight: 700;");
+        headerSubtitle.setStyle("-fx-text-fill: #5c6482;");
 
-        VBox heading = new VBox(2, title, subtitle);
+        VBox heading = new VBox(2, headerTitle, headerSubtitle);
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
@@ -347,17 +349,25 @@ public class MainWindowAlternate extends BorderPane
     {
         TextField dbPath = new TextField();
         dbPath.setPromptText("/path/to/file.mv.db");
+        Path activeDatabaseBasePath = contextService.activeDatabaseBasePath();
+        if (activeDatabaseBasePath != null)
+        {
+            dbPath.setText(activeDatabaseBasePath.toString());
+        }
         ListView<String> recent = new ListView<>(FXCollections.observableArrayList(contextService.recentDatabasePaths()));
         recent.setPrefHeight(120);
+        Button browse = new Button("Browse...");
+        Button open = new Button("Open Database");
+        Label state = new Label();
+        state.setText(dbPath.getText().isBlank() ? "No file selected." : "Selected: " + Path.of(dbPath.getText().trim()).getFileName());
+
         recent.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null)
             {
                 dbPath.setText(newVal);
+                state.setText("Selected: " + Path.of(newVal).getFileName());
             }
         });
-        Button browse = new Button("Browse...");
-        Button open = new Button("Open Database");
-        Label state = new Label("No file selected.");
         browse.setOnAction(e -> {
             FileChooser chooser = new FileChooser();
             chooser.setTitle("Select database file");
@@ -374,18 +384,23 @@ public class MainWindowAlternate extends BorderPane
             if (value == null || value.isBlank())
             {
                 alternateStatus.setText("No database selected.");
+                state.setText("No database selected.");
                 return;
             }
             try
             {
                 contextService.openDatabase(Paths.get(value.trim()));
-                alternateStatus.setText("Database opened:\n" + value.trim());
-                openPanel(activePanelId);
-                openDatabaseSelector();
+                String openedMessage = "Database opened: " + value.trim();
+                alternateStatus.setText(openedMessage);
+                state.setText(openedMessage);
+                refreshHeaderLabels();
+                openPanel(AppPanelId.DASHBOARD);
             }
             catch (Exception ex)
             {
-                alternateStatus.setText("Failed to open database: " + ex.getMessage());
+                String failedMessage = "Failed to open database: " + ex.getMessage();
+                alternateStatus.setText(failedMessage);
+                state.setText(failedMessage);
             }
         });
         databaseSelectorPane.getChildren().setAll(new Label("Open Database (.mv.db/.db)"), new HBox(8, dbPath, browse), new Label("Recent Databases"), recent, open, state);
@@ -411,6 +426,7 @@ public class MainWindowAlternate extends BorderPane
 
         ComboBox<String> companies = new ComboBox<>(FXCollections.observableArrayList(companiesByName.keySet()));
         companies.setPromptText("Select company");
+        Label state = new Label("No company selected.");
 
         ListView<String> recent = new ListView<>();
         recent.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -427,7 +443,20 @@ public class MainWindowAlternate extends BorderPane
             recent.setItems(FXCollections.observableArrayList());
         }
 
-        recent.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> companies.setValue(newVal));
+        recent.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            companies.setValue(newVal);
+            if (newVal != null && !newVal.isBlank())
+            {
+                state.setText("Selected: " + newVal);
+            }
+        });
+
+        companies.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && !newVal.isBlank())
+            {
+                state.setText("Selected: " + newVal);
+            }
+        });
 
         Button open = new Button("Open Company");
         open.setOnAction(e -> {
@@ -436,21 +465,26 @@ public class MainWindowAlternate extends BorderPane
             if (companyId == null)
             {
                 alternateStatus.setText("No company selected.");
+                state.setText("No company selected.");
                 return;
             }
             try
             {
                 contextService.openCompany(companyId, selected);
-                alternateStatus.setText("Company opened:\n" + selected);
-                openPanel(activePanelId);
-                openCompanySelector();
+                String openedMessage = "Company opened: " + selected;
+                alternateStatus.setText(openedMessage);
+                state.setText(openedMessage);
+                refreshHeaderLabels();
+                openPanel(AppPanelId.DASHBOARD);
             }
             catch (Exception ex)
             {
-                alternateStatus.setText("Failed to open company: " + ex.getMessage());
+                String failedMessage = "Failed to open company: " + ex.getMessage();
+                alternateStatus.setText(failedMessage);
+                state.setText(failedMessage);
             }
         });
-        companySelectorPane.getChildren().setAll(new Label("Open Company"), companies, new Label("Recent Companies"), recent, open);
+        companySelectorPane.getChildren().setAll(new Label("Open Company"), companies, new Label("Recent Companies"), recent, open, state);
         companySelectorPane.setPadding(new Insets(12));
         companySelectorPane.setSpacing(10);
         return companySelectorPane;
@@ -848,6 +882,7 @@ public class MainWindowAlternate extends BorderPane
     private void openPanel(AppPanelId id)
     {
         activePanelId = id;
+        refreshHeaderLabels();
         WorkspaceRouteDecision decision = workspaceRouter.decide(id);
 
         boolean dashboard = decision.isDashboard();
@@ -876,6 +911,39 @@ public class MainWindowAlternate extends BorderPane
             panelHost.show(id);
         }
         nav.highlight(id);
+    }
+
+    private void refreshHeaderLabels()
+    {
+        headerTitle.setText(panelTitle(activePanelId));
+        headerSubtitle.setText(activeCompanyName());
+    }
+
+    private String activeCompanyName()
+    {
+        Company company = CurrentCompany.getCompany();
+        if (!CurrentCompany.isOpen() || company == null || company.getName() == null || company.getName().isBlank())
+        {
+            return "No company open";
+        }
+        return company.getName();
+    }
+
+    private String panelTitle(AppPanelId panelId)
+    {
+        return switch (panelId)
+        {
+            case DASHBOARD -> "Dashboard";
+            case CHART_OF_ACCOUNTS -> "Chart of Accounts";
+            case LEDGER_REGISTER -> "Journal";
+            case INVENTORY -> "Inventory";
+            case FUNDS -> "Funds";
+            case REPORTS_WORKSPACE -> "Reports";
+            case SCHEDULES -> "Schedules";
+            case BUDGET_EDITOR -> "Budget";
+            case SETTINGS -> "Settings";
+            default -> panelId.name().replace('_', ' ');
+        };
     }
 
     private void openInspectorForSelection(String title, String body)
