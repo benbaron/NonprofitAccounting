@@ -11,6 +11,9 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
@@ -33,7 +36,24 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import nonprofitbookkeeping.ui.actions.ExcelTemplateReportActionFX;
+import nonprofitbookkeeping.ui.actions.GenerateIncomeStatementAction;
+import nonprofitbookkeeping.ui.actions.GenerateBalanceSheetAction;
+import nonprofitbookkeeping.ui.actions.GenerateTrialBalanceAction;
+import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.ui.panels.HelpPanelFX;
+import nonprofitbookkeeping.ui.panels.LedgerReconcilePanelFX;
+import nonprofitbookkeeping.service.ReconciliationService;
+import nonprofitbookkeeping.service.UndepositedFundsService;
+import nonprofitbookkeeping.service.DocumentStorageService;
+import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.ui.panels.UndepositedFundsPanelFX;
+import nonprofitbookkeeping.ui.panels.DocumentsPanelFX;
+import nonprofitbookkeeping.ui.panels.DonorsPanelFX;
+import nonprofitbookkeeping.ui.panels.DonationsPanelFX;
+import nonprofitbookkeeping.ui.panels.GrantsPanelFX;
+import nonprofitbookkeeping.service.DonorService;
+import nonprofitbookkeeping.service.GrantsService;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -42,6 +62,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.prefs.Preferences;
 
 import org.nonprofitbookkeeping.ui.routing.WorkspaceRouteDecision;
 import org.nonprofitbookkeeping.ui.routing.WorkspaceRouter;
@@ -69,11 +90,50 @@ public class MainWindowAlternate extends BorderPane
     private final VBox profilePane = new VBox();
     private final VBox searchPane = new VBox();
     private final WorkspaceRouter workspaceRouter = new WorkspaceRouter();
+    private final BankingPanelFactory bankingPanelFactory;
     private final AlternateDataContextService contextService = new AlternateDataContextService();
+    private final Label headerTitle = new Label("Dashboard");
+    private final Label headerSubtitle = new Label("No company open");
     private AppPanelId activePanelId = AppPanelId.DASHBOARD;
+    private static final String SCHEDULED_REPORTS_KEY = "alternate.scheduled.reports";
+    private final Preferences alternatePreferences = Preferences.userNodeForPackage(MainWindowAlternate.class);
+
+
+    interface BankingPanelFactory
+    {
+        Node createReconcilePanel();
+
+        Node createUndepositedFundsPanel();
+
+        Node createDocumentsPanel();
+    }
+
+    static class DefaultBankingPanelFactory implements BankingPanelFactory
+    {
+        public Node createReconcilePanel()
+        {
+            return new LedgerReconcilePanelFX(new ReconciliationService());
+        }
+
+        public Node createUndepositedFundsPanel()
+        {
+            return new UndepositedFundsPanelFX(new UndepositedFundsService());
+        }
+
+        public Node createDocumentsPanel()
+        {
+            return new DocumentsPanelFX(new DocumentStorageService());
+        }
+    }
 
     public MainWindowAlternate()
     {
+        this(new DefaultBankingPanelFactory());
+    }
+
+    MainWindowAlternate(BankingPanelFactory bankingPanelFactory)
+    {
+        this.bankingPanelFactory = bankingPanelFactory;
         setTop(buildHeader());
         setCenter(buildWorkspace());
         setLeft(buildIconRail());
@@ -106,12 +166,10 @@ public class MainWindowAlternate extends BorderPane
 
     private Node buildHeader()
     {
-        Label title = new Label("Dashboard");
-        title.setStyle("-fx-font-size: 22px; -fx-font-weight: 700;");
-        Label subtitle = new Label("San Crescent Accounting");
-        subtitle.setStyle("-fx-text-fill: #5c6482;");
+        headerTitle.setStyle("-fx-font-size: 22px; -fx-font-weight: 700;");
+        headerSubtitle.setStyle("-fx-text-fill: #5c6482;");
 
-        VBox heading = new VBox(2, title, subtitle);
+        VBox heading = new VBox(2, headerTitle, headerSubtitle);
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
@@ -291,17 +349,25 @@ public class MainWindowAlternate extends BorderPane
     {
         TextField dbPath = new TextField();
         dbPath.setPromptText("/path/to/file.mv.db");
+        Path activeDatabaseBasePath = contextService.activeDatabaseBasePath();
+        if (activeDatabaseBasePath != null)
+        {
+            dbPath.setText(activeDatabaseBasePath.toString());
+        }
         ListView<String> recent = new ListView<>(FXCollections.observableArrayList(contextService.recentDatabasePaths()));
         recent.setPrefHeight(120);
+        Button browse = new Button("Browse...");
+        Button open = new Button("Open Database");
+        Label state = new Label();
+        state.setText(dbPath.getText().isBlank() ? "No file selected." : "Selected: " + Path.of(dbPath.getText().trim()).getFileName());
+
         recent.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null)
             {
                 dbPath.setText(newVal);
+                state.setText("Selected: " + Path.of(newVal).getFileName());
             }
         });
-        Button browse = new Button("Browse...");
-        Button open = new Button("Open Database");
-        Label state = new Label("No file selected.");
         browse.setOnAction(e -> {
             FileChooser chooser = new FileChooser();
             chooser.setTitle("Select database file");
@@ -324,6 +390,7 @@ public class MainWindowAlternate extends BorderPane
             {
                 contextService.openDatabase(Paths.get(value.trim()));
                 alternateStatus.setText("Database opened:\n" + value.trim());
+                refreshHeaderLabels();
                 openPanel(activePanelId);
                 openDatabaseSelector();
             }
@@ -355,6 +422,7 @@ public class MainWindowAlternate extends BorderPane
 
         ComboBox<String> companies = new ComboBox<>(FXCollections.observableArrayList(companiesByName.keySet()));
         companies.setPromptText("Select company");
+        Label state = new Label("No company selected.");
 
         ListView<String> recent = new ListView<>();
         recent.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -371,7 +439,20 @@ public class MainWindowAlternate extends BorderPane
             recent.setItems(FXCollections.observableArrayList());
         }
 
-        recent.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> companies.setValue(newVal));
+        recent.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            companies.setValue(newVal);
+            if (newVal != null && !newVal.isBlank())
+            {
+                state.setText("Selected: " + newVal);
+            }
+        });
+
+        companies.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && !newVal.isBlank())
+            {
+                state.setText("Selected: " + newVal);
+            }
+        });
 
         Button open = new Button("Open Company");
         open.setOnAction(e -> {
@@ -380,21 +461,26 @@ public class MainWindowAlternate extends BorderPane
             if (companyId == null)
             {
                 alternateStatus.setText("No company selected.");
+                state.setText("No company selected.");
                 return;
             }
             try
             {
                 contextService.openCompany(companyId, selected);
-                alternateStatus.setText("Company opened:\n" + selected);
-                openPanel(activePanelId);
-                openCompanySelector();
+                String openedMessage = "Company opened: " + selected;
+                alternateStatus.setText(openedMessage);
+                state.setText(openedMessage);
+                refreshHeaderLabels();
+                openPanel(AppPanelId.DASHBOARD);
             }
             catch (Exception ex)
             {
-                alternateStatus.setText("Failed to open company: " + ex.getMessage());
+                String failedMessage = "Failed to open company: " + ex.getMessage();
+                alternateStatus.setText(failedMessage);
+                state.setText(failedMessage);
             }
         });
-        companySelectorPane.getChildren().setAll(new Label("Open Company"), companies, new Label("Recent Companies"), recent, open);
+        companySelectorPane.getChildren().setAll(new Label("Open Company"), companies, new Label("Recent Companies"), recent, open, state);
         companySelectorPane.setPadding(new Insets(12));
         companySelectorPane.setSpacing(10);
         return companySelectorPane;
@@ -452,9 +538,11 @@ public class MainWindowAlternate extends BorderPane
 
         VBox reportActions = new VBox(6,
             new Label("Reports actions"),
-            actionButton("Print", this::openReportsWorkspaceWithPrintHint),
+            actionButton("Print Income Statement", this::printIncomeStatementDirect),
+            actionButton("Print Balance Sheet", this::printBalanceSheetDirect),
+            actionButton("Print Trial Balance", this::printTrialBalanceDirect),
             actionButton("Export", this::openReportsWorkspaceWithExportHint),
-            actionButton("Schedule", this::openReportsWorkspaceWithScheduleHint));
+            actionButton("Schedule", this::openReportsScheduleDirect));
 
         Button newButton = actionButton("New", this::runNewAction);
         Button saveButton = actionButton("Save", this::runSaveAction);
@@ -471,27 +559,78 @@ public class MainWindowAlternate extends BorderPane
 
         VBox fundraisingGroup = new VBox(6,
             new Label("Fundraising"),
-            actionButton("Donors", () -> openFundraisingHint("Donors")),
-            actionButton("Donations", () -> openFundraisingHint("Donations")),
-            actionButton("Grants", () -> openFundraisingHint("Grants")),
+            actionButton("Donors", this::openDonorsDirect),
+            actionButton("Donations", this::openDonationsDirect),
+            actionButton("Grants", this::openGrantsDirect),
             actionButton("Funds", () -> openPanel(AppPanelId.FUNDS)));
+
+        VBox bankingGroup = new VBox(6,
+            new Label("Banking"),
+            actionButton("Reconcile Accounts", this::openReconcileAccountsDirect),
+            actionButton("Undeposited Funds", this::openUndepositedFundsDirect),
+            actionButton("Documents & Attachments", this::openDocumentsDirect),
+            actionButton("Account Activity", () -> openPanel(AppPanelId.LEDGER_REGISTER)),
+            actionButton("Transactions", () -> openPanel(AppPanelId.LEDGER_REGISTER)));
 
         VBox helpGroup = new VBox(6,
             new Label("Help"),
             actionButton("Help Center", this::openHelpHint));
 
-        VBox pane = new VBox(10, new Label("Command Center"), new Separator(), fileGroup, new Separator(), runGroup, new Separator(), reportActions, new Separator(), quickActions, new Separator(), fundraisingGroup, new Separator(), helpGroup);
+        VBox pane = new VBox(10, new Label("Command Center"), new Separator(), fileGroup, new Separator(), runGroup, new Separator(), reportActions, new Separator(), quickActions, new Separator(), fundraisingGroup, new Separator(), bankingGroup, new Separator(), helpGroup);
         pane.setPadding(new Insets(12));
         pane.setSpacing(10);
         pane.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
         return pane;
     }
 
-
-    private void openReportsWorkspaceWithPrintHint()
+    List<String> commandCenterActionLabelsForTest()
     {
-        openPanel(AppPanelId.REPORTS_WORKSPACE);
-        openInspectorForSelection("Reports", "Print action is available from the Reports workspace panel context.");
+        return buildCommandCenterPane().getChildren().stream()
+            .filter(VBox.class::isInstance)
+            .flatMap(group -> ((VBox) group).getChildren().stream())
+            .filter(Button.class::isInstance)
+            .map(node -> ((Button) node).getText())
+            .toList();
+    }
+
+
+    private void printIncomeStatementDirect()
+    {
+        try
+        {
+            new GenerateIncomeStatementAction(new ReportService()).actionPerformed(null);
+            openInspectorForSelection("Reports", "Printed Income Statement.");
+        }
+        catch (Exception ex)
+        {
+            openInspectorForSelection("Reports", "Income Statement print failed: " + ex.getMessage());
+        }
+    }
+
+    private void printBalanceSheetDirect()
+    {
+        try
+        {
+            new GenerateBalanceSheetAction(new ReportService()).actionPerformed(null);
+            openInspectorForSelection("Reports", "Printed Balance Sheet.");
+        }
+        catch (Exception ex)
+        {
+            openInspectorForSelection("Reports", "Balance Sheet print failed: " + ex.getMessage());
+        }
+    }
+
+    private void printTrialBalanceDirect()
+    {
+        try
+        {
+            new GenerateTrialBalanceAction(new ReportService()).actionPerformed(null);
+            openInspectorForSelection("Reports", "Printed Trial Balance.");
+        }
+        catch (Exception ex)
+        {
+            openInspectorForSelection("Reports", "Trial Balance print failed: " + ex.getMessage());
+        }
     }
 
     private void openReportsWorkspaceWithExportHint()
@@ -502,14 +641,122 @@ public class MainWindowAlternate extends BorderPane
             openInspectorForSelection("Reports", "Export action requires an active window; open Reports workspace and try again.");
             return;
         }
-        new ExcelTemplateReportActionFX(owner).handle(null);
-        openInspectorForSelection("Reports", "Export action launched via Excel template report workflow.");
+        try
+        {
+            new ExcelTemplateReportActionFX(owner).handle(null);
+            openInspectorForSelection("Reports", "Export action launched via Excel template report workflow.");
+        }
+        catch (Exception ex)
+        {
+            openInspectorForSelection("Reports", "Export action failed: " + ex.getMessage());
+        }
     }
 
-    private void openReportsWorkspaceWithScheduleHint()
+    private void openReportsScheduleDirect()
     {
-        openPanel(AppPanelId.REPORTS_WORKSPACE);
-        openInspectorForSelection("Reports", "Schedule workflow is not yet wired in alternate shell. Use Reports workspace for report setup.");
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Schedule Report");
+        dialog.setHeaderText("Create scheduled report run");
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        ComboBox<String> reportType = new ComboBox<>(FXCollections.observableArrayList(
+            "Income Statement", "Balance Sheet", "Trial Balance"));
+        reportType.setValue("Income Statement");
+        ComboBox<String> frequency = new ComboBox<>(FXCollections.observableArrayList(
+            "Daily", "Weekly", "Monthly", "Quarterly"));
+        frequency.setValue("Monthly");
+        DatePicker nextRun = new DatePicker(java.time.LocalDate.now().plusDays(1));
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(8);
+        grid.addRow(0, new Label("Report"), reportType);
+        grid.addRow(1, new Label("Frequency"), frequency);
+        grid.addRow(2, new Label("Next run"), nextRun);
+        dialog.getDialogPane().setContent(grid);
+
+        ButtonType selected = dialog.showAndWait().orElse(ButtonType.CANCEL);
+        if (selected == ButtonType.OK)
+        {
+            String entry = reportType.getValue() + "|" + frequency.getValue() + "|" + nextRun.getValue();
+            saveScheduledReport(entry);
+            openInspectorForSelection("Reports", "Scheduled " + reportType.getValue() + " (" + frequency.getValue() + ") starting " + nextRun.getValue() + ".");
+        }
+        else
+        {
+            openInspectorForSelection("Reports", "Schedule action cancelled.");
+        }
+    }
+
+    private void saveScheduledReport(String entry)
+    {
+        String existing = alternatePreferences.get(SCHEDULED_REPORTS_KEY, "");
+        String updated = existing == null || existing.isBlank() ? entry : entry + "\n" + existing;
+        alternatePreferences.put(SCHEDULED_REPORTS_KEY, updated);
+    }
+
+    void saveScheduledReportForTest(String entry)
+    {
+        saveScheduledReport(entry);
+    }
+
+    void clearScheduledReportsForTest()
+    {
+        alternatePreferences.remove(SCHEDULED_REPORTS_KEY);
+    }
+
+    String scheduledReportsSnapshotForTest()
+    {
+        return alternatePreferences.get(SCHEDULED_REPORTS_KEY, "");
+    }
+
+    void triggerReportExportActionForTest()
+    {
+        openReportsWorkspaceWithExportHint();
+    }
+
+    String alternateStatusTextForTest()
+    {
+        return alternateStatus.getText();
+    }
+
+    private void openReconcileAccountsDirect()
+    {
+        try
+        {
+            showAlternatePane(bankingPanelFactory.createReconcilePanel());
+            openInspectorForSelection("Banking", "Reconcile Accounts opened in alternate shell.");
+        }
+        catch (Exception ex)
+        {
+            openInspectorForSelection("Banking", "Reconcile Accounts failed: " + ex.getMessage());
+        }
+    }
+
+    private void openUndepositedFundsDirect()
+    {
+        try
+        {
+            showAlternatePane(bankingPanelFactory.createUndepositedFundsPanel());
+            openInspectorForSelection("Banking", "Undeposited Funds opened in alternate shell.");
+        }
+        catch (Exception ex)
+        {
+            openInspectorForSelection("Banking", "Undeposited Funds failed: " + ex.getMessage());
+        }
+    }
+
+    private void openDocumentsDirect()
+    {
+        try
+        {
+            showAlternatePane(bankingPanelFactory.createDocumentsPanel());
+            openInspectorForSelection("Banking", "Documents & Attachments opened in alternate shell.");
+        }
+        catch (Exception ex)
+        {
+            openInspectorForSelection("Banking", "Documents & Attachments failed: " + ex.getMessage());
+        }
     }
 
     private void openHelpHint()
@@ -519,9 +766,23 @@ public class MainWindowAlternate extends BorderPane
         openInspectorForSelection("Help", "Help content opened in alternate shell.");
     }
 
-    private void openFundraisingHint(String area)
+    private void openDonorsDirect()
     {
-        openInspectorForSelection("Fundraising", area + " command is discovered in alternate mode; full panel parity is pending.");
+        showAlternatePane(new DonorsPanelFX(new DonorService(), null));
+        openInspectorForSelection("Fundraising", "Donors panel opened in alternate shell.");
+    }
+
+    private void openDonationsDirect()
+    {
+        Stage owner = getOwningStage();
+        showAlternatePane(new DonationsPanelFX(owner));
+        openInspectorForSelection("Fundraising", "Donations panel opened in alternate shell.");
+    }
+
+    private void openGrantsDirect()
+    {
+        showAlternatePane(new GrantsPanelFX(new GrantsService()));
+        openInspectorForSelection("Fundraising", "Grants panel opened in alternate shell.");
     }
 
     private Stage getOwningStage()
@@ -622,6 +883,7 @@ public class MainWindowAlternate extends BorderPane
     private void openPanel(AppPanelId id)
     {
         activePanelId = id;
+        refreshHeaderLabels();
         WorkspaceRouteDecision decision = workspaceRouter.decide(id);
 
         boolean dashboard = decision.isDashboard();
@@ -652,6 +914,39 @@ public class MainWindowAlternate extends BorderPane
         nav.highlight(id);
     }
 
+    private void refreshHeaderLabels()
+    {
+        headerTitle.setText(panelTitle(activePanelId));
+        headerSubtitle.setText(activeCompanyName());
+    }
+
+    private String activeCompanyName()
+    {
+        Company company = CurrentCompany.getCompany();
+        if (company == null || company.getName() == null || company.getName().isBlank())
+        {
+            return "No company open";
+        }
+        return company.getName();
+    }
+
+    private String panelTitle(AppPanelId panelId)
+    {
+        return switch (panelId)
+        {
+            case DASHBOARD -> "Dashboard";
+            case CHART_OF_ACCOUNTS -> "Chart of Accounts";
+            case LEDGER_REGISTER -> "Journal";
+            case INVENTORY -> "Inventory";
+            case FUNDS -> "Funds";
+            case REPORTS_WORKSPACE -> "Reports";
+            case SCHEDULES -> "Schedules";
+            case BUDGET_EDITOR -> "Budget";
+            case SETTINGS -> "Settings";
+            default -> panelId.name().replace('_', ' ');
+        };
+    }
+
     private void openInspectorForSelection(String title, String body)
     {
         alternateStatus.setText(title + "\n" + body);
@@ -667,4 +962,40 @@ public class MainWindowAlternate extends BorderPane
         AppPanel panel = binding.panelFactory().get();
         openInspectorForSelection(binding.displayName(), panel.title() + " opened in alternate shell.");
     }
+
+    void testOpenReconcileAccountsDirect()
+    {
+        openReconcileAccountsDirect();
+    }
+
+    void testOpenUndepositedFundsDirect()
+    {
+        openUndepositedFundsDirect();
+    }
+
+    void testOpenDocumentsDirect()
+    {
+        openDocumentsDirect();
+    }
+
+    String testAlternateStatusText()
+    {
+        return alternateStatus.getText();
+    }
+
+    void testClearScheduledReports()
+    {
+        alternatePreferences.remove(SCHEDULED_REPORTS_KEY);
+    }
+
+    void testSaveScheduledReport(String entry)
+    {
+        saveScheduledReport(entry);
+    }
+
+    String testScheduledReportsValue()
+    {
+        return alternatePreferences.get(SCHEDULED_REPORTS_KEY, "");
+    }
+
 }
