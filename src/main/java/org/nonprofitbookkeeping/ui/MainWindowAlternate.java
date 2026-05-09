@@ -390,6 +390,7 @@ public class MainWindowAlternate extends BorderPane
             {
                 contextService.openDatabase(Paths.get(value.trim()));
                 alternateStatus.setText("Database opened:\n" + value.trim());
+                refreshHeaderLabels();
                 openPanel(activePanelId);
                 openDatabaseSelector();
             }
@@ -469,6 +470,7 @@ public class MainWindowAlternate extends BorderPane
                 String openedMessage = "Company opened: " + selected;
                 alternateStatus.setText(openedMessage);
                 state.setText(openedMessage);
+                refreshHeaderLabels();
                 openPanel(AppPanelId.DASHBOARD);
             }
             catch (Exception ex)
