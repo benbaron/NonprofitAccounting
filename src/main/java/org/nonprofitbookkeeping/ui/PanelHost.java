@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package org.nonprofitbookkeeping.ui;
 
 import javafx.scene.layout.BorderPane;
@@ -13,6 +16,11 @@ public class PanelHost extends BorderPane
     private final Map<AppPanelId, AppPanel> panels = new EnumMap<>(AppPanelId.class);
     private AppPanelId activeId;
 
+    /**
+     * Show the AppPanel (by ID) Alternate way
+     *
+     * @param id the id
+     */
     public void show(AppPanelId id)
     {
         AppPanel panel = panels.computeIfAbsent(id, this::create);
@@ -33,6 +41,12 @@ public class PanelHost extends BorderPane
 
     private AppPanel getActive() { return activeId == null ? null : panels.get(activeId); }
 
+    /**
+     * Creates the AppPanel (Classic way)
+     *
+     * @param id the id
+     * @return the app panel
+     */
     private AppPanel create(AppPanelId id)
     {
         return switch (id)

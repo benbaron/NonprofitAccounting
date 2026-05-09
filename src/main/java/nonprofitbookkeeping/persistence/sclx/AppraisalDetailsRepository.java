@@ -9,6 +9,10 @@ import nonprofitbookkeeping.model.sclx.AppraisalDetails;
 @ApplicationScoped
 public class AppraisalDetailsRepository extends AbstractSclxBeanRepository<AppraisalDetails>
 {
+    
+    /**
+     * Instantiates a new appraisal details repository.
+     */
     public AppraisalDetailsRepository()
     {
         super("sclx.AppraisalDetails", AppraisalDetails.class);

@@ -614,6 +614,11 @@ public class MainWindowAlternate extends BorderPane
         return "Query staged for shared command surface: " + query;
     }
 
+    /**
+     * Open panel.
+     *
+     * @param id the id
+     */
     private void openPanel(AppPanelId id)
     {
         activePanelId = id;

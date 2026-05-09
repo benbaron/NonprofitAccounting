@@ -9,6 +9,10 @@ import nonprofitbookkeeping.model.sclx.Account;
 @ApplicationScoped
 public class AccountRepository extends AbstractSclxBeanRepository<Account>
 {
+    
+    /**
+     * Instantiates a new account repository.
+     */
     public AccountRepository()
     {
         super("sclx.Account", Account.class);
