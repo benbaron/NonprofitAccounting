@@ -620,53 +620,23 @@ Validation:
 2. Reflection usage remains in alternate-shell tests; extraction of package-private collaborators is still pending.
 3. Settings parity decision gate remains open and should be resolved in next round before broad parity “implemented” claims.
 
-## Round 10 status (Remediation follow-through: reflection reduction)
+## Round 11 status (stabilization pass)
 
-### Implemented
-1. Followed the Round 9 next-step trajectory by reducing test brittleness:
-   - introduced package-private test helper hooks in `MainWindowAlternate` for command-center label inspection, scheduled-report persistence interactions, export precondition triggering, and inspector text retrieval.
-   - migrated `MainWindowAlternateCommandCenterTest` off private reflection to use these package-private helpers.
-2. Preserved runtime behavior and routing semantics; this pass only improves testability surface and maintenance resilience.
+### Settings parity decision gate (resolved)
+- **Decision**: proceed with **approach (a) embed/wrap classic `SettingsPanel` behavior** by hosting `SettingsPanelFX` in the alternate workspace surface with alternate shell chrome wrapper, rather than building/maintaining a second alternate-only settings implementation.
+- **Why**:
+  1. Lowest behavior-drift risk for persistence and defaults (`SettingsService` remains the single source of truth).
+  2. Faster parity closure for P0 settings mismatch in parity matrix.
+  3. Reduced long-term maintenance compared with duplicate controls/validation.
 
-### Validation run
-- `mvn test -q` (pass).
+### Acceptance criteria
+1. Alternate `SETTINGS` route renders the real settings panel content (not placeholder controls).
+2. Save in alternate settings persists via existing settings service and triggers same downstream effects as classic (theme/currency/organization metadata refresh paths).
+3. No regression to `WorkspaceRouter` semantics: route decisioning stays unchanged and classic shell behavior remains unchanged.
+4. Focused tests cover at least one settings save path in alternate-hosted settings wrapper and one error feedback path.
 
-### Remaining deficiencies
-1. Banking action exception-path assertions are still pending deterministic test seams.
-2. Settings parity decision gate remains unresolved (classic embed vs alternate-complete implementation).
-
-## Next metaprompt (Phase 6C: deterministic banking-failure tests + settings decision gate)
-
-```text
-You are working in the NonprofitAccounting repo.
-
-Context:
-- Alternate Command Center parity for Reports/Banking is functionally wired.
-- Round 10 reduced reflection in alternate-shell tests by introducing package-private helper hooks.
-- Remaining gaps are deterministic banking failure-path tests and unresolved Settings parity strategy.
-
-Scope:
-Implement a focused stabilization pass that closes the two highest-risk residual gaps.
-
-Goals:
-1) Deterministic banking failure-path coverage:
-   - Add lightweight seams/collaborators so `Reconcile Accounts`, `Undeposited Funds`, and `Documents & Attachments` failure branches can be asserted without flaky runtime forcing.
-   - Add tests that verify inspector failure messages for each banking action branch.
-2) Settings parity decision gate:
-   - Choose one concrete approach for alternate settings parity:
-     a) embed/wrap classic `SettingsPanel`, or
-     b) complete alternate settings implementation with equivalent persistence/behavior.
-   - Document the decision, acceptance criteria, and near-term implementation steps in completion plan + parity matrix notes.
-3) Keep runtime behavior stable:
-   - Preserve WorkspaceRouter semantics and existing classic MainWindow behavior.
-
-Validation:
-- Run: mvn test -q
-- Report exact result.
-
-Output required:
-1) changed files list
-2) test result
-3) short code review (risks, technical debt, recommended next fixes)
-4) offer to fix review issues and failing tests immediately
-```
+### Near-term implementation steps
+1. Introduce `AlternateSettingsHost` wrapper (layout/chrome only) around `SettingsPanelFX` root.
+2. Replace `buildAlternateSettingsPane()` placeholder content with hosted `SettingsPanelFX` wrapper and status bridge callbacks.
+3. Add alternate-shell tests for successful save feedback + service error feedback.
+4. Update parity matrix status to implemented once acceptance criteria pass.
