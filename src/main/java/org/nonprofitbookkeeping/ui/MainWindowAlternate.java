@@ -384,19 +384,23 @@ public class MainWindowAlternate extends BorderPane
             if (value == null || value.isBlank())
             {
                 alternateStatus.setText("No database selected.");
+                state.setText("No database selected.");
                 return;
             }
             try
             {
                 contextService.openDatabase(Paths.get(value.trim()));
-                alternateStatus.setText("Database opened:\n" + value.trim());
+                String openedMessage = "Database opened: " + value.trim();
+                alternateStatus.setText(openedMessage);
+                state.setText(openedMessage);
                 refreshHeaderLabels();
-                openPanel(activePanelId);
-                openDatabaseSelector();
+                openPanel(AppPanelId.DASHBOARD);
             }
             catch (Exception ex)
             {
-                alternateStatus.setText("Failed to open database: " + ex.getMessage());
+                String failedMessage = "Failed to open database: " + ex.getMessage();
+                alternateStatus.setText(failedMessage);
+                state.setText(failedMessage);
             }
         });
         databaseSelectorPane.getChildren().setAll(new Label("Open Database (.mv.db/.db)"), new HBox(8, dbPath, browse), new Label("Recent Databases"), recent, open, state);
@@ -918,7 +922,7 @@ public class MainWindowAlternate extends BorderPane
     private String activeCompanyName()
     {
         Company company = CurrentCompany.getCompany();
-        if (company == null || company.getName() == null || company.getName().isBlank())
+        if (!CurrentCompany.isOpen() || company == null || company.getName() == null || company.getName().isBlank())
         {
             return "No company open";
         }
