@@ -347,17 +347,25 @@ public class MainWindowAlternate extends BorderPane
     {
         TextField dbPath = new TextField();
         dbPath.setPromptText("/path/to/file.mv.db");
+        Path activeDatabaseBasePath = contextService.activeDatabaseBasePath();
+        if (activeDatabaseBasePath != null)
+        {
+            dbPath.setText(activeDatabaseBasePath.toString());
+        }
         ListView<String> recent = new ListView<>(FXCollections.observableArrayList(contextService.recentDatabasePaths()));
         recent.setPrefHeight(120);
+        Button browse = new Button("Browse...");
+        Button open = new Button("Open Database");
+        Label state = new Label();
+        state.setText(dbPath.getText().isBlank() ? "No file selected." : "Selected: " + Path.of(dbPath.getText().trim()).getFileName());
+
         recent.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null)
             {
                 dbPath.setText(newVal);
+                state.setText("Selected: " + Path.of(newVal).getFileName());
             }
         });
-        Button browse = new Button("Browse...");
-        Button open = new Button("Open Database");
-        Label state = new Label("No file selected.");
         browse.setOnAction(e -> {
             FileChooser chooser = new FileChooser();
             chooser.setTitle("Select database file");
@@ -411,6 +419,7 @@ public class MainWindowAlternate extends BorderPane
 
         ComboBox<String> companies = new ComboBox<>(FXCollections.observableArrayList(companiesByName.keySet()));
         companies.setPromptText("Select company");
+        Label state = new Label("No company selected.");
 
         ListView<String> recent = new ListView<>();
         recent.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -427,7 +436,20 @@ public class MainWindowAlternate extends BorderPane
             recent.setItems(FXCollections.observableArrayList());
         }
 
-        recent.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> companies.setValue(newVal));
+        recent.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            companies.setValue(newVal);
+            if (newVal != null && !newVal.isBlank())
+            {
+                state.setText("Selected: " + newVal);
+            }
+        });
+
+        companies.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && !newVal.isBlank())
+            {
+                state.setText("Selected: " + newVal);
+            }
+        });
 
         Button open = new Button("Open Company");
         open.setOnAction(e -> {
@@ -450,7 +472,7 @@ public class MainWindowAlternate extends BorderPane
                 alternateStatus.setText("Failed to open company: " + ex.getMessage());
             }
         });
-        companySelectorPane.getChildren().setAll(new Label("Open Company"), companies, new Label("Recent Companies"), recent, open);
+        companySelectorPane.getChildren().setAll(new Label("Open Company"), companies, new Label("Recent Companies"), recent, open, state);
         companySelectorPane.setPadding(new Insets(12));
         companySelectorPane.setSpacing(10);
         return companySelectorPane;
