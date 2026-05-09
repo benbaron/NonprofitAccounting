@@ -59,8 +59,10 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.prefs.Preferences;
 
@@ -89,6 +91,8 @@ public class MainWindowAlternate extends BorderPane
     private final VBox companySelectorPane = new VBox();
     private final VBox profilePane = new VBox();
     private final VBox searchPane = new VBox();
+    private final VBox navButtons = new VBox(6);
+    private final TitledPane importToolsPane = new TitledPane();
     private final WorkspaceRouter workspaceRouter = new WorkspaceRouter();
     private final BankingPanelFactory bankingPanelFactory;
     private final AlternateDataContextService contextService = new AlternateDataContextService();
@@ -210,27 +214,15 @@ public class MainWindowAlternate extends BorderPane
 
     private VBox buildLeftNavigation()
     {
-        VBox navButtons = new VBox(6,
-            navButton("⌂  Dashboard", AppPanelId.DASHBOARD),
-            navButton("🗂  Chart of Accounts", AppPanelId.CHART_OF_ACCOUNTS),
-            navButton("🧾  Journal", AppPanelId.LEDGER_REGISTER),
-            navButton("📦  Inventory", AppPanelId.INVENTORY),
-            navButton("💰  Funds", AppPanelId.FUNDS),
-            navButton("📊  Reports", AppPanelId.REPORTS_WORKSPACE),
-            navButton("🗓  Schedules", AppPanelId.SCHEDULES),
-            navButton("📈  Budget", AppPanelId.BUDGET_EDITOR),
-            navButton("⚙  Settings", AppPanelId.SETTINGS),
-            navActionButton("☰  Command Center", this::openCommandCenter),
-            navActionButton("🗄  Open Database", this::openDatabaseSelector),
-            navActionButton("🏢  Open Company", this::openCompanySelector));
-
-        TitledPane imports = new TitledPane("Import & Tools", new VBox(6,
+        importToolsPane.setText("Import & Tools");
+        importToolsPane.setContent(new VBox(6,
             navButton("Assets Register", AppPanelId.ASSETS_REGISTER),
             navButton("Budget vs Actual", AppPanelId.BUDGET_VS_ACTUAL),
             navButton("Depreciation", AppPanelId.DEPRECIATION_RUNS)));
-        imports.setExpanded(false);
+        importToolsPane.setExpanded(false);
+        rebuildNavigationButtons();
 
-        VBox wrapper = new VBox(10, new Label("Navigation"), navButtons, imports);
+        VBox wrapper = new VBox(10, new Label("Navigation"), navButtons, importToolsPane);
         wrapper.setPadding(new Insets(12));
         wrapper.setMinWidth(240);
         wrapper.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 16;");
@@ -881,8 +873,14 @@ public class MainWindowAlternate extends BorderPane
 
     private void openPanel(AppPanelId id)
     {
+        if (activePanelId != id)
+        {
+            alternateStatus.setText("Saving state before leaving " + panelTitle(activePanelId) + "...");
+            panelHost.saveActive();
+        }
         activePanelId = id;
         refreshHeaderLabels();
+        rebuildNavigationButtons();
         WorkspaceRouteDecision decision = workspaceRouter.decide(id);
 
         boolean dashboard = decision.isDashboard();
@@ -911,6 +909,48 @@ public class MainWindowAlternate extends BorderPane
             panelHost.show(id);
         }
         nav.highlight(id);
+    }
+
+    private void rebuildNavigationButtons()
+    {
+        navButtons.getChildren().clear();
+        boolean databaseOpen = contextService.activeDatabaseBasePath() != null;
+        boolean companyOpen = CurrentCompany.isOpen();
+
+        if (!databaseOpen)
+        {
+            navButtons.getChildren().addAll(
+                navActionButton("🗄  Open Database", this::openDatabaseSelector),
+                navButton("⚙  Settings", AppPanelId.SETTINGS));
+            importToolsPane.setVisible(false);
+            importToolsPane.setManaged(false);
+            return;
+        }
+        if (!companyOpen)
+        {
+            navButtons.getChildren().addAll(
+                navActionButton("🗄  Open Database", this::openDatabaseSelector),
+                navActionButton("🏢  Open Company", this::openCompanySelector),
+                navButton("⚙  Settings", AppPanelId.SETTINGS));
+            importToolsPane.setVisible(false);
+            importToolsPane.setManaged(false);
+            return;
+        }
+
+        navButtons.getChildren().addAll(
+            navButton("⌂  " + panelTitle(parentPanelFor(activePanelId)), parentPanelFor(activePanelId)));
+
+        for (AppPanelId child : subPanelsFor(parentPanelFor(activePanelId)))
+        {
+            navButtons.getChildren().add(navButton("↳  " + panelTitle(child), child));
+        }
+
+        navButtons.getChildren().addAll(
+            navButton("⚙  Settings", AppPanelId.SETTINGS),
+            navActionButton("🗄  Open Database", this::openDatabaseSelector),
+            navActionButton("🏢  Open Company", this::openCompanySelector));
+        importToolsPane.setVisible(true);
+        importToolsPane.setManaged(true);
     }
 
     private void refreshHeaderLabels()
@@ -944,6 +984,31 @@ public class MainWindowAlternate extends BorderPane
             case SETTINGS -> "Settings";
             default -> panelId.name().replace('_', ' ');
         };
+    }
+
+    private AppPanelId parentPanelFor(AppPanelId panelId)
+    {
+        return switch (panelId)
+        {
+            case CHART_OF_ACCOUNTS, LEDGER_REGISTER, INVENTORY, FUNDS, REPORTS_WORKSPACE, SCHEDULES, BUDGET_EDITOR -> panelId;
+            case ASSETS_REGISTER, BUDGET_VS_ACTUAL, DEPRECIATION_RUNS -> AppPanelId.REPORTS_WORKSPACE;
+            default -> AppPanelId.DASHBOARD;
+        };
+    }
+
+    private List<AppPanelId> subPanelsFor(AppPanelId parent)
+    {
+        Map<AppPanelId, List<AppPanelId>> hierarchy = Map.of(
+            AppPanelId.DASHBOARD, List.of(AppPanelId.CHART_OF_ACCOUNTS, AppPanelId.LEDGER_REGISTER),
+            AppPanelId.CHART_OF_ACCOUNTS, List.of(),
+            AppPanelId.LEDGER_REGISTER, List.of(),
+            AppPanelId.INVENTORY, List.of(),
+            AppPanelId.FUNDS, List.of(),
+            AppPanelId.REPORTS_WORKSPACE, List.of(AppPanelId.ASSETS_REGISTER, AppPanelId.BUDGET_VS_ACTUAL, AppPanelId.DEPRECIATION_RUNS),
+            AppPanelId.SCHEDULES, List.of(),
+            AppPanelId.BUDGET_EDITOR, List.of());
+        Set<AppPanelId> unique = new LinkedHashSet<>(hierarchy.getOrDefault(parent, List.of()));
+        return List.copyOf(unique);
     }
 
     private void openInspectorForSelection(String title, String body)
