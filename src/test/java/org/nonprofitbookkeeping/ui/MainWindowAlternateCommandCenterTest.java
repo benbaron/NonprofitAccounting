@@ -35,18 +35,7 @@ class MainWindowAlternateCommandCenterTest
             try
             {
                 MainWindowAlternate window = new MainWindowAlternate();
-
-                Method buildCommandCenterPane = MainWindowAlternate.class
-                    .getDeclaredMethod("buildCommandCenterPane");
-                buildCommandCenterPane.setAccessible(true);
-                VBox pane = (VBox) buildCommandCenterPane.invoke(window);
-
-                List<String> buttonLabels = pane.getChildren().stream()
-                    .filter(VBox.class::isInstance)
-                    .flatMap(group -> ((VBox) group).getChildren().stream())
-                    .filter(Button.class::isInstance)
-                    .map(node -> ((Button) node).getText())
-                    .toList();
+                var buttonLabels = window.commandCenterActionLabelsForTest();
 
                 assertTrue(buttonLabels.contains("Reconcile Accounts"));
                 assertTrue(buttonLabels.contains("Undeposited Funds"));
