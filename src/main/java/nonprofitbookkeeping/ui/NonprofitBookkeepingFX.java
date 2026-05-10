@@ -1541,7 +1541,6 @@ public class NonprofitBookkeepingFX extends Application
 		if (this.mainView != null)
 		{
 			this.mainView.showWorkspaceTabs();
-			this.mainView.showPanel(MainApplicationView.PanelType.DASHBOARD);
 		}
 		
 	}

@@ -9,6 +9,10 @@ import nonprofitbookkeeping.model.sclx.Address;
 @ApplicationScoped
 public class AddressRepository extends AbstractSclxBeanRepository<Address>
 {
+    
+    /**
+     * Instantiates a new address repository.
+     */
     public AddressRepository()
     {
         super("sclx.Address", Address.class);

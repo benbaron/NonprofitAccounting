@@ -18,6 +18,7 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -47,6 +48,12 @@ public class CompanySelectionPanelFX extends BorderPane
 		DateTimeFormatter.ofPattern("MMM d, yyyy h:mm a")
 			.withZone(ZoneId.systemDefault());
 	
+	/** The Constant SUCCESS_STATUS_STYLE. */
+	private static final String SUCCESS_STATUS_STYLE = "-fx-text-fill: #1b5e20;";
+	
+	/** The Constant ERROR_STATUS_STYLE. */
+	private static final String ERROR_STATUS_STYLE = "-fx-text-fill: #b00020;";
+	
 	/** Callback invoked when a company has been successfully opened. */
 	@FunctionalInterface
 	public interface OnCompanyOpenedHandler
@@ -73,6 +80,9 @@ public class CompanySelectionPanelFX extends BorderPane
 	
 	/** The preview area. */
 	private final TextArea previewArea = new TextArea();
+	
+	/** The status label. */
+	private final Label statusLabel = new Label("No company opened.");
 	
 	/** The demo company seeder. */
 	private final DemoCompanySeeder demoCompanySeeder = new DemoCompanySeeder();
@@ -181,11 +191,16 @@ public class CompanySelectionPanelFX extends BorderPane
 		demoBtn.setOnAction(e -> createDemoCompany());
 		deleteBtn.setOnAction(e -> deleteSelected());
 		
+		this.statusLabel.getStyleClass().add("muted-text");
 		HBox buttons = new HBox(UiSpacing.SECTION_SPACING, openBtn, createBtn, demoBtn, deleteBtn);
 		buttons.setPadding(new Insets(UiSpacing.SECTION_SPACING));
 		HBox.setHgrow(openBtn, Priority.NEVER);
 		HBox.setHgrow(createBtn, Priority.NEVER);
-		setBottom(buttons);
+		BorderPane footer = new BorderPane();
+		footer.setTop(this.statusLabel);
+		BorderPane.setMargin(this.statusLabel, new Insets(0, UiSpacing.SECTION_SPACING, UiSpacing.SECTION_SPACING, UiSpacing.SECTION_SPACING));
+		footer.setCenter(buttons);
+		setBottom(footer);
 		
 	}
 	
@@ -319,6 +334,7 @@ public class CompanySelectionPanelFX extends BorderPane
 		
 		if (!Database.isInitialized())
 		{
+			setStatus("Initialize the database before opening a company.", true);
 			this.errorHandler
 				.accept("Initialize the database before opening a company.");
 			return;
@@ -329,6 +345,7 @@ public class CompanySelectionPanelFX extends BorderPane
 		
 		if (record == null)
 		{
+			setStatus("No company selected.", true);
 			this.errorHandler.accept("No company selected.");
 			return;
 		}
@@ -338,15 +355,19 @@ public class CompanySelectionPanelFX extends BorderPane
 			CurrentCompany.loadFromPersistent(record.id());
 			PreferencesService.setLastUsedCompanyId(record.id());
 			
+			Company openedCompany = CurrentCompany.getCompany();
+			setStatus("Opened company: " + record.name(), false);
+			
 			if (this.companyOpenedHandler != null)
 			{
 				this.companyOpenedHandler
-					.onCompanyOpened(CurrentCompany.getCompany());
+					.onCompanyOpened(openedCompany);
 			}
 			
 		}
 		catch (IOException e)
 		{
+			setStatus("Failed to open company: " + e.getMessage(), true);
 			this.errorHandler
 				.accept("Failed to open company: " + e.getMessage());
 		}
@@ -361,6 +382,7 @@ public class CompanySelectionPanelFX extends BorderPane
 		
 		if (!Database.isInitialized())
 		{
+			setStatus("Initialize the database before creating a company.", true);
 			this.errorHandler
 				.accept("Initialize the database before creating a company.");
 			return;
@@ -374,6 +396,7 @@ public class CompanySelectionPanelFX extends BorderPane
 		if (this.companyOpenedHandler != null &&
 			CurrentCompany.getCompany() != null)
 		{
+			setStatus("Created and opened company.", false);
 			this.companyOpenedHandler
 				.onCompanyOpened(CurrentCompany.getCompany());
 		}
@@ -388,6 +411,7 @@ public class CompanySelectionPanelFX extends BorderPane
 		
 		if (!Database.isInitialized())
 		{
+			setStatus("Initialize the database before creating a demo company.", true);
 			this.errorHandler.accept(
 				"Initialize the database before creating a demo company.");
 			return;
@@ -404,6 +428,7 @@ public class CompanySelectionPanelFX extends BorderPane
 			reloadCompanyList();
 			selectCompany(id);
 			
+			setStatus("Created and opened demo company.", false);
 			if (this.companyOpenedHandler != null)
 			{
 				this.companyOpenedHandler.onCompanyOpened(demo);
@@ -412,12 +437,26 @@ public class CompanySelectionPanelFX extends BorderPane
 		}
 		catch (IOException | SQLException ex)
 		{
+			setStatus("Failed to create demo company: " + ex.getMessage(), true);
 			this.errorHandler
 				.accept("Failed to create demo company: " + ex.getMessage());
 		}
 		
 	}
 	
+	/**
+	 * Sets the status message text with success/error styling.
+	 *
+	 * @param message the message
+	 * @param error whether this is an error status
+	 */
+	private void setStatus(String message, boolean error)
+	{
+		this.statusLabel.setText(message == null ? "" : message);
+		this.statusLabel
+			.setStyle(error ? ERROR_STATUS_STYLE : SUCCESS_STATUS_STYLE);
+	}
+
 	/**
 	 * Delete selected.
 	 */
@@ -426,6 +465,7 @@ public class CompanySelectionPanelFX extends BorderPane
 		
 		if (!Database.isInitialized())
 		{
+			setStatus("Initialize the database before deleting companies.", true);
 			this.errorHandler
 				.accept("Initialize the database before deleting companies.");
 			return;
@@ -436,6 +476,7 @@ public class CompanySelectionPanelFX extends BorderPane
 		
 		if (record == null)
 		{
+			setStatus("Select a company to delete.", true);
 			this.errorHandler.accept("Select a company to delete.");
 			return;
 		}
@@ -455,6 +496,7 @@ public class CompanySelectionPanelFX extends BorderPane
 		
 		if (result.isEmpty() || result.get() != ButtonType.OK)
 		{
+			setStatus("Delete cancelled.", false);
 			return;
 		}
 		
@@ -469,9 +511,11 @@ public class CompanySelectionPanelFX extends BorderPane
 			}
 			
 			reloadCompanyList();
+			setStatus("Deleted company: " + record.name(), false);
 		}
 		catch (SQLException ex)
 		{
+			setStatus("Failed to delete company: " + ex.getMessage(), true);
 			this.errorHandler
 				.accept("Failed to delete company: " + ex.getMessage());
 		}
