@@ -3,6 +3,11 @@
 ## Goal
 Migrate the alternate shell to a stable, role-oriented navigation and panel experience while minimizing rewrite risk.
 
+## Universal metaprompt (use before any phase-specific prompt)
+> Read and follow `docs/panel-adaptation-plan.md` first.  
+> Step 1: explicitly implement the concrete class changes listed for the target phase/substage before doing anything else.  
+> Step 2: after implementation, perform a code review for completeness against **Phase 3 goals** (consistent design language, reduced legacy coupling, reliable navigation/save/context behavior), and list any gaps + follow-up fixes.
+
 ## Principles
 - Prefer adapting existing panels first for high-value workflows.
 - Rebuild natively only where legacy panel behavior is tightly coupled or UX no longer fits.
@@ -30,7 +35,10 @@ Migrate the alternate shell to a stable, role-oriented navigation and panel expe
   - add explicit parent->subpanel mapping for initial workflow panels
 
 ### Phase 1 metaprompt
-> Read and follow `docs/panel-adaptation-plan.md` first, then implement Phase 1 of the alternate shell migration. Keep Dashboard/Settings native and adapt COA/Journal. Update `MainWindowAlternate`, `AlternateDataContextService`, `LegacyPanelAdapter`, and `AlternateNavigationModel` so navigation is context-gated by DB/company, save-on-dismiss is deterministic, and header/company labels always reflect active context. Add/adjust focused tests for DB/company open and panel switch behavior.
+> Read and follow `docs/panel-adaptation-plan.md` first.  
+> Step 1: explicitly implement the **Phase 1 concrete class changes** (`MainWindowAlternate`, `AlternateDataContextService`, `LegacyPanelAdapter`, `AlternateNavigationModel`) to keep Dashboard/Settings native and adapt COA/Journal with deterministic context-gated navigation and save-on-dismiss behavior.  
+> Step 2: review the resulting code for completeness against **Phase 3 goals** and report remaining coupling/consistency gaps.  
+> Then add/adjust focused tests for DB/company open and panel switch behavior.
 
 ## Phase 2 (Operational Coverage)
 - **Adapt legacy:** Reports workspace.
@@ -53,7 +61,10 @@ Migrate the alternate shell to a stable, role-oriented navigation and panel expe
   - `src/main/java/org/nonprofitbookkeeping/ui/panels/AccountsActivityPanelFX.java` (if funds flow depends on it)
 
 ### Phase 2 metaprompt
-> Read and follow `docs/panel-adaptation-plan.md` first, then implement Phase 2 operational coverage. Adapt Reports first, then evaluate Funds/Inventory adapt-vs-native based on coupling and UX fit. Update `MainWindowAlternate`, `PanelHost`, and `WorkspaceRouter` for deterministic lifecycle and routing. Add tests for parent/subpanel nav rendering and save-on-dismiss behavior when switching across reports/funds/inventory panels.
+> Read and follow `docs/panel-adaptation-plan.md` first.  
+> Step 1: explicitly implement the **Phase 2 concrete class changes** (`MainWindowAlternate`, `PanelHost`, `WorkspaceRouter`, and listed reports/funds candidates). Adapt Reports first, then evaluate Funds/Inventory adapt-vs-native based on coupling and UX fit.  
+> Step 2: review the resulting code for completeness against **Phase 3 goals** and report remaining coupling/consistency gaps.  
+> Then add tests for parent/subpanel nav rendering and save-on-dismiss behavior when switching across reports/funds/inventory panels.
 
 ## Phase 3 (Specialized Panels + UX Polish)
 - **Native-first candidates:** Budget editor, schedules, advanced tools.
@@ -74,7 +85,10 @@ Migrate the alternate shell to a stable, role-oriented navigation and panel expe
   - `src/main/java/org/nonprofitbookkeeping/ui/AlternateDataContextService.java`
 
 ### Phase 3 metaprompt
-> Read and follow `docs/panel-adaptation-plan.md` first, then implement Phase 3 specialized migration and polish. Build native Budget/Schedules/advanced workflows where adaptation cost is high, and shrink legacy adapter usage to only low-frequency panels. Update `MainWindowAlternate`, relevant panel classes, and context/recents services for consistency. Add regression tests for navigation continuity, header context correctness, and no-data-loss transitions.
+> Read and follow `docs/panel-adaptation-plan.md` first.  
+> Step 1: explicitly implement the **Phase 3 concrete class changes** (native Budget/Schedules/advanced flows, narrowed adapter usage, context/recents stabilization).  
+> Step 2: review the resulting code for completeness against **Phase 3 goals** and report any remaining inconsistencies before marking complete.  
+> Then add regression tests for navigation continuity, header context correctness, and no-data-loss transitions.
 
 ## Decision Criteria (per panel)
 - User frequency and business criticality.
@@ -82,6 +96,32 @@ Migrate the alternate shell to a stable, role-oriented navigation and panel expe
 - Data loss risk when navigating away.
 - UX mismatch between legacy panel and alternate shell.
 - Testability and maintenance cost.
+
+## Full panel inventory and why only 3 were called out in Phase 2
+
+The three panels listed in Phase 2 were **examples for the reports/funds branch**, not the full universe.
+Below is the complete `AppPanelId` coverage with current recommendation:
+
+| AppPanelId | Current recommendation | Phase | Notes |
+|---|---|---:|---|
+| `DASHBOARD` | Build native | 1 | Anchor shell experience and context summary. |
+| `SETTINGS` | Build native | 1 | Shared shell settings should be first-class native UX. |
+| `CHART_OF_ACCOUNTS` | Adapt legacy first | 1 | High-frequency workflow; fastest parity via adaptation. |
+| `LEDGER_REGISTER` | Adapt legacy first | 1 | High-frequency workflow; existing behavior already mature. |
+| `REPORTS_WORKSPACE` | Adapt legacy first | 2 | Unlock reporting parity quickly before selective rebuilds. |
+| `FUNDS` | Evaluate adapt vs native | 2 | Depends on coupling with account-activity and reporting flows. |
+| `INVENTORY` | Evaluate adapt vs native | 2 | Often workflow-specific; decide after Phase 1 stability data. |
+| `ASSETS_REGISTER` | Usually adapt behind reports path | 2 | Treated as report-adjacent subpanel. |
+| `BUDGET_VS_ACTUAL` | Usually adapt behind reports path | 2 | Treated as report-adjacent subpanel. |
+| `DEPRECIATION_RUNS` | Usually adapt behind reports path | 2 | Treated as report-adjacent subpanel. |
+| `BUDGET_EDITOR` | Build native | 3 | Better long-term as native planning UI. |
+| `SCHEDULES` | Build native | 3 | Better long-term as native calendar/task UX. |
+| `REPORT_LIBRARY` (deprecated) | Do not target directly | n/a | Compatibility alias; route to `REPORTS_WORKSPACE`. |
+
+### Why those 3 class examples were named
+- `ReportsPanelFX` and `SkeletonReportsPanel` are the immediate report workspace entry points likely to control most report UX surface.
+- `AccountsActivityPanelFX` was listed as a **conditional dependency** because some funds workflows reuse activity/reporting behaviors.
+- Other panels were not excluded; they were deferred to the full inventory above and mapped by phase.
 
 ## Exit Criteria
 - No blocker workflows require the old shell.
