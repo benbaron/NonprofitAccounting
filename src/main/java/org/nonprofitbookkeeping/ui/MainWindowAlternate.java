@@ -391,7 +391,7 @@ public class MainWindowAlternate extends BorderPane
                 alternateStatus.setText(openedMessage);
                 state.setText(openedMessage);
                 refreshHeaderLabels();
-                openPanel(AppPanelId.DASHBOARD);
+                rebuildNavigationButtons();
             }
             catch (Exception ex)
             {
@@ -472,7 +472,7 @@ public class MainWindowAlternate extends BorderPane
                 alternateStatus.setText(openedMessage);
                 state.setText(openedMessage);
                 refreshHeaderLabels();
-                openPanel(AppPanelId.DASHBOARD);
+                rebuildNavigationButtons();
             }
             catch (Exception ex)
             {
