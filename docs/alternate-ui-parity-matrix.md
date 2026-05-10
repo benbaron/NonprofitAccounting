@@ -1,5 +1,7 @@
 # Alternate UI Parity Matrix
 
+> Superseded for migration execution by `docs/alternate-ui-unified-migration-plan.md`.
+
 This matrix inventories current parity across the classic `MainWindow` shell and `MainWindowAlternate`.
 
 | Feature | Classic location | Alternate location | Status | Notes | Priority |
