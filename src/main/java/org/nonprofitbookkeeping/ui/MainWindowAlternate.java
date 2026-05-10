@@ -880,8 +880,13 @@ public class MainWindowAlternate extends BorderPane
     {
         if (activePanelId != id)
         {
-            dismissActiveContext();
             alternateStatus.setText("Saving state before leaving " + panelTitle(activePanelId) + "...");
+            if (activeAdaptedPanel != null)
+            {
+                activeAdaptedPanel.saveContext();
+                activeAdaptedPanel = null;
+            }
+            panelHost.saveActive();
         }
         activePanelId = id;
         refreshHeaderLabels();
@@ -918,22 +923,11 @@ public class MainWindowAlternate extends BorderPane
         nav.highlight(id);
     }
 
-    private void dismissActiveContext()
-    {
-        if (activeAdaptedPanel != null)
-        {
-            activeAdaptedPanel.onLeave();
-            activeAdaptedPanel.saveContext();
-            activeAdaptedPanel = null;
-        }
-        panelHost.saveActive();
-    }
-
     private void rebuildNavigationButtons()
     {
         navButtons.getChildren().clear();
         boolean databaseOpen = contextService.activeDatabaseBasePath() != null;
-        boolean companyOpen = contextService.activeCompanyId() != null && CurrentCompany.isOpen();
+        boolean companyOpen = CurrentCompany.isOpen();
 
         if (!databaseOpen)
         {
@@ -975,8 +969,7 @@ public class MainWindowAlternate extends BorderPane
     private void refreshHeaderLabels()
     {
         headerTitle.setText(panelTitle(activePanelId));
-        String company = contextService.activeCompanyLabel();
-        headerSubtitle.setText(company == null || company.isBlank() ? activeCompanyName() : company);
+        headerSubtitle.setText(activeCompanyName());
     }
 
     private String activeCompanyName()
@@ -1021,10 +1014,8 @@ public class MainWindowAlternate extends BorderPane
         }
         AppPanel panel = binding.panelFactory().get();
         activeAdaptedPanel = LegacyPanelAdapter.from(panel);
-        activeAdaptedPanel.onEnter();
         openInspectorForSelection(binding.displayName(), panel.title() + " opened in alternate shell.");
         showAlternatePane(activeAdaptedPanel.content());
-        refreshHeaderLabels();
     }
 
     void testOpenReconcileAccountsDirect()
