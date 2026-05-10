@@ -886,6 +886,7 @@ public class MainWindowAlternate extends BorderPane
             alternateStatus.setText(saveMessage);
             if (activeAdaptedPanel != null)
             {
+                activeAdaptedPanel.onLeave();
                 activeAdaptedPanel.saveContext();
                 activeAdaptedPanel = null;
             }
@@ -1019,6 +1020,7 @@ public class MainWindowAlternate extends BorderPane
     {
         if (activeAdaptedPanel != null)
         {
+            activeAdaptedPanel.onLeave();
             activeAdaptedPanel.saveContext();
             activeAdaptedPanel = null;
         }
@@ -1036,6 +1038,7 @@ public class MainWindowAlternate extends BorderPane
         AppPanel panel = binding.panelFactory().get();
         activeAdaptedPanel = LegacyPanelAdapter.from(panel);
         openInspectorForSelection(binding.displayName(), panel.title() + " opened in alternate shell.");
+        activeAdaptedPanel.onEnter();
         showAlternatePane(activeAdaptedPanel.content());
     }
 
@@ -1086,6 +1089,16 @@ public class MainWindowAlternate extends BorderPane
             .map(Button.class::cast)
             .map(Button::getText)
             .collect(Collectors.toList());
+    }
+
+    String testHeaderTitle()
+    {
+        return headerTitle.getText();
+    }
+
+    String testHeaderSubtitle()
+    {
+        return headerSubtitle.getText();
     }
 
 }

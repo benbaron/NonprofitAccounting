@@ -176,4 +176,42 @@ class MainWindowAlternateCommandCenterTest
             throw new AssertionError("MainWindowAlternate reports/funds/inventory nav rendering test failed", error[0]);
         }
     }
+
+    @Test
+    void headerContextRemainsConsistentAcrossNativePhaseThreePanels() throws Exception
+    {
+        CountDownLatch latch = new CountDownLatch(1);
+        Throwable[] error = new Throwable[1];
+
+        Platform.runLater(() -> {
+            try
+            {
+                MainWindowAlternate window = new MainWindowAlternate();
+                window.testOpenPanel(AppPanelId.BUDGET_EDITOR);
+                assertEquals("Budget", window.testHeaderTitle());
+                assertEquals("No company open", window.testHeaderSubtitle());
+
+                window.testOpenPanel(AppPanelId.SCHEDULES);
+                assertEquals("Schedules", window.testHeaderTitle());
+                assertEquals("No company open", window.testHeaderSubtitle());
+
+                window.testOpenPanel(AppPanelId.DASHBOARD);
+                assertEquals("Dashboard", window.testHeaderTitle());
+            }
+            catch (Throwable t)
+            {
+                error[0] = t;
+            }
+            finally
+            {
+                latch.countDown();
+            }
+        });
+
+        assertTrue(latch.await(20, TimeUnit.SECONDS));
+        if (error[0] != null)
+        {
+            throw new AssertionError("MainWindowAlternate header continuity regression test failed", error[0]);
+        }
+    }
 }

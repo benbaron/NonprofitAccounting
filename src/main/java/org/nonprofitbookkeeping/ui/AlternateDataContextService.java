@@ -64,6 +64,13 @@ public class AlternateDataContextService
         this.activeDatabaseBasePath = normalizeH2Base(databasePath).toAbsolutePath().normalize();
     }
 
+    public void clearActiveCompanyContext()
+    {
+        activeCompanyId = null;
+        activeCompanyLabel = null;
+        PreferencesService.setLastUsedCompanyId(null);
+    }
+
     public Path activeDatabaseBasePath()
     {
         return this.activeDatabaseBasePath;
@@ -117,9 +124,7 @@ public class AlternateDataContextService
     private void transitionDatabaseContext(Path basePath)
     {
         setActiveDatabaseBasePath(basePath);
-        activeCompanyId = null;
-        activeCompanyLabel = null;
-        PreferencesService.setLastUsedCompanyId(null);
+        clearActiveCompanyContext();
         recentsStore.rememberDatabase(basePath);
     }
 

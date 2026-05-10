@@ -52,6 +52,15 @@ class AlternateDataContextServiceTest
         assertEquals(List.of(Path.of("/tmp/context").toAbsolutePath().normalize().toString()), service.recentDatabasePaths());
     }
 
+    @Test
+    void clearActiveCompanyContextResetsCompanyFields()
+    {
+        AlternateDataContextService service = new AlternateDataContextService();
+        service.clearActiveCompanyContext();
+        assertNull(service.activeCompanyId());
+        assertNull(service.activeCompanyLabel());
+    }
+
     private static final class RecordingSwitcher extends AlternateDatabaseContextSwitcher
     {
         private Path lastOpenedBasePath;
