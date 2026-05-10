@@ -16,6 +16,16 @@ public final class LegacyPanelAdapter
 
         Node content();
 
+        default void onEnter()
+        {
+            // no-op by default
+        }
+
+        default void onLeave()
+        {
+            // no-op by default
+        }
+
         default void saveContext()
         {
             // no-op by default
