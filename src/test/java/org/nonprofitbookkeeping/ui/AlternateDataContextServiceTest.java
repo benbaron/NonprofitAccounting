@@ -1,6 +1,7 @@
 package org.nonprofitbookkeeping.ui;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
@@ -45,6 +46,8 @@ class AlternateDataContextServiceTest
         service.openDatabase(Path.of("/tmp/context.mv.db"));
 
         assertEquals(Path.of("/tmp/context").toAbsolutePath().normalize(), service.activeDatabaseBasePath());
+        assertNull(service.activeCompanyId());
+        assertNull(service.activeCompanyLabel());
         assertEquals(Path.of("/tmp/context").toAbsolutePath().normalize(), switcher.lastOpenedBasePath);
         assertEquals(List.of(Path.of("/tmp/context").toAbsolutePath().normalize().toString()), service.recentDatabasePaths());
     }

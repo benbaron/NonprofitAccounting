@@ -16,6 +16,16 @@ public final class LegacyPanelAdapter
 
         Node content();
 
+        default void onEnter()
+        {
+            // no-op by default
+        }
+
+        default void onLeave()
+        {
+            // no-op by default
+        }
+
         default void saveContext()
         {
             // no-op by default
@@ -41,7 +51,9 @@ public final class LegacyPanelAdapter
             @Override
             public void saveContext()
             {
-                legacyPanel.onSave();
+                // Intentionally no-op: alternate-shell context save is in-memory only.
+                // Persisting partial edits via onSave() while switching panels can commit
+                // incomplete/garbage data to the backing store.
             }
         };
     }
