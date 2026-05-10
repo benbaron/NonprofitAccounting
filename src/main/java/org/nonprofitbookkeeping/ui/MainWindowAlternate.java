@@ -66,6 +66,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.prefs.Preferences;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.nonprofitbookkeeping.ui.routing.WorkspaceRouteDecision;
 import org.nonprofitbookkeeping.ui.routing.WorkspaceRouter;
 
@@ -74,6 +76,7 @@ import org.nonprofitbookkeeping.ui.routing.WorkspaceRouter;
  */
 public class MainWindowAlternate extends BorderPane
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainWindowAlternate.class);
     private static final Map<String, Color> SURFACE_COLORS = Map.of(
         "Slate", Color.web("#eef1f8"),
         "Warm", Color.web("#f7f2ee"),
@@ -98,6 +101,8 @@ public class MainWindowAlternate extends BorderPane
     private final AlternateDataContextService contextService = new AlternateDataContextService();
     private final Label headerTitle = new Label("Dashboard");
     private final Label headerSubtitle = new Label("No company open");
+    private final AlternateNavigationModel navigationModel = new AlternateNavigationModel();
+    private LegacyPanelAdapter.AdaptedPanel activeAdaptedPanel;
     private AppPanelId activePanelId = AppPanelId.DASHBOARD;
     private static final String SCHEDULED_REPORTS_KEY = "alternate.scheduled.reports";
     private final Preferences alternatePreferences = Preferences.userNodeForPackage(MainWindowAlternate.class);
@@ -876,6 +881,11 @@ public class MainWindowAlternate extends BorderPane
         if (activePanelId != id)
         {
             alternateStatus.setText("Saving state before leaving " + panelTitle(activePanelId) + "...");
+            if (activeAdaptedPanel != null)
+            {
+                activeAdaptedPanel.saveContext();
+                activeAdaptedPanel = null;
+            }
             panelHost.saveActive();
         }
         activePanelId = id;
@@ -907,6 +917,7 @@ public class MainWindowAlternate extends BorderPane
         else if (panelHostBackedPanel)
         {
             panelHost.show(id);
+            LOGGER.debug("Panel strategy {} ({}) for {}", PanelAdaptationPlan.strategyFor(id), PanelAdaptationPlan.phaseFor(id), id);
         }
         nav.highlight(id);
     }
@@ -937,10 +948,11 @@ public class MainWindowAlternate extends BorderPane
             return;
         }
 
+        AppPanelId parentPanel = navigationModel.parentPanelFor(activePanelId);
         navButtons.getChildren().addAll(
-            navButton("⌂  " + panelTitle(parentPanelFor(activePanelId)), parentPanelFor(activePanelId)));
+            navButton("⌂  " + panelTitle(parentPanel), parentPanel));
 
-        for (AppPanelId child : subPanelsFor(parentPanelFor(activePanelId)))
+        for (AppPanelId child : navigationModel.subPanelsFor(parentPanel))
         {
             navButtons.getChildren().add(navButton("↳  " + panelTitle(child), child));
         }
@@ -986,31 +998,6 @@ public class MainWindowAlternate extends BorderPane
         };
     }
 
-    private AppPanelId parentPanelFor(AppPanelId panelId)
-    {
-        return switch (panelId)
-        {
-            case CHART_OF_ACCOUNTS, LEDGER_REGISTER, INVENTORY, FUNDS, REPORTS_WORKSPACE, SCHEDULES, BUDGET_EDITOR -> panelId;
-            case ASSETS_REGISTER, BUDGET_VS_ACTUAL, DEPRECIATION_RUNS -> AppPanelId.REPORTS_WORKSPACE;
-            default -> AppPanelId.DASHBOARD;
-        };
-    }
-
-    private List<AppPanelId> subPanelsFor(AppPanelId parent)
-    {
-        Map<AppPanelId, List<AppPanelId>> hierarchy = Map.of(
-            AppPanelId.DASHBOARD, List.of(AppPanelId.CHART_OF_ACCOUNTS, AppPanelId.LEDGER_REGISTER),
-            AppPanelId.CHART_OF_ACCOUNTS, List.of(),
-            AppPanelId.LEDGER_REGISTER, List.of(),
-            AppPanelId.INVENTORY, List.of(),
-            AppPanelId.FUNDS, List.of(),
-            AppPanelId.REPORTS_WORKSPACE, List.of(AppPanelId.ASSETS_REGISTER, AppPanelId.BUDGET_VS_ACTUAL, AppPanelId.DEPRECIATION_RUNS),
-            AppPanelId.SCHEDULES, List.of(),
-            AppPanelId.BUDGET_EDITOR, List.of());
-        Set<AppPanelId> unique = new LinkedHashSet<>(hierarchy.getOrDefault(parent, List.of()));
-        return List.copyOf(unique);
-    }
-
     private void openInspectorForSelection(String title, String body)
     {
         alternateStatus.setText(title + "\n" + body);
@@ -1024,7 +1011,9 @@ public class MainWindowAlternate extends BorderPane
             return;
         }
         AppPanel panel = binding.panelFactory().get();
+        activeAdaptedPanel = LegacyPanelAdapter.from(panel);
         openInspectorForSelection(binding.displayName(), panel.title() + " opened in alternate shell.");
+        showAlternatePane(activeAdaptedPanel.content());
     }
 
     void testOpenReconcileAccountsDirect()
