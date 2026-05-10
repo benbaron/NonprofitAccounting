@@ -51,7 +51,9 @@ public final class LegacyPanelAdapter
             @Override
             public void saveContext()
             {
-                legacyPanel.onSave();
+                // Intentionally no-op: alternate-shell context save is in-memory only.
+                // Persisting partial edits via onSave() while switching panels can commit
+                // incomplete/garbage data to the backing store.
             }
         };
     }
