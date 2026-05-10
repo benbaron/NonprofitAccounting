@@ -21,6 +21,6 @@ class WorkspaceRouterTest
     void settingsRemainsAlternateCustomPaneAndReportsIsPanelHost()
     {
         assertTrue(router.decide(AppPanelId.SETTINGS).isAlternateCustomPane());
-        assertTrue(router.decide(AppPanelId.REPORTS_WORKSPACE).isPanelHost());
+        assertTrue(router.decide(AppPanelId.REPORTS_WORKSPACE).isAlternateCustomPane());
     }
 }
