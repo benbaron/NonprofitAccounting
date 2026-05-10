@@ -880,7 +880,10 @@ public class MainWindowAlternate extends BorderPane
     {
         if (activePanelId != id)
         {
-            alternateStatus.setText("Saving state before leaving " + panelTitle(activePanelId) + "...");
+            String saveMessage = panelHost.isActiveDirty()
+                ? "Unsaved changes detected. Saving state before leaving " + panelTitle(activePanelId) + "..."
+                : "Saving state before leaving " + panelTitle(activePanelId) + "...";
+            alternateStatus.setText(saveMessage);
             if (activeAdaptedPanel != null)
             {
                 activeAdaptedPanel.saveContext();
@@ -912,7 +915,15 @@ public class MainWindowAlternate extends BorderPane
         }
         else if (alternateCustomPane)
         {
-            alternateContentPane.getChildren().setAll(new Label("Template pending"));
+            if (id == AppPanelId.REPORTS_WORKSPACE)
+            {
+                alternateContentPane.getChildren().setAll(new Label("Reports workspace adapted for alternate shell."));
+                openInspectorForSelection("Reports", "Reports workspace opened with adapted navigation context.");
+            }
+            else
+            {
+                alternateContentPane.getChildren().setAll(new Label("Template pending"));
+            }
         }
         else if (panelHostBackedPanel)
         {
@@ -1004,6 +1015,16 @@ public class MainWindowAlternate extends BorderPane
         alternateStatus.setText(title + "\n" + body);
     }
 
+    private void dismissActiveContext()
+    {
+        if (activeAdaptedPanel != null)
+        {
+            activeAdaptedPanel.saveContext();
+            activeAdaptedPanel = null;
+        }
+        panelHost.saveActive();
+    }
+
     private void openRecordServicePanel(nonprofitbookkeeping.ui.RecordServicePanelRegistry.PanelBinding binding)
     {
         dismissActiveContext();
@@ -1051,6 +1072,20 @@ public class MainWindowAlternate extends BorderPane
     String testScheduledReportsValue()
     {
         return alternatePreferences.get(SCHEDULED_REPORTS_KEY, "");
+    }
+
+    void testOpenPanel(AppPanelId id)
+    {
+        openPanel(id);
+    }
+
+    List<String> testNavigationButtonLabels()
+    {
+        return navButtons.getChildren().stream()
+            .filter(Button.class::isInstance)
+            .map(Button.class::cast)
+            .map(Button::getText)
+            .collect(Collectors.toList());
     }
 
 }
