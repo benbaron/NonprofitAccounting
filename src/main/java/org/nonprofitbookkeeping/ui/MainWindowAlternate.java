@@ -97,6 +97,7 @@ public class MainWindowAlternate extends BorderPane
     private final Label headerTitle = new Label("Dashboard");
     private final Label headerSubtitle = new Label("No company open");
     private final AlternateNavigationModel navigationModel = new AlternateNavigationModel();
+    private LegacyPanelAdapter.AdaptedPanel activeAdaptedPanel;
     private AppPanelId activePanelId = AppPanelId.DASHBOARD;
     private static final String SCHEDULED_REPORTS_KEY = "alternate.scheduled.reports";
     private final Preferences alternatePreferences = Preferences.userNodeForPackage(MainWindowAlternate.class);
@@ -875,6 +876,11 @@ public class MainWindowAlternate extends BorderPane
         if (activePanelId != id)
         {
             alternateStatus.setText("Saving state before leaving " + panelTitle(activePanelId) + "...");
+            if (activeAdaptedPanel != null)
+            {
+                activeAdaptedPanel.saveContext();
+                activeAdaptedPanel = null;
+            }
             panelHost.saveActive();
         }
         activePanelId = id;
@@ -999,7 +1005,9 @@ public class MainWindowAlternate extends BorderPane
             return;
         }
         AppPanel panel = binding.panelFactory().get();
+        activeAdaptedPanel = LegacyPanelAdapter.from(panel);
         openInspectorForSelection(binding.displayName(), panel.title() + " opened in alternate shell.");
+        showAlternatePane(activeAdaptedPanel.content());
     }
 
     void testOpenReconcileAccountsDirect()
