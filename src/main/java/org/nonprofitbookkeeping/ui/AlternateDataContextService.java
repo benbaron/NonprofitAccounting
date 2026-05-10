@@ -20,6 +20,8 @@ public class AlternateDataContextService
     private final AlternateRecentsStore recentsStore;
     private final AlternateDatabaseContextSwitcher databaseContextSwitcher;
     private Path activeDatabaseBasePath;
+    private Long activeCompanyId;
+    private String activeCompanyLabel;
 
     public AlternateDataContextService()
     {
@@ -48,9 +50,8 @@ public class AlternateDataContextService
     public void openDatabase(Path selectedPath) throws Exception
     {
         Path basePath = normalizeH2Base(selectedPath);
-        setActiveDatabaseBasePath(basePath);
         databaseContextSwitcher.openDatabase(basePath);
-        recentsStore.rememberDatabase(basePath);
+        transitionDatabaseContext(basePath);
     }
 
     public void setActiveDatabaseBasePath(Path databasePath)
@@ -63,9 +64,26 @@ public class AlternateDataContextService
         this.activeDatabaseBasePath = normalizeH2Base(databasePath).toAbsolutePath().normalize();
     }
 
+    public void clearActiveCompanyContext()
+    {
+        activeCompanyId = null;
+        activeCompanyLabel = null;
+        PreferencesService.setLastUsedCompanyId(null);
+    }
+
     public Path activeDatabaseBasePath()
     {
         return this.activeDatabaseBasePath;
+    }
+
+    public Long activeCompanyId()
+    {
+        return activeCompanyId;
+    }
+
+    public String activeCompanyLabel()
+    {
+        return activeCompanyLabel;
     }
 
     public List<CompanyRecord> listCompanies() throws SQLException
@@ -80,8 +98,7 @@ public class AlternateDataContextService
     public void openCompany(long companyId, String companyLabel) throws IOException
     {
         CurrentCompany.loadFromPersistent(companyId);
-        PreferencesService.setLastUsedCompanyId(companyId);
-        recentsStore.rememberCompany(activeDatabaseBasePath, companyId, companyLabel);
+        transitionCompanyContext(companyId, companyLabel);
     }
 
     public List<String> recentDatabasePaths()
@@ -102,6 +119,21 @@ public class AlternateDataContextService
             path = path.substring(0, path.length() - ".mv.db".length());
         }
         return Path.of(path);
+    }
+
+    private void transitionDatabaseContext(Path basePath)
+    {
+        setActiveDatabaseBasePath(basePath);
+        clearActiveCompanyContext();
+        recentsStore.rememberDatabase(basePath);
+    }
+
+    private void transitionCompanyContext(long companyId, String companyLabel)
+    {
+        activeCompanyId = companyId;
+        activeCompanyLabel = companyLabel;
+        PreferencesService.setLastUsedCompanyId(companyId);
+        recentsStore.rememberCompany(activeDatabaseBasePath, companyId, companyLabel);
     }
 
     interface PreferencesStore

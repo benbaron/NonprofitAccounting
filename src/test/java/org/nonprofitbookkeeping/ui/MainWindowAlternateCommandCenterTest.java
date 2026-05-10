@@ -137,4 +137,81 @@ class MainWindowAlternateCommandCenterTest
 
         reader.testClearScheduledReports();
     }
+
+    @Test
+    void reportsFundsInventoryNavigationRendersSubpanelButtons() throws Exception
+    {
+        CountDownLatch latch = new CountDownLatch(1);
+        Throwable[] error = new Throwable[1];
+
+        Platform.runLater(() -> {
+            try
+            {
+                MainWindowAlternate window = new MainWindowAlternate();
+                window.testOpenPanel(AppPanelId.REPORTS_WORKSPACE);
+                List<String> reportsLabels = window.testNavigationButtonLabels();
+                assertTrue(reportsLabels.contains("⌂  Reports"));
+
+                window.testOpenPanel(AppPanelId.FUNDS);
+                List<String> fundsLabels = window.testNavigationButtonLabels();
+                assertTrue(fundsLabels.contains("⌂  Funds"));
+
+                window.testOpenPanel(AppPanelId.INVENTORY);
+                List<String> inventoryLabels = window.testNavigationButtonLabels();
+                assertTrue(inventoryLabels.contains("⌂  Inventory"));
+            }
+            catch (Throwable t)
+            {
+                error[0] = t;
+            }
+            finally
+            {
+                latch.countDown();
+            }
+        });
+
+        assertTrue(latch.await(20, TimeUnit.SECONDS));
+        if (error[0] != null)
+        {
+            throw new AssertionError("MainWindowAlternate reports/funds/inventory nav rendering test failed", error[0]);
+        }
+    }
+
+    @Test
+    void headerContextRemainsConsistentAcrossNativePhaseThreePanels() throws Exception
+    {
+        CountDownLatch latch = new CountDownLatch(1);
+        Throwable[] error = new Throwable[1];
+
+        Platform.runLater(() -> {
+            try
+            {
+                MainWindowAlternate window = new MainWindowAlternate();
+                window.testOpenPanel(AppPanelId.BUDGET_EDITOR);
+                assertEquals("Budget", window.testHeaderTitle());
+                assertEquals("No company open", window.testHeaderSubtitle());
+
+                window.testOpenPanel(AppPanelId.SCHEDULES);
+                assertEquals("Schedules", window.testHeaderTitle());
+                assertEquals("No company open", window.testHeaderSubtitle());
+
+                window.testOpenPanel(AppPanelId.DASHBOARD);
+                assertEquals("Dashboard", window.testHeaderTitle());
+            }
+            catch (Throwable t)
+            {
+                error[0] = t;
+            }
+            finally
+            {
+                latch.countDown();
+            }
+        });
+
+        assertTrue(latch.await(20, TimeUnit.SECONDS));
+        if (error[0] != null)
+        {
+            throw new AssertionError("MainWindowAlternate header continuity regression test failed", error[0]);
+        }
+    }
 }

@@ -59,11 +59,15 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.prefs.Preferences;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.nonprofitbookkeeping.ui.routing.WorkspaceRouteDecision;
 import org.nonprofitbookkeeping.ui.routing.WorkspaceRouter;
 
@@ -72,6 +76,7 @@ import org.nonprofitbookkeeping.ui.routing.WorkspaceRouter;
  */
 public class MainWindowAlternate extends BorderPane
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainWindowAlternate.class);
     private static final Map<String, Color> SURFACE_COLORS = Map.of(
         "Slate", Color.web("#eef1f8"),
         "Warm", Color.web("#f7f2ee"),
@@ -89,11 +94,15 @@ public class MainWindowAlternate extends BorderPane
     private final VBox companySelectorPane = new VBox();
     private final VBox profilePane = new VBox();
     private final VBox searchPane = new VBox();
+    private final VBox navButtons = new VBox(6);
+    private final TitledPane importToolsPane = new TitledPane();
     private final WorkspaceRouter workspaceRouter = new WorkspaceRouter();
     private final BankingPanelFactory bankingPanelFactory;
     private final AlternateDataContextService contextService = new AlternateDataContextService();
     private final Label headerTitle = new Label("Dashboard");
     private final Label headerSubtitle = new Label("No company open");
+    private final AlternateNavigationModel navigationModel = new AlternateNavigationModel();
+    private LegacyPanelAdapter.AdaptedPanel activeAdaptedPanel;
     private AppPanelId activePanelId = AppPanelId.DASHBOARD;
     private static final String SCHEDULED_REPORTS_KEY = "alternate.scheduled.reports";
     private final Preferences alternatePreferences = Preferences.userNodeForPackage(MainWindowAlternate.class);
@@ -210,27 +219,15 @@ public class MainWindowAlternate extends BorderPane
 
     private VBox buildLeftNavigation()
     {
-        VBox navButtons = new VBox(6,
-            navButton("⌂  Dashboard", AppPanelId.DASHBOARD),
-            navButton("🗂  Chart of Accounts", AppPanelId.CHART_OF_ACCOUNTS),
-            navButton("🧾  Journal", AppPanelId.LEDGER_REGISTER),
-            navButton("📦  Inventory", AppPanelId.INVENTORY),
-            navButton("💰  Funds", AppPanelId.FUNDS),
-            navButton("📊  Reports", AppPanelId.REPORTS_WORKSPACE),
-            navButton("🗓  Schedules", AppPanelId.SCHEDULES),
-            navButton("📈  Budget", AppPanelId.BUDGET_EDITOR),
-            navButton("⚙  Settings", AppPanelId.SETTINGS),
-            navActionButton("☰  Command Center", this::openCommandCenter),
-            navActionButton("🗄  Open Database", this::openDatabaseSelector),
-            navActionButton("🏢  Open Company", this::openCompanySelector));
-
-        TitledPane imports = new TitledPane("Import & Tools", new VBox(6,
+        importToolsPane.setText("Import & Tools");
+        importToolsPane.setContent(new VBox(6,
             navButton("Assets Register", AppPanelId.ASSETS_REGISTER),
             navButton("Budget vs Actual", AppPanelId.BUDGET_VS_ACTUAL),
             navButton("Depreciation", AppPanelId.DEPRECIATION_RUNS)));
-        imports.setExpanded(false);
+        importToolsPane.setExpanded(false);
+        rebuildNavigationButtons();
 
-        VBox wrapper = new VBox(10, new Label("Navigation"), navButtons, imports);
+        VBox wrapper = new VBox(10, new Label("Navigation"), navButtons, importToolsPane);
         wrapper.setPadding(new Insets(12));
         wrapper.setMinWidth(240);
         wrapper.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 16;");
@@ -384,19 +381,23 @@ public class MainWindowAlternate extends BorderPane
             if (value == null || value.isBlank())
             {
                 alternateStatus.setText("No database selected.");
+                state.setText("No database selected.");
                 return;
             }
             try
             {
                 contextService.openDatabase(Paths.get(value.trim()));
-                alternateStatus.setText("Database opened:\n" + value.trim());
+                String openedMessage = "Database opened: " + value.trim();
+                alternateStatus.setText(openedMessage);
+                state.setText(openedMessage);
                 refreshHeaderLabels();
-                openPanel(activePanelId);
-                openDatabaseSelector();
+                openPanel(AppPanelId.DASHBOARD);
             }
             catch (Exception ex)
             {
-                alternateStatus.setText("Failed to open database: " + ex.getMessage());
+                String failedMessage = "Failed to open database: " + ex.getMessage();
+                alternateStatus.setText(failedMessage);
+                state.setText(failedMessage);
             }
         });
         databaseSelectorPane.getChildren().setAll(new Label("Open Database (.mv.db/.db)"), new HBox(8, dbPath, browse), new Label("Recent Databases"), recent, open, state);
@@ -882,8 +883,23 @@ public class MainWindowAlternate extends BorderPane
      */
     private void openPanel(AppPanelId id)
     {
+        if (activePanelId != id)
+        {
+            String saveMessage = panelHost.isActiveDirty()
+                ? "Unsaved changes detected. Saving state before leaving " + panelTitle(activePanelId) + "..."
+                : "Saving state before leaving " + panelTitle(activePanelId) + "...";
+            alternateStatus.setText(saveMessage);
+            if (activeAdaptedPanel != null)
+            {
+                activeAdaptedPanel.onLeave();
+                activeAdaptedPanel.saveContext();
+                activeAdaptedPanel = null;
+            }
+            panelHost.saveActive();
+        }
         activePanelId = id;
         refreshHeaderLabels();
+        rebuildNavigationButtons();
         WorkspaceRouteDecision decision = workspaceRouter.decide(id);
 
         boolean dashboard = decision.isDashboard();
@@ -905,13 +921,66 @@ public class MainWindowAlternate extends BorderPane
         }
         else if (alternateCustomPane)
         {
-            alternateContentPane.getChildren().setAll(new Label("Template pending"));
+            if (id == AppPanelId.REPORTS_WORKSPACE)
+            {
+                alternateContentPane.getChildren().setAll(new Label("Reports workspace adapted for alternate shell."));
+                openInspectorForSelection("Reports", "Reports workspace opened with adapted navigation context.");
+            }
+            else
+            {
+                alternateContentPane.getChildren().setAll(new Label("Template pending"));
+            }
         }
         else if (panelHostBackedPanel)
         {
             panelHost.show(id);
+            activeAdaptedPanel = null;
+            LOGGER.debug("Panel strategy {} ({}) for {}", PanelAdaptationPlan.strategyFor(id), PanelAdaptationPlan.phaseFor(id), id);
         }
         nav.highlight(id);
+    }
+
+    private void rebuildNavigationButtons()
+    {
+        navButtons.getChildren().clear();
+        boolean databaseOpen = contextService.activeDatabaseBasePath() != null;
+        boolean companyOpen = CurrentCompany.isOpen();
+
+        if (!databaseOpen)
+        {
+            navButtons.getChildren().addAll(
+                navActionButton("🗄  Open Database", this::openDatabaseSelector),
+                navButton("⚙  Settings", AppPanelId.SETTINGS));
+            importToolsPane.setVisible(false);
+            importToolsPane.setManaged(false);
+            return;
+        }
+        if (!companyOpen)
+        {
+            navButtons.getChildren().addAll(
+                navActionButton("🗄  Open Database", this::openDatabaseSelector),
+                navActionButton("🏢  Open Company", this::openCompanySelector),
+                navButton("⚙  Settings", AppPanelId.SETTINGS));
+            importToolsPane.setVisible(false);
+            importToolsPane.setManaged(false);
+            return;
+        }
+
+        AppPanelId parentPanel = navigationModel.parentPanelFor(activePanelId);
+        navButtons.getChildren().addAll(
+            navButton("⌂  " + panelTitle(parentPanel), parentPanel));
+
+        for (AppPanelId child : navigationModel.subPanelsFor(parentPanel))
+        {
+            navButtons.getChildren().add(navButton("↳  " + panelTitle(child), child));
+        }
+
+        navButtons.getChildren().addAll(
+            navButton("⚙  Settings", AppPanelId.SETTINGS),
+            navActionButton("🗄  Open Database", this::openDatabaseSelector),
+            navActionButton("🏢  Open Company", this::openCompanySelector));
+        importToolsPane.setVisible(true);
+        importToolsPane.setManaged(true);
     }
 
     private void refreshHeaderLabels()
@@ -923,7 +992,7 @@ public class MainWindowAlternate extends BorderPane
     private String activeCompanyName()
     {
         Company company = CurrentCompany.getCompany();
-        if (company == null || company.getName() == null || company.getName().isBlank())
+        if (!CurrentCompany.isOpen() || company == null || company.getName() == null || company.getName().isBlank())
         {
             return "No company open";
         }
@@ -952,15 +1021,30 @@ public class MainWindowAlternate extends BorderPane
         alternateStatus.setText(title + "\n" + body);
     }
 
+    private void dismissActiveContext()
+    {
+        if (activeAdaptedPanel != null)
+        {
+            activeAdaptedPanel.onLeave();
+            activeAdaptedPanel.saveContext();
+            activeAdaptedPanel = null;
+        }
+        panelHost.saveActive();
+    }
+
     private void openRecordServicePanel(nonprofitbookkeeping.ui.RecordServicePanelRegistry.PanelBinding binding)
     {
+        dismissActiveContext();
         if (binding.workspacePanelId() != null)
         {
             openPanel(binding.workspacePanelId());
             return;
         }
         AppPanel panel = binding.panelFactory().get();
+        activeAdaptedPanel = LegacyPanelAdapter.from(panel);
         openInspectorForSelection(binding.displayName(), panel.title() + " opened in alternate shell.");
+        activeAdaptedPanel.onEnter();
+        showAlternatePane(activeAdaptedPanel.content());
     }
 
     void testOpenReconcileAccountsDirect()
@@ -996,6 +1080,30 @@ public class MainWindowAlternate extends BorderPane
     String testScheduledReportsValue()
     {
         return alternatePreferences.get(SCHEDULED_REPORTS_KEY, "");
+    }
+
+    void testOpenPanel(AppPanelId id)
+    {
+        openPanel(id);
+    }
+
+    List<String> testNavigationButtonLabels()
+    {
+        return navButtons.getChildren().stream()
+            .filter(Button.class::isInstance)
+            .map(Button.class::cast)
+            .map(Button::getText)
+            .collect(Collectors.toList());
+    }
+
+    String testHeaderTitle()
+    {
+        return headerTitle.getText();
+    }
+
+    String testHeaderSubtitle()
+    {
+        return headerSubtitle.getText();
     }
 
 }

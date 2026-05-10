@@ -26,6 +26,6 @@ public class WorkspaceRouter
 
     private boolean isAlternateCustomPane(AppPanelId id)
     {
-        return id == AppPanelId.SETTINGS;
+        return id == AppPanelId.SETTINGS || id == AppPanelId.REPORTS_WORKSPACE;
     }
 }
