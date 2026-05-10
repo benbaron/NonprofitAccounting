@@ -59,11 +59,15 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.prefs.Preferences;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.nonprofitbookkeeping.ui.routing.WorkspaceRouteDecision;
 import org.nonprofitbookkeeping.ui.routing.WorkspaceRouter;
 
@@ -72,6 +76,7 @@ import org.nonprofitbookkeeping.ui.routing.WorkspaceRouter;
  */
 public class MainWindowAlternate extends BorderPane
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainWindowAlternate.class);
     private static final Map<String, Color> SURFACE_COLORS = Map.of(
         "Slate", Color.web("#eef1f8"),
         "Warm", Color.web("#f7f2ee"),
@@ -912,6 +917,8 @@ public class MainWindowAlternate extends BorderPane
         else if (panelHostBackedPanel)
         {
             panelHost.show(id);
+            activeAdaptedPanel = null;
+            LOGGER.debug("Panel strategy {} ({}) for {}", PanelAdaptationPlan.strategyFor(id), PanelAdaptationPlan.phaseFor(id), id);
         }
         nav.highlight(id);
     }
@@ -999,6 +1006,7 @@ public class MainWindowAlternate extends BorderPane
 
     private void openRecordServicePanel(nonprofitbookkeeping.ui.RecordServicePanelRegistry.PanelBinding binding)
     {
+        dismissActiveContext();
         if (binding.workspacePanelId() != null)
         {
             openPanel(binding.workspacePanelId());
