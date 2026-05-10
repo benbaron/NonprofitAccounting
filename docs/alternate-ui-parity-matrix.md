@@ -29,3 +29,120 @@ This matrix inventories current parity across the classic `MainWindow` shell and
 | Record services registry navigation | `NavigationPane` Record Services tree with `RecordServicePanelRegistry` | Same shared `NavigationPane` in alternate shell | implemented | Registry items still open workspace route or placeholder inspector callback through the shared record-service registry and panel resolver used by classic. | P1 |
 | Context inspector behavior | `MainWindow` right-side `InspectorPane` | `MainWindowAlternate.alternateStatus` text area | partial | Alternate only updates status label, not full inspector pane UX, though messages originate from the same underlying action/service outcomes as classic. | P2 |
 | Open Company workflow | `MainWindow` File menu -> `OpenCompanyFileActionFX` path | `MainWindowAlternate.openCompanySelector()` custom selector | partial | Alternate selector now opens selected persisted company, updates context, refreshes workspace, and stores recents using the same company-open/data-context services as classic. | P2 |
+
+## How to migrate a panel with the Legacy Panel Adapter (step-by-step)
+
+Use this sequence for each panel route that should run inside the alternate shell while still using classic panel logic.
+
+1. **Confirm route identity**
+   - Find the `AppPanelId` route in `PanelHost` and `WorkspaceRouter`.
+2. **Keep panel creation in shared host**
+   - Ensure `PanelHost.show(<ID>)` can create/show the panel from classic services.
+3. **Ensure alternate route delegates**
+   - In `MainWindowAlternate.openPanel(...)`, keep that route in the panel-host-backed path.
+4. **Enable save-on-dismiss**
+   - Ensure `panelHost.saveActive()` is called on panel switch.
+   - If panel is adapted through `LegacyPanelAdapter`, ensure `saveContext()` is called on leave.
+5. **Wire context-gated nav**
+   - Add parent/subpanel mapping in `AlternateNavigationModel` where needed.
+6. **Parity verification**
+   - Open DB -> open company -> open target panel -> perform one edit -> switch panel -> confirm save behavior and no context loss.
+
+## Concrete per-panel migration instructions (all panel routes in this matrix)
+
+### `DASHBOARD`
+- Keep native in alternate shell (`MainWindowAlternate` custom dashboard area).
+- Ensure data bindings use shared dashboard services (not duplicated logic).
+- Files to verify:
+  - `src/main/java/org/nonprofitbookkeeping/ui/MainWindowAlternate.java`
+  - `src/main/java/org/nonprofitbookkeeping/ui/panels/DashboardPanelFX.java`
+
+### `CHART_OF_ACCOUNTS`
+- Keep as adapted/shared panel-host route.
+- Required wiring:
+  - `WorkspaceRouter` marks as panel-host-backed.
+  - `PanelHost.show(CHART_OF_ACCOUNTS)` uses shared panel creation path.
+  - `MainWindowAlternate.openPanel(CHART_OF_ACCOUNTS)` delegates to panel host.
+- Files to verify:
+  - `src/main/java/org/nonprofitbookkeeping/ui/WorkspaceRouter.java`
+  - `src/main/java/org/nonprofitbookkeeping/ui/PanelHost.java`
+  - `src/main/java/org/nonprofitbookkeeping/ui/MainWindowAlternate.java`
+
+### `LEDGER_REGISTER`
+- Same pattern as COA (adapt/shared host).
+- Confirm dirty-state/save behavior on panel switch via `panelHost.saveActive()`.
+- Files to verify:
+  - `src/main/java/org/nonprofitbookkeeping/ui/PanelHost.java`
+  - `src/main/java/org/nonprofitbookkeeping/ui/MainWindowAlternate.java`
+
+### `INVENTORY`
+- Start adapted via shared host; evaluate native rebuild later.
+- Add/verify subpanel mapping in `AlternateNavigationModel` if inventory subroutes are exposed.
+- Files to verify:
+  - `src/main/java/org/nonprofitbookkeeping/ui/AlternateNavigationModel.java`
+  - `src/main/java/org/nonprofitbookkeeping/ui/PanelHost.java`
+
+### `REPORTS_WORKSPACE`
+- Adapt first through shared host for fastest parity.
+- Keep reports actions in command center pointing to shared report actions/services.
+- Files to verify:
+  - `src/main/java/org/nonprofitbookkeeping/ui/PanelHost.java`
+  - `src/main/java/org/nonprofitbookkeeping/ui/MainWindowAlternate.java`
+  - `src/main/java/org/nonprofitbookkeeping/ui/panels/ReportsPanelFX.java`
+
+### `FUNDS`
+- Initially adapt through shared host; decide native later based on coupling.
+- If funds workflows depend on account activity/report services, validate those service calls unchanged.
+- Files to verify:
+  - `src/main/java/org/nonprofitbookkeeping/ui/PanelHost.java`
+  - `src/main/java/org/nonprofitbookkeeping/ui/panels/AccountsActivityPanelFX.java`
+
+### `SCHEDULES`
+- Candidate for native-first in later phase, but keep route parity through host until replacement is complete.
+- Files to verify:
+  - `src/main/java/org/nonprofitbookkeeping/ui/PanelHost.java`
+  - `src/main/java/org/nonprofitbookkeeping/ui/MainWindowAlternate.java`
+
+### `BUDGET_EDITOR`
+- Planned native-first target; until native parity is done, keep host route stable.
+- Files to verify:
+  - `src/main/java/org/nonprofitbookkeeping/ui/PanelHost.java`
+  - `src/main/java/org/nonprofitbookkeeping/ui/MainWindowAlternate.java`
+
+### `BUDGET_VS_ACTUAL`
+- Keep as report-adjacent adapted route under Import/Tools or reports subpanel.
+- Files to verify:
+  - `src/main/java/org/nonprofitbookkeeping/ui/AlternateNavigationModel.java`
+  - `src/main/java/org/nonprofitbookkeeping/ui/PanelHost.java`
+
+### `ASSETS_REGISTER`
+- Keep adapted route through shared host and ensure depreciation/report dependencies remain shared.
+- Files to verify:
+  - `src/main/java/org/nonprofitbookkeeping/ui/PanelHost.java`
+
+### `DEPRECIATION_RUNS`
+- Keep adapted route through shared host and validate execution path parity with classic.
+- Files to verify:
+  - `src/main/java/org/nonprofitbookkeeping/ui/PanelHost.java`
+
+### `SETTINGS`
+- Native wrapper/bridge strategy: alternate shell owns framing, classic settings behavior stays shared until native parity is complete.
+- Files to verify:
+  - `src/main/java/org/nonprofitbookkeeping/ui/MainWindowAlternate.java`
+  - `src/main/java/org/nonprofitbookkeeping/ui/panels/SettingsPanelFX.java`
+
+### `REPORT_LIBRARY` (deprecated alias)
+- Do not migrate directly.
+- Route alias to `REPORTS_WORKSPACE` in router/host compatibility paths.
+- Files to verify:
+  - `src/main/java/org/nonprofitbookkeeping/ui/AppPanelId.java`
+  - `src/main/java/org/nonprofitbookkeeping/ui/WorkspaceRouter.java`
+
+## Metaprompt template for migrating any one panel
+
+> Migrate `<APP_PANEL_ID>` from classic shell usage to alternate-shell parity using the legacy adapter/host path first.  
+> 1) Confirm `WorkspaceRouter` routes `<APP_PANEL_ID>` to panel-host-backed flow.  
+> 2) Confirm `PanelHost.show(<APP_PANEL_ID>)` builds/uses the shared panel with classic services.  
+> 3) In `MainWindowAlternate`, ensure nav exposes this panel in the correct context state and `openPanel(...)` delegates to `panelHost.show(...)`.  
+> 4) Ensure save-on-dismiss works (`panelHost.saveActive()`, plus adapted `saveContext()` when applicable).  
+> 5) Add/adjust focused test coverage for open DB/company -> open panel -> mutate -> switch panel -> verify persisted state/no loss.
