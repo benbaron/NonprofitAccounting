@@ -20,9 +20,24 @@ public final class LegacyPanelAdapter
         {
             // no-op by default
         }
+
+        default void onEnter()
+        {
+            // no-op by default
+        }
+
+        default void onLeave()
+        {
+            // no-op by default
+        }
     }
 
     public static AdaptedPanel from(AppPanel legacyPanel)
+    {
+        return from(legacyPanel, () -> {}, () -> {});
+    }
+
+    public static AdaptedPanel from(AppPanel legacyPanel, Runnable onEnter, Runnable onLeave)
     {
         return new AdaptedPanel()
         {
@@ -42,6 +57,18 @@ public final class LegacyPanelAdapter
             public void saveContext()
             {
                 legacyPanel.onSave();
+            }
+
+            @Override
+            public void onEnter()
+            {
+                onEnter.run();
+            }
+
+            @Override
+            public void onLeave()
+            {
+                onLeave.run();
             }
         };
     }
