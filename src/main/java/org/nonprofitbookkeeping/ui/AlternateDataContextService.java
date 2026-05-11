@@ -56,12 +56,9 @@ public class AlternateDataContextService
 
     public void setActiveDatabaseBasePath(Path databasePath)
     {
-        if (databasePath == null)
-        {
-            this.activeDatabaseBasePath = null;
-            return;
-        }
-        this.activeDatabaseBasePath = normalizeH2Base(databasePath).toAbsolutePath().normalize();
+        this.activeDatabaseBasePath = databasePath == null
+            ? null
+            : normalizeH2Base(databasePath).toAbsolutePath().normalize();
     }
 
     public void clearActiveCompanyContext()
@@ -84,6 +81,21 @@ public class AlternateDataContextService
     public String activeCompanyLabel()
     {
         return activeCompanyLabel;
+    }
+
+    public boolean isDatabaseOpen()
+    {
+        return activeDatabaseBasePath != null;
+    }
+
+    public boolean isCompanyOpen()
+    {
+        return activeCompanyId != null;
+    }
+
+    public String activeCompanyDisplayLabel()
+    {
+        return activeCompanyLabel == null || activeCompanyLabel.isBlank() ? "No company open" : activeCompanyLabel;
     }
 
     public List<CompanyRecord> listCompanies() throws SQLException
