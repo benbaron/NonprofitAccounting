@@ -885,10 +885,14 @@ public class MainWindowAlternate extends BorderPane
     {
         if (activePanelId != id)
         {
-            String saveMessage = panelHost.isActiveDirty()
-                ? "Unsaved changes detected. Saving state before leaving " + panelTitle(activePanelId) + "..."
-                : "Saving state before leaving " + panelTitle(activePanelId) + "...";
-            alternateStatus.setText(saveMessage);
+            if (panelHost.isActiveDirty())
+            {
+                alternateStatus.setText("Unsaved changes detected. Saving state before leaving " + panelTitle(activePanelId) + "...");
+            }
+            else
+            {
+                alternateStatus.setText("Saving state before leaving " + panelTitle(activePanelId) + "...");
+            }
             dismissActiveContext();
         }
         activePanelId = id;
@@ -915,15 +919,7 @@ public class MainWindowAlternate extends BorderPane
         }
         else if (alternateCustomPane)
         {
-            if (id == AppPanelId.REPORTS_WORKSPACE)
-            {
-                alternateContentPane.getChildren().setAll(new Label("Reports workspace adapted for alternate shell."));
-                openInspectorForSelection("Reports", "Reports workspace opened with adapted navigation context.");
-            }
-            else
-            {
-                alternateContentPane.getChildren().setAll(new Label("Template pending"));
-            }
+            alternateContentPane.getChildren().setAll(new Label("Template pending"));
         }
         else if (panelHostBackedPanel)
         {
