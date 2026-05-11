@@ -936,7 +936,7 @@ public class MainWindowAlternate extends BorderPane
         {
             panelHost.show(id);
             activeAdaptedPanel = null;
-            LOGGER.debug("Panel strategy {} ({}) for {}", PanelAdaptationPlan.strategyFor(id), PanelAdaptationPlan.phaseFor(id), id);
+            LOGGER.debug("Opened panel host route for {}", id);
         }
         nav.highlight(id);
     }
