@@ -18,7 +18,13 @@ class WorkspaceRouterTest
     }
 
     @Test
-    void settingsRemainsAlternateCustomPaneAndReportsIsPanelHost()
+    void dashboardRemainsNativeShellRoute()
+    {
+        assertTrue(router.decide(AppPanelId.DASHBOARD).isDashboard());
+    }
+
+    @Test
+    void settingsAndReportsRemainAlternateCustomPanes()
     {
         assertTrue(router.decide(AppPanelId.SETTINGS).isAlternateCustomPane());
         assertTrue(router.decide(AppPanelId.REPORTS_WORKSPACE).isAlternateCustomPane());

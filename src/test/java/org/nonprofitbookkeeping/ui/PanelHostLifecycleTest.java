@@ -1,62 +1,67 @@
 package org.nonprofitbookkeeping.ui;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.EnumMap;
-import java.util.Map;
 
 import org.junit.jupiter.api.Test;
-
-import javafx.scene.Node;
-import javafx.scene.layout.Pane;
 
 class PanelHostLifecycleTest
 {
     @Test
-    void saveOnDismissWhenSwitchingAcrossReportsFundsInventory()
+    void switchingBetweenPhaseOnePanelsSavesActivePanelBeforeShow()
     {
-        Map<AppPanelId, TestPanel> panels = new EnumMap<>(AppPanelId.class);
-        panels.put(AppPanelId.REPORTS_WORKSPACE, new TestPanel(true));
-        panels.put(AppPanelId.FUNDS, new TestPanel(false));
-        panels.put(AppPanelId.INVENTORY, new TestPanel(false));
+        TrackingPanel coa = new TrackingPanel("COA");
+        TrackingPanel ledger = new TrackingPanel("Ledger");
+        PanelHost host = new PanelHost(id -> switch (id)
+        {
+            case CHART_OF_ACCOUNTS -> coa;
+            case LEDGER_REGISTER -> ledger;
+            default -> throw new IllegalArgumentException("Unexpected panel " + id);
+        });
 
-        PanelHost host = new PanelHost(id -> panels.get(id));
-        host.show(AppPanelId.REPORTS_WORKSPACE);
-        assertTrue(host.isActiveDirty());
+        host.show(AppPanelId.CHART_OF_ACCOUNTS);
+        coa.markDirty();
+        host.show(AppPanelId.LEDGER_REGISTER);
 
-        host.show(AppPanelId.FUNDS);
-        host.show(AppPanelId.INVENTORY);
-
-        assertEquals(1, panels.get(AppPanelId.REPORTS_WORKSPACE).saveCount);
-        assertEquals(1, panels.get(AppPanelId.FUNDS).saveCount);
+        assertEquals(1, coa.saveCalls);
+        assertEquals(0, ledger.saveCalls);
     }
 
-    private static class TestPanel implements AppPanel, PanelHost.DirtyAwarePanel
+    private static final class TrackingPanel implements AppPanel, PanelHost.DirtyAwarePanel
     {
-        private final boolean dirty;
-        private int saveCount;
+        private final String title;
+        private boolean dirty;
+        private int saveCalls;
 
-        TestPanel(boolean dirty)
+        private TrackingPanel(String title)
         {
-            this.dirty = dirty;
+            this.title = title;
         }
 
+        void markDirty()
+        {
+            dirty = true;
+        }
+
+        @Override
         public String title()
         {
-            return "test";
+            return title;
         }
 
-        public Node root()
+        @Override
+        public javafx.scene.Node root()
         {
-            return new Pane();
+            return new javafx.scene.layout.VBox();
         }
 
+        @Override
         public void onSave()
         {
-            saveCount++;
+            saveCalls++;
+            dirty = false;
         }
 
+        @Override
         public boolean isDirty()
         {
             return dirty;
