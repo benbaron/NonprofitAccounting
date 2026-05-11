@@ -31,7 +31,17 @@ public class WorkspaceRouter
 
     private boolean isAlternateCustomPane(AppPanelId id)
     {
-        return id == AppPanelId.SETTINGS || id == AppPanelId.REPORTS_WORKSPACE;
+        return id == AppPanelId.SETTINGS;
+    }
+
+    private boolean isPanelHostRoute(AppPanelId id)
+    {
+        return switch (id)
+        {
+            case CHART_OF_ACCOUNTS, LEDGER_REGISTER, REPORTS_WORKSPACE, FUNDS, INVENTORY,
+                ASSETS_REGISTER, BUDGET_VS_ACTUAL, DEPRECIATION_RUNS, BUDGET_EDITOR, SCHEDULES, REPORT_LIBRARY -> true;
+            default -> false;
+        };
     }
 
     private boolean isPhaseOneAdaptedHostRoute(AppPanelId id)

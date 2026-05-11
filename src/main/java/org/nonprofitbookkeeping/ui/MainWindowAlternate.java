@@ -915,15 +915,7 @@ public class MainWindowAlternate extends BorderPane
         }
         else if (alternateCustomPane)
         {
-            if (id == AppPanelId.REPORTS_WORKSPACE)
-            {
-                alternateContentPane.getChildren().setAll(new Label("Reports workspace adapted for alternate shell."));
-                openInspectorForSelection("Reports", "Reports workspace opened with adapted navigation context.");
-            }
-            else
-            {
-                alternateContentPane.getChildren().setAll(new Label("Template pending"));
-            }
+            alternateContentPane.getChildren().setAll(new Label("Template pending"));
         }
         else if (panelHostBackedPanel)
         {
