@@ -71,11 +71,11 @@ class MapDrivenRoutingTest extends ApplicationTest
 
         interact(() -> host.show(AppPanelId.REPORT_LIBRARY));
         WaitForAsyncUtils.waitForFxEvents();
-        assertEquals("Reports Library", host.getActiveTitle());
+        assertEquals("Reports", host.getActiveTitle());
 
         interact(() -> host.show(AppPanelId.REPORTS_WORKSPACE));
         WaitForAsyncUtils.waitForFxEvents();
-        assertEquals("Reports Library", host.getActiveTitle());
+        assertEquals("Reports", host.getActiveTitle());
     }
 
     @Test
@@ -87,11 +87,11 @@ class MapDrivenRoutingTest extends ApplicationTest
 
         interact(() -> ((Button) lookup("#reportsRunBtn").query()).fire());
         WaitForAsyncUtils.waitForFxEvents();
-        assertEquals("Reports Library", host.getActiveTitle());
+        assertEquals("Reports", host.getActiveTitle());
 
         interact(() -> host.show(AppPanelId.REPORT_LIBRARY));
         WaitForAsyncUtils.waitForFxEvents();
-        assertEquals("Reports Library", host.getActiveTitle());
+        assertEquals("Reports", host.getActiveTitle());
     }
 
     @Test
@@ -111,7 +111,7 @@ class MapDrivenRoutingTest extends ApplicationTest
 
         interact(() -> host.show(reportsWorkspace.getValue().panelId()));
         WaitForAsyncUtils.waitForFxEvents();
-        assertEquals("Reports Library", host.getActiveTitle());
+        assertEquals("Reports", host.getActiveTitle());
     }
 
     private static TreeItem<NavigationPane.NavItem> findByLabel(TreeItem<NavigationPane.NavItem> root,

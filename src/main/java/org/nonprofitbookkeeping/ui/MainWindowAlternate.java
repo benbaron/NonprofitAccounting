@@ -52,6 +52,7 @@ import nonprofitbookkeeping.ui.panels.DocumentsPanelFX;
 import nonprofitbookkeeping.ui.panels.DonorsPanelFX;
 import nonprofitbookkeeping.ui.panels.DonationsPanelFX;
 import nonprofitbookkeeping.ui.panels.GrantsPanelFX;
+import nonprofitbookkeeping.ui.panels.JournalEntryWorkspaceFX;
 import nonprofitbookkeeping.service.DonorService;
 import nonprofitbookkeeping.service.GrantsService;
 
@@ -90,6 +91,8 @@ public class MainWindowAlternate extends BorderPane
     private final StackPane workspaceSurface = new StackPane();
     private final VBox alternateSettingsPane = new VBox();
     private final StackPane alternateContentPane = new StackPane();
+    private final BorderPane alternateBudgetPane = new BorderPane();
+    private final VBox alternateSchedulesPane = new VBox(10);
     private final VBox databaseSelectorPane = new VBox();
     private final VBox companySelectorPane = new VBox();
     private final VBox profilePane = new VBox();
@@ -883,6 +886,10 @@ public class MainWindowAlternate extends BorderPane
      */
     private void openPanel(AppPanelId id)
     {
+        if (id == AppPanelId.REPORT_LIBRARY)
+        {
+            id = AppPanelId.REPORTS_WORKSPACE;
+        }
         if (activePanelId != id)
         {
             if (panelHost.isActiveDirty())
@@ -917,6 +924,14 @@ public class MainWindowAlternate extends BorderPane
         {
             buildAlternateSettingsPane();
         }
+        else if (id == AppPanelId.BUDGET_EDITOR)
+        {
+            buildAlternateBudgetEditorPane();
+        }
+        else if (id == AppPanelId.SCHEDULES)
+        {
+            buildAlternateSchedulesPane();
+        }
         else if (alternateCustomPane)
         {
             alternateContentPane.getChildren().setAll(new Label("Template pending"));
@@ -928,6 +943,50 @@ public class MainWindowAlternate extends BorderPane
             LOGGER.debug("Panel strategy {} ({}) for {}", PanelAdaptationPlan.strategyFor(id), PanelAdaptationPlan.phaseFor(id), id);
         }
         nav.highlight(id);
+    }
+
+    private void buildAlternateBudgetEditorPane()
+    {
+        Label title = new Label("Budget Editor");
+        title.setStyle("-fx-font-size: 18px; -fx-font-weight: 700;");
+        Label subtitle = new Label("Native-first budget workspace using journal-style entry flow.");
+        subtitle.setStyle("-fx-text-fill: #5c6482;");
+        Node body;
+        try
+        {
+            JournalEntryWorkspaceFX budgetWorkspace = new JournalEntryWorkspaceFX();
+            VBox.setVgrow(budgetWorkspace, Priority.ALWAYS);
+            body = budgetWorkspace;
+        }
+        catch (IllegalStateException missingContext)
+        {
+            Label contextRequired = new Label("Open a company to use the budget editor.");
+            contextRequired.setStyle("-fx-text-fill: #8a4f4f;");
+            body = contextRequired;
+        }
+        VBox content = new VBox(8, title, subtitle, body);
+        content.setPadding(new Insets(8));
+        alternateBudgetPane.setCenter(content);
+        alternateContentPane.getChildren().setAll(alternateBudgetPane);
+    }
+
+    private void buildAlternateSchedulesPane()
+    {
+        Label title = new Label("Schedules");
+        title.setStyle("-fx-font-size: 18px; -fx-font-weight: 700;");
+        Label subtitle = new Label("Scheduled reports and recurring tasks.");
+        subtitle.setStyle("-fx-text-fill: #5c6482;");
+        ListView<String> schedules = new ListView<>();
+        schedules.getItems().setAll(alternatePreferences.get(SCHEDULED_REPORTS_KEY, "")
+            .lines()
+            .filter(line -> line != null && !line.isBlank())
+            .toList());
+        Button createSchedule = new Button("Create Schedule");
+        createSchedule.setOnAction(e -> openReportsScheduleDirect());
+        alternateSchedulesPane.getChildren().setAll(title, subtitle, createSchedule, schedules);
+        alternateSchedulesPane.setPadding(new Insets(8));
+        VBox.setVgrow(schedules, Priority.ALWAYS);
+        alternateContentPane.getChildren().setAll(alternateSchedulesPane);
     }
 
     private void rebuildNavigationButtons()
@@ -998,7 +1057,7 @@ public class MainWindowAlternate extends BorderPane
             case LEDGER_REGISTER -> "Journal";
             case INVENTORY -> "Inventory";
             case FUNDS -> "Funds";
-            case REPORTS_WORKSPACE -> "Reports";
+            case REPORTS_WORKSPACE -> "Reports Library";
             case SCHEDULES -> "Schedules";
             case BUDGET_EDITOR -> "Budget";
             case SETTINGS -> "Settings";
