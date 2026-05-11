@@ -889,13 +889,7 @@ public class MainWindowAlternate extends BorderPane
                 ? "Unsaved changes detected. Saving state before leaving " + panelTitle(activePanelId) + "..."
                 : "Saving state before leaving " + panelTitle(activePanelId) + "...";
             alternateStatus.setText(saveMessage);
-            if (activeAdaptedPanel != null)
-            {
-                activeAdaptedPanel.onLeave();
-                activeAdaptedPanel.saveContext();
-                activeAdaptedPanel = null;
-            }
-            panelHost.saveActive();
+            dismissActiveContext();
         }
         activePanelId = id;
         refreshHeaderLabels();
@@ -943,8 +937,8 @@ public class MainWindowAlternate extends BorderPane
     private void rebuildNavigationButtons()
     {
         navButtons.getChildren().clear();
-        boolean databaseOpen = contextService.activeDatabaseBasePath() != null;
-        boolean companyOpen = CurrentCompany.isOpen();
+        boolean databaseOpen = contextService.isDatabaseOpen();
+        boolean companyOpen = contextService.isCompanyOpen();
 
         if (!databaseOpen)
         {
@@ -992,11 +986,11 @@ public class MainWindowAlternate extends BorderPane
     private String activeCompanyName()
     {
         Company company = CurrentCompany.getCompany();
-        if (!CurrentCompany.isOpen() || company == null || company.getName() == null || company.getName().isBlank())
+        if (CurrentCompany.isOpen() && company != null && company.getName() != null && !company.getName().isBlank())
         {
-            return "No company open";
+            return company.getName();
         }
-        return company.getName();
+        return contextService.activeCompanyDisplayLabel();
     }
 
     private String panelTitle(AppPanelId panelId)

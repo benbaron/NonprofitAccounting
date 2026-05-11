@@ -17,6 +17,14 @@ class AlternateNavigationModelTest
     }
 
     @Test
+    void coaAndLedgerRemainTopLevelParentsInPhaseOne()
+    {
+        AlternateNavigationModel model = new AlternateNavigationModel();
+        assertEquals(AppPanelId.CHART_OF_ACCOUNTS, model.parentPanelFor(AppPanelId.CHART_OF_ACCOUNTS));
+        assertEquals(AppPanelId.LEDGER_REGISTER, model.parentPanelFor(AppPanelId.LEDGER_REGISTER));
+    }
+
+    @Test
     void reportsWorkspaceRemainsParentForImportToolsSubpanels()
     {
         AlternateNavigationModel model = new AlternateNavigationModel();

@@ -4,40 +4,41 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import javafx.scene.Node;
 import javafx.scene.layout.VBox;
 
 class LegacyPanelAdapterTest
 {
     @Test
-    void saveContextDoesNotInvokeLegacyOnSave()
+    void saveContextDelegatesToLegacyOnSave()
     {
-        class StubPanel implements AppPanel
-        {
-            int saveCalls;
-
-            public String title()
-            {
-                return "Stub";
-            }
-
-            public Node root()
-            {
-                return new VBox();
-            }
-
-            public void onSave()
-            {
-                saveCalls++;
-            }
-        }
-
-        StubPanel panel = new StubPanel();
+        TrackingPanel panel = new TrackingPanel();
         LegacyPanelAdapter.AdaptedPanel adapted = LegacyPanelAdapter.from(panel);
 
         adapted.saveContext();
 
-        assertEquals(0, panel.saveCalls,
-            "Alternate-shell context save should remain in-memory and must not commit via onSave().");
+        assertEquals(1, panel.saveCalls);
+    }
+
+    private static final class TrackingPanel implements AppPanel
+    {
+        private int saveCalls;
+
+        @Override
+        public String title()
+        {
+            return "Tracking";
+        }
+
+        @Override
+        public javafx.scene.Node root()
+        {
+            return new VBox();
+        }
+
+        @Override
+        public void onSave()
+        {
+            saveCalls++;
+        }
     }
 }
