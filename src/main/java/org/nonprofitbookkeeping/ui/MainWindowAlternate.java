@@ -1107,6 +1107,7 @@ public class MainWindowAlternate extends BorderPane
         openDocumentsDirect();
     }
 
+
     String testAlternateStatusText()
     {
         return alternateStatus.getText();

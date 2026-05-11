@@ -214,4 +214,5 @@ class MainWindowAlternateCommandCenterTest
             throw new AssertionError("MainWindowAlternate header continuity regression test failed", error[0]);
         }
     }
+
 }
