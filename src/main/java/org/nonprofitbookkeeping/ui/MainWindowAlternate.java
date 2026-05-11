@@ -885,14 +885,10 @@ public class MainWindowAlternate extends BorderPane
     {
         if (activePanelId != id)
         {
-            if (panelHost.isActiveDirty())
-            {
-                alternateStatus.setText("Unsaved changes detected. Saving state before leaving " + panelTitle(activePanelId) + "...");
-            }
-            else
-            {
-                alternateStatus.setText("Saving state before leaving " + panelTitle(activePanelId) + "...");
-            }
+            String saveMessage = panelHost.isActiveDirty()
+                ? "Unsaved changes detected. Saving state before leaving " + panelTitle(activePanelId) + "..."
+                : "Saving state before leaving " + panelTitle(activePanelId) + "...";
+            alternateStatus.setText(saveMessage);
             dismissActiveContext();
         }
         activePanelId = id;
