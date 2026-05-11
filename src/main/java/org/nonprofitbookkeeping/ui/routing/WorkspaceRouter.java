@@ -11,7 +11,7 @@ public class WorkspaceRouter
 {
     public WorkspaceRouteDecision decide(AppPanelId id)
     {
-        if (isPhaseOneAdaptedHostRoute(id))
+        if (isPanelHostRoute(id))
         {
             return new WorkspaceRouteDecision(id, RouteTarget.PANEL_HOST);
         }
@@ -31,11 +31,16 @@ public class WorkspaceRouter
 
     private boolean isAlternateCustomPane(AppPanelId id)
     {
-        return id == AppPanelId.SETTINGS || id == AppPanelId.REPORTS_WORKSPACE;
+        return id == AppPanelId.SETTINGS;
     }
 
-    private boolean isPhaseOneAdaptedHostRoute(AppPanelId id)
+    private boolean isPanelHostRoute(AppPanelId id)
     {
-        return id == AppPanelId.CHART_OF_ACCOUNTS || id == AppPanelId.LEDGER_REGISTER;
+        return switch (id)
+        {
+            case CHART_OF_ACCOUNTS, LEDGER_REGISTER, REPORTS_WORKSPACE, FUNDS, INVENTORY,
+                ASSETS_REGISTER, BUDGET_VS_ACTUAL, DEPRECIATION_RUNS, BUDGET_EDITOR, SCHEDULES, REPORT_LIBRARY -> true;
+            default -> false;
+        };
     }
 }

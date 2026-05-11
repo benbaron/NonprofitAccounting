@@ -18,9 +18,13 @@ class WorkspaceRouterTest
     }
 
     @Test
-    void settingsRemainsAlternateCustomPaneAndReportsIsPanelHost()
+    void settingsRemainsAlternateCustomPaneAndReportsFamilyIsPanelHost()
     {
         assertTrue(router.decide(AppPanelId.SETTINGS).isAlternateCustomPane());
-        assertTrue(router.decide(AppPanelId.REPORTS_WORKSPACE).isAlternateCustomPane());
+        assertTrue(router.decide(AppPanelId.REPORTS_WORKSPACE).isPanelHost());
+        assertTrue(router.decide(AppPanelId.ASSETS_REGISTER).isPanelHost());
+        assertTrue(router.decide(AppPanelId.BUDGET_VS_ACTUAL).isPanelHost());
+        assertTrue(router.decide(AppPanelId.DEPRECIATION_RUNS).isPanelHost());
+        assertTrue(router.decide(AppPanelId.FUNDS).isPanelHost());
     }
 }
