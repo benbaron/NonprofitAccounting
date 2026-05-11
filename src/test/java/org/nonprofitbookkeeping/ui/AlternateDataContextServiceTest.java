@@ -61,6 +61,22 @@ class AlternateDataContextServiceTest
         assertNull(service.activeCompanyLabel());
     }
 
+    @Test
+    void contextFlagsAndDisplayLabelFollowActiveState()
+    {
+        AlternateDataContextService service = new AlternateDataContextService();
+
+        assertTrue(!service.isDatabaseOpen());
+        assertTrue(!service.isCompanyOpen());
+        assertEquals("No company open", service.activeCompanyDisplayLabel());
+
+        service.setActiveDatabaseBasePath(Path.of("/tmp/flags.mv.db"));
+
+        assertTrue(service.isDatabaseOpen());
+        assertTrue(!service.isCompanyOpen());
+        assertEquals("No company open", service.activeCompanyDisplayLabel());
+    }
+
     private static final class RecordingSwitcher extends AlternateDatabaseContextSwitcher
     {
         private Path lastOpenedBasePath;
