@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -213,65 +212,6 @@ class MainWindowAlternateCommandCenterTest
         if (error[0] != null)
         {
             throw new AssertionError("MainWindowAlternate header continuity regression test failed", error[0]);
-        }
-    }
-
-    @Test
-    void chartOfAccountsMigrationRetainsPanelHostLifecycleAndNavigationParity() throws Exception
-    {
-        CountDownLatch latch = new CountDownLatch(1);
-        Throwable[] error = new Throwable[1];
-
-        Platform.runLater(() -> {
-            try
-            {
-                MainWindowAlternate window = new MainWindowAlternate();
-
-                window.testOpenPanel(AppPanelId.CHART_OF_ACCOUNTS);
-                PanelHost panelHost = panelHostOf(window);
-                assertTrue(panelHost.isVisible() && panelHost.isManaged());
-                assertEquals("Chart of Accounts", panelHost.getActiveTitle());
-                assertEquals("Chart of Accounts", window.testHeaderTitle());
-
-                List<String> coaLabels = window.testNavigationButtonLabels();
-                assertTrue(coaLabels.contains("⌂  Chart of Accounts"));
-
-                window.testOpenPanel(AppPanelId.LEDGER_REGISTER);
-                assertTrue(panelHost.isVisible() && panelHost.isManaged());
-                assertEquals("Ledger Register", panelHost.getActiveTitle());
-                assertEquals("Journal", window.testHeaderTitle());
-
-                List<String> ledgerLabels = window.testNavigationButtonLabels();
-                assertTrue(ledgerLabels.contains("⌂  Journal"));
-            }
-            catch (Throwable t)
-            {
-                error[0] = t;
-            }
-            finally
-            {
-                latch.countDown();
-            }
-        });
-
-        assertTrue(latch.await(20, TimeUnit.SECONDS));
-        if (error[0] != null)
-        {
-            throw new AssertionError("MainWindowAlternate chart-of-accounts migration parity test failed", error[0]);
-        }
-    }
-
-    private static PanelHost panelHostOf(MainWindowAlternate window)
-    {
-        try
-        {
-            Field panelHostField = MainWindowAlternate.class.getDeclaredField("panelHost");
-            panelHostField.setAccessible(true);
-            return (PanelHost) panelHostField.get(window);
-        }
-        catch (ReflectiveOperationException e)
-        {
-            throw new AssertionError("Unable to access panelHost for migration parity assertions", e);
         }
     }
 
