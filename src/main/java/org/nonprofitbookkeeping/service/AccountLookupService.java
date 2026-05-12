@@ -38,7 +38,7 @@ public class AccountLookupService
         try (EntityManager em = jpa.em())
         {
             return em.createQuery(
-                    "from Account a where a.isActive = true and a.isPosting = true order by a.code",
+                    "from Account a where a.active = true and a.posting = true order by a.code",
                     Account.class)
                 .getResultList();
         }
