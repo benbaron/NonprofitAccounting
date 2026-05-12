@@ -62,6 +62,7 @@ import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -105,6 +106,7 @@ public class MainWindowAlternate extends BorderPane
     private final Label headerTitle = new Label("Dashboard");
     private final Label headerSubtitle = new Label("No company open");
     private final AlternateNavigationModel navigationModel = new AlternateNavigationModel();
+    private final List<Button> iconRailButtons = new ArrayList<>();
     private LegacyPanelAdapter.AdaptedPanel activeAdaptedPanel;
     private AppPanelId activePanelId = AppPanelId.DASHBOARD;
     private static final String SCHEDULED_REPORTS_KEY = "alternate.scheduled.reports";
@@ -156,14 +158,16 @@ public class MainWindowAlternate extends BorderPane
 
     private Node buildIconRail()
     {
-        VBox rail = new VBox(14,
-            iconButton("◉", this::openProfilePage),
-            iconButton("⌂", () -> openPanel(AppPanelId.DASHBOARD)),
-            iconButton("⌕", this::openSearchPage),
-            iconButton("☰", this::openCommandCenter),
-            iconButton("⚙", () -> openPanel(AppPanelId.SETTINGS)));
+        iconRailButtons.clear();
+        iconRailButtons.add(iconButton("◉", this::openProfilePage));
+        iconRailButtons.add(iconButton("⌂", () -> openPanel(AppPanelId.DASHBOARD)));
+        iconRailButtons.add(iconButton("⌕", this::openSearchPage));
+        iconRailButtons.add(iconButton("☰", this::openCommandCenter));
+        iconRailButtons.add(iconButton("⚙", () -> openPanel(AppPanelId.SETTINGS)));
+        VBox rail = new VBox(14, iconRailButtons.toArray(Button[]::new));
         rail.setPadding(new Insets(14, 8, 14, 8));
         rail.setStyle("-fx-background-color: #1f2431; -fx-background-radius: 14;");
+        refreshIconBarState();
         return rail;
     }
 
@@ -985,6 +989,16 @@ public class MainWindowAlternate extends BorderPane
         alternateContentPane.getChildren().setAll(alternateSchedulesPane);
     }
 
+    private void refreshIconBarState()
+    {
+        boolean companyLoaded = contextService.isCompanyOpen();
+        for (Button iconButton : iconRailButtons)
+        {
+            iconButton.setDisable(!companyLoaded);
+            iconButton.setOpacity(companyLoaded ? 1.0 : 0.55);
+        }
+    }
+
     private void rebuildNavigationButtons()
     {
         navButtons.getChildren().clear();
@@ -1026,12 +1040,39 @@ public class MainWindowAlternate extends BorderPane
             navActionButton("🏢  Open Company", this::openCompanySelector));
         importToolsPane.setVisible(true);
         importToolsPane.setManaged(true);
+        activateLeftToolbarButtons();
+    }
+
+
+    private void activateLeftToolbarButtons()
+    {
+        navButtons.getChildren().stream()
+            .filter(Button.class::isInstance)
+            .map(Button.class::cast)
+            .forEach(button ->
+            {
+                button.setDisable(false);
+                button.setOpacity(1.0);
+            });
+
+        if (importToolsPane.getContent() instanceof VBox toolsContent)
+        {
+            toolsContent.getChildren().stream()
+                .filter(Button.class::isInstance)
+                .map(Button.class::cast)
+                .forEach(button ->
+                {
+                    button.setDisable(false);
+                    button.setOpacity(1.0);
+                });
+        }
     }
 
     private void refreshHeaderLabels()
     {
         headerTitle.setText(panelTitle(activePanelId));
         headerSubtitle.setText(activeCompanyName());
+        refreshIconBarState();
     }
 
     private String activeCompanyName()
@@ -1150,6 +1191,13 @@ public class MainWindowAlternate extends BorderPane
     String testHeaderSubtitle()
     {
         return headerSubtitle.getText();
+    }
+
+    List<Boolean> testIconRailDisabledStates()
+    {
+        return iconRailButtons.stream()
+            .map(Button::isDisable)
+            .toList();
     }
 
 }
