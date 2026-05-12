@@ -2,7 +2,10 @@ package org.nonprofitbookkeeping.ui;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.lang.reflect.Field;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
@@ -50,6 +53,10 @@ class PanelHostLifecycleTest
         host.show(AppPanelId.DASHBOARD);
         assertSame(dashboardNode, host.getCenter());
         assertEquals(1, createCalls.get());
+
+        Map<?, ?> cachedPanels = panels(host);
+        assertEquals(1, cachedPanels.size());
+        assertTrue(cachedPanels.containsKey(AppPanelId.DASHBOARD));
     }
 
     @Test
@@ -70,6 +77,23 @@ class PanelHostLifecycleTest
         assertEquals(1, saveCalls.get());
         assertEquals(1, newCalls.get());
     }
+
+
+    @SuppressWarnings("unchecked")
+    private static Map<AppPanelId, AppPanel> panels(PanelHost host)
+    {
+        try
+        {
+            Field field = PanelHost.class.getDeclaredField("panels");
+            field.setAccessible(true);
+            return (Map<AppPanelId, AppPanel>) field.get(host);
+        }
+        catch (ReflectiveOperationException ex)
+        {
+            throw new AssertionError("Unable to read PanelHost panels cache", ex);
+        }
+    }
+
     private static final class TrackingPanel implements AppPanel, PanelHost.DirtyAwarePanel
     {
         private final String title;
