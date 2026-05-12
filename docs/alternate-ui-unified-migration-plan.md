@@ -81,7 +81,7 @@ Its single goal is to migrate **all panel routes** to alternate-shell parity usi
 
 ### Phase 1 metaprompt
 > Read `docs/alternate-ui-unified-migration-plan.md` first.  
-> Step 1: implement all Phase 1 concrete class changes above, and explicitly migrate `CHART_OF_ACCOUNTS` + `LEDGER_REGISTER` using the adapter/host steps in this document.  
+> Step 1: implement all Phase 1 concrete class changes and explicitly migrate `CHART_OF_ACCOUNTS` + `LEDGER_REGISTER` using the adapter/host steps in this document.  
 > Step 2: review implementation against end-state goals and list remaining gaps for reports/funds/inventory/native replacements.  
 > Step 3: run tests for DB open -> company open -> COA/ledger open -> mutate -> switch -> save verified.
 
