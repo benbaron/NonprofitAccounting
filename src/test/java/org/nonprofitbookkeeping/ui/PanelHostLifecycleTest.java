@@ -1,6 +1,9 @@
 package org.nonprofitbookkeeping.ui;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
 
@@ -26,6 +29,47 @@ class PanelHostLifecycleTest
         assertEquals(0, ledger.saveCalls);
     }
 
+
+    @Test
+    void showRendersPanelNodeAndCachesPanelInstance()
+    {
+        AtomicInteger createCalls = new AtomicInteger();
+        javafx.scene.layout.StackPane dashboardNode = new javafx.scene.layout.StackPane();
+        PanelHost host = new PanelHost(id -> {
+            if (id == AppPanelId.DASHBOARD)
+            {
+                createCalls.incrementAndGet();
+                return new FxAppPanelAdapter<>("Dashboard", () -> dashboardNode);
+            }
+            throw new IllegalArgumentException("Unexpected panel " + id);
+        });
+
+        host.show(AppPanelId.DASHBOARD);
+        assertSame(dashboardNode, host.getCenter());
+
+        host.show(AppPanelId.DASHBOARD);
+        assertSame(dashboardNode, host.getCenter());
+        assertEquals(1, createCalls.get());
+    }
+
+    @Test
+    void adapterLifecycleHooksDelegateToFxPanelCallbacks()
+    {
+        AtomicInteger saveCalls = new AtomicInteger();
+        AtomicInteger newCalls = new AtomicInteger();
+        javafx.scene.layout.Pane node = new javafx.scene.layout.Pane();
+        PanelHost host = new PanelHost(id -> new FxAppPanelAdapter<>("Dashboard",
+            () -> node,
+            n -> saveCalls.incrementAndGet(),
+            n -> newCalls.incrementAndGet()));
+
+        host.show(AppPanelId.DASHBOARD);
+        host.saveActive();
+        host.newItemActive();
+
+        assertEquals(1, saveCalls.get());
+        assertEquals(1, newCalls.get());
+    }
     private static final class TrackingPanel implements AppPanel, PanelHost.DirtyAwarePanel
     {
         private final String title;
