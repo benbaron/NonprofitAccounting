@@ -1040,6 +1040,32 @@ public class MainWindowAlternate extends BorderPane
             navActionButton("🏢  Open Company", this::openCompanySelector));
         importToolsPane.setVisible(true);
         importToolsPane.setManaged(true);
+        activateLeftToolbarButtons();
+    }
+
+
+    private void activateLeftToolbarButtons()
+    {
+        navButtons.getChildren().stream()
+            .filter(Button.class::isInstance)
+            .map(Button.class::cast)
+            .forEach(button ->
+            {
+                button.setDisable(false);
+                button.setOpacity(1.0);
+            });
+
+        if (importToolsPane.getContent() instanceof VBox toolsContent)
+        {
+            toolsContent.getChildren().stream()
+                .filter(Button.class::isInstance)
+                .map(Button.class::cast)
+                .forEach(button ->
+                {
+                    button.setDisable(false);
+                    button.setOpacity(1.0);
+                });
+        }
     }
 
     private void refreshHeaderLabels()
