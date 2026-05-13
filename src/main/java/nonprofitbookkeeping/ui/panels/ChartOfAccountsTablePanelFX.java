@@ -56,7 +56,7 @@ public class ChartOfAccountsTablePanelFX extends BorderPane
 		actions.setPadding(UiSpacing.actionBarTopMargin());
 		setTop(actions);
 
-		this.refreshButton.setOnAction(e -> refresh());
+		this.refreshButton.setOnAction(e -> refreshData());
 		this.printButton.setTooltip(new Tooltip("Print this table."));
 		this.printButton.setOnAction(e -> TableExportUtils.printTable(this.table));
 
@@ -73,7 +73,7 @@ public class ChartOfAccountsTablePanelFX extends BorderPane
 			.setTooltip(new Tooltip("Export this table to PDF or Excel."));
 
 		registerCompanyListener();
-		refresh();
+		refreshData();
 	}
 
 	private void setupColumns()
@@ -102,7 +102,18 @@ public class ChartOfAccountsTablePanelFX extends BorderPane
 			parentCol);
 	}
 
-	private void refresh()
+	
+	/**
+	 * Backward-compatible refresh entrypoint for existing classic callers.
+	 */
+	@Deprecated
+	public void refresh()
+	{
+		refreshData();
+	}
+
+	/** Refreshes the table rows from the currently open company's chart of accounts. */
+	public void refreshData()
 	{
 		this.rows.clear();
 
@@ -123,7 +134,7 @@ public class ChartOfAccountsTablePanelFX extends BorderPane
 
 	private void registerCompanyListener()
 	{
-		this.companyListener = companyNowOpen -> refresh();
+		this.companyListener = companyNowOpen -> refreshData();
 		CurrentCompany.CompanyListener.addCompanyListener(this.companyListener);
 	}
 

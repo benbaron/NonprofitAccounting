@@ -189,7 +189,7 @@ public class JournalPanelFX extends BorderPane
 							return;
 						}
 						
-						refresh();
+						refreshData();
 					}
 					
 				}
@@ -198,7 +198,7 @@ public class JournalPanelFX extends BorderPane
 			
 		});
 		
-		refreshBtn.setOnAction(e -> refresh());
+		refreshBtn.setOnAction(e -> refreshData());
 		
 		this.actionToolBar = new ToolBar(add, edit, del, refreshBtn);
 		
@@ -259,7 +259,7 @@ public class JournalPanelFX extends BorderPane
 				return;
 			}
 			
-			refresh();
+			refreshData();
 		});
 		
 		Dialog<Void> d = new Dialog<>();
@@ -293,12 +293,21 @@ public class JournalPanelFX extends BorderPane
 	}
 	
 	/**
+	 * Backward-compatible refresh entrypoint for existing classic callers.
+	 */
+	@Deprecated
+	public void refresh()
+	{
+		refreshData();
+	}
+
+	/**
 	 * Refreshes the data displayed in the journal transaction {@link #table}.
 	 * It retrieves the current list of transactions from the {@link Journal} of the
 	 * {@link CurrentCompany}. If the journal or company is not available, the table is cleared.
 	 * Otherwise, the table's backing list ({@link #rows}) is updated with the fetched transactions.
 	 */
-	void refresh()
+	public void refreshData()
 	{
 		
 		if (CurrentCompany.isOpen() && CurrentCompany.getCompany() != null &&
@@ -333,7 +342,7 @@ public class JournalPanelFX extends BorderPane
 		
 		if (isOpen)
 		{
-			refresh();
+			refreshData();
 			
 			if (this.actionToolBar != null)
 			{

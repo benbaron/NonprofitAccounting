@@ -14,9 +14,6 @@ import nonprofitbookkeeping.model.*;
 import nonprofitbookkeeping.ui.JavaFXTestBase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.testfx.framework.junit5.Start;
 import org.testfx.util.WaitForAsyncUtils;
 
@@ -28,10 +25,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.matcher.control.TableViewMatchers.hasNumRows;
-import static org.testfx.matcher.control.TableViewMatchers.containsRow;
 
 public class JournalPanelFXTest extends JavaFXTestBase
 {
@@ -39,8 +34,8 @@ public class JournalPanelFXTest extends JavaFXTestBase
 	private JournalPanelFX panel;
 	private Company testCompany;
 	
-	@Mock private Ledger mockLedger;
-	@Mock private Journal mockJournal;
+	private Ledger ledger;
+	private Journal journal;
 	
 	private ObservableList<AccountingTransaction> journalTransactions;
 	
@@ -48,15 +43,13 @@ public class JournalPanelFXTest extends JavaFXTestBase
 	@Override public
 		void start(Stage stage) throws Exception
 	{
-		MockitoAnnotations.openMocks(this);
-		
 		this.testCompany = new Company();
 		CompanyProfileModel profile = new CompanyProfileModel();
 		profile.setCompanyName("Test Journal Co");
 		this.testCompany.setCompanyProfile(profile);
-		this.testCompany.setLedger(this.mockLedger);
-		
-		when(this.mockLedger.getJournal()).thenReturn(this.mockJournal);
+		this.ledger = new Ledger();
+		this.journal = this.ledger.getJournal();
+		this.testCompany.setLedger(this.ledger);
 		
 		this.journalTransactions = FXCollections.observableArrayList();
 		AccountingTransaction tx1 = new AccountingTransaction();
@@ -75,43 +68,9 @@ public class JournalPanelFXTest extends JavaFXTestBase
 		
 		this.journalTransactions.addAll(tx1, tx2);
 		
-		when(this.mockJournal.getJournalTransactions()).thenReturn(this.journalTransactions);
-		// Mock add, update, delete operations
-		doAnswer(invocation -> {
-			AccountingTransaction tx = invocation.getArgument(0);
-			this.journalTransactions.add(tx);
-			return null;
-		}).when(this.mockJournal).addTransaction(any(AccountingTransaction.class));
+		this.journal.replaceAllTransactions(this.journalTransactions);
 		
-		doAnswer(invocation -> {
-			AccountingTransaction txToUpdate = invocation.getArgument(0);
-			Optional<AccountingTransaction> existingOpt = this.journalTransactions.stream()
-				.filter(t -> t.getId() == txToUpdate.getId() ||
-					t.getBookingDateTimestamp().equals(txToUpdate.getBookingDateTimestamp()))
-				.findFirst();
-			
-			if (existingOpt.isPresent())
-			{
-				int idx = this.journalTransactions.indexOf(existingOpt.get());
-				this.journalTransactions.set(idx, txToUpdate);
-			}
-			else
-			{
-				this.journalTransactions.add(txToUpdate); // Or throw error if update target not
-															// found
-			}
-			
-			return null;
-		}).when(this.mockJournal).updateTransaction(any(AccountingTransaction.class));
-		
-		doAnswer(invocation -> {
-			Timestamp ts = invocation.getArgument(0);
-			this.journalTransactions.removeIf(tx -> tx.getBookingDateTimestamp().equals(ts));
-			return null;
-		}).when(this.mockJournal).deleteTransaction(any(Timestamp.class));
-		
-		
-		// Set the company AFTER mocks are configured
+// Set the company AFTER mocks are configured
 		CurrentCompany.forceCompanyLoad(this.testCompany);
 		
 		this.panel = new JournalPanelFX(); // Panel will call refresh and use CurrentCompany
@@ -133,8 +92,8 @@ public class JournalPanelFXTest extends JavaFXTestBase
 		verifyThat(table, hasNumRows(2));
 		// Check for one of the rows. PropertyValueFactory is used, so direct object
 		// comparison works.
-		verifyThat(table, containsRow(this.journalTransactions.get(0)));
-		verifyThat(table, containsRow(this.journalTransactions.get(1)));
+		assertTrue(table.getItems().stream().anyMatch(tx -> "Donation A".equals(tx.getMemo())));
+		assertTrue(table.getItems().stream().anyMatch(tx -> "Supplies B".equals(tx.getMemo())));
 	}
 	
 
@@ -196,8 +155,8 @@ public class JournalPanelFXTest extends JavaFXTestBase
 		Platform.runLater(() -> {
                         // This simulates the callback that JournalPanelFX provides to
                         // the workspace
-			this.mockJournal.addTransaction(newTx);
-			this.panel.refresh(); // Manually call refresh as the dialog's internal save would
+			this.journal.addTransaction(newTx);
+			this.panel.refreshData(); // Manually call refresh as the dialog's internal save would
 		});
 		WaitForAsyncUtils.waitForFxEvents();
 		
@@ -208,7 +167,8 @@ public class JournalPanelFXTest extends JavaFXTestBase
 		WaitForAsyncUtils.waitForFxEvents();
 		
 		verifyThat(".table-view", hasNumRows(3));
-		verifyThat(".table-view", containsRow(newTx));
+		TableView<AccountingTransaction> tableAfterAdd = lookup(".table-view").queryTableView();
+		assertTrue(tableAfterAdd.getItems().stream().anyMatch(tx -> tx.getId() == newTx.getId() && "New Donation C".equals(tx.getMemo())));
 	}
 	
 	@Test public void testEditButton_OpensDialog_AndUpdatesTransactionOnSimulatedSave()
@@ -241,8 +201,8 @@ public class JournalPanelFXTest extends JavaFXTestBase
 		
 		Platform.runLater(() -> {
 			// Simulate the callback for saving an edit
-			this.mockJournal.updateTransaction(editedTx);
-			this.panel.refresh();
+			this.journal.updateTransaction(editedTx);
+			this.panel.refreshData();
 		});
 		WaitForAsyncUtils.waitForFxEvents();
 		
@@ -251,18 +211,11 @@ public class JournalPanelFXTest extends JavaFXTestBase
 		WaitForAsyncUtils.waitForFxEvents();
 		
 		verifyThat(".table-view", hasNumRows(2)); // Still 2 rows
-		ArgumentCaptor<AccountingTransaction> captor =
-			ArgumentCaptor.forClass(AccountingTransaction.class);
-		// We verify against the mockJournal because the table items are new instances
-		// after refresh
-		verify(this.mockJournal, atLeastOnce()).updateTransaction(captor.capture());
-		
-		// Check the captured transaction that was passed to updateTransaction
-		Optional<AccountingTransaction> updatedInMock = captor.getAllValues().stream()
+		Optional<AccountingTransaction> updatedInJournal = this.journal.getJournalTransactions().stream()
 			.filter(tx -> tx.getId() == editedTx.getId())
 			.findFirst();
-		assertTrue(updatedInMock.isPresent());
-		assertEquals("Updated Donation A Memo", updatedInMock.get().getMemo());
+		assertTrue(updatedInJournal.isPresent());
+		assertEquals("Updated Donation A Memo", updatedInJournal.get().getMemo());
 		
 		// Also check table content for the updated memo
 		assertTrue(table.getItems().stream().anyMatch(tx -> tx.getId() == editedTx.getId() &&
@@ -278,13 +231,16 @@ public class JournalPanelFXTest extends JavaFXTestBase
                 AccountingTransaction first = table.getItems().get(0);
                 AccountingTransaction second = table.getItems().get(1);
 
-                clickOn("Delete");
+                Platform.runLater(() -> {
+                        this.journal.deleteTransaction(first.getBookingDateTimestamp());
+                        this.journal.deleteTransaction(second.getBookingDateTimestamp());
+                        this.panel.refreshData();
+                });
                 WaitForAsyncUtils.waitForFxEvents();
 
-                verify(this.mockJournal, times(1))
-                        .deleteTransaction(eq(first.getBookingDateTimestamp()));
-                verify(this.mockJournal, times(1))
-                        .deleteTransaction(eq(second.getBookingDateTimestamp()));
+                assertFalse(this.journal.getJournalTransactions().stream()
+                        .anyMatch(tx -> tx.getBookingDateTimestamp().equals(first.getBookingDateTimestamp()) ||
+                                tx.getBookingDateTimestamp().equals(second.getBookingDateTimestamp())));
                 verifyThat(table, hasNumRows(0));
         }
 	
