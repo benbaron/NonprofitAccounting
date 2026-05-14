@@ -4,7 +4,7 @@ import javafx.scene.Node;
 import nonprofitbookkeeping.ui.panels.ReportsPanelFX;
 
 /**
- * Panel-host wrapper for the JavaFX reports workspace implementation.
+ * Intentional adapter boundary from canonical org.nonprofitbookkeeping.ui shell to legacy JavaFX reports workspace implementation.
  */
 public class ReportLibraryPanel implements AppPanel
 {

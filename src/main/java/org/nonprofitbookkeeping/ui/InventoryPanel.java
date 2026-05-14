@@ -5,7 +5,7 @@ import nonprofitbookkeeping.service.InventoryService;
 import nonprofitbookkeeping.ui.panels.InventoryPanelFX;
 
 /**
- * Panel-host wrapper for the JavaFX inventory workflow.
+ * Intentional adapter boundary from canonical org.nonprofitbookkeeping.ui shell to legacy JavaFX inventory workflow.
  */
 public class InventoryPanel implements AppPanel
 {

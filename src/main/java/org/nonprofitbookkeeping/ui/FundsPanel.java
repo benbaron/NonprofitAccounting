@@ -5,7 +5,7 @@ import nonprofitbookkeeping.service.FundAccountingService;
 import nonprofitbookkeeping.ui.panels.FundsPanelFX;
 
 /**
- * Panel-host wrapper for the JavaFX funds workflow.
+ * Intentional adapter boundary from canonical org.nonprofitbookkeeping.ui shell to legacy JavaFX funds workflow.
  */
 public class FundsPanel implements AppPanel
 {

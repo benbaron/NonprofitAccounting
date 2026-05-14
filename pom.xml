@@ -140,6 +140,19 @@
         <version>3.3.0</version>
         <executions>
           <execution>
+            <id>guard-ui-namespace-imports</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>bash</executable>
+              <arguments>
+                <argument>${project.basedir}/scripts/check-ui-namespace-imports.sh</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
             <id>run-console-launcher</id>
             <phase>test</phase>
             <goals>
