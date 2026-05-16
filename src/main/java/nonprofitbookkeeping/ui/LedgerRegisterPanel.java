@@ -55,14 +55,14 @@ public class LedgerRegisterPanel implements AppPanel
 	 */
 	public LedgerRegisterPanel()
 	{
-		root.setPadding(new Insets(8));
+		root.setPadding(new Insets(16));
 
 		Label title = new Label("Ledger Register");
 		Label range = new Label();
 		range.textProperty().bind(Bindings.createStringBinding(
 			() -> "Date Range: " + DateRangeContext.get(),
 			DateRangeContext.selectedProperty()));
-		title.getStyleClass().add("panel-title");
+		title.getStyleClass().add("journal-entry-heading");
 
 		javafx.scene.control.Button refresh = new javafx.scene.control.Button("Refresh");
 		HBox actions = new HBox(8, refresh);

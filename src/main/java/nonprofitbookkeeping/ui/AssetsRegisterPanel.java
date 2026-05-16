@@ -51,10 +51,10 @@ public class AssetsRegisterPanel implements AppPanel
 	public AssetsRegisterPanel(AssetRecordService assetRecordService)
 	{
 		this.assetRecordService = Objects.requireNonNull(assetRecordService, "assetRecordService");
-		this.root.setPadding(new Insets(8));
+		this.root.setPadding(new Insets(16));
 
 		Label title = new Label("Asset Register");
-		title.getStyleClass().add("panel-title");
+		title.getStyleClass().add("journal-entry-heading");
 
 		Button add = new Button("+ Add Asset");
 		Button delete = new Button("Delete Selected");

@@ -99,7 +99,7 @@ public class CompanySelectionPanelFX extends BorderPane
 	 */
 	public CompanySelectionPanelFX()
 	{
-		setPadding(UiSpacing.pageInsets());
+		setPadding(PanelChrome.PANEL_PADDING);
 		buildUI();
 		reloadCompanyList();
 		

@@ -46,8 +46,9 @@ public class JournalPanelFX extends BorderPane
 	 */
 	public JournalPanelFX()
 	{
-		setPadding(new Insets(10));
+		setPadding(PanelChrome.PANEL_PADDING);
 		buildTable();
+		setTop(PanelChrome.topSection("Journal"));
 		setCenter(this.table);
 		
 		buildToolBar(); // Creates and assigns to this.actionToolBar

@@ -52,10 +52,10 @@ public class DonationsPanelFX extends BorderPane
 	{
 		this.donationRecordRepository = donationRecordRepository;
 		this.donationPostingService = donationPostingService;
-		setPadding(new Insets(10));
+		setPadding(PanelChrome.PANEL_PADDING);
 		buildTable();
 		setCenter(this.table);
-		setTop(buildButtons());
+		setTop(PanelChrome.topSection("Donations", buildButtons()));
 		setBottom(this.status);
 		refresh();
 	}
@@ -135,7 +135,7 @@ public class DonationsPanelFX extends BorderPane
 		GridPane grid = new GridPane();
 		grid.setHgap(10);
 		grid.setVgap(8);
-		grid.setPadding(new Insets(10));
+		grid.setPadding(PanelChrome.PANEL_PADDING);
 		grid.addRow(0, new Label("Donation ID:"), idField);
 		grid.addRow(1, new Label("Date:"), datePicker);
 		grid.addRow(2, new Label("Donor External ID:"), donorField);

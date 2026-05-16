@@ -16,6 +16,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 
+import nonprofitbookkeeping.ui.UiSpacing;
 import nonprofitbookkeeping.model.SaleRecord;
 import nonprofitbookkeeping.service.SalesService;
 import nonprofitbookkeeping.util.FormatUtils;
@@ -62,8 +63,9 @@ public class SalesAndCOGPanelFX extends BorderPane
 			ex.printStackTrace();
 		}
 		
-		setPadding(new Insets(10));
+		setPadding(PanelChrome.PANEL_PADDING);
 		buildTable();
+		setTop(PanelChrome.topSection("Sales & COGS"));
 		setCenter(this.table);
 		setBottom(buildButtons());
 		
@@ -158,7 +160,7 @@ public class SalesAndCOGPanelFX extends BorderPane
 			
 		});
 		HBox box = new HBox(10, add, del, this.totalLbl);
-		box.setPadding(new Insets(8));
+		box.setPadding(new Insets(UiSpacing.SECTION_SPACING));
 		return box;
 		
 	}
@@ -210,7 +212,7 @@ public class SalesAndCOGPanelFX extends BorderPane
 		GridPane g = new GridPane();
 		g.setHgap(10);
 		g.setVgap(8);
-		g.setPadding(new Insets(10));
+		g.setPadding(PanelChrome.PANEL_PADDING);
 		g.addRow(0, new Label("Date:"), dateP);
 		g.addRow(1, new Label("Item:"), itemF);
 		g.addRow(2, new Label("Quantity:"), qtyF);

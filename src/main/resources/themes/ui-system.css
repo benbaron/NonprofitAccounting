@@ -1,20 +1,5 @@
-.root {
-    -npbk-surface-default: -fx-control-inner-background;
-    -npbk-surface-muted: derive(-fx-control-inner-background, -3%);
-    -npbk-border-default: derive(-fx-base, -18%);
-
-    -npbk-text-default: -fx-text-fill;
-    -npbk-text-muted: derive(-fx-text-fill, -25%);
-
-    -npbk-status-neutral-bg: #666666;
-    -npbk-status-success-bg: #2e7d32;
-    -npbk-status-warning-bg: #b26a00;
-    -npbk-status-error-bg: #cc3300;
-    -npbk-status-text: white;
-
-    -npbk-validation-error: #cc3300;
-    -npbk-account-missing-bg: rgba(204, 51, 0, 0.25);
-}
+/* Theme tokens are defined in light.css / dark.css so mode-specific
+   colors uniformly take precedence on the same elements. */
 
 .journal-entry-heading {
     -fx-font-size: 22;
@@ -98,6 +83,36 @@
 
 .validation-label {
     -fx-wrap-text: true;
+    -fx-font-weight: bold;
+}
+
+.button:hover {
+    -fx-background-color: -npbk-button-hover-bg;
+    -fx-border-color: -npbk-button-hover-border;
+}
+
+.button:pressed {
+    -fx-background-color: -npbk-button-pressed-bg;
+}
+
+.button:focused,
+.text-field:focused,
+.combo-box:focused,
+.date-picker:focused,
+.text-area:focused {
+    -fx-border-color: -fx-accent;
+}
+
+.validation-error,
+.error-indicator {
+    -fx-text-fill: -npbk-validation-error;
+    -fx-font-weight: bold;
+}
+
+.error-outline,
+.validation-error-field {
+    -fx-border-color: -npbk-validation-error;
+    -fx-border-width: 1.5;
 }
 
 .account-cell-missing {
@@ -117,8 +132,12 @@
     -fx-font-weight: bold;
 }
 
+.table-view .column-header-background {
+    -fx-background-color: -npbk-table-header-bg;
+}
+
 .table-view .table-row-cell:hover {
-    -fx-background-color: -npbk-surface-muted;
+    -fx-background-color: -npbk-table-row-hover-bg;
 }
 
 .table-view .table-row-cell:filled:selected,
