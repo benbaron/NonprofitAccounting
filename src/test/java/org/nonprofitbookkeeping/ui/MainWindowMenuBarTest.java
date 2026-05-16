@@ -20,6 +20,8 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CurrentCompany;
 
 class MainWindowMenuBarTest
 {
@@ -127,8 +129,62 @@ class MainWindowMenuBarTest
         }
     }
 
+    @Test
+    void scaMenuItemsEnableOnlyWhenCompanyIsOpen() throws Exception
+    {
+        CountDownLatch latch = new CountDownLatch(1);
+        Throwable[] error = new Throwable[1];
+
+        Platform.runLater(() -> {
+            try
+            {
+                CurrentCompany.forceCompanyLoad(null);
+                MainWindow window = new MainWindow(Stage::new);
+                MenuBar menuBar = (MenuBar) ((VBox) window.getTop()).getChildren().get(0);
+                Menu file = menuBar.getMenus().get(0);
+
+                MenuItem importOutlands = findItem(file, "Import Outlands Ledger...");
+                MenuItem importSca = findItem(file, "Import SCA Ledger...");
+                MenuItem saveWorkbook = findItem(file, "Save Modified SCA Workbook...");
+
+                assertTrue(importOutlands.isDisable());
+                assertTrue(importSca.isDisable());
+                assertTrue(saveWorkbook.isDisable());
+
+                CurrentCompany.forceCompanyLoad(new Company());
+
+                assertTrue(!importOutlands.isDisable());
+                assertTrue(!importSca.isDisable());
+                assertTrue(!saveWorkbook.isDisable());
+            }
+            catch (Throwable t)
+            {
+                error[0] = t;
+            }
+            finally
+            {
+                CurrentCompany.forceCompanyLoad(null);
+                latch.countDown();
+            }
+        });
+
+        assertTrue(latch.await(20, TimeUnit.SECONDS));
+        if (error[0] != null)
+        {
+            throw new AssertionError("MainWindow SCA menu enabled-state test failed", error[0]);
+        }
+    }
+
     private static boolean hasItem(Menu menu, String text)
     {
         return menu.getItems().stream().anyMatch(item -> text.equals(item.getText()));
+    }
+
+    private static MenuItem findItem(Menu menu, String text)
+    {
+        return menu.getItems().stream()
+            .filter(item -> text.equals(item.getText()))
+            .findFirst()
+            .orElseThrow(() -> new AssertionError("Missing menu item: " + text));
     }
 }
