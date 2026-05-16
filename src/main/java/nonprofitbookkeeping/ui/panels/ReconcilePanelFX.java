@@ -59,7 +59,7 @@ public class ReconcilePanelFX extends BorderPane
 		this.service = svc;
 		this.accountBox.getItems().addAll(ReconciliationService.listReconcilableAccounts());
 		this.accountBox.getSelectionModel().selectFirst();
-		setPadding(new Insets(10));
+		setPadding(PanelChrome.PANEL_PADDING);
 		buildTop();
 		buildTable();
 		setCenter(this.table);
@@ -85,7 +85,7 @@ public class ReconcilePanelFX extends BorderPane
 		g.addRow(1, new Label("Statement Date:"), this.statementDate);
 		g.addRow(2, new Label("Ending Balance:"), this.endingBalField);
 		this.accountBox.setOnAction(e -> loadTransactions());
-		setTop(g);
+		setTop(PanelChrome.topSection("Reconcile", g));
 	}
 	
 	/**

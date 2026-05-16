@@ -25,9 +25,9 @@ public class ProposedRecordPanel implements AppPanel
     public ProposedRecordPanel(String title, String description)
     {
         this.title = title;
-        root.setPadding(new Insets(8));
+        root.setPadding(new Insets(16));
         Label header = new Label(title);
-        header.getStyleClass().add("panel-title");
+        header.getStyleClass().add("journal-entry-heading");
         root.setTop(new VBox(6, header, new Separator()));
         root.setCenter(new Label(description));
     }

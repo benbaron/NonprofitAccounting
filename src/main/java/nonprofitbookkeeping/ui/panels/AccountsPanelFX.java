@@ -47,7 +47,7 @@ public class AccountsPanelFX extends BorderPane
 	public AccountsPanelFX(AccountService service)
 	{
 		// service param is kept for signature compatibility
-		setPadding(UiSpacing.pageInsets());
+		setPadding(PanelChrome.PANEL_PADDING);
 		buildTable();
 		setCenter(
 			new TitledPane("Chart of Accounts", this.table)

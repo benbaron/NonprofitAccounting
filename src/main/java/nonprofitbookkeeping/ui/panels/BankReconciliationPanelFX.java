@@ -42,8 +42,8 @@ public class BankReconciliationPanelFX extends BorderPane
 
 	public BankReconciliationPanelFX()
 	{
-		setPadding(new Insets(12));
-		setTop(buildHeader());
+		setPadding(PanelChrome.PANEL_PADDING);
+		setTop(PanelChrome.topSection("Bank Reconciliation", buildHeader()));
 		buildTable();
 		setCenter(this.table);
 		loadYear();

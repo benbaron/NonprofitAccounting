@@ -53,7 +53,7 @@ public class DonorsPanelFX extends BorderPane
 			ex.printStackTrace();
 		}
 		
-		setPadding(new Insets(10));
+		setPadding(PanelChrome.PANEL_PADDING);
 		buildTable();
 		setCenter(this.table);
 		setBottom(buttonBar());

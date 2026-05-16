@@ -40,9 +40,9 @@ public class BudgetVsActualPanel implements AppPanel
 	BudgetVsActualPanel(BudgetWorkspaceStore store)
 	{
 		this.store = store;
-		this.root.setPadding(new Insets(8));
+		this.root.setPadding(new Insets(16));
 		Label title = new Label("Budget vs Actual");
-		title.getStyleClass().add("panel-title");
+		title.getStyleClass().add("journal-entry-heading");
 
 		Button run = new Button("Run");
 		Button expandAll = new Button("Expand All");

@@ -52,9 +52,9 @@ public class DepreciationRunsPanel implements AppPanel
     {
         this.lifecycleService = lifecycleService;
         this.processingService = processingService;
-        root.setPadding(new Insets(8));
+        root.setPadding(new Insets(16));
         Label title = new Label("Depreciation Runs");
-        title.getStyleClass().add("panel-title");
+        title.getStyleClass().add("journal-entry-heading");
 
         notesArea.setPrefRowCount(2);
         notesArea.setWrapText(true);
