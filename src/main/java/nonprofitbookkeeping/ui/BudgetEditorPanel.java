@@ -38,9 +38,9 @@ public class BudgetEditorPanel implements AppPanel
 	BudgetEditorPanel(BudgetWorkspaceStore store)
 	{
 		this.store = store;
-		this.root.setPadding(new Insets(8));
+		this.root.setPadding(new Insets(16));
 		Label title = new Label("Budget Editor");
-		title.getStyleClass().add("panel-title");
+		title.getStyleClass().add("journal-entry-heading");
 
 		Button add = new Button("+ Add Budget Line");
 		Button delete = new Button("Delete Selected");

@@ -100,7 +100,7 @@ public class CreateOrEditCompanyPanelFX extends BorderPane
 		
 		this.callback = cb; // save the callback
 		
-		setPadding(new Insets(10));
+		setPadding(PanelChrome.PANEL_PADDING);
 		
 		// run the wizard
 		buildSteps(existing);
@@ -203,7 +203,7 @@ public class CreateOrEditCompanyPanelFX extends BorderPane
 		GridPane g = new GridPane();
 		g.setHgap(10);
 		g.setVgap(8);
-		g.setPadding(new Insets(10));
+		g.setPadding(PanelChrome.PANEL_PADDING);
 		
 		ColumnConstraints c1 = new ColumnConstraints();
 		c1.setPercentWidth(30);
@@ -241,7 +241,7 @@ public class CreateOrEditCompanyPanelFX extends BorderPane
 	private HBox buildButtons()
 	{
 		HBox box = new HBox(10, this.back, this.next, this.finish);
-		box.setPadding(new Insets(10));
+		box.setPadding(PanelChrome.PANEL_PADDING);
 		
 		this.back.setOnAction(e -> {
 			this.step--;

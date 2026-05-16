@@ -43,7 +43,7 @@ public class BankStatementRecordsPanel implements AppPanel
         this.service = service;
 
         Label title = new Label("Bank Statement Records");
-        title.getStyleClass().add("panel-title");
+        title.getStyleClass().add("journal-entry-heading");
         Button add = new Button("+ Add Import Row");
         Button refresh = new Button("Refresh");
         Button delete = new Button("Delete Selected");

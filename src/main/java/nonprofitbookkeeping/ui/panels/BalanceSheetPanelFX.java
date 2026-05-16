@@ -63,7 +63,7 @@ public class BalanceSheetPanelFX extends BorderPane
 	/** Constructs the panel and loads the current company data. */
 	public BalanceSheetPanelFX()
 	{
-		setPadding(UiSpacing.pageInsets());
+		setPadding(PanelChrome.PANEL_PADDING);
 
 		this.table.setItems(this.rows);
 		this.table
@@ -76,7 +76,7 @@ public class BalanceSheetPanelFX extends BorderPane
 		HBox actions = new HBox(UiSpacing.SECTION_SPACING, this.refreshButton, this.printButton,
 			this.exportMenu);
 		actions.setPadding(UiSpacing.actionBarTopMargin());
-		setTop(actions);
+		setTop(PanelChrome.topSection("Balance Sheet", actions));
 
 		this.refreshButton.setOnAction(e -> refresh());
 		this.printButton.setTooltip(new Tooltip("Print this table."));
