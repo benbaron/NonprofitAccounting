@@ -91,7 +91,7 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 	 */
 	public AccountTransactionDetailsPanelFX()
 	{
-		setPadding(UiSpacing.pageInsets());
+		setPadding(PanelChrome.PANEL_PADDING);
 		
 		// TOP: Controls
 		GridPane controlsGrid = new GridPane();

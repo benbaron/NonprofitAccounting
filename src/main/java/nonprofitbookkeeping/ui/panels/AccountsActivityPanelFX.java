@@ -89,7 +89,7 @@ public class AccountsActivityPanelFX extends BorderPane
 	{
 		this.transactions = ledger != null && ledger.getTransactions() != null ?
 			ledger.getTransactions() : FXCollections.emptyObservableList();
-		setPadding(UiSpacing.pageInsets());
+		setPadding(PanelChrome.PANEL_PADDING);
 		
 		HBox selectorPane = selectorPane(); // Builds and returns the HBox for account selector
 		HBox filterPane = filterPane(); // Builds and returns the HBox for filters (includes

@@ -57,7 +57,7 @@ public class FundsPanelFX extends BorderPane
 			ex.printStackTrace();
 		}
 		
-		setPadding(UiSpacing.pageInsets());
+		setPadding(PanelChrome.PANEL_PADDING);
 		buildTransferPane();
 		
 		buildTable();

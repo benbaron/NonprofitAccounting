@@ -1,4 +1,5 @@
 .root {
+    /* Keep token set in parity with dark.css for uniform selector behavior. */
     -fx-base: #ffffff;
     -fx-background: #ffffff;
     -fx-control-inner-background: #ffffff;
@@ -21,4 +22,9 @@
     -npbk-account-missing-bg: rgba(204, 51, 0, 0.25);
     -npbk-pending-row-bg: rgba(166, 219, 255, 0.35);
     -npbk-pending-row-text: #000000;
+    -npbk-button-hover-bg: #f2f6fb;
+    -npbk-button-pressed-bg: #e7eef6;
+    -npbk-button-hover-border: #b8c2cc;
+    -npbk-table-header-bg: #f7f9fb;
+    -npbk-table-row-hover-bg: #f3f7fb;
 }
