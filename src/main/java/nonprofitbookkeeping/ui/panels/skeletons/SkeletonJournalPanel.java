@@ -263,7 +263,9 @@ public class SkeletonJournalPanel extends BorderPane
 			.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 		this.filterScrollPane
 			.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-		this.setTop(this.filterScrollPane);
+		Label panelTitle = new Label("Journal");
+		panelTitle.getStyleClass().add("journal-entry-heading");
+		this.setTop(new VBox(5, panelTitle, this.filterScrollPane));
 		
 		// Workspace and action controls
 		this.createTransactionButton = new Button("Create Transaction");

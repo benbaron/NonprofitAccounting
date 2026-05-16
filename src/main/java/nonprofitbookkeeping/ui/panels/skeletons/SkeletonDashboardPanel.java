@@ -98,7 +98,9 @@ public class SkeletonDashboardPanel extends BorderPane
 		keyFiguresScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 		keyFiguresScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 		
-		VBox topBox = new VBox(5, this.companyNameLabel, keyFiguresScrollPane);
+		Label panelTitle = new Label("Dashboard");
+		panelTitle.getStyleClass().add("journal-entry-heading");
+		VBox topBox = new VBox(5, panelTitle, this.companyNameLabel, keyFiguresScrollPane);
 		this.setTop(topBox);
 		
 		this.recentTransactionsTable
