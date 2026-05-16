@@ -8,6 +8,7 @@ import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.service.DocumentStorageService;
 import nonprofitbookkeeping.service.DonorService;
 import nonprofitbookkeeping.service.FundAccountingService;
@@ -75,6 +76,9 @@ public class MainWindow extends BorderPane
     private final SettingsService settingsService = new SettingsService();
     private final SCALedgerPlugin scaLedgerPlugin = new SCALedgerPlugin();
     private final Supplier<Stage> stageSupplier;
+    private MenuItem importOutlandsLedgerItem;
+    private MenuItem importScaLedgerItem;
+    private MenuItem saveModifiedScaWorkbookItem;
     private DateRangeSelector dateRangeSelector;
 
     public MainWindow()
@@ -111,6 +115,9 @@ public class MainWindow extends BorderPane
     private MenuBar buildMenuBar()
     {
         Menu file = new Menu("File");
+        this.importOutlandsLedgerItem = item("Import Outlands Ledger...", null, this::importOutlandsLedger);
+        this.importScaLedgerItem = item("Import SCA Ledger...", null, this::importScaLedger);
+        this.saveModifiedScaWorkbookItem = item("Save Modified SCA Workbook...", null, this::saveModifiedScaWorkbook);
         file.getItems().addAll(
             item("Open Company", "Ctrl+O", this::openCompany),
             item("Close Company", "Ctrl+W", this::closeCompany),
@@ -123,10 +130,10 @@ public class MainWindow extends BorderPane
             new SeparatorMenuItem(),
             item("Import Financial File (OFX/QFX)...", null,
                 () -> new ImportFileActionFX(getOwningStage()).handle(null)),
-            item("Import Outlands Ledger...", null, this::importOutlandsLedger),
-            item("Import SCA Ledger...", null, this::importScaLedger),
+            this.importOutlandsLedgerItem,
+            this.importScaLedgerItem,
             new SeparatorMenuItem(),
-            item("Save Modified SCA Workbook...", null, this::saveModifiedScaWorkbook),
+            this.saveModifiedScaWorkbookItem,
             item("Export Account Statement (OFX/QFX)...", null,
                 () -> new ExportFileActionFX(getOwningStage()).handle(null)),
             new SeparatorMenuItem(),
@@ -214,7 +221,21 @@ public class MainWindow extends BorderPane
             item("Help", null, () -> showLegacyPanel("Help", new HelpPanelFX(getOwningStage())))
         );
 
+        installCompanyStateMenuUpdates();
         return new MenuBar(file, edit, run, database, reports, fundraising, settings, plugins, help);
+    }
+
+    private void installCompanyStateMenuUpdates()
+    {
+        updateCompanyScopedMenuItems(CurrentCompany.isOpen());
+        CurrentCompany.CompanyListener.addCompanyListener(this::updateCompanyScopedMenuItems);
+    }
+
+    private void updateCompanyScopedMenuItems(boolean companyOpen)
+    {
+        this.importOutlandsLedgerItem.setDisable(!companyOpen);
+        this.importScaLedgerItem.setDisable(!companyOpen);
+        this.saveModifiedScaWorkbookItem.setDisable(!companyOpen);
     }
 
     private ToolBar buildToolBar()
