@@ -60,8 +60,9 @@ public class InventoryPanelFX extends BorderPane
 			ex.printStackTrace();
 		}
 		
-		setPadding(UiSpacing.pageInsets());
+		setPadding(PanelChrome.PANEL_PADDING);
 		buildTable();
+		setTop(PanelChrome.topSection("Inventory"));
 		setCenter(this.table);
 		setBottom(buildButtons());
 		refresh();

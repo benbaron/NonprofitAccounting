@@ -60,7 +60,8 @@ public class GrantsPanelFX extends BorderPane
 		this.grantsService = service != null ? service : new GrantsService();
 		this.traceabilityService = new GrantTraceabilityService();
 		
-		setPadding(new Insets(10));
+		setPadding(PanelChrome.PANEL_PADDING);
+		setTop(PanelChrome.topSection("Grants"));
 		buildTable();
 		this.table.setPlaceholder(new Label("No grants recorded."));
 		setCenter(new TitledPane("Grant List", this.table)

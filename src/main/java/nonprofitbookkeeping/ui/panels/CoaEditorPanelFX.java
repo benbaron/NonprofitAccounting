@@ -11,6 +11,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import nonprofitbookkeeping.ui.UiSpacing;
 import nonprofitbookkeeping.util.FormatUtils;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -164,11 +165,12 @@ public class CoaEditorPanelFX extends BorderPane
 		this.onSave = onSave;
 		this.onClose = onClose;
 		
-		setPadding(new Insets(10));
+		setPadding(PanelChrome.PANEL_PADDING);
 		
 		// build the tree
 		buildTree();
 		
+		setTop(PanelChrome.topSection("Chart of Accounts"));
 		setCenter(this.tree);
 		
 		this.actionButtonsBox = buildButtonsInternal();
@@ -264,7 +266,7 @@ public class CoaEditorPanelFX extends BorderPane
 		HBox hbox = new HBox(8, this.addRootBtn, this.addSubBtn, this.editBtn,
 			this.deleteBtn,
 			this.importBtn, this.exportBtn, this.saveBtn, this.cancelBtn);
-		hbox.setPadding(new Insets(6));
+		hbox.setPadding(new Insets(UiSpacing.SECTION_SPACING));
 		this.tree.getSelectionModel().selectedItemProperty()
 			.addListener((obs, o, n) -> updateButtonsForSelection());
 		updateButtonsForSelection();

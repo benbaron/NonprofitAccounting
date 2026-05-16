@@ -142,7 +142,9 @@ public class SkeletonReportsPanel extends BorderPane
 			.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 		this.controlsScrollPane
 			.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-		this.setTop(this.controlsScrollPane);
+		Label panelTitle = new Label("Reports");
+		panelTitle.getStyleClass().add("journal-entry-heading");
+		this.setTop(new javafx.scene.layout.VBox(5, panelTitle, this.controlsScrollPane));
 		
 		this.setCenter(this.generatedReportsTable);
 		BorderPane.setMargin(this.generatedReportsTable,

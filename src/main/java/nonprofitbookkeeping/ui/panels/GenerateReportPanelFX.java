@@ -55,7 +55,7 @@ public class GenerateReportPanelFX extends BorderPane
 		this.reportService =
 			Objects.requireNonNull(reportService, "reportService");
 		this.templates = new LinkedHashMap<>(ReportTemplates.templates());
-		setPadding(UiSpacing.pageInsets());
+		setPadding(PanelChrome.PANEL_PADDING);
 		
 		this.templateList = new ListView<>(
 			FXCollections.observableArrayList(this.templates.keySet()));

@@ -82,7 +82,7 @@ public class LedgerReconcilePanelFX extends BorderPane
 	 */
 	public LedgerReconcilePanelFX(ReconciliationService svc)
 	{
-		setPadding(UiSpacing.pageInsets());
+		setPadding(PanelChrome.PANEL_PADDING);
 		buildTop();
 		buildTable();
 		setCenter(this.table);

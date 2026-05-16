@@ -13,6 +13,7 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import nonprofitbookkeeping.ui.UiSpacing;
 import nonprofitbookkeeping.util.FormatUtils;
 import javafx.scene.layout.HBox;
 import nonprofitbookkeeping.model.AccountingTransaction;
@@ -59,7 +60,7 @@ public class ReconcilePanelFX extends BorderPane
 		this.service = svc;
 		this.accountBox.getItems().addAll(ReconciliationService.listReconcilableAccounts());
 		this.accountBox.getSelectionModel().selectFirst();
-		setPadding(new Insets(10));
+		setPadding(PanelChrome.PANEL_PADDING);
 		buildTop();
 		buildTable();
 		setCenter(this.table);
@@ -80,12 +81,12 @@ public class ReconcilePanelFX extends BorderPane
 		GridPane g = new GridPane();
 		g.setHgap(10);
 		g.setVgap(8);
-		g.setPadding(new Insets(8));
+		g.setPadding(new Insets(UiSpacing.SECTION_SPACING));
 		g.addRow(0, new Label("Account:"), this.accountBox);
 		g.addRow(1, new Label("Statement Date:"), this.statementDate);
 		g.addRow(2, new Label("Ending Balance:"), this.endingBalField);
 		this.accountBox.setOnAction(e -> loadTransactions());
-		setTop(g);
+		setTop(PanelChrome.topSection("Reconcile", g));
 	}
 	
 	/**
@@ -140,7 +141,7 @@ public class ReconcilePanelFX extends BorderPane
 		Button save = new Button("Save Reconciliation");
 		save.setOnAction(e -> save());
 		HBox box = new HBox(20, this.diffLabel, save);
-		box.setPadding(new Insets(8));
+		box.setPadding(new Insets(UiSpacing.SECTION_SPACING));
 		return box;
 	}
 	
