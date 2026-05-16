@@ -110,7 +110,7 @@ public class GenericRecordEditorPanel implements AppPanel
 
         root.setPadding(UiSpacing.pageInsets());
         Label title = new Label(panelTitle);
-        title.getStyleClass().add("panel-title");
+        title.getStyleClass().add("journal-entry-heading");
 
         Button add = new Button("+ Add Row");
         Button delete = new Button("Delete Selected");

@@ -98,7 +98,7 @@ public class PanelHost extends BorderPane
                 DashboardPanelFX::reloadData,
                 DashboardPanelFX::reloadData);
 
-            case LEDGER_REGISTER -> new FxAppPanelAdapter<>("Journal", JournalPanelFX::new,
+            case LEDGER_REGISTER -> new FxAppPanelAdapter<>("Ledger Register", JournalPanelFX::new,
                 JournalPanelFX::refreshData,
                 JournalPanelFX::refreshData);
 

@@ -51,13 +51,13 @@ public class ReportsPanelFX extends BorderPane
 	public ReportsPanelFX()
 	{
 		this.reportService = new ReportService();
-		setPadding(UiSpacing.pageInsets());
+		setPadding(PanelChrome.PANEL_PADDING);
 		buildTable();
 		setCenter(this.table);
 		
 		this.generatorToolBar = buildGeneratorBarInternal(); // Call internal
 																// method
-		setTop(this.generatorToolBar);
+		setTop(PanelChrome.topSection("Reports", this.generatorToolBar));
 		
 		this.companyListener = new ReportsPanelCompanyListener(this);
 		CurrentCompany.CompanyListener.addCompanyListener(this.companyListener);

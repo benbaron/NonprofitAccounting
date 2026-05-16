@@ -69,7 +69,7 @@ public class DashboardPanelFX extends BorderPane
 	 */
 	public DashboardPanelFX()
 	{
-		setPadding(UiSpacing.pageInsets());
+		setPadding(PanelChrome.PANEL_PADDING);
 		
 		buildTopBanner();
 		buildTopFilters();
@@ -135,7 +135,7 @@ public class DashboardPanelFX extends BorderPane
 		setMargin(topControls, UiSpacing.actionBarTopMargin());
 		
 		Node currentTop = getTop(); // This will be the banner
-		VBox newTopStructure = new VBox(currentTop, topControls);
+		VBox newTopStructure = PanelChrome.topSection("Dashboard", currentTop, topControls);
 		setTop(newTopStructure);
 	}
 	

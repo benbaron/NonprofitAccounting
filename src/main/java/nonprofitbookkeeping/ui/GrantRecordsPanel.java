@@ -40,7 +40,7 @@ public class GrantRecordsPanel implements AppPanel
     {
         this.service = service;
         Label title = new Label("Grant Records");
-        title.getStyleClass().add("panel-title");
+        title.getStyleClass().add("journal-entry-heading");
 
         Button add = new Button("+ Add Grant");
         Button refresh = new Button("Refresh");
