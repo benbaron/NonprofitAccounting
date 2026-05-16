@@ -31,7 +31,7 @@ public class DatePanelFX extends BorderPane
 	 */
 	public DatePanelFX()
 	{
-		setPadding(new Insets(4));
+		setPadding(PanelChrome.PANEL_PADDING);
 		setCenter(this.picker);
 		this.picker.valueProperty().addListener((obs, o, n) -> this.value.set(n));
 	}

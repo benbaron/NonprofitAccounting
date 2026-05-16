@@ -176,7 +176,7 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		controlsScrollPane.setFitToWidth(true);
 		controlsScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 		controlsScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-		setTop(controlsScrollPane);
+		setTop(PanelChrome.topSection("Account Transaction Details", controlsScrollPane));
 		
 		this.transactionDataList = FXCollections.observableArrayList();
 		this.transactionsTable = new TableView<>(this.transactionDataList);

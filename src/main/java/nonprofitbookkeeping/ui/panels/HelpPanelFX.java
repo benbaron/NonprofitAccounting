@@ -35,8 +35,8 @@ public class HelpPanelFX extends BorderPane
 	 */
 	public HelpPanelFX(Stage primaryStage)
 	{
-		setPadding(new Insets(10));
-		setTop(new Label("Help & Documentation"));
+		setPadding(PanelChrome.PANEL_PADDING);
+		setTop(PanelChrome.topSection("Help & Documentation"));
 		setCenter(loadHelpContent());
 	}
 	

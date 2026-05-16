@@ -25,7 +25,7 @@ public class UndepositedFundsPanelFX extends BorderPane
     public UndepositedFundsPanelFX(UndepositedFundsService service)
     {
         this.service = service;
-        setPadding(new Insets(10));
+        setPadding(PanelChrome.PANEL_PADDING);
         buildTable();
         setCenter(this.table);
         setBottom(buttonBar());
@@ -166,7 +166,7 @@ public class UndepositedFundsPanelFX extends BorderPane
         GridPane grid = new GridPane();
         grid.setHgap(8);
         grid.setVgap(8);
-        grid.setPadding(new Insets(10));
+        grid.setPadding(PanelChrome.PANEL_PADDING);
 
         int row = 0;
         grid.addRow(row++, new Label("Date Sent/Received:"), dateSentField);
