@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Locale;
 
+import nonprofitbookkeeping.ui.UiSpacing;
 import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.CurrentCompany;
@@ -162,13 +163,14 @@ public class SettingsPanelFX extends BorderPane
 			
 		}
 		
-		setPadding(new Insets(10));
+		setPadding(PanelChrome.PANEL_PADDING);
 		TabPane tabs = new TabPane();
 		
 		tabs.getTabs().addAll(companyInfoTab(),
 			applicationTab(),
 			uiPrefsTab());
 		
+		setTop(PanelChrome.topSection("Settings"));
 		setCenter(tabs);
 		
 		Button saveBtn = new Button("Save Settings");
@@ -221,7 +223,7 @@ public class SettingsPanelFX extends BorderPane
 			
 		});
 		setBottom(saveBtn);
-		BorderPane.setMargin(saveBtn, new Insets(10));
+		BorderPane.setMargin(saveBtn, new Insets(UiSpacing.SECTION_SPACING));
 		
 	}
 	
@@ -550,7 +552,7 @@ public class SettingsPanelFX extends BorderPane
 		restoreBtn.setOnAction(e -> restoreDatabaseBackup());
 		
 		box.getChildren().addAll(backupBtn, restoreBtn);
-		box.setPadding(new Insets(10));
+		box.setPadding(PanelChrome.PANEL_PADDING);
 		
 		TitledPane wrapper = titled("Backup & Restore", box);
 		return new Tab("Backup", wrapper);
@@ -782,7 +784,7 @@ public class SettingsPanelFX extends BorderPane
 		GridPane g = new GridPane();
 		g.setHgap(10);
 		g.setVgap(10);
-		g.setPadding(new Insets(10));
+		g.setPadding(PanelChrome.PANEL_PADDING);
 		ColumnConstraints cc = new ColumnConstraints();
 		cc.setPercentWidth(50);
 		g.getColumnConstraints().addAll(cc, cc);

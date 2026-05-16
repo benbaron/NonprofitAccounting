@@ -9,6 +9,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.util.Callback;
+import nonprofitbookkeeping.ui.UiSpacing;
 import nonprofitbookkeeping.model.UndepositedFundsItem;
 import nonprofitbookkeeping.service.UndepositedFundsService;
 
@@ -27,6 +28,7 @@ public class UndepositedFundsPanelFX extends BorderPane
         this.service = service;
         setPadding(PanelChrome.PANEL_PADDING);
         buildTable();
+        setTop(PanelChrome.topSection("Undeposited Funds"));
         setCenter(this.table);
         setBottom(buttonBar());
         refresh();
@@ -125,7 +127,7 @@ public class UndepositedFundsPanelFX extends BorderPane
         });
 
         HBox box = new HBox(10, add, edit, del);
-        box.setPadding(new Insets(8));
+        box.setPadding(new Insets(UiSpacing.SECTION_SPACING));
         return box;
     }
 

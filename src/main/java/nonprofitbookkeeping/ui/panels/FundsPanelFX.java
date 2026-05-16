@@ -58,6 +58,7 @@ public class FundsPanelFX extends BorderPane
 		}
 		
 		setPadding(PanelChrome.PANEL_PADDING);
+		setTop(PanelChrome.topSection("Funds and Fund Accounting"));
 		buildTransferPane();
 		
 		buildTable();
