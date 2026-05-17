@@ -289,7 +289,19 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         try
         {
             nonprofitbookkeeping.model.sclx.Organization row =
-                MAPPER.convertValue(organization, nonprofitbookkeeping.model.sclx.Organization.class);
+                new nonprofitbookkeeping.model.sclx.Organization();
+            row.setOrganizationId(organization.organizationId());
+            row.setName(organization.name());
+            row.setParentOrganization(organization.parentOrganization());
+            row.setBaseCurrency(organization.baseCurrency());
+            row.setFiscalYearStart(organization.fiscalYearStart() == null ? null : organization.fiscalYearStart().toString());
+            row.setFiscalYearEnd(organization.fiscalYearEnd() == null ? null : organization.fiscalYearEnd().toString());
+            if (organization.extensions() != null)
+            {
+                row.setExtensions(MAPPER.convertValue(
+                    organization.extensions(),
+                    nonprofitbookkeeping.model.sclx.Extensions.class));
+            }
             this.sclxOrganizationRepository.save(runScopedId("organization"), row);
             incrementRawStagingCount("organization");
         }
