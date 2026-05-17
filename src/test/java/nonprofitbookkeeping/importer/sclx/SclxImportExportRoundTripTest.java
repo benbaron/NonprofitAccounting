@@ -63,6 +63,35 @@ class SclxImportExportRoundTripTest
         assertEquals(rawJson, exported);
     }
 
+    @Test
+    void fullCycleRoundTripWithOrganizationFiscalYearDatesPreservesExactRawSource() throws Exception
+    {
+        String runId = "run-roundtrip-org-fiscal-dates";
+        String rawJson = """
+            {
+              "format":"SCLX",
+              "version":"1.3",
+              "organization":{
+                "organizationId":"org-1",
+                "name":"Example Org",
+                "baseCurrency":"USD",
+                "fiscalYearStart":"2025-01-01",
+                "fiscalYearEnd":"2025-12-31"
+              }
+            }
+            """;
+        Path sourceFile = writeSclx(rawJson);
+
+        new SclxImportService().importFile(
+            sourceFile,
+            new NonprofitBookkeepingSclxImportTarget(),
+            options(runId));
+
+        String exported = new NonprofitBookkeepingSclxExportService().exportJson(runId);
+
+        assertEquals(rawJson, exported);
+    }
+
     private Path writeSclx(String rawJson) throws Exception
     {
         Path file = tempDir.resolve("source.sclx.json");

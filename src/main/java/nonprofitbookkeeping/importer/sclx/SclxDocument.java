@@ -9,6 +9,8 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import nonprofitbookkeeping.importer.sclx.jackson.FlexibleLocalDateDeserializer;
 
 /**
  * Root DTO and nested DTO types for SCLX import.
@@ -61,7 +63,9 @@ public record SclxDocument(
         String name,
         String parentOrganization,
         String baseCurrency,
+        @JsonDeserialize(using = FlexibleLocalDateDeserializer.class)
         LocalDate fiscalYearStart,
+        @JsonDeserialize(using = FlexibleLocalDateDeserializer.class)
         LocalDate fiscalYearEnd,
         Map<String, Object> extensions)
     {
