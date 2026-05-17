@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.StringJoiner;
 
 /**
  * Simple JavaFX panel for importing an SCLX file into the current company.
@@ -168,16 +169,18 @@ public class SclxImportPanelFX extends VBox
                 }
                 catch (Exception retryEx)
                 {
+                    String retryFailure = formatImportFailure(retryEx);
                     this.outputArea.appendText(
                         "Import failed after retry: " +
-                            retryEx.getMessage() + "\n");
-                    showError("SCLX Import Failed", retryEx.getMessage());
+                            retryFailure + "\n");
+                    showError("SCLX Import Failed", retryFailure);
                     return;
                 }
             }
 
-            this.outputArea.appendText("Import failed: " + ex.getMessage() + "\n");
-            showError("SCLX Import Failed", ex.getMessage());
+            String failure = formatImportFailure(ex);
+            this.outputArea.appendText("Import failed: " + failure + "\n");
+            showError("SCLX Import Failed", failure);
         }
     }
 
@@ -324,6 +327,29 @@ public class SclxImportPanelFX extends VBox
     {
         return ex.getMessage() != null &&
             ex.getMessage().contains("cashAccountReference is required to import single-sided or unbalanced SCLX transactions");
+    }
+
+    private String formatImportFailure(Throwable throwable)
+    {
+        if (throwable == null)
+        {
+            return "Unknown import error.";
+        }
+
+        StringJoiner joiner = new StringJoiner(" -> ");
+        Throwable current = throwable;
+        int depth = 0;
+        while (current != null && depth < 8)
+        {
+            String message = current.getMessage();
+            String detail = message == null || message.isBlank()
+                ? current.getClass().getSimpleName()
+                : message.trim();
+            joiner.add(detail);
+            current = current.getCause();
+            depth++;
+        }
+        return joiner.toString();
     }
 
     private void refreshOpenCompanyFromPersistentData()
