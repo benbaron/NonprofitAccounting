@@ -44,12 +44,47 @@ class SclxImportServiceTest
         }
     }
 
+    @Test
+    void importFileAcceptsOrganizationFiscalYearArrayDates() throws IOException
+    {
+        Path tempFile = Files.createTempFile("sclx-import-service-array-date-test", ".json");
+        String rawJson = """
+            {
+              "format":"SCLX",
+              "version":"1.3",
+              "organization":{
+                "organizationId":"org-1",
+                "name":"Org",
+                "baseCurrency":"USD",
+                "fiscalYearStart":[2025,1,1],
+                "fiscalYearEnd":[2025,12,31]
+              }
+            }
+            """;
+        Files.writeString(tempFile, rawJson);
+
+        try
+        {
+            RecordingTarget target = new RecordingTarget();
+            SclxImportResult result = new SclxImportService().importFile(tempFile, target, SclxImportOptions.defaults());
+
+            assertEquals("1.3", result.version());
+            assertEquals(java.time.LocalDate.of(2025, 1, 1), target.organization.fiscalYearStart());
+            assertEquals(java.time.LocalDate.of(2025, 12, 31), target.organization.fiscalYearEnd());
+        }
+        finally
+        {
+            Files.deleteIfExists(tempFile);
+        }
+    }
+
     private static final class RecordingTarget implements SclxImportTarget
     {
         private boolean beginImportCalled;
         private boolean rawPersistedBeforeBeginImport;
         private String rawSourceJson;
         private String rawRunId;
+        private SclxDocument.Organization organization;
 
         @Override
         public void persistRawSource(String rawSourceJson, SclxImportOptions options)
@@ -66,7 +101,7 @@ class SclxImportServiceTest
         }
 
         @Override public void importCompatibility(SclxDocument.Compatibility compatibility) {}
-        @Override public void importOrganization(SclxDocument.Organization organization) {}
+        @Override public void importOrganization(SclxDocument.Organization organization) { this.organization = organization; }
         @Override public void importReportingPeriod(SclxDocument.ReportingPeriod reportingPeriod) {}
         @Override public void importAccounts(List<SclxDocument.Account> accounts) {}
         @Override public void importFunds(List<SclxDocument.Fund> funds) {}
