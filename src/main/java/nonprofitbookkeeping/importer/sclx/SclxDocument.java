@@ -73,7 +73,9 @@ public record SclxDocument(
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record ReportingPeriod(
+        @JsonDeserialize(using = FlexibleLocalDateDeserializer.class)
         LocalDate startDate,
+        @JsonDeserialize(using = FlexibleLocalDateDeserializer.class)
         LocalDate endDate,
         String label,
         Integer fiscalYear,
@@ -212,7 +214,9 @@ public record SclxDocument(
     public record Event(
         String eventId,
         String name,
+        @JsonDeserialize(using = FlexibleLocalDateDeserializer.class)
         LocalDate startDate,
+        @JsonDeserialize(using = FlexibleLocalDateDeserializer.class)
         LocalDate endDate,
         String hostingOrganizationId,
         Map<String, Object> extensions)
@@ -224,6 +228,7 @@ public record SclxDocument(
         String documentId,
         String documentType,
         String referenceNumber,
+        @JsonDeserialize(using = FlexibleLocalDateDeserializer.class)
         LocalDate documentDate,
         String fileName,
         String notes,
@@ -234,7 +239,9 @@ public record SclxDocument(
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record Transaction(
         String transactionId,
+        @JsonDeserialize(using = FlexibleLocalDateDeserializer.class)
         LocalDate transactionDate,
+        @JsonDeserialize(using = FlexibleLocalDateDeserializer.class)
         LocalDate postingDate,
         String description,
         String reference,
