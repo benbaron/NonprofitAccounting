@@ -92,6 +92,35 @@ class SclxImportExportRoundTripTest
         assertEquals(rawJson, exported);
     }
 
+    @Test
+    void fullCycleRoundTripWithReportingPeriodArrayDatesPreservesExactRawSource() throws Exception
+    {
+        String runId = "run-roundtrip-reporting-period-array-dates";
+        String rawJson = """
+            {
+              "format":"SCLX",
+              "version":"1.3",
+              "reportingPeriod":{
+                "startDate":[2026,1,1],
+                "endDate":[2026,6,30],
+                "label":"Q2 Report",
+                "fiscalYear":2026,
+                "periodType":"QUARTER"
+              }
+            }
+            """;
+        Path sourceFile = writeSclx(rawJson);
+
+        new SclxImportService().importFile(
+            sourceFile,
+            new NonprofitBookkeepingSclxImportTarget(),
+            options(runId));
+
+        String exported = new NonprofitBookkeepingSclxExportService().exportJson(runId);
+
+        assertEquals(rawJson, exported);
+    }
+
     private Path writeSclx(String rawJson) throws Exception
     {
         Path file = tempDir.resolve("source.sclx.json");

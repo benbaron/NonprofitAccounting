@@ -317,14 +317,42 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         try
         {
             nonprofitbookkeeping.model.sclx.ReportingPeriod row =
-                MAPPER.convertValue(reportingPeriod, nonprofitbookkeeping.model.sclx.ReportingPeriod.class);
+                new nonprofitbookkeeping.model.sclx.ReportingPeriod();
+            row.setStartDate(reportingPeriod.startDate() == null ? null : reportingPeriod.startDate().toString());
+            row.setEndDate(reportingPeriod.endDate() == null ? null : reportingPeriod.endDate().toString());
+            row.setLabel(reportingPeriod.label());
+            row.setFiscalYear(reportingPeriod.fiscalYear());
+            row.setPeriodType(parseReportingPeriodType(reportingPeriod.periodType()));
+            if (reportingPeriod.extensions() != null)
+            {
+                row.setExtensions(MAPPER.convertValue(
+                    reportingPeriod.extensions(),
+                    nonprofitbookkeeping.model.sclx.Extensions.class));
+            }
             this.sclxReportingPeriodRepository.save(runScopedId("reportingPeriod"), row);
             incrementRawStagingCount("reportingPeriod");
         }
         catch (IllegalArgumentException | SQLException ex)
         {
-            throw new IllegalStateException("Failed to persist SCLX reporting period", ex);
+            throw new IllegalStateException(
+                "Failed to persist SCLX reporting period (startDate="
+                    + reportingPeriod.startDate()
+                    + ", endDate="
+                    + reportingPeriod.endDate()
+                    + ", periodType="
+                    + reportingPeriod.periodType()
+                    + ")",
+                ex);
         }
+    }
+
+    private nonprofitbookkeeping.model.sclx.ReportingPeriod.PeriodType parseReportingPeriodType(String periodType)
+    {
+        if (periodType == null || periodType.isBlank())
+        {
+            return null;
+        }
+        return nonprofitbookkeeping.model.sclx.ReportingPeriod.PeriodType.fromValue(periodType);
     }
 
     @Override
