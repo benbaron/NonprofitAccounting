@@ -385,6 +385,7 @@ public record SclxDocument(
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record Asset(
         String assetId,
+        @JsonDeserialize(using = FlexibleLocalDateDeserializer.class)
         LocalDate dateAcquired,
         String description,
         Integer itemCount,
@@ -452,6 +453,7 @@ public record SclxDocument(
     public record Supply(
         String supplyId,
         String itemNumber,
+        @JsonDeserialize(using = FlexibleLocalDateDeserializer.class)
         LocalDate dateAcquired,
         String description,
         Integer count,
