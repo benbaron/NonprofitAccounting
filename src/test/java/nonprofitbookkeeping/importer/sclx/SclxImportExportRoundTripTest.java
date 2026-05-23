@@ -92,6 +92,144 @@ class SclxImportExportRoundTripTest
         assertEquals(rawJson, exported);
     }
 
+    @Test
+    void fullCycleRoundTripWithReportingPeriodArrayDatesPreservesExactRawSource() throws Exception
+    {
+        String runId = "run-roundtrip-reporting-period-array-dates";
+        String rawJson = """
+            {
+              "format":"SCLX",
+              "version":"1.3",
+              "reportingPeriod":{
+                "startDate":[2026,1,1],
+                "endDate":[2026,6,30],
+                "label":"Q2 Report",
+                "fiscalYear":2026,
+                "periodType":"QUARTER"
+              }
+            }
+            """;
+        Path sourceFile = writeSclx(rawJson);
+
+        new SclxImportService().importFile(
+            sourceFile,
+            new NonprofitBookkeepingSclxImportTarget(),
+            options(runId));
+
+        String exported = new NonprofitBookkeepingSclxExportService().exportJson(runId);
+
+        assertEquals(rawJson, exported);
+    }
+
+    @Test
+    void fullCycleRoundTripWithOutstandingItemArrayDatesPreservesExactRawSource() throws Exception
+    {
+        String runId = "run-roundtrip-outstanding-item-array-dates";
+        String rawJson = """
+            {
+              "format":"SCLX",
+              "version":"1.3",
+              "outstandingItems":[
+                {
+                  "outstandingItemId":"outstanding-row-14",
+                  "kind":"CHECK",
+                  "ledgerLink":{"transactionId":"txn-1","lineId":"line-1"},
+                  "dateSentOrReceived":[2026,5,22],
+                  "incomingCheckOrTransferDate":[2026,5,23],
+                  "dateShowsOnStatement":[2026,5,24],
+                  "amount":"25.00",
+                  "dateReversed":[2026,5,25],
+                  "status":"OUTSTANDING"
+                }
+              ]
+            }
+            """;
+        Path sourceFile = writeSclx(rawJson);
+
+        new SclxImportService().importFile(
+            sourceFile,
+            new NonprofitBookkeepingSclxImportTarget(),
+            options(runId));
+
+        String exported = new NonprofitBookkeepingSclxExportService().exportJson(runId);
+
+        assertEquals(rawJson, exported);
+    }
+
+    @Test
+    void fullCycleRoundTripWithEventAndDocumentArrayDatesPreservesExactRawSource() throws Exception
+    {
+        String runId = "run-roundtrip-event-document-array-dates";
+        String rawJson = """
+            {
+              "format":"SCLX",
+              "version":"1.3",
+              "events":[
+                {
+                  "eventId":"event-1",
+                  "name":"Spring Event",
+                  "startDate":[2026,5,1],
+                  "endDate":[2026,5,2]
+                }
+              ],
+              "documents":[
+                {
+                  "documentId":"doc-1",
+                  "documentType":"RECEIPT",
+                  "documentDate":[2026,5,3]
+                }
+              ]
+            }
+            """;
+        Path sourceFile = writeSclx(rawJson);
+
+        new SclxImportService().importFile(
+            sourceFile,
+            new NonprofitBookkeepingSclxImportTarget(),
+            options(runId));
+
+        String exported = new NonprofitBookkeepingSclxExportService().exportJson(runId);
+
+        assertEquals(rawJson, exported);
+    }
+
+    @Test
+    void fullCycleRoundTripWithAssetAndSupplyArrayDatesPreservesExactRawSource() throws Exception
+    {
+        String runId = "run-roundtrip-asset-supply-array-dates";
+        String rawJson = """
+            {
+              "format":"SCLX",
+              "version":"1.3",
+              "assets":[
+                {
+                  "assetId":"asset-1",
+                  "dateAcquired":[2026,4,1],
+                  "description":"Chest"
+                }
+              ],
+              "supplies":[
+                {
+                  "supplyId":"supply-1",
+                  "itemNumber":"A-1",
+                  "dateAcquired":[2026,4,2],
+                  "description":"Paper"
+                }
+              ]
+            }
+            """;
+        Path sourceFile = writeSclx(rawJson);
+
+        new SclxImportService().importFile(
+            sourceFile,
+            new NonprofitBookkeepingSclxImportTarget(),
+            options(runId));
+
+        String exported = new NonprofitBookkeepingSclxExportService().exportJson(runId);
+
+        assertEquals(rawJson, exported);
+    }
+
     private Path writeSclx(String rawJson) throws Exception
     {
         Path file = tempDir.resolve("source.sclx.json");

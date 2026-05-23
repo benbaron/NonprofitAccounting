@@ -21,8 +21,10 @@ import nonprofitbookkeeping.service.FundAccountingService;
 import nonprofitbookkeeping.service.scaledger.JournalLedgerPersistenceGateway;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -317,14 +319,42 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         try
         {
             nonprofitbookkeeping.model.sclx.ReportingPeriod row =
-                MAPPER.convertValue(reportingPeriod, nonprofitbookkeeping.model.sclx.ReportingPeriod.class);
+                new nonprofitbookkeeping.model.sclx.ReportingPeriod();
+            row.setStartDate(reportingPeriod.startDate() == null ? null : reportingPeriod.startDate().toString());
+            row.setEndDate(reportingPeriod.endDate() == null ? null : reportingPeriod.endDate().toString());
+            row.setLabel(reportingPeriod.label());
+            row.setFiscalYear(reportingPeriod.fiscalYear());
+            row.setPeriodType(parseReportingPeriodType(reportingPeriod.periodType()));
+            if (reportingPeriod.extensions() != null)
+            {
+                row.setExtensions(MAPPER.convertValue(
+                    reportingPeriod.extensions(),
+                    nonprofitbookkeeping.model.sclx.Extensions.class));
+            }
             this.sclxReportingPeriodRepository.save(runScopedId("reportingPeriod"), row);
             incrementRawStagingCount("reportingPeriod");
         }
         catch (IllegalArgumentException | SQLException ex)
         {
-            throw new IllegalStateException("Failed to persist SCLX reporting period", ex);
+            throw new IllegalStateException(
+                "Failed to persist SCLX reporting period (startDate="
+                    + reportingPeriod.startDate()
+                    + ", endDate="
+                    + reportingPeriod.endDate()
+                    + ", periodType="
+                    + reportingPeriod.periodType()
+                    + ")",
+                ex);
         }
+    }
+
+    private nonprofitbookkeeping.model.sclx.ReportingPeriod.PeriodType parseReportingPeriodType(String periodType)
+    {
+        if (periodType == null || periodType.isBlank())
+        {
+            return null;
+        }
+        return nonprofitbookkeeping.model.sclx.ReportingPeriod.PeriodType.fromValue(periodType);
     }
 
     @Override
@@ -521,14 +551,30 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
             String id = firstNonBlank(event.eventId(), "index-" + i);
             try
             {
-                nonprofitbookkeeping.model.sclx.Event row =
-                    MAPPER.convertValue(event, nonprofitbookkeeping.model.sclx.Event.class);
+                nonprofitbookkeeping.model.sclx.Event row = new nonprofitbookkeeping.model.sclx.Event();
+                row.setEventId(event.eventId());
+                row.setName(event.name());
+                row.setStartDate(asIsoDate(event.startDate()));
+                row.setEndDate(asIsoDate(event.endDate()));
+                row.setHostingOrganizationId(event.hostingOrganizationId());
+                if (event.extensions() != null)
+                {
+                    row.setExtensions(MAPPER.convertValue(event.extensions(), nonprofitbookkeeping.model.sclx.Extensions.class));
+                }
                 this.sclxEventRepository.save(runScopedId(id), row);
                 incrementRawStagingCount("events");
             }
             catch (IllegalArgumentException | SQLException ex)
             {
-                throw new IllegalStateException("Failed to persist SCLX event " + id, ex);
+                throw new IllegalStateException(
+                    "Failed to persist SCLX event "
+                        + id
+                        + " (startDate="
+                        + event.startDate()
+                        + ", endDate="
+                        + event.endDate()
+                        + ")",
+                    ex);
             }
         }
     }
@@ -542,16 +588,36 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
             String id = firstNonBlank(document.documentId(), "index-" + i);
             try
             {
-                nonprofitbookkeeping.model.sclx.Document row =
-                    MAPPER.convertValue(document, nonprofitbookkeeping.model.sclx.Document.class);
+                nonprofitbookkeeping.model.sclx.Document row = new nonprofitbookkeeping.model.sclx.Document();
+                row.setDocumentId(document.documentId());
+                row.setDocumentType(parseDocumentType(document.documentType()));
+                row.setReferenceNumber(document.referenceNumber());
+                row.setDocumentDate(asIsoDate(document.documentDate()));
+                row.setFileName(document.fileName());
+                row.setNotes(document.notes());
+                if (document.extensions() != null)
+                {
+                    row.setExtensions(MAPPER.convertValue(document.extensions(), nonprofitbookkeeping.model.sclx.Extensions.class));
+                }
                 this.sclxDocumentRepository.save(runScopedId(id), row);
                 incrementRawStagingCount("documents");
             }
             catch (IllegalArgumentException | SQLException ex)
             {
-                throw new IllegalStateException("Failed to persist SCLX document " + id, ex);
+                throw new IllegalStateException(
+                    "Failed to persist SCLX document " + id + " (documentDate=" + document.documentDate() + ")",
+                    ex);
             }
         }
+    }
+
+    private nonprofitbookkeeping.model.sclx.Document.DocumentType parseDocumentType(String documentType)
+    {
+        if (documentType == null || documentType.isBlank())
+        {
+            return null;
+        }
+        return nonprofitbookkeeping.model.sclx.Document.DocumentType.fromValue(documentType);
     }
 
     @Override
@@ -578,16 +644,82 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
             String id = firstNonBlank(item.outstandingItemId(), "index-" + i);
             try
             {
-                nonprofitbookkeeping.model.sclx.OutstandingItem row =
-                    MAPPER.convertValue(item, nonprofitbookkeeping.model.sclx.OutstandingItem.class);
+                nonprofitbookkeeping.model.sclx.OutstandingItem row = new nonprofitbookkeeping.model.sclx.OutstandingItem();
+                row.setOutstandingItemId(item.outstandingItemId());
+                row.setKind(parseOutstandingItemKind(item.kind()));
+                row.setLedgerLink(MAPPER.convertValue(item.ledgerLink(), Object.class));
+                row.setWorkbookLink(item.workbookLink() == null ? null :
+                    MAPPER.convertValue(item.workbookLink(), nonprofitbookkeeping.model.sclx.WorkbookLink.class));
+                row.setDateSentOrReceived(asIsoDate(item.dateSentOrReceived()));
+                row.setIncomingCheckOrTransferDate(asIsoDate(item.incomingCheckOrTransferDate()));
+                row.setTransferIdOrCheckNumber(item.transferIdOrCheckNumber());
+                row.setDateShowsOnStatement(asIsoDate(item.dateShowsOnStatement()));
+                row.setPersonOrBusinessName(item.personOrBusinessName());
+                row.setDetailsNotes(item.detailsNotes());
+                row.setFromToCardMerchant(item.fromToCardMerchant());
+                row.setAccountForPaymentOrDeposit(item.accountForPaymentOrDeposit());
+                row.setAmount(asMoneyAmount(item.amount()));
+                row.setDateReversed(asIsoDate(item.dateReversed()));
+                row.setReversalReasonAndApproval(item.reversalReasonAndApproval());
+                row.setReversalLedgerLink(item.reversalLedgerLink() == null ? null :
+                    MAPPER.convertValue(item.reversalLedgerLink(), Object.class));
+                row.setStatus(parseOutstandingItemStatus(item.status()));
+                if (item.extensions() != null)
+                {
+                    row.setExtensions(MAPPER.convertValue(item.extensions(), nonprofitbookkeeping.model.sclx.Extensions.class));
+                }
                 this.sclxOutstandingItemRepository.save(runScopedId(id), row);
                 incrementRawStagingCount("outstandingItems");
             }
             catch (IllegalArgumentException | SQLException ex)
             {
-                throw new IllegalStateException("Failed to persist SCLX outstanding item " + id, ex);
+                throw new IllegalStateException(
+                    "Failed to persist SCLX outstanding item "
+                        + id
+                        + " (dateSentOrReceived="
+                        + item.dateSentOrReceived()
+                        + ", incomingCheckOrTransferDate="
+                        + item.incomingCheckOrTransferDate()
+                        + ", dateShowsOnStatement="
+                        + item.dateShowsOnStatement()
+                        + ", dateReversed="
+                        + item.dateReversed()
+                        + ")",
+                    ex);
             }
         }
+    }
+
+    private static String asIsoDate(LocalDate date)
+    {
+        return date == null ? null : date.toString();
+    }
+
+    private static String asMoneyAmount(BigDecimal amount)
+    {
+        if (amount == null)
+        {
+            return null;
+        }
+        return amount.setScale(2, RoundingMode.HALF_UP).toPlainString();
+    }
+
+    private static nonprofitbookkeeping.model.sclx.OutstandingItem.OutstandingItemKind parseOutstandingItemKind(String kind)
+    {
+        if (kind == null || kind.isBlank())
+        {
+            return null;
+        }
+        return nonprofitbookkeeping.model.sclx.OutstandingItem.OutstandingItemKind.fromValue(kind);
+    }
+
+    private static nonprofitbookkeeping.model.sclx.OutstandingItem.OutstandingItemStatus parseOutstandingItemStatus(String status)
+    {
+        if (status == null || status.isBlank())
+        {
+            return null;
+        }
+        return nonprofitbookkeeping.model.sclx.OutstandingItem.OutstandingItemStatus.fromValue(status);
     }
 
     @Override
@@ -658,14 +790,35 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
             String id = firstNonBlank(item.assetId(), "index-" + i);
             try
             {
-                nonprofitbookkeeping.model.sclx.Asset row =
-                    MAPPER.convertValue(item, nonprofitbookkeeping.model.sclx.Asset.class);
+                nonprofitbookkeeping.model.sclx.Asset row = new nonprofitbookkeeping.model.sclx.Asset();
+                row.setAssetId(item.assetId());
+                row.setDateAcquired(asIsoDate(item.dateAcquired()));
+                row.setDescription(item.description());
+                row.setItemCount(item.itemCount());
+                row.setApproxValueTotal(asMoneyAmount(item.approxValueTotal()));
+                row.setValuePerItem(asMoneyAmount(item.valuePerItem()));
+                row.setItemType(item.itemType());
+                row.setUsedFor(item.usedFor());
+                row.setLotPaidTotal(asMoneyAmount(item.lotPaidTotal()));
+                row.setLotItemCount(item.lotItemCount());
+                row.setCurrentGuardian(item.currentGuardian() == null ? null :
+                    MAPPER.convertValue(item.currentGuardian(), nonprofitbookkeeping.model.sclx.Guardian.class));
+                row.setGuardianshipDetails(item.guardianshipDetails() == null ? null :
+                    MAPPER.convertValue(item.guardianshipDetails(), nonprofitbookkeeping.model.sclx.GuardianshipDetailsAsset.class));
+                row.setRemovalDetails(item.removalDetails() == null ? null :
+                    MAPPER.convertValue(item.removalDetails(), nonprofitbookkeeping.model.sclx.RemovalDetailsAsset.class));
+                if (item.extensions() != null)
+                {
+                    row.setExtensions(MAPPER.convertValue(item.extensions(), nonprofitbookkeeping.model.sclx.Extensions.class));
+                }
                 this.sclxAssetRepository.save(runScopedId(id), row);
                 incrementRawStagingCount("assets");
             }
             catch (IllegalArgumentException | SQLException ex)
             {
-                throw new IllegalStateException("Failed to persist SCLX asset " + id, ex);
+                throw new IllegalStateException(
+                    "Failed to persist SCLX asset " + id + " (dateAcquired=" + item.dateAcquired() + ")",
+                    ex);
             }
         }
     }
@@ -679,14 +832,33 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
             String id = firstNonBlank(item.supplyId(), "index-" + i);
             try
             {
-                nonprofitbookkeeping.model.sclx.Supply row =
-                    MAPPER.convertValue(item, nonprofitbookkeeping.model.sclx.Supply.class);
+                nonprofitbookkeeping.model.sclx.Supply row = new nonprofitbookkeeping.model.sclx.Supply();
+                row.setSupplyId(item.supplyId());
+                row.setItemNumber(item.itemNumber());
+                row.setDateAcquired(asIsoDate(item.dateAcquired()));
+                row.setDescription(item.description());
+                row.setCount(item.count());
+                row.setApproxValueTotal(asMoneyAmount(item.approxValueTotal()));
+                row.setValuePerItem(asMoneyAmount(item.valuePerItem()));
+                row.setGuardian(item.guardian() == null ? null :
+                    MAPPER.convertValue(item.guardian(), nonprofitbookkeeping.model.sclx.Guardian.class));
+                row.setGuardianshipDetails(item.guardianshipDetails() == null ? null :
+                    MAPPER.convertValue(item.guardianshipDetails(), nonprofitbookkeeping.model.sclx.GuardianshipDetailsSupply.class));
+                row.setRemovalDetails(item.removalDetails() == null ? null :
+                    MAPPER.convertValue(item.removalDetails(), nonprofitbookkeeping.model.sclx.RemovalDetailsSupply.class));
+                row.setAdditionalNotes(item.additionalNotes());
+                if (item.extensions() != null)
+                {
+                    row.setExtensions(MAPPER.convertValue(item.extensions(), nonprofitbookkeeping.model.sclx.Extensions.class));
+                }
                 this.sclxSupplyRepository.save(runScopedId(id), row);
                 incrementRawStagingCount("supplies");
             }
             catch (IllegalArgumentException | SQLException ex)
             {
-                throw new IllegalStateException("Failed to persist SCLX supply " + id, ex);
+                throw new IllegalStateException(
+                    "Failed to persist SCLX supply " + id + " (dateAcquired=" + item.dateAcquired() + ")",
+                    ex);
             }
         }
     }
