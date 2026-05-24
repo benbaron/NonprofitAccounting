@@ -167,6 +167,60 @@ class SclxImportServiceTest
         }
     }
 
+    @Test
+    void importFileAcceptsArrayDatesInBankingAndBankStatementSections() throws IOException
+    {
+        Path tempFile = Files.createTempFile("sclx-import-service-banking-array-date-test", ".json");
+        String rawJson = """
+            {
+              "format":"SCLX",
+              "version":"1.3",
+              "bankStatementImports":[
+                {
+                  "importId":"imp-1",
+                  "sourceFormat":"CSV",
+                  "statementKind":"MONTHLY",
+                  "statementStart":[2026,1,1],
+                  "statementEnd":[2026,1,31]
+                }
+              ],
+              "bankingItems":[
+                {
+                  "bankingItemId":"banking-1",
+                  "kind":"DEPOSIT",
+                  "depositDate":[2026,1,15],
+                  "amount":"10.00",
+                  "ofx":{
+                    "fitId":"fit-1",
+                    "datePosted":[2026,1,16],
+                    "dateUser":[2026,1,17],
+                    "dateAvailable":[2026,1,18]
+                  }
+                }
+              ]
+            }
+            """;
+        Files.writeString(tempFile, rawJson);
+
+        try
+        {
+            RecordingTarget target = new RecordingTarget();
+            SclxImportResult result = new SclxImportService().importFile(tempFile, target, SclxImportOptions.defaults());
+
+            assertEquals("1.3", result.version());
+            assertEquals(java.time.LocalDate.of(2026, 1, 1), target.bankStatementImports.get(0).statementStart());
+            assertEquals(java.time.LocalDate.of(2026, 1, 31), target.bankStatementImports.get(0).statementEnd());
+            assertEquals(java.time.LocalDate.of(2026, 1, 15), target.bankingItems.get(0).depositDate());
+            assertEquals(java.time.LocalDate.of(2026, 1, 16), target.bankingItems.get(0).ofx().datePosted());
+            assertEquals(java.time.LocalDate.of(2026, 1, 17), target.bankingItems.get(0).ofx().dateUser());
+            assertEquals(java.time.LocalDate.of(2026, 1, 18), target.bankingItems.get(0).ofx().dateAvailable());
+        }
+        finally
+        {
+            Files.deleteIfExists(tempFile);
+        }
+    }
+
     private static final class RecordingTarget implements SclxImportTarget
     {
         private boolean beginImportCalled;
@@ -178,6 +232,8 @@ class SclxImportServiceTest
         private List<SclxDocument.Event> events = List.of();
         private List<SclxDocument.Document> documents = List.of();
         private List<SclxDocument.Transaction> transactions = List.of();
+        private List<SclxDocument.BankingItem> bankingItems = List.of();
+        private List<SclxDocument.BankStatementImport> bankStatementImports = List.of();
 
         @Override
         public void persistRawSource(String rawSourceJson, SclxImportOptions options)
@@ -211,8 +267,8 @@ class SclxImportServiceTest
         @Override public void importSupplementalItems(List<SclxDocument.SupplementalItem> supplementalItems) {}
         @Override public void importAssets(List<SclxDocument.Asset> assets) {}
         @Override public void importSupplies(List<SclxDocument.Supply> supplies) {}
-        @Override public void importBankingItems(List<SclxDocument.BankingItem> bankingItems) {}
-        @Override public void importBankStatementImports(List<SclxDocument.BankStatementImport> bankStatementImports) {}
+        @Override public void importBankingItems(List<SclxDocument.BankingItem> bankingItems) { this.bankingItems = bankingItems; }
+        @Override public void importBankStatementImports(List<SclxDocument.BankStatementImport> bankStatementImports) { this.bankStatementImports = bankStatementImports; }
         @Override public void completeImport(SclxImportResult result) {}
     }
 }

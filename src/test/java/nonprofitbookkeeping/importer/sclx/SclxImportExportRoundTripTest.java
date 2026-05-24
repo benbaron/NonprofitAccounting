@@ -230,6 +230,180 @@ class SclxImportExportRoundTripTest
         assertEquals(rawJson, exported);
     }
 
+    @Test
+    void fullCycleRoundTripWithOtherAssetItemValueAndStatusPreservesExactRawSource() throws Exception
+    {
+        String runId = "run-roundtrip-other-asset-item-value-status";
+        String rawJson = """
+            {
+              "format":"SCLX",
+              "version":"1.3",
+              "otherAssetItems":[
+                {
+                  "otherAssetItemId":"other-asset-1",
+                  "ledgerLink":{"transactionId":"txn-1","lineId":"line-1"},
+                  "paidTo":"Vendor",
+                  "year":2026,
+                  "reason":"Prepaid service",
+                  "type":"OTHER",
+                  "eventBudgetLabel":"Event budget",
+                  "amountAsOfPriorYearEnd":"250.00",
+                  "paidReturnedOnLedgerRowIndex":42,
+                  "status":"OUTSTANDING"
+                }
+              ]
+            }
+            """;
+        Path sourceFile = writeSclx(rawJson);
+
+        new SclxImportService().importFile(
+            sourceFile,
+            new NonprofitBookkeepingSclxImportTarget(),
+            options(runId));
+
+        String exported = new NonprofitBookkeepingSclxExportService().exportJson(runId);
+
+        assertEquals(rawJson, exported);
+    }
+
+    @Test
+    void fullCycleRoundTripWithBankAccountOfficeAndCommitteePreservesExactRawSource() throws Exception
+    {
+        String runId = "run-roundtrip-bank-office-committee";
+        String rawJson = """
+            {
+              "format":"SCLX",
+              "version":"1.3",
+              "bankAccounts":[
+                {
+                  "bankAccountId":"bank-1",
+                  "accountName":"Checking",
+                  "accountType":"CHECKING",
+                  "currency":"USD"
+                }
+              ],
+              "officeAssignments":[
+                {
+                  "officeAssignmentId":"office-1",
+                  "personId":"person-1",
+                  "roleTitle":"Treasurer",
+                  "startDate":"2026-01-01",
+                  "endDate":"2026-12-31",
+                  "active":true
+                }
+              ],
+              "committeeMemberships":[
+                {
+                  "committeeMembershipId":"committee-1",
+                  "committeeType":"FINANCE",
+                  "personId":"person-1",
+                  "active":true
+                }
+              ]
+            }
+            """;
+        Path sourceFile = writeSclx(rawJson);
+
+        new SclxImportService().importFile(
+            sourceFile,
+            new NonprofitBookkeepingSclxImportTarget(),
+            options(runId));
+
+        String exported = new NonprofitBookkeepingSclxExportService().exportJson(runId);
+
+        assertEquals(rawJson, exported);
+    }
+
+    @Test
+    void fullCycleRoundTripWithCompatibilityPreservesExactRawSource() throws Exception
+    {
+        String runId = "run-roundtrip-compatibility";
+        String rawJson = """
+            {
+              "format":"SCLX",
+              "version":"1.3",
+              "compatibility":{
+                "minimumReaderVersion":"1.2",
+                "lossyDowngradeTo":["1.2","1.0"]
+              }
+            }
+            """;
+        Path sourceFile = writeSclx(rawJson);
+
+        new SclxImportService().importFile(
+            sourceFile,
+            new NonprofitBookkeepingSclxImportTarget(),
+            options(runId));
+
+        String exported = new NonprofitBookkeepingSclxExportService().exportJson(runId);
+
+        assertEquals(rawJson, exported);
+    }
+
+    @Test
+    void fullCycleRoundTripWithNestedGuardianEnumsAndDatesPreservesExactRawSource() throws Exception
+    {
+        String runId = "run-roundtrip-nested-guardian-enums-dates";
+        String rawJson = """
+            {
+              "format":"SCLX",
+              "version":"1.3",
+              "assets":[
+                {
+                  "assetId":"asset-guard-1",
+                  "dateAcquired":[2026,2,1],
+                  "description":"Regalia",
+                  "guardianshipDetails":{
+                    "dateAsOf":[2026,2,2],
+                    "confirmed":true,
+                    "confirmationStatus":"CONFIRMED",
+                    "notes":"checked"
+                  },
+                  "removalDetails":{
+                    "approvedBy":"Seneschal",
+                    "approvalDate":[2026,2,3],
+                    "reason":"Transferred",
+                    "numberRemoved":1,
+                    "removed":true,
+                    "removalType":"RETURNED"
+                  }
+                }
+              ],
+              "supplies":[
+                {
+                  "supplyId":"supply-guard-1",
+                  "itemNumber":"S-1",
+                  "dateAcquired":[2026,2,4],
+                  "description":"Feast kit",
+                  "guardianshipDetails":{
+                    "dateAsOf":[2026,2,5],
+                    "lastConfirmed":[2026,2,6],
+                    "returned":false,
+                    "notes":"ok"
+                  },
+                  "removalDetails":{
+                    "approvedBy":"Exchequer",
+                    "reason":"Disposed",
+                    "numberRemoved":1,
+                    "removed":true,
+                    "removalType":"DESTROYED"
+                  }
+                }
+              ]
+            }
+            """;
+        Path sourceFile = writeSclx(rawJson);
+
+        new SclxImportService().importFile(
+            sourceFile,
+            new NonprofitBookkeepingSclxImportTarget(),
+            options(runId));
+
+        String exported = new NonprofitBookkeepingSclxExportService().exportJson(runId);
+
+        assertEquals(rawJson, exported);
+    }
+
     private Path writeSclx(String rawJson) throws Exception
     {
         Path file = tempDir.resolve("source.sclx.json");

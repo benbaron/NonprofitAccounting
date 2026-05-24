@@ -294,6 +294,7 @@ public record SclxDocument(
         Boolean policyRequired,
         String committeeApprovalRef,
         List<String> approvedBy,
+        @JsonDeserialize(using = FlexibleLocalDateDeserializer.class)
         LocalDate approvalDate,
         String notes,
         Map<String, Object> extensions)
@@ -327,15 +328,19 @@ public record SclxDocument(
         String kind,
         LedgerLink ledgerLink,
         WorkbookLink workbookLink,
+        @JsonDeserialize(using = FlexibleLocalDateDeserializer.class)
         LocalDate dateSentOrReceived,
+        @JsonDeserialize(using = FlexibleLocalDateDeserializer.class)
         LocalDate incomingCheckOrTransferDate,
         String transferIdOrCheckNumber,
+        @JsonDeserialize(using = FlexibleLocalDateDeserializer.class)
         LocalDate dateShowsOnStatement,
         String personOrBusinessName,
         String detailsNotes,
         String fromToCardMerchant,
         String accountForPaymentOrDeposit,
         BigDecimal amount,
+        @JsonDeserialize(using = FlexibleLocalDateDeserializer.class)
         LocalDate dateReversed,
         String reversalReasonAndApproval,
         LedgerLink reversalLedgerLink,
@@ -412,6 +417,7 @@ public record SclxDocument(
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record GuardianshipDetailsAsset(
+        @JsonDeserialize(using = FlexibleLocalDateDeserializer.class)
         LocalDate dateAsOf,
         Boolean confirmed,
         String confirmationStatus,
@@ -421,7 +427,9 @@ public record SclxDocument(
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record GuardianshipDetailsSupply(
+        @JsonDeserialize(using = FlexibleLocalDateDeserializer.class)
         LocalDate dateAsOf,
+        @JsonDeserialize(using = FlexibleLocalDateDeserializer.class)
         LocalDate lastConfirmed,
         Boolean returned,
         String notes)
@@ -431,6 +439,7 @@ public record SclxDocument(
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record RemovalDetailsAsset(
         String approvedBy,
+        @JsonDeserialize(using = FlexibleLocalDateDeserializer.class)
         LocalDate approvalDate,
         String reason,
         Integer numberRemoved,
@@ -475,7 +484,9 @@ public record SclxDocument(
         String statementKind,
         StatementBankAccount bankAccount,
         String currency,
+        @JsonDeserialize(using = FlexibleLocalDateDeserializer.class)
         LocalDate statementStart,
+        @JsonDeserialize(using = FlexibleLocalDateDeserializer.class)
         LocalDate statementEnd,
         StatementBalance ledgerBalance,
         StatementBalance availableBalance,
@@ -507,6 +518,7 @@ public record SclxDocument(
         String status,
         String transactionId,
         String bankAccountId,
+        @JsonDeserialize(using = FlexibleLocalDateDeserializer.class)
         LocalDate depositDate,
         String payer,
         String payee,
@@ -522,8 +534,11 @@ public record SclxDocument(
     public record OfxTransaction(
         String fitId,
         String transactionType,
+        @JsonDeserialize(using = FlexibleLocalDateDeserializer.class)
         LocalDate datePosted,
+        @JsonDeserialize(using = FlexibleLocalDateDeserializer.class)
         LocalDate dateUser,
+        @JsonDeserialize(using = FlexibleLocalDateDeserializer.class)
         LocalDate dateAvailable,
         String checkNumber,
         String referenceNumber,
