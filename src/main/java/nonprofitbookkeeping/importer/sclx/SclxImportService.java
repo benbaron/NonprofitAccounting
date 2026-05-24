@@ -6,6 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * High-level SCLX import coordinator.
@@ -16,6 +18,7 @@ import java.util.Objects;
  */
 public class SclxImportService
 {
+    private static final Logger log = LoggerFactory.getLogger(SclxImportService.class);
     private final SclxParser parser;
 
     public SclxImportService()
@@ -39,9 +42,21 @@ public class SclxImportService
         Objects.requireNonNull(target, "target");
         Objects.requireNonNull(options, "options");
 
+        log.debug("Starting SCLX import for path={}, runId={}", path, options.effectiveImportRunId());
         String rawSource = readRawSource(path);
-        SclxDocument document = parser.parse(path);
+        log.debug("Read raw SCLX source bytes={}, path={}", rawSource.length(), path);
+        SclxDocument document;
+        try
+        {
+            document = parser.parse(rawSource);
+        }
+        catch (SclxImportException ex)
+        {
+            log.error("SCLX parse failed for path={}, runId={}: {}", path, options.effectiveImportRunId(), ex.getMessage());
+            throw new SclxImportException("Failed to parse SCLX JSON from file: " + path, ex);
+        }
         target.persistRawSource(rawSource, options);
+        log.debug("Persisted raw SCLX source for runId={}", options.effectiveImportRunId());
         return importDocument(document, target, options);
     }
 
@@ -63,6 +78,12 @@ public class SclxImportService
         Objects.requireNonNull(target, "target");
         Objects.requireNonNull(options, "options");
 
+        log.debug(
+            "Importing SCLX document format={}, version={}, orgPresent={}, reportingPeriodPresent={}",
+            document.format(),
+            document.version(),
+            document.organization() != null,
+            document.reportingPeriod() != null);
         validateEnvelope(document, options);
         validateLedgerNativePolicy(document, options);
 
@@ -116,8 +137,19 @@ public class SclxImportService
             size(document.supplies()),
             size(document.bankingItems()),
             size(document.bankStatementImports()));
+        log.debug(
+            "SCLX import staged counts accounts={}, funds={}, budgets={}, people={}, events={}, documents={}, txns={}, txnLines={}",
+            result.accountCount(),
+            result.fundCount(),
+            result.budgetCount(),
+            result.personCount(),
+            result.eventCount(),
+            result.documentCount(),
+            result.transactionCount(),
+            result.transactionLineCount());
 
         target.completeImport(result);
+        log.debug("Completed SCLX import for version={}", result.version());
         return result;
     }
 
