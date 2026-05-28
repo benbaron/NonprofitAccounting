@@ -40,6 +40,7 @@ import nonprofitbookkeeping.ui.actions.GenerateIncomeStatementAction;
 import nonprofitbookkeeping.ui.actions.GenerateBalanceSheetAction;
 import nonprofitbookkeeping.ui.actions.GenerateTrialBalanceAction;
 import nonprofitbookkeeping.service.ReportService;
+import nonprofitbookkeeping.tools.H2SchemaMigrator;
 import nonprofitbookkeeping.ui.panels.HelpPanelFX;
 import nonprofitbookkeeping.ui.panels.LedgerReconcilePanelFX;
 import nonprofitbookkeeping.service.ReconciliationService;
@@ -535,6 +536,7 @@ public class MainWindowAlternate extends BorderPane
         VBox fileGroup = new VBox(6,
             new Label("File"),
             actionButton("Open Database", this::openDatabaseSelector),
+            actionButton("H2 Recovery Tool", this::openH2RecoveryTool),
             actionButton("Open Company", this::openCompanySelector));
 
         VBox runGroup = new VBox(6,
@@ -851,6 +853,35 @@ public class MainWindowAlternate extends BorderPane
     private void openDatabaseSelector()
     {
         showAlternatePane(buildDatabaseSelectorPane());
+    }
+
+    private void openH2RecoveryTool()
+    {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Select Corrupted H2 Database to Recover");
+        chooser.getExtensionFilters().addAll(
+            new FileChooser.ExtensionFilter("H2 Database (*.mv.db)", "*.mv.db"),
+            new FileChooser.ExtensionFilter("All Files", "*.*"));
+        File selected = chooser.showOpenDialog(getOwningStage());
+        if (selected == null)
+        {
+            return;
+        }
+        Path basePath = contextService.normalizeH2Base(selected.toPath());
+        try
+        {
+            H2SchemaMigrator.RepairResult repairResult = H2SchemaMigrator.repairCorruptedDatabase(basePath);
+            String message = "H2 recovery completed: " + basePath.toAbsolutePath();
+            if (repairResult != null)
+            {
+                message += "\nRecovery SQL: " + repairResult.recoveryScript().toAbsolutePath();
+            }
+            openInspectorForSelection("Database", message);
+        }
+        catch (Exception ex)
+        {
+            openInspectorForSelection("Database", "H2 recovery failed: " + ex.getMessage());
+        }
     }
 
     private void openCompanySelector()

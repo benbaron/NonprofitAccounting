@@ -171,6 +171,8 @@ public class MainWindow extends BorderPane
         database.getItems().addAll(
             item("Open/Create H2 DB...", null,
                 this::handleOpenOrCreateDatabase),
+            item("Recover H2 DB from corruption...", null,
+                this::handleRecoverH2Database),
             item("Import Legacy .npbk Archive...", null,
                 this::handleImportLegacyArchive),
             item("Import H2 script into DB...", null,
@@ -467,6 +469,41 @@ public class MainWindow extends BorderPane
         catch (Exception ex)
         {
             info("Legacy import failed: " + UiErrors.safeMessage(ex));
+        }
+    }
+
+    private void handleRecoverH2Database()
+    {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Select Corrupted H2 Database to Recover");
+        chooser.getExtensionFilters().addAll(
+            new FileChooser.ExtensionFilter("H2 Database (*.mv.db)", "*.mv.db"),
+            new FileChooser.ExtensionFilter("All Files", "*.*"));
+        File dbFile = chooser.showOpenDialog(getOwningStage());
+        if (dbFile == null)
+        {
+            return;
+        }
+
+        Path dbPath = normalizeH2Base(dbFile.toPath());
+        try
+        {
+            H2SchemaMigrator.RepairResult repairResult = H2SchemaMigrator.repairCorruptedDatabase(dbPath);
+            String message = "H2 recovery completed for " + dbPath.toAbsolutePath();
+            if (repairResult != null)
+            {
+                message += "\nRecovery SQL: " + repairResult.recoveryScript().toAbsolutePath();
+                if (!repairResult.backupFiles().isEmpty())
+                {
+                    message += "\nBackups:\n" + String.join("\n", repairResult.backupFiles().stream()
+                        .map(path -> path.toAbsolutePath().toString()).toList());
+                }
+            }
+            info(message);
+        }
+        catch (Exception ex)
+        {
+            info("H2 recovery failed: " + UiErrors.safeMessage(ex));
         }
     }
 
