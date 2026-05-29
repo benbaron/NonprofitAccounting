@@ -58,7 +58,12 @@ import java.util.Locale;
 import java.util.function.Supplier;
 
 /**
- * Represents the MainWindow component in the nonprofit bookkeeping application.
+ * Classic menu-bar UI system for the nonprofit bookkeeping application.
+ *
+ * <p>Status: live but non-default. {@link MainApp} selects this shell when
+ * {@code npbk.ui.variant} is set to a value other than {@code alternate}. It
+ * provides the traditional top {@link javafx.scene.control.MenuBar}, toolbar,
+ * navigation pane, workspace, and inspector layout.</p>
  */
 public class MainWindow extends BorderPane
 {

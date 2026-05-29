@@ -7,13 +7,12 @@ import javafx.stage.Stage;
 import java.net.URL;
 
 /**
- * Skeleton desktop application shell.
+ * Launcher for the newer {@code org.nonprofitbookkeeping.ui} JavaFX UI systems.
  *
- * Design goal:
- * - “Office-like” top menu + toolbar
- * - Left navigation tree
- * - Center workspace with panels
- * - Right-side inspector panel
+ * <p>Status: live through {@code org.nonprofitbookkeeping.ui.FxMain}. This
+ * class selects between {@link MainWindowAlternate}, the default
+ * dashboard-first UI, and {@link MainWindow}, the classic menu-bar UI, using
+ * the {@code npbk.ui.variant} system property.</p>
  */
 public class MainApp extends Application
 {
