@@ -75,7 +75,12 @@ import org.nonprofitbookkeeping.ui.routing.WorkspaceRouteDecision;
 import org.nonprofitbookkeeping.ui.routing.WorkspaceRouter;
 
 /**
- * Alternate dashboard-first UI shell that preserves current panel APIs.
+ * Alternate dashboard-first UI system that preserves current panel APIs.
+ *
+ * <p>Status: live default for {@link MainApp}. This shell is selected when
+ * {@code npbk.ui.variant} is absent or set to {@code alternate}; it renders
+ * navigation and commands through dashboard, icon-rail, and command-center
+ * controls rather than a traditional top menu bar.</p>
  */
 public class MainWindowAlternate extends BorderPane
 {

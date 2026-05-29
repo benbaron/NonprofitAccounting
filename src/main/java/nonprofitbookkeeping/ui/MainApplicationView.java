@@ -35,10 +35,12 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Represents the main application view, structured as a {@link BorderPane}.
- * It uses a {@link TabPane} in the center to display different sections of the application
- * like Dashboard, Journal, Chart of Accounts, Reports, and Account Details.
- * The top area is reserved for a {@link MenuBar}.
+ * Tabbed workspace for the {@link NonprofitBookkeepingFX} UI system.
+ *
+ * <p>Status: live when {@link NonprofitBookkeepingFX} is launched directly. It
+ * uses a {@link TabPane} in the center to display Dashboard, Journal, Chart of
+ * Accounts, Reports, and Account Details. The top area is reserved for a
+ * {@link MenuBar} supplied by {@link NonprofitBookkeepingFX}.</p>
  */
 public class MainApplicationView extends BorderPane
 {
