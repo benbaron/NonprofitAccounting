@@ -66,10 +66,16 @@ import nonprofitbookkeeping.tools.H2SchemaMigrator;
 
 
 /**
- * Main JavaFX application class for Nonprofit Bookkeeping.
- * This class initializes the primary stage, user interface (including menus and main content area),
- * loads plugins, manages application state, and handles core application actions like
- * opening, closing, and saving company files.
+ * Legacy/current tabbed JavaFX UI system for Nonprofit Bookkeeping.
+ *
+ * <p>Status: still manually used. This entry point owns the
+ * {@link MainApplicationView} tabbed workspace and its traditional menu bar.
+ * The Maven {@code -Pui javafx:run} launcher does not select this class by
+ * default; it is a separate UI system from {@code org.nonprofitbookkeeping.ui.MainApp}.</p>
+ *
+ * <p>This class initializes the primary stage, user interface (including menus
+ * and main content area), loads plugins, manages application state, and handles
+ * core application actions like opening, closing, and saving company files.</p>
  */
 public class NonprofitBookkeepingFX extends Application
 {
@@ -692,6 +698,8 @@ public class NonprofitBookkeepingFX extends Application
 	{
 		Menu db = new Menu("Database");
 		add(db, "Open/Create H2 DB...", e -> handleOpenOrCreateDatabase());
+		add(db, "Recover H2 DB from corruption...",
+			e -> handleRecoverH2Database());
 		add(db, "Run SQL Query...", e -> showPanel(new SqlQueryPanelFX(),
 			"SQL Query"));
 		return db;
@@ -839,6 +847,60 @@ public class NonprofitBookkeepingFX extends Application
 		
 	}
 	
+	/**
+	 * Handle H2 database recovery for a selected database file.
+	 */
+	private void handleRecoverH2Database()
+	{
+		FileChooser chooser = new FileChooser();
+		chooser.setTitle("Select Corrupted H2 Database to Recover");
+		chooser.getExtensionFilters().setAll(
+			new FileChooser.ExtensionFilter("H2 Database (*.mv.db)", "*.mv.db"),
+			new FileChooser.ExtensionFilter("All Files", "*.*"));
+		File dbFile = chooser.showOpenDialog(this.primaryStage);
+
+		if (dbFile == null)
+		{
+			return;
+		}
+
+		Path dbPath = normalizeH2Base(dbFile.toPath());
+
+		try
+		{
+			H2SchemaMigrator.RepairResult repairResult =
+				H2SchemaMigrator.repairCorruptedDatabase(dbPath);
+			String message = "H2 recovery completed for " +
+				dbPath.toAbsolutePath();
+
+			if (repairResult != null)
+			{
+				message += "\nRecovery SQL: " +
+					repairResult.recoveryScript().toAbsolutePath();
+
+				if (!repairResult.backupFiles().isEmpty())
+				{
+					message += "\nBackups:\n" +
+						String.join("\n", repairResult.backupFiles().stream()
+							.map(path -> path.toAbsolutePath().toString())
+							.toList());
+				}
+			}
+
+			Alert alert = new Alert(Alert.AlertType.INFORMATION, message);
+			alert.setHeaderText("H2 Recovery Complete");
+			alert.showAndWait();
+		}
+		catch (Exception ex)
+		{
+			LOGGER.error("Failed to recover H2 database: {}", dbPath, ex);
+			Alert alert = new Alert(Alert.AlertType.ERROR,
+				"H2 recovery failed: " + ex.getMessage());
+			alert.setHeaderText("H2 Recovery Failed");
+			alert.showAndWait();
+		}
+	}
+
 	/**
 	 * Handle import legacy archive.
 	 */

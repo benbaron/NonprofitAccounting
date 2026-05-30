@@ -1,14 +1,19 @@
 {
   "format": "SCLX",
   "version": "1.3",
-  "exportedAt": "2026-03-19T20:29:44Z",
+  "exportedAt": "2026-05-16T17:32:00Z",
   "organization": {
     "organizationId": "org-the-silver-snail",
     "name": "The Silver Snail",
     "parentOrganization": "Kingdom of Atlantia",
-    "baseCurrency": "USD $",
+    "baseCurrency": "USD",
     "fiscalYearStart": "2026-01-01",
     "fiscalYearEnd": "2026-12-31",
+    "organizationType": "Canton",
+    "jurisdictionState": "Massachusetts",
+    "capitalizationThreshold": "2000.00",
+    "reportingQuarter": 2,
+    "reportingYear": 2026,
     "extensions": {
       "branchType": "Canton",
       "location": "Massachusetts"
@@ -351,166 +356,72 @@
       "SupplementalKinds": [
       ],
       "accountId": "Bad Debts/Bounced Check or Transfer"
-    },
-    {
-      "Number": "Checking",
-      "Name": "Checking",
-      "Type": "ASSET",
-      "Parent": null,
-      "IncreaseSide": "DEBIT",
-      "OpeningBalance": "0.00",
-      "SupplementalKinds": [
-      ],
-      "accountId": "Checking"
-    },
-    {
-      "Number": "Holiday Brawl 2025",
-      "Name": "Holiday Brawl 2025",
-      "Type": "EXPENSE",
-      "Parent": null,
-      "IncreaseSide": "DEBIT",
-      "OpeningBalance": "0.00",
-      "SupplementalKinds": [
-      ],
-      "accountId": "Holiday Brawl 2025"
-    },
-    {
-      "Number": "Demo Income",
-      "Name": "Demo Income",
-      "Type": "REVENUE",
-      "Parent": null,
-      "IncreaseSide": "CREDIT",
-      "OpeningBalance": "0.00",
-      "SupplementalKinds": [
-      ],
-      "accountId": "Demo Income"
-    },
-    {
-      "Number": "Meeting & Fight Space",
-      "Name": "Meeting & Fight Space",
-      "Type": "EXPENSE",
-      "Parent": null,
-      "IncreaseSide": "DEBIT",
-      "OpeningBalance": "0.00",
-      "SupplementalKinds": [
-      ],
-      "accountId": "Meeting & Fight Space"
-    },
-    {
-      "Number": "Frozen Fingers A&S",
-      "Name": "Frozen Fingers A&S",
-      "Type": "EXPENSE",
-      "Parent": null,
-      "IncreaseSide": "DEBIT",
-      "OpeningBalance": "0.00",
-      "SupplementalKinds": [
-      ],
-      "accountId": "Frozen Fingers A&S"
-    },
-    {
-      "Number": "Storage Locker",
-      "Name": "Storage Locker",
-      "Type": "EXPENSE",
-      "Parent": null,
-      "IncreaseSide": "DEBIT",
-      "OpeningBalance": "0.00",
-      "SupplementalKinds": [
-      ],
-      "accountId": "Storage Locker"
-    },
-    {
-      "Number": "Spring Spritely",
-      "Name": "Spring Spritely",
-      "Type": "EXPENSE",
-      "Parent": null,
-      "IncreaseSide": "DEBIT",
-      "OpeningBalance": "0.00",
-      "SupplementalKinds": [
-      ],
-      "accountId": "Spring Spritely"
-    },
-    {
-      "Number": "Holiday Brawl 2026",
-      "Name": "Holiday Brawl 2026",
-      "Type": "EXPENSE",
-      "Parent": null,
-      "IncreaseSide": "DEBIT",
-      "OpeningBalance": "0.00",
-      "SupplementalKinds": [
-      ],
-      "accountId": "Holiday Brawl 2026"
-    },
-    {
-      "Number": "Donations",
-      "Name": "Donations",
-      "Type": "REVENUE",
-      "Parent": null,
-      "IncreaseSide": "CREDIT",
-      "OpeningBalance": "0.00",
-      "SupplementalKinds": [
-      ],
-      "accountId": "Donations"
-    },
-    {
-      "Number": "Total not yet deposited from previous years, as of Jan 1, 2026",
-      "Name": "Total not yet deposited from previous years, as of Jan 1, 2026",
-      "Type": "EXPENSE",
-      "Parent": null,
-      "IncreaseSide": "DEBIT",
-      "OpeningBalance": "0.00",
-      "SupplementalKinds": [
-      ],
-      "accountId": "Total not yet deposited from previous years, as of Jan 1, 2026"
-    },
-    {
-      "Number": "Total outstanding from previous years as of Jun 30, 2026",
-      "Name": "Total outstanding from previous years as of Jun 30, 2026",
-      "Type": "EXPENSE",
-      "Parent": null,
-      "IncreaseSide": "DEBIT",
-      "OpeningBalance": "0.00",
-      "SupplementalKinds": [
-      ],
-      "accountId": "Total outstanding from previous years as of Jun 30, 2026"
-    },
-    {
-      "Number": "Account",
-      "Name": "Account",
-      "Type": "EXPENSE",
-      "Parent": null,
-      "IncreaseSide": "DEBIT",
-      "OpeningBalance": "0.00",
-      "SupplementalKinds": [
-      ],
-      "accountId": "Account"
-    },
-    {
-      "Number": "Total outstanding from this year, as of Jun 30, 2026",
-      "Name": "Total outstanding from this year, as of Jun 30, 2026",
-      "Type": "EXPENSE",
-      "Parent": null,
-      "IncreaseSide": "DEBIT",
-      "OpeningBalance": "0.00",
-      "SupplementalKinds": [
-      ],
-      "accountId": "Total outstanding from this year, as of Jun 30, 2026"
     }
   ],
   "funds": [
     {
       "fundId": "fund-general-fund",
       "name": "General Fund",
+      "description": "All Non-Dedicated Funds",
       "restricted": false
     },
     {
       "fundId": "fund-don-s-archery-fund",
       "name": "Don's Archery Fund",
+      "description": "Archery supplies and loaner kit",
       "restricted": false
     },
     {
       "fundId": "fund-commisariat",
       "name": "Commisariat",
+      "description": "For all supporters of victory on the field at camping events.",
       "restricted": false
+    }
+  ],
+  "bankAccounts": [
+    {
+      "bankAccountId": "bankacct-sca-silver-snail-5-03",
+      "accountName": "SCA Silver Snail",
+      "institutionName": "Bank of Bouillon",
+      "institutionEmail": "bbemail@bbbankcommercetech.com",
+      "institutionPhone": null,
+      "accountNumberMasked": "****5-03",
+      "accountType": "Checking",
+      "currency": "USD",
+      "interestBearing": false,
+      "signatureRequirement": "Dual",
+      "accountHolderName": "SCA Silver Snail",
+      "chartAccountId": null,
+      "authorizedSigners": [
+      ],
+      "extensions": {
+        "workbook": {
+          "sheet": "Accounts",
+          "startRow": 7
+        }
+      }
+    },
+    {
+      "bankAccountId": "bankacct-sca-silver-snail-5-04",
+      "accountName": "SCA Silver Snail",
+      "institutionName": "Bank of Bouillon",
+      "institutionEmail": "bbemail@bbbankcommercetech.com",
+      "institutionPhone": null,
+      "accountNumberMasked": "****5-04",
+      "accountType": "Checking",
+      "currency": "USD",
+      "interestBearing": false,
+      "signatureRequirement": "Dual",
+      "accountHolderName": "SCA Silver Snail",
+      "chartAccountId": null,
+      "authorizedSigners": [
+      ],
+      "extensions": {
+        "workbook": {
+          "sheet": "Accounts",
+          "startRow": 22
+        }
+      }
     }
   ],
   "budgets": [
@@ -624,80 +535,395 @@
     }
   ],
   "people": [
+    {
+      "personId": "person-add-exchequer-contact-information-to-the-exchequers-tab",
+      "displayName": "Add Exchequer contact information to the Exchequers tab.",
+      "kind": "OFFICER",
+      "scaName": "0",
+      "membershipNumber": null,
+      "membershipExpiry": null,
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-sca-atlantia",
+      "displayName": "SCA Atlantia",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-paypal",
+      "displayName": "PayPal",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-sca-gilded-hedgehog",
+      "displayName": "SCA Gilded Hedgehog",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-raccoon-city-con",
+      "displayName": "Raccoon City Con",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-the-scholar-s-abode",
+      "displayName": "The Scholar's Abode",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-irene-adkins",
+      "displayName": "Irene Adkins",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-olde-reliable-hall",
+      "displayName": "Olde Reliable Hall",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-the-runcible-house",
+      "displayName": "The Runcible House",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-cache-rentals",
+      "displayName": "Cache Rentals",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-syd-bond",
+      "displayName": "Syd Bond",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-anne-erowen",
+      "displayName": "Anne Erowen",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-recognize-prepaid-gate-fees",
+      "displayName": "Recognize Prepaid Gate Fees",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-gate-through-paypal",
+      "displayName": "Gate Through PayPal",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-gate-deposit",
+      "displayName": "Gate Deposit",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-mal-venturo",
+      "displayName": "Mal Venturo",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-joy-warple",
+      "displayName": "Joy Warple",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-margrat-munin",
+      "displayName": "Margrat Munin",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-finance-committee",
+      "displayName": "Finance Committee",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-jerald-puling",
+      "displayName": "Jerald Puling",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-bb-bank",
+      "displayName": "BB Bank",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-andrew-king",
+      "displayName": "Andrew King",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-camp-megamart",
+      "displayName": "Camp MegaMart",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-cubular-everything",
+      "displayName": "Cubular Everything",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-press-d-to-the-t",
+      "displayName": "Press'd to the T",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-gate-revenue",
+      "displayName": "Gate Revenue",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-rough-storage-inc",
+      "displayName": "Rough Storage Inc.",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-merry-gatsby",
+      "displayName": "Merry Gatsby",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-anonymous-donors",
+      "displayName": "Anonymous Donors",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-catty-cooks-guild",
+      "displayName": "Catty Cooks Guild",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-sca-burnished-brambles",
+      "displayName": "SCA Burnished Brambles",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-tax-office",
+      "displayName": "Tax Office",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-raccoon-city-inc",
+      "displayName": "Raccoon City, Inc.",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-toys-for-tots",
+      "displayName": "Toys for Tots",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-tansy-trotter",
+      "displayName": "Tansy Trotter",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-no",
+      "displayName": "No",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-steve-sterling",
+      "displayName": "Steve Sterling",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-sca-harp-frog",
+      "displayName": "SCA Harp Frog",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-decadancers-drama-deans",
+      "displayName": "DecaDancers Drama Deans",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-nary-pibbles",
+      "displayName": "Nary Pibbles",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-rani-asher",
+      "displayName": "Rani Asher",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-entire-financial-committee",
+      "displayName": "Entire Financial Committee",
+      "kind": "OFFICER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-miracle-max",
+      "displayName": "Miracle Max",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-rosie-kraftmaven",
+      "displayName": "Rosie Kraftmaven",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-david-barclay",
+      "displayName": "David Barclay",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-ari-mitchel",
+      "displayName": "Ari Mitchel",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-sca-kingdom-of-atlantia",
+      "displayName": "SCA Kingdom of Atlantia",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-anne-mcguffin",
+      "displayName": "Anne McGuffin",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-brant-macguffin",
+      "displayName": "Brant MacGuffin",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-caroline-maccormick",
+      "displayName": "Caroline MacCormick",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    },
+    {
+      "personId": "person-east-kingdom",
+      "displayName": "East Kingdom",
+      "kind": "OTHER",
+      "extensions": {
+      }
+    }
+  ],
+  "officeAssignments": [
+  ],
+  "committeeMemberships": [
+    {
+      "committeeMembershipId": "committee-exchequer-add-exchequer-contact-information-to-the-exchequers-tab",
+      "committeeType": "FINANCIAL_COMMITTEE",
+      "personId": "person-add-exchequer-contact-information-to-the-exchequers-tab",
+      "organizationId": "org-the-silver-snail",
+      "roleTitle": "Exchequer",
+      "membershipNumber": null,
+      "membershipExpiry": null,
+      "startDate": null,
+      "endDate": null,
+      "active": true,
+      "extensions": {
+        "workbook": {
+          "sheet": "FinancialCommittee",
+          "row": 13,
+          "section": "Financial Committee"
+        }
+      }
+    }
   ],
   "events": [
   ],
   "documents": [
   ],
   "transactions": [
-    {
-      "transactionId": "ledger-row-10",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "Cash received (bank) now, but for income recorded",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 10
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 10,
-          "visibleRowNumber": "2",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> RECEIVABLES",
-          "detailsNotes": "Cash received (bank) now, but for income recorded",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
-      ]
-    },
-    {
-      "transactionId": "ledger-row-11",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "last year.",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 11
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 11,
-          "visibleRowNumber": "3",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "",
-          "detailsNotes": "last year.",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
-      ]
-    },
     {
       "transactionId": "ledger-row-12",
       "transactionDate": "2026-01-02",
@@ -738,7 +964,7 @@
           "accountId": "Event Income (Before Expenses)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-holiday-brawl-2025",
-          "personId": "SCA Atlantia",
+          "personId": "person-sca-atlantia",
           "eventId": null,
           "documentId": null,
           "memo": "PayPal proceeds from an event last year.",
@@ -804,7 +1030,7 @@
           "accountId": "Event Income (Before Expenses)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-holiday-brawl-2025",
-          "personId": "SCA Gilded Hedgehog",
+          "personId": "person-sca-gilded-hedgehog",
           "eventId": null,
           "documentId": null,
           "memo": "Portion of shared profits from 2025 event.",
@@ -828,40 +1054,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-15",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "Paid (bank) in the future, but earned (budget) now.",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 15
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 15,
-          "visibleRowNumber": "7",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "EARNED NOW, PAID LATER (In Q2)",
-          "detailsNotes": "Paid (bank) in the future, but earned (budget) now.",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -904,7 +1096,7 @@
           "accountId": "Income from Demos",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-demo-income",
-          "personId": "Raccoon City Con",
+          "personId": "person-raccoon-city-con",
           "eventId": null,
           "documentId": null,
           "memo": "For showing up in Tudor garb and fencing.",
@@ -928,40 +1120,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-18",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "Paid (bank) now, but earned (budget) previously.",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 18
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 18,
-          "visibleRowNumber": "10",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "PAID IN Q2, EARNED IN Q1",
-          "detailsNotes": "Paid (bank) now, but earned (budget) previously.",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -1004,7 +1162,7 @@
           "accountId": "Income from Demos",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-demo-income",
-          "personId": "Raccoon City Con",
+          "personId": "person-raccoon-city-con",
           "eventId": null,
           "documentId": null,
           "memo": "Demo Fees",
@@ -1028,74 +1186,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-21",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 21
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 21,
-          "visibleRowNumber": "13",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> PREPAID EXPENSES",
-          "detailsNotes": "",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
-      ]
-    },
-    {
-      "transactionId": "ledger-row-22",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "Came out of the bank previously, but is used now.",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 22
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 22,
-          "visibleRowNumber": "14",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "Paid for Jan-Aug last year.",
-          "detailsNotes": "Came out of the bank previously, but is used now.",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -1138,7 +1228,7 @@
           "accountId": "Site/Storage Rental (Occupancy)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-meeting-fight-space",
-          "personId": "The Scholar's Abode",
+          "personId": "person-the-scholar-s-abode",
           "eventId": null,
           "documentId": null,
           "memo": "Meeting Space for Q1",
@@ -1204,7 +1294,7 @@
           "accountId": "Site/Storage Rental (Occupancy)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-meeting-fight-space",
-          "personId": "The Scholar's Abode",
+          "personId": "person-the-scholar-s-abode",
           "eventId": null,
           "documentId": null,
           "memo": "Meeting Space for Q2",
@@ -1270,7 +1360,7 @@
           "accountId": "Site/Storage Rental (Occupancy)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-meeting-fight-space",
-          "personId": "The Scholar's Abode",
+          "personId": "person-the-scholar-s-abode",
           "eventId": null,
           "documentId": null,
           "memo": "Meeting Space for July-August",
@@ -1294,40 +1384,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-27",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "Future space rentals are future budget expenses.",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 27
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 27,
-          "visibleRowNumber": "19",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "Paying for Sept 2026-Aug 2027",
-          "detailsNotes": "Future space rentals are future budget expenses.",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -1370,7 +1426,7 @@
           "accountId": "Site/Storage Rental (Occupancy)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-meeting-fight-space",
-          "personId": "The Scholar's Abode",
+          "personId": "person-the-scholar-s-abode",
           "eventId": null,
           "documentId": null,
           "memo": "Meeting Space for September",
@@ -1436,7 +1492,7 @@
           "accountId": "Site/Storage Rental (Occupancy)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-meeting-fight-space",
-          "personId": "The Scholar's Abode",
+          "personId": "person-the-scholar-s-abode",
           "eventId": null,
           "documentId": null,
           "memo": "Meeting Space for Q4",
@@ -1502,7 +1558,7 @@
           "accountId": "Site/Storage Rental (Occupancy)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-meeting-fight-space",
-          "personId": "The Scholar's Abode",
+          "personId": "person-the-scholar-s-abode",
           "eventId": null,
           "documentId": null,
           "memo": "Meeting Space for 2027, January-August",
@@ -1526,40 +1582,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-32",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "Paid (bank) previously, used (budget) now.",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 32
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 32,
-          "visibleRowNumber": "24",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "Recognizing Q4 (already paid for).",
-          "detailsNotes": "Paid (bank) previously, used (budget) now.",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -1602,7 +1624,7 @@
           "accountId": "Site/Storage Rental (Occupancy)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-meeting-fight-space",
-          "personId": "The Scholar's Abode",
+          "personId": "person-the-scholar-s-abode",
           "eventId": null,
           "documentId": null,
           "memo": "Meeting Space for Q4",
@@ -1626,74 +1648,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-35",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 35
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 35,
-          "visibleRowNumber": "27",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> OTHER ASSETS",
-          "detailsNotes": "",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
-      ]
-    },
-    {
-      "transactionId": "ledger-row-36",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "Cash advances aren't income and no effect on budget.",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 36
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 36,
-          "visibleRowNumber": "28",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "Returning 2025 Cash Advance",
-          "detailsNotes": "Cash advances aren't income and no effect on budget.",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -1736,7 +1690,7 @@
           "accountId": "Cash Advance Returned",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-holiday-brawl-2025",
-          "personId": "Irene Adkins",
+          "personId": "person-irene-adkins",
           "eventId": null,
           "documentId": null,
           "memo": "Returned Cash Advance for Gate",
@@ -1760,40 +1714,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-39",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "No effect on the budget.",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 39
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 39,
-          "visibleRowNumber": "31",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "Returning 2025 Site Deposit",
-          "detailsNotes": "No effect on the budget.",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -1836,7 +1756,7 @@
           "accountId": "Site Security Deposit Returned",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-holiday-brawl-2025",
-          "personId": "Olde Reliable Hall",
+          "personId": "person-olde-reliable-hall",
           "eventId": null,
           "documentId": null,
           "memo": "Returned Key & Cleaning Deposit",
@@ -1860,74 +1780,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-42",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 42
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 42,
-          "visibleRowNumber": "34",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> PAID FOR SITE NOW (Q1), FOR EVENT LATER (Q3)",
-          "detailsNotes": "",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
-      ]
-    },
-    {
-      "transactionId": "ledger-row-43",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 43
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 43,
-          "visibleRowNumber": "35",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "Site Rental, Including A Security Deposit (Other Asset)",
-          "detailsNotes": "",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -1970,7 +1822,7 @@
           "accountId": "Site/Storage Rental (Occupancy)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-frozen-fingers-a-s",
-          "personId": "The Runcible House",
+          "personId": "person-the-runcible-house",
           "eventId": null,
           "documentId": null,
           "memo": "Site + $200 Cleaning, $75 Key Deposit, $20 Insurance",
@@ -2001,7 +1853,7 @@
           "accountId": "Site Security Deposit (To be returned.)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-frozen-fingers-a-s",
-          "personId": "The Runcible House",
+          "personId": "person-the-runcible-house",
           "eventId": null,
           "documentId": null,
           "memo": "Site + $200 Cleaning, $75 Key Deposit, $20 Insurance",
@@ -2032,7 +1884,7 @@
           "accountId": "Insurance (NON-SCA)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-frozen-fingers-a-s",
-          "personId": "The Runcible House",
+          "personId": "person-the-runcible-house",
           "eventId": null,
           "documentId": null,
           "memo": "Site + $200 Cleaning, $75 Key Deposit, $20 Insurance",
@@ -2056,74 +1908,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-46",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 46
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 46,
-          "visibleRowNumber": "38",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> PAYABLES",
-          "detailsNotes": "",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
-      ]
-    },
-    {
-      "transactionId": "ledger-row-47",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 47
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 47,
-          "visibleRowNumber": "39",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "Use separate rows for last year, this quarter, and future quarters.",
-          "detailsNotes": "",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -2166,7 +1950,7 @@
           "accountId": "Site/Storage Rental (Occupancy)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-storage-locker",
-          "personId": "Cache Rentals",
+          "personId": "person-cache-rentals",
           "eventId": null,
           "documentId": null,
           "memo": "Locker Rental for 2026, Q1",
@@ -2232,7 +2016,7 @@
           "accountId": "Site/Storage Rental (Occupancy)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-storage-locker",
-          "personId": "Cache Rentals",
+          "personId": "person-cache-rentals",
           "eventId": null,
           "documentId": null,
           "memo": "Locker Rental for 2026, Q2",
@@ -2298,7 +2082,7 @@
           "accountId": "Site/Storage Rental (Occupancy)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-storage-locker",
-          "personId": "Cache Rentals",
+          "personId": "person-cache-rentals",
           "eventId": null,
           "documentId": null,
           "memo": "Locker Rental for 2026, July of Q3",
@@ -2364,7 +2148,7 @@
           "accountId": "Site/Storage Rental (Occupancy)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-storage-locker",
-          "personId": "Cache Rentals",
+          "personId": "person-cache-rentals",
           "eventId": null,
           "documentId": null,
           "memo": "Locker Rental for 2026, Aug & Sept of Q3",
@@ -2388,40 +2172,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-53",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 53
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 53,
-          "visibleRowNumber": "45",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "Syd finally turns in receipts for the storage locker rental.",
-          "detailsNotes": "",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -2464,7 +2214,7 @@
           "accountId": "Site/Storage Rental (Occupancy)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-storage-locker",
-          "personId": "Syd Bond",
+          "personId": "person-syd-bond",
           "eventId": null,
           "documentId": null,
           "memo": "Pay for Locker Rental for Aug 2025 - July 2026, $10/mth",
@@ -2530,7 +2280,7 @@
           "accountId": "Site/Storage Rental (Occupancy)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-storage-locker",
-          "personId": "Cache Rentals",
+          "personId": "person-cache-rentals",
           "eventId": null,
           "documentId": null,
           "memo": "Locker Rental for 2026, Q4",
@@ -2554,40 +2304,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-57",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "The bank is now, but income from last year.",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 57
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 57,
-          "visibleRowNumber": "49",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> OTHER LIABILITIES",
-          "detailsNotes": "The bank is now, but income from last year.",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -2629,7 +2345,7 @@
           "accountId": "Donations to Other 501(c) Orgs.",
           "fundId": "fund-general-fund",
           "budgetId": null,
-          "personId": "SCA Atlantia",
+          "personId": "person-sca-atlantia",
           "eventId": null,
           "documentId": null,
           "memo": "NMR from 2025",
@@ -2653,40 +2369,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-60",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 60
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 60,
-          "visibleRowNumber": "52",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> CASH ADVANCE ISSUED",
-          "detailsNotes": "",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -2729,7 +2411,7 @@
           "accountId": "Cash Advance (To be returned.)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-frozen-fingers-a-s",
-          "personId": "Anne Erowen",
+          "personId": "person-anne-erowen",
           "eventId": null,
           "documentId": null,
           "memo": "For gate cashbox.",
@@ -2753,40 +2435,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-63",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 63
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 63,
-          "visibleRowNumber": "55",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": ">> AN EVENT HAPPENS!",
-          "detailsNotes": "",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -2829,7 +2477,7 @@
           "accountId": "Event Income (Before Expenses)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-frozen-fingers-a-s",
-          "personId": "SCA Atlantia",
+          "personId": "person-sca-atlantia",
           "eventId": null,
           "documentId": null,
           "memo": "Prepaid fees, less PayPal, less NMR.",
@@ -2860,7 +2508,7 @@
           "accountId": "Card Merchant/PayPal Fees",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-frozen-fingers-a-s",
-          "personId": "SCA Atlantia",
+          "personId": "person-sca-atlantia",
           "eventId": null,
           "documentId": null,
           "memo": "Prepaid fees, less PayPal, less NMR.",
@@ -2891,7 +2539,7 @@
           "accountId": "NMR Remitted Through Card Merchant",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-frozen-fingers-a-s",
-          "personId": "SCA Atlantia",
+          "personId": "person-sca-atlantia",
           "eventId": null,
           "documentId": null,
           "memo": "Prepaid fees, less PayPal, less NMR.",
@@ -2915,40 +2563,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-66",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 66
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 66,
-          "visibleRowNumber": "58",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> POST-EVENT DEPOSIT",
-          "detailsNotes": "",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -2991,7 +2605,7 @@
           "accountId": "Event Income (Before Expenses)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-frozen-fingers-a-s",
-          "personId": "Recognize Prepaid Gate Fees",
+          "personId": "person-recognize-prepaid-gate-fees",
           "eventId": null,
           "documentId": null,
           "memo": "3x$30 gate + 2 lunches",
@@ -3057,7 +2671,7 @@
           "accountId": "Event Income (Before Expenses)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-frozen-fingers-a-s",
-          "personId": "Gate Through PayPal",
+          "personId": "person-gate-through-paypal",
           "eventId": null,
           "documentId": null,
           "memo": "Gate procesed through PayPal less fees & NMR",
@@ -3088,7 +2702,7 @@
           "accountId": "Card Merchant/PayPal Fees",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-frozen-fingers-a-s",
-          "personId": "Gate Through PayPal",
+          "personId": "person-gate-through-paypal",
           "eventId": null,
           "documentId": null,
           "memo": "Gate procesed through PayPal less fees & NMR",
@@ -3119,7 +2733,7 @@
           "accountId": "NMR Remitted Through Card Merchant",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-frozen-fingers-a-s",
-          "personId": "Gate Through PayPal",
+          "personId": "person-gate-through-paypal",
           "eventId": null,
           "documentId": null,
           "memo": "Gate procesed through PayPal less fees & NMR",
@@ -3185,7 +2799,7 @@
           "accountId": "Event Income (Before Expenses)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-frozen-fingers-a-s",
-          "personId": "Gate Deposit",
+          "personId": "person-gate-deposit",
           "eventId": null,
           "documentId": null,
           "memo": "Cash processed at gate.",
@@ -3209,40 +2823,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-71",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 71
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 71,
-          "visibleRowNumber": "63",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> PAYPAL (CARD MERCHANT) INCOME",
-          "detailsNotes": "",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -3285,7 +2865,7 @@
           "accountId": "Donations Received",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-frozen-fingers-a-s",
-          "personId": "SCA Atlantia",
+          "personId": "person-sca-atlantia",
           "eventId": null,
           "documentId": null,
           "memo": "Gate income, less PayPal fees & less NMR.",
@@ -3309,40 +2889,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-74",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 74
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 74,
-          "visibleRowNumber": "66",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> CASH ADVANCE RETURNED",
-          "detailsNotes": "",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -3385,7 +2931,7 @@
           "accountId": "Cash Advance Returned",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-frozen-fingers-a-s",
-          "personId": "Anne Erowen",
+          "personId": "person-anne-erowen",
           "eventId": null,
           "documentId": null,
           "memo": "Gate cashbox advance, cash returned after event.",
@@ -3409,40 +2955,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-77",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 77
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 77,
-          "visibleRowNumber": "69",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> REFUNDED SITE FEE",
-          "detailsNotes": "",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -3485,7 +2997,7 @@
           "accountId": "Event Fee Refunds",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-frozen-fingers-a-s",
-          "personId": "Mal Venturo",
+          "personId": "person-mal-venturo",
           "eventId": null,
           "documentId": null,
           "memo": "Refund: Left due to family emergency at 9am",
@@ -3509,40 +3021,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-80",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "Because it was used now.",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 80
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 80,
-          "visibleRowNumber": "72",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> RECOGNIZE THE PRE-PAID SITE FEE",
-          "detailsNotes": "Because it was used now.",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -3585,7 +3063,7 @@
           "accountId": "Site/Storage Rental (Occupancy)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-frozen-fingers-a-s",
-          "personId": "The Runcible House",
+          "personId": "person-the-runcible-house",
           "eventId": null,
           "documentId": null,
           "memo": "Site rental & insurance, 8am - 9:30pm.",
@@ -3616,7 +3094,7 @@
           "accountId": "Insurance (NON-SCA)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-frozen-fingers-a-s",
-          "personId": "The Runcible House",
+          "personId": "person-the-runcible-house",
           "eventId": null,
           "documentId": null,
           "memo": "Site rental & insurance, 8am - 9:30pm.",
@@ -3640,74 +3118,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-83",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "Return the whole security deposit, then make the loss",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 83
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 83,
-          "visibleRowNumber": "75",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> LOST THE SITE KEY",
-          "detailsNotes": "Return the whole security deposit, then make the loss",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
-      ]
-    },
-    {
-      "transactionId": "ledger-row-84",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "a site rental expense.",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 84
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 84,
-          "visibleRowNumber": "76",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "",
-          "detailsNotes": "a site rental expense.",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -3750,7 +3160,7 @@
           "accountId": "Site Security Deposit Returned",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-frozen-fingers-a-s",
-          "personId": "The Runcible House",
+          "personId": "person-the-runcible-house",
           "eventId": null,
           "documentId": null,
           "memo": "Lost the site key. Only $200 of $275 returned.",
@@ -3781,7 +3191,7 @@
           "accountId": "Site/Storage Rental (Occupancy)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-frozen-fingers-a-s",
-          "personId": "The Runcible House",
+          "personId": "person-the-runcible-house",
           "eventId": null,
           "documentId": null,
           "memo": "Lost the site key. Only $200 of $275 returned.",
@@ -3805,40 +3215,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-87",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 87
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 87,
-          "visibleRowNumber": "79",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> PAY THE LUNCH & FEAST EXPENSES",
-          "detailsNotes": "",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -3881,7 +3257,7 @@
           "accountId": "Food",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-frozen-fingers-a-s",
-          "personId": "Joy Warple",
+          "personId": "person-joy-warple",
           "eventId": null,
           "documentId": null,
           "memo": "Food for Feast",
@@ -3947,7 +3323,7 @@
           "accountId": "Food",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-frozen-fingers-a-s",
-          "personId": "Margrat Munin",
+          "personId": "person-margrat-munin",
           "eventId": null,
           "documentId": null,
           "memo": "Food for Lunch Counter",
@@ -3971,74 +3347,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-91",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "There will be yellow reminders until both income & expense",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 91
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 91,
-          "visibleRowNumber": "83",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> TRANSFER BETWEEN FUNDS",
-          "detailsNotes": "There will be yellow reminders until both income & expense",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
-      ]
-    },
-    {
-      "transactionId": "ledger-row-92",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "transfers are entered.",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 92
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 92,
-          "visibleRowNumber": "84",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "",
-          "detailsNotes": "transfers are entered.",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -4080,7 +3388,7 @@
           "accountId": "Cash Moved To Another Account/Fund",
           "fundId": "fund-general-fund",
           "budgetId": null,
-          "personId": "Finance Committee",
+          "personId": "person-finance-committee",
           "eventId": null,
           "documentId": null,
           "memo": "Annual Transfer to Don's Archery Fund",
@@ -4145,7 +3453,7 @@
           "accountId": "Cash Moved From Another Account/Fund",
           "fundId": "fund-don-s-archery-fund",
           "budgetId": null,
-          "personId": "Finance Committee",
+          "personId": "person-finance-committee",
           "eventId": null,
           "documentId": null,
           "memo": "Annual Transfer to Don's Archery Fund",
@@ -4169,74 +3477,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-96",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "The check was deposited in May, but shows late on bank",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 96
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 96,
-          "visibleRowNumber": "88",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> CHECK FOR AN EVENT IS RECEIVED\u2026",
-          "detailsNotes": "The check was deposited in May, but shows late on bank",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
-      ]
-    },
-    {
-      "transactionId": "ledger-row-97",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "statement, and then it is bounced.",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 97
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 97,
-          "visibleRowNumber": "89",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> THEN IT BOUNCES",
-          "detailsNotes": "statement, and then it is bounced.",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -4279,7 +3519,7 @@
           "accountId": "Event Income (Before Expenses)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-spring-spritely",
-          "personId": "Jerald Puling",
+          "personId": "person-jerald-puling",
           "eventId": null,
           "documentId": null,
           "memo": "Gate fee and lunch",
@@ -4345,7 +3585,7 @@
           "accountId": "Bank Fees",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-spring-spritely",
-          "personId": "BB Bank",
+          "personId": "person-bb-bank",
           "eventId": null,
           "documentId": null,
           "memo": "NSF check fee",
@@ -4369,40 +3609,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-101",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "Same process for expired checks.",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 101
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 101,
-          "visibleRowNumber": "93",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> WROTE A CHECK - DESTROYED",
-          "detailsNotes": "Same process for expired checks.",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -4445,7 +3651,7 @@
           "accountId": "Supplies & Equipment Less Than $2,000/Item",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-spring-spritely",
-          "personId": "Andrew King",
+          "personId": "person-andrew-king",
           "eventId": null,
           "documentId": null,
           "memo": "Supplies for site tokens - Fell in a puddle, ink ran.",
@@ -4511,7 +3717,7 @@
           "accountId": "Supplies & Equipment Less Than $2,000/Item",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-spring-spritely",
-          "personId": "Andrew King",
+          "personId": "person-andrew-king",
           "eventId": null,
           "documentId": null,
           "memo": "Re-issued #130. Supplies for site tokens.",
@@ -4535,40 +3741,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-105",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 105
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 105,
-          "visibleRowNumber": "97",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> BOUGHT A CHEAP THING",
-          "detailsNotes": "",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -4610,7 +3782,7 @@
           "accountId": "Supplies & Equipment Less Than $2,000/Item",
           "fundId": "fund-general-fund",
           "budgetId": null,
-          "personId": "Camp MegaMart",
+          "personId": "person-camp-megamart",
           "eventId": null,
           "documentId": null,
           "memo": "2 Pop-up Pavillions, on sale",
@@ -4634,40 +3806,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-108",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "Add purchase here, then go to Assets & Inventory tab.",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 108
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 108,
-          "visibleRowNumber": "100",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> BOUGHT AN EXPENSIVE THING",
-          "detailsNotes": "Add purchase here, then go to Assets & Inventory tab.",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -4709,7 +3847,7 @@
           "accountId": "Equipment At or Over $2,000/Item",
           "fundId": "fund-general-fund",
           "budgetId": null,
-          "personId": "Cubular Everything",
+          "personId": "person-cubular-everything",
           "eventId": null,
           "documentId": null,
           "memo": "Used shipping container, for storage.",
@@ -4733,40 +3871,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-111",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "Add purchase here, then go to Assets & Inventory tab.",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 111
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 111,
-          "visibleRowNumber": "103",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> PURCHASED INVENTORY",
-          "detailsNotes": "Add purchase here, then go to Assets & Inventory tab.",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -4809,7 +3913,7 @@
           "accountId": "Inventory (Items To Be Sold)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-holiday-brawl-2026",
-          "personId": "Press'd to the T",
+          "personId": "person-press-d-to-the-t",
           "eventId": null,
           "documentId": null,
           "memo": "T-Shirts to sell at Holiday Brawl, $12/each",
@@ -4833,40 +3937,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-114",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "Get the item number from the Assets & Inventory tab.",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 114
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 114,
-          "visibleRowNumber": "106",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> SOLD INVENTORY",
-          "detailsNotes": "Get the item number from the Assets & Inventory tab.",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -4909,7 +3979,7 @@
           "accountId": "Sale of Inventory",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-holiday-brawl-2026",
-          "personId": "Gate Revenue",
+          "personId": "person-gate-revenue",
           "eventId": null,
           "documentId": null,
           "memo": "Sold 82 t-shirts at $20/each.",
@@ -4933,40 +4003,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-117",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "Get the item number from the Assets & Inventory tab.",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 117
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 117,
-          "visibleRowNumber": "109",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> SOLD AN ASSET",
-          "detailsNotes": "Get the item number from the Assets & Inventory tab.",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -5008,7 +4044,7 @@
           "accountId": "Sale of Assets",
           "fundId": "fund-general-fund",
           "budgetId": null,
-          "personId": "Rough Storage Inc.",
+          "personId": "person-rough-storage-inc",
           "eventId": null,
           "documentId": null,
           "memo": "Sold old storage cube.",
@@ -5032,108 +4068,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-120",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 120
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 120,
-          "visibleRowNumber": "112",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> DISPOSED OF AN ASSET",
-          "detailsNotes": "",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
-      ]
-    },
-    {
-      "transactionId": "ledger-row-121",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "Fill in: \"REMOVED FROM ASSET LIST\" section.",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 121
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 121,
-          "visibleRowNumber": "113",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "No cash; go to Asset & Inventory tab.",
-          "detailsNotes": "Fill in: \"REMOVED FROM ASSET LIST\" section.",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
-      ]
-    },
-    {
-      "transactionId": "ledger-row-123",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "Since in same quarter, can just record now.",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 123
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 123,
-          "visibleRowNumber": "115",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> PREPAYMENT FOR EVENT",
-          "detailsNotes": "Since in same quarter, can just record now.",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -5176,7 +4110,7 @@
           "accountId": "Event Income (Before Expenses)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-holiday-brawl-2026",
-          "personId": "Merry Gatsby",
+          "personId": "person-merry-gatsby",
           "eventId": null,
           "documentId": null,
           "memo": "Site and Lunch",
@@ -5200,40 +4134,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-126",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 126
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 126,
-          "visibleRowNumber": "118",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> GATE + TAXES COLLECTED",
-          "detailsNotes": "",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -5276,7 +4176,7 @@
           "accountId": "Event Income (Before Expenses)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-holiday-brawl-2026",
-          "personId": "Gate Deposit",
+          "personId": "person-gate-deposit",
           "eventId": null,
           "documentId": null,
           "memo": "Includes taxes collected. 8% on entrance fee.",
@@ -5307,7 +4207,7 @@
           "accountId": "Tax Collected (Other Liability)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-holiday-brawl-2026",
-          "personId": "Gate Deposit",
+          "personId": "person-gate-deposit",
           "eventId": null,
           "documentId": null,
           "memo": "Includes taxes collected. 8% on entrance fee.",
@@ -5331,40 +4231,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-128",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 128
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 128,
-          "visibleRowNumber": "120",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> GATE + TAXES COLLECTED THROUGH PAYPAL",
-          "detailsNotes": "",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -5407,7 +4273,7 @@
           "accountId": "Event Income (Before Expenses)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-holiday-brawl-2026",
-          "personId": "SCA Atlantia",
+          "personId": "person-sca-atlantia",
           "eventId": null,
           "documentId": null,
           "memo": "Gate prepayments (Inc'l 8% tax), less fees & NMR.",
@@ -5438,7 +4304,7 @@
           "accountId": "Tax Collected (Other Liability)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-holiday-brawl-2026",
-          "personId": "SCA Atlantia",
+          "personId": "person-sca-atlantia",
           "eventId": null,
           "documentId": null,
           "memo": "Gate prepayments (Inc'l 8% tax), less fees & NMR.",
@@ -5469,7 +4335,7 @@
           "accountId": "Card Merchant/PayPal Fees",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-holiday-brawl-2026",
-          "personId": "SCA Atlantia",
+          "personId": "person-sca-atlantia",
           "eventId": null,
           "documentId": null,
           "memo": "Gate prepayments (Inc'l 8% tax), less fees & NMR.",
@@ -5500,7 +4366,7 @@
           "accountId": "NMR Remitted Through Card Merchant",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-holiday-brawl-2026",
-          "personId": "SCA Atlantia",
+          "personId": "person-sca-atlantia",
           "eventId": null,
           "documentId": null,
           "memo": "Gate prepayments (Inc'l 8% tax), less fees & NMR.",
@@ -5524,40 +4390,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-131",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "Include the budget (event).",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 131
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 131,
-          "visibleRowNumber": "123",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> PAY NMR TO KINGDOM",
-          "detailsNotes": "Include the budget (event).",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -5600,7 +4432,7 @@
           "accountId": "Donations to Other 501(c) Orgs.",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-spring-spritely",
-          "personId": "SCA Atlantia",
+          "personId": "person-sca-atlantia",
           "eventId": null,
           "documentId": null,
           "memo": "NMR for Spring Spritely (Late)",
@@ -5624,40 +4456,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-134",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 134
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 134,
-          "visibleRowNumber": "126",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> NMR STILL OWING AS OF DEC 31.",
-          "detailsNotes": "",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -5700,7 +4498,7 @@
           "accountId": "Donations to Other 501(c) Orgs.",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-holiday-brawl-2026",
-          "personId": "SCA Atlantia",
+          "personId": "person-sca-atlantia",
           "eventId": null,
           "documentId": null,
           "memo": "Late NMR from Holiday Brawl 2026",
@@ -5724,74 +4522,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-137",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 137
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 137,
-          "visibleRowNumber": "129",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> OWED TO ANOTHER BRANCH AS OF DEC 31.",
-          "detailsNotes": "",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
-      ]
-    },
-    {
-      "transactionId": "ledger-row-138",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 138
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 138,
-          "visibleRowNumber": "130",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "Both branches are in the same 501(c) organization.",
-          "detailsNotes": "",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -5834,7 +4564,7 @@
           "accountId": "Transfer Out (Within Kingdom)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-holiday-brawl-2026",
-          "personId": "SCA Gilded Hedgehog",
+          "personId": "person-sca-gilded-hedgehog",
           "eventId": null,
           "documentId": null,
           "memo": "Share of Winterfest 2026 profits.",
@@ -5858,40 +4588,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-141",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 141
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 141,
-          "visibleRowNumber": "133",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> VARIOUS INCOME",
-          "detailsNotes": "",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -5934,7 +4630,7 @@
           "accountId": "Donations Received",
           "fundId": "fund-don-s-archery-fund",
           "budgetId": "budget-don-s-archery-fund-donations",
-          "personId": "Anonymous Donors",
+          "personId": "person-anonymous-donors",
           "eventId": null,
           "documentId": null,
           "memo": "Public Holiday Skate Donations to Archery Fund",
@@ -6000,7 +4696,7 @@
           "accountId": "Fundraising - At SCA Demos/Events",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-donations",
-          "personId": "Anonymous Donors",
+          "personId": "person-anonymous-donors",
           "eventId": null,
           "documentId": null,
           "memo": "Donations at Practice to the Archery Fund",
@@ -6066,7 +4762,7 @@
           "accountId": "Fundraising - Non-SCA Events",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-donations",
-          "personId": "Catty Cooks Guild",
+          "personId": "person-catty-cooks-guild",
           "eventId": null,
           "documentId": null,
           "memo": "Donation from Calendar Sales",
@@ -6131,7 +4827,7 @@
           "accountId": "Transfer In (From Within Kingdom)",
           "fundId": "fund-commisariat",
           "budgetId": null,
-          "personId": "SCA Burnished Brambles",
+          "personId": "person-sca-burnished-brambles",
           "eventId": null,
           "documentId": null,
           "memo": "Towards Pennsic Commisariat expenses.",
@@ -6155,40 +4851,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-147",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 147
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 147,
-          "visibleRowNumber": "139",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> VARIOUS EXPENSES",
-          "detailsNotes": "",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -6231,7 +4893,7 @@
           "accountId": "Tax Remitted (Other Liability)",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-holiday-brawl-2026",
-          "personId": "Tax Office",
+          "personId": "person-tax-office",
           "eventId": null,
           "documentId": null,
           "memo": "Partial Remittance, Dec 2026",
@@ -6296,7 +4958,7 @@
           "accountId": "Advertising (NON-SCA)",
           "fundId": "fund-general-fund",
           "budgetId": null,
-          "personId": "Raccoon City, Inc.",
+          "personId": "person-raccoon-city-inc",
           "eventId": null,
           "documentId": null,
           "memo": "Include contact info on displays at Solstice Skate",
@@ -6362,7 +5024,7 @@
           "accountId": "Donations to Other 501(c) Orgs.",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-holiday-brawl-2026",
-          "personId": "Toys for Tots",
+          "personId": "person-toys-for-tots",
           "eventId": null,
           "documentId": null,
           "memo": "Annual donation from Holiday Brawl revenue.",
@@ -6386,40 +5048,6 @@
             }
           }
         }
-      ]
-    },
-    {
-      "transactionId": "ledger-row-152",
-      "transactionDate": null,
-      "postingDate": null,
-      "description": "",
-      "reference": "",
-      "status": "POSTED",
-      "source": "MANUAL",
-      "bankTiming": "NOW",
-      "budgetTiming": "NOW",
-      "workbookLink": {
-        "sheetKey": "Ledger",
-        "ledgerRowIndex": 152
-      },
-      "extensions": {
-        "workbook": {
-          "sheet": "Ledger",
-          "ledgerRow": 152,
-          "visibleRowNumber": "144",
-          "dateShowsOnStatement": null,
-          "incomingCheckOrTransferDate": null,
-          "personOrBusinessName": "> WRITE-OFF OF PAYMENT NEVER RECEIVED",
-          "detailsNotes": "",
-          "bankAccount": "Checking",
-          "affectsBank": "Now",
-          "budgetCategory": "",
-          "affectsBudget": "Now",
-          "fund": "General Fund",
-          "merchant": ""
-        }
-      },
-      "lines": [
       ]
     },
     {
@@ -6462,7 +5090,7 @@
           "accountId": "Bad Debts/Bounced Check or Transfer",
           "fundId": "fund-general-fund",
           "budgetId": "budget-general-fund-spring-spritely",
-          "personId": "Jerald Puling",
+          "personId": "person-jerald-puling",
           "eventId": null,
           "documentId": null,
           "memo": "NSF orginal. Not collectable. Erin P. approved.",
@@ -6633,19 +5261,19 @@
       "status": "REVERSED"
     },
     {
-      "outstandingItemId": "outstanding-row-34",
+      "outstandingItemId": "outstanding-row-19",
       "kind": "DEPOSIT",
       "ledgerLink": null,
       "workbookLink": {
         "sheetKey": "Outstanding",
-        "ledgerRowIndex": 34
+        "ledgerRowIndex": 19
       },
-      "amount": "582.75",
+      "amount": "0.00",
       "extensions": {
         "workbook": {
           "sheet": "Outstanding",
-          "row": 34,
-          "visibleRowNumber": null
+          "row": 19,
+          "visibleRowNumber": "6"
         }
       },
       "dateSentOrReceived": null,
@@ -6654,306 +5282,26 @@
       "dateShowsOnStatement": null,
       "personOrBusinessName": null,
       "detailsNotes": null,
-      "fromToCardMerchant": null,
-      "accountForPaymentOrDeposit": "Total not yet deposited from previous years, as of Jan 1, 2026",
+      "fromToCardMerchant": "No",
+      "accountForPaymentOrDeposit": "Checking",
       "dateReversed": null,
       "reversalReasonAndApproval": null,
       "status": "OUTSTANDING"
     },
     {
-      "outstandingItemId": "outstanding-row-39",
-      "kind": "TRANSFER",
+      "outstandingItemId": "outstanding-row-20",
+      "kind": "DEPOSIT",
       "ledgerLink": null,
       "workbookLink": {
         "sheetKey": "Outstanding",
-        "ledgerRowIndex": 39
+        "ledgerRowIndex": 20
       },
       "amount": "0.00",
       "extensions": {
         "workbook": {
           "sheet": "Outstanding",
-          "row": 39,
-          "visibleRowNumber": "Ldgr"
-        }
-      },
-      "dateSentOrReceived": "Date Sent or",
-      "incomingCheckOrTransferDate": "Incoming Chq",
-      "transferIdOrCheckNumber": "Transfer ID",
-      "dateShowsOnStatement": "Date Shows",
-      "personOrBusinessName": null,
-      "detailsNotes": null,
-      "fromToCardMerchant": null,
-      "accountForPaymentOrDeposit": null,
-      "dateReversed": null,
-      "reversalReasonAndApproval": null,
-      "status": "CLEARED"
-    },
-    {
-      "outstandingItemId": "outstanding-row-40",
-      "kind": "CHECK",
-      "ledgerLink": null,
-      "workbookLink": {
-        "sheetKey": "Outstanding",
-        "ledgerRowIndex": 40
-      },
-      "amount": "0.00",
-      "extensions": {
-        "workbook": {
-          "sheet": "Outstanding",
-          "row": 40,
-          "visibleRowNumber": "Row"
-        }
-      },
-      "dateSentOrReceived": "Received",
-      "incomingCheckOrTransferDate": "or Tfr Date",
-      "transferIdOrCheckNumber": "or Chq #",
-      "dateShowsOnStatement": "on Statement",
-      "personOrBusinessName": "Name of Person/Business",
-      "detailsNotes": "Details/Notes",
-      "fromToCardMerchant": null,
-      "accountForPaymentOrDeposit": "Account",
-      "dateReversed": null,
-      "reversalReasonAndApproval": null,
-      "status": "CLEARED"
-    },
-    {
-      "outstandingItemId": "outstanding-row-41",
-      "kind": "CHECK",
-      "ledgerLink": null,
-      "workbookLink": {
-        "sheetKey": "Outstanding",
-        "ledgerRowIndex": 41
-      },
-      "amount": "1352.53",
-      "extensions": {
-        "workbook": {
-          "sheet": "Outstanding",
-          "row": 41,
-          "visibleRowNumber": "4"
-        }
-      },
-      "dateSentOrReceived": "2026-01-02",
-      "incomingCheckOrTransferDate": "2026-01-02",
-      "transferIdOrCheckNumber": "tfr92n3382n",
-      "dateShowsOnStatement": null,
-      "personOrBusinessName": "SCA Atlantia",
-      "detailsNotes": "PayPal proceeds from an event last year.",
-      "fromToCardMerchant": null,
-      "accountForPaymentOrDeposit": "Checking",
-      "dateReversed": null,
-      "reversalReasonAndApproval": null,
-      "status": "OUTSTANDING"
-    },
-    {
-      "outstandingItemId": "outstanding-row-42",
-      "kind": "CHECK",
-      "ledgerLink": null,
-      "workbookLink": {
-        "sheetKey": "Outstanding",
-        "ledgerRowIndex": 42
-      },
-      "amount": "500.00",
-      "extensions": {
-        "workbook": {
-          "sheet": "Outstanding",
-          "row": 42,
-          "visibleRowNumber": "5"
-        }
-      },
-      "dateSentOrReceived": "2026-01-03",
-      "incomingCheckOrTransferDate": "2026-01-03",
-      "transferIdOrCheckNumber": "57",
-      "dateShowsOnStatement": null,
-      "personOrBusinessName": "SCA Gilded Hedgehog",
-      "detailsNotes": "Portion of shared profits from 2025 event.",
-      "fromToCardMerchant": null,
-      "accountForPaymentOrDeposit": "Checking",
-      "dateReversed": null,
-      "reversalReasonAndApproval": null,
-      "status": "OUTSTANDING"
-    },
-    {
-      "outstandingItemId": "outstanding-row-43",
-      "kind": "CHECK",
-      "ledgerLink": null,
-      "workbookLink": {
-        "sheetKey": "Outstanding",
-        "ledgerRowIndex": 43
-      },
-      "amount": "200.00",
-      "extensions": {
-        "workbook": {
-          "sheet": "Outstanding",
-          "row": 43,
-          "visibleRowNumber": "29"
-        }
-      },
-      "dateSentOrReceived": "2026-01-02",
-      "incomingCheckOrTransferDate": "2026-01-02",
-      "transferIdOrCheckNumber": "14",
-      "dateShowsOnStatement": null,
-      "personOrBusinessName": "Irene Adkins",
-      "detailsNotes": "Returned Cash Advance for Gate",
-      "fromToCardMerchant": null,
-      "accountForPaymentOrDeposit": "Checking",
-      "dateReversed": null,
-      "reversalReasonAndApproval": null,
-      "status": "OUTSTANDING"
-    },
-    {
-      "outstandingItemId": "outstanding-row-44",
-      "kind": "CHECK",
-      "ledgerLink": null,
-      "workbookLink": {
-        "sheetKey": "Outstanding",
-        "ledgerRowIndex": 44
-      },
-      "amount": "275.00",
-      "extensions": {
-        "workbook": {
-          "sheet": "Outstanding",
-          "row": 44,
-          "visibleRowNumber": "32"
-        }
-      },
-      "dateSentOrReceived": "2026-01-15",
-      "incomingCheckOrTransferDate": "2026-01-15",
-      "transferIdOrCheckNumber": "4123",
-      "dateShowsOnStatement": null,
-      "personOrBusinessName": "Olde Reliable Hall",
-      "detailsNotes": "Returned Key & Cleaning Deposit",
-      "fromToCardMerchant": null,
-      "accountForPaymentOrDeposit": "Checking",
-      "dateReversed": null,
-      "reversalReasonAndApproval": null,
-      "status": "OUTSTANDING"
-    },
-    {
-      "outstandingItemId": "outstanding-row-45",
-      "kind": "DEPOSIT",
-      "ledgerLink": null,
-      "workbookLink": {
-        "sheetKey": "Outstanding",
-        "ledgerRowIndex": 45
-      },
-      "amount": "200.00",
-      "extensions": {
-        "workbook": {
-          "sheet": "Outstanding",
-          "row": 45,
-          "visibleRowNumber": "77"
-        }
-      },
-      "dateSentOrReceived": "2026-02-25",
-      "incomingCheckOrTransferDate": "2026-02-25",
-      "transferIdOrCheckNumber": null,
-      "dateShowsOnStatement": null,
-      "personOrBusinessName": "The Runcible House",
-      "detailsNotes": "Lost the site key. Only $200 of $275 returned.",
-      "fromToCardMerchant": null,
-      "accountForPaymentOrDeposit": "Checking",
-      "dateReversed": null,
-      "reversalReasonAndApproval": null,
-      "status": "OUTSTANDING"
-    },
-    {
-      "outstandingItemId": "outstanding-row-46",
-      "kind": "CHECK",
-      "ledgerLink": null,
-      "workbookLink": {
-        "sheetKey": "Outstanding",
-        "ledgerRowIndex": 46
-      },
-      "amount": "17.98",
-      "extensions": {
-        "workbook": {
-          "sheet": "Outstanding",
-          "row": 46,
-          "visibleRowNumber": "94"
-        }
-      },
-      "dateSentOrReceived": "2026-03-26",
-      "incomingCheckOrTransferDate": "2026-03-26",
-      "transferIdOrCheckNumber": "130",
-      "dateShowsOnStatement": null,
-      "personOrBusinessName": "Andrew King",
-      "detailsNotes": "Supplies for site tokens - Fell in a puddle, ink ran.",
-      "fromToCardMerchant": null,
-      "accountForPaymentOrDeposit": "Checking",
-      "dateReversed": null,
-      "reversalReasonAndApproval": null,
-      "status": "OUTSTANDING"
-    },
-    {
-      "outstandingItemId": "outstanding-row-47",
-      "kind": "CHECK",
-      "ledgerLink": null,
-      "workbookLink": {
-        "sheetKey": "Outstanding",
-        "ledgerRowIndex": 47
-      },
-      "amount": "17.98",
-      "extensions": {
-        "workbook": {
-          "sheet": "Outstanding",
-          "row": 47,
-          "visibleRowNumber": "95"
-        }
-      },
-      "dateSentOrReceived": "2026-04-25",
-      "incomingCheckOrTransferDate": "2026-04-25",
-      "transferIdOrCheckNumber": "131",
-      "dateShowsOnStatement": null,
-      "personOrBusinessName": "Andrew King",
-      "detailsNotes": "Re-issued #130. Supplies for site tokens.",
-      "fromToCardMerchant": null,
-      "accountForPaymentOrDeposit": "Checking",
-      "dateReversed": null,
-      "reversalReasonAndApproval": null,
-      "status": "OUTSTANDING"
-    },
-    {
-      "outstandingItemId": "outstanding-row-48",
-      "kind": "CHECK",
-      "ledgerLink": null,
-      "workbookLink": {
-        "sheetKey": "Outstanding",
-        "ledgerRowIndex": 48
-      },
-      "amount": "187.50",
-      "extensions": {
-        "workbook": {
-          "sheet": "Outstanding",
-          "row": 48,
-          "visibleRowNumber": "98"
-        }
-      },
-      "dateSentOrReceived": "2026-06-17",
-      "incomingCheckOrTransferDate": "2026-06-17",
-      "transferIdOrCheckNumber": "132",
-      "dateShowsOnStatement": null,
-      "personOrBusinessName": "Camp MegaMart",
-      "detailsNotes": "2 Pop-up Pavillions, on sale",
-      "fromToCardMerchant": null,
-      "accountForPaymentOrDeposit": "Checking",
-      "dateReversed": null,
-      "reversalReasonAndApproval": null,
-      "status": "OUTSTANDING"
-    },
-    {
-      "outstandingItemId": "outstanding-row-326",
-      "kind": "DEPOSIT",
-      "ledgerLink": null,
-      "workbookLink": {
-        "sheetKey": "Outstanding",
-        "ledgerRowIndex": 326
-      },
-      "amount": "2304.07",
-      "extensions": {
-        "workbook": {
-          "sheet": "Outstanding",
-          "row": 326,
-          "visibleRowNumber": null
+          "row": 20,
+          "visibleRowNumber": "7"
         }
       },
       "dateSentOrReceived": null,
@@ -6962,14 +5310,730 @@
       "dateShowsOnStatement": null,
       "personOrBusinessName": null,
       "detailsNotes": null,
-      "fromToCardMerchant": null,
-      "accountForPaymentOrDeposit": "Total outstanding from this year, as of Jun 30, 2026",
+      "fromToCardMerchant": "No",
+      "accountForPaymentOrDeposit": "Checking",
+      "dateReversed": null,
+      "reversalReasonAndApproval": null,
+      "status": "OUTSTANDING"
+    },
+    {
+      "outstandingItemId": "outstanding-row-21",
+      "kind": "DEPOSIT",
+      "ledgerLink": null,
+      "workbookLink": {
+        "sheetKey": "Outstanding",
+        "ledgerRowIndex": 21
+      },
+      "amount": "0.00",
+      "extensions": {
+        "workbook": {
+          "sheet": "Outstanding",
+          "row": 21,
+          "visibleRowNumber": "8"
+        }
+      },
+      "dateSentOrReceived": null,
+      "incomingCheckOrTransferDate": null,
+      "transferIdOrCheckNumber": null,
+      "dateShowsOnStatement": null,
+      "personOrBusinessName": null,
+      "detailsNotes": null,
+      "fromToCardMerchant": "No",
+      "accountForPaymentOrDeposit": "Checking",
+      "dateReversed": null,
+      "reversalReasonAndApproval": null,
+      "status": "OUTSTANDING"
+    },
+    {
+      "outstandingItemId": "outstanding-row-22",
+      "kind": "DEPOSIT",
+      "ledgerLink": null,
+      "workbookLink": {
+        "sheetKey": "Outstanding",
+        "ledgerRowIndex": 22
+      },
+      "amount": "0.00",
+      "extensions": {
+        "workbook": {
+          "sheet": "Outstanding",
+          "row": 22,
+          "visibleRowNumber": "9"
+        }
+      },
+      "dateSentOrReceived": null,
+      "incomingCheckOrTransferDate": null,
+      "transferIdOrCheckNumber": null,
+      "dateShowsOnStatement": null,
+      "personOrBusinessName": null,
+      "detailsNotes": null,
+      "fromToCardMerchant": "No",
+      "accountForPaymentOrDeposit": "Checking",
+      "dateReversed": null,
+      "reversalReasonAndApproval": null,
+      "status": "OUTSTANDING"
+    },
+    {
+      "outstandingItemId": "outstanding-row-23",
+      "kind": "DEPOSIT",
+      "ledgerLink": null,
+      "workbookLink": {
+        "sheetKey": "Outstanding",
+        "ledgerRowIndex": 23
+      },
+      "amount": "0.00",
+      "extensions": {
+        "workbook": {
+          "sheet": "Outstanding",
+          "row": 23,
+          "visibleRowNumber": "10"
+        }
+      },
+      "dateSentOrReceived": null,
+      "incomingCheckOrTransferDate": null,
+      "transferIdOrCheckNumber": null,
+      "dateShowsOnStatement": null,
+      "personOrBusinessName": null,
+      "detailsNotes": null,
+      "fromToCardMerchant": "No",
+      "accountForPaymentOrDeposit": "Checking",
+      "dateReversed": null,
+      "reversalReasonAndApproval": null,
+      "status": "OUTSTANDING"
+    },
+    {
+      "outstandingItemId": "outstanding-row-24",
+      "kind": "DEPOSIT",
+      "ledgerLink": null,
+      "workbookLink": {
+        "sheetKey": "Outstanding",
+        "ledgerRowIndex": 24
+      },
+      "amount": "0.00",
+      "extensions": {
+        "workbook": {
+          "sheet": "Outstanding",
+          "row": 24,
+          "visibleRowNumber": "11"
+        }
+      },
+      "dateSentOrReceived": null,
+      "incomingCheckOrTransferDate": null,
+      "transferIdOrCheckNumber": null,
+      "dateShowsOnStatement": null,
+      "personOrBusinessName": null,
+      "detailsNotes": null,
+      "fromToCardMerchant": "No",
+      "accountForPaymentOrDeposit": "Checking",
+      "dateReversed": null,
+      "reversalReasonAndApproval": null,
+      "status": "OUTSTANDING"
+    },
+    {
+      "outstandingItemId": "outstanding-row-25",
+      "kind": "DEPOSIT",
+      "ledgerLink": null,
+      "workbookLink": {
+        "sheetKey": "Outstanding",
+        "ledgerRowIndex": 25
+      },
+      "amount": "0.00",
+      "extensions": {
+        "workbook": {
+          "sheet": "Outstanding",
+          "row": 25,
+          "visibleRowNumber": "12"
+        }
+      },
+      "dateSentOrReceived": null,
+      "incomingCheckOrTransferDate": null,
+      "transferIdOrCheckNumber": null,
+      "dateShowsOnStatement": null,
+      "personOrBusinessName": null,
+      "detailsNotes": null,
+      "fromToCardMerchant": "No",
+      "accountForPaymentOrDeposit": "Checking",
+      "dateReversed": null,
+      "reversalReasonAndApproval": null,
+      "status": "OUTSTANDING"
+    },
+    {
+      "outstandingItemId": "outstanding-row-26",
+      "kind": "DEPOSIT",
+      "ledgerLink": null,
+      "workbookLink": {
+        "sheetKey": "Outstanding",
+        "ledgerRowIndex": 26
+      },
+      "amount": "0.00",
+      "extensions": {
+        "workbook": {
+          "sheet": "Outstanding",
+          "row": 26,
+          "visibleRowNumber": "13"
+        }
+      },
+      "dateSentOrReceived": null,
+      "incomingCheckOrTransferDate": null,
+      "transferIdOrCheckNumber": null,
+      "dateShowsOnStatement": null,
+      "personOrBusinessName": null,
+      "detailsNotes": null,
+      "fromToCardMerchant": "No",
+      "accountForPaymentOrDeposit": "Checking",
+      "dateReversed": null,
+      "reversalReasonAndApproval": null,
+      "status": "OUTSTANDING"
+    },
+    {
+      "outstandingItemId": "outstanding-row-27",
+      "kind": "DEPOSIT",
+      "ledgerLink": null,
+      "workbookLink": {
+        "sheetKey": "Outstanding",
+        "ledgerRowIndex": 27
+      },
+      "amount": "0.00",
+      "extensions": {
+        "workbook": {
+          "sheet": "Outstanding",
+          "row": 27,
+          "visibleRowNumber": "14"
+        }
+      },
+      "dateSentOrReceived": null,
+      "incomingCheckOrTransferDate": null,
+      "transferIdOrCheckNumber": null,
+      "dateShowsOnStatement": null,
+      "personOrBusinessName": null,
+      "detailsNotes": null,
+      "fromToCardMerchant": "No",
+      "accountForPaymentOrDeposit": "Checking",
+      "dateReversed": null,
+      "reversalReasonAndApproval": null,
+      "status": "OUTSTANDING"
+    },
+    {
+      "outstandingItemId": "outstanding-row-28",
+      "kind": "DEPOSIT",
+      "ledgerLink": null,
+      "workbookLink": {
+        "sheetKey": "Outstanding",
+        "ledgerRowIndex": 28
+      },
+      "amount": "0.00",
+      "extensions": {
+        "workbook": {
+          "sheet": "Outstanding",
+          "row": 28,
+          "visibleRowNumber": "15"
+        }
+      },
+      "dateSentOrReceived": null,
+      "incomingCheckOrTransferDate": null,
+      "transferIdOrCheckNumber": null,
+      "dateShowsOnStatement": null,
+      "personOrBusinessName": null,
+      "detailsNotes": null,
+      "fromToCardMerchant": "No",
+      "accountForPaymentOrDeposit": "Checking",
+      "dateReversed": null,
+      "reversalReasonAndApproval": null,
+      "status": "OUTSTANDING"
+    },
+    {
+      "outstandingItemId": "outstanding-row-29",
+      "kind": "DEPOSIT",
+      "ledgerLink": null,
+      "workbookLink": {
+        "sheetKey": "Outstanding",
+        "ledgerRowIndex": 29
+      },
+      "amount": "0.00",
+      "extensions": {
+        "workbook": {
+          "sheet": "Outstanding",
+          "row": 29,
+          "visibleRowNumber": "16"
+        }
+      },
+      "dateSentOrReceived": null,
+      "incomingCheckOrTransferDate": null,
+      "transferIdOrCheckNumber": null,
+      "dateShowsOnStatement": null,
+      "personOrBusinessName": null,
+      "detailsNotes": null,
+      "fromToCardMerchant": "No",
+      "accountForPaymentOrDeposit": "Checking",
+      "dateReversed": null,
+      "reversalReasonAndApproval": null,
+      "status": "OUTSTANDING"
+    },
+    {
+      "outstandingItemId": "outstanding-row-30",
+      "kind": "DEPOSIT",
+      "ledgerLink": null,
+      "workbookLink": {
+        "sheetKey": "Outstanding",
+        "ledgerRowIndex": 30
+      },
+      "amount": "0.00",
+      "extensions": {
+        "workbook": {
+          "sheet": "Outstanding",
+          "row": 30,
+          "visibleRowNumber": "17"
+        }
+      },
+      "dateSentOrReceived": null,
+      "incomingCheckOrTransferDate": null,
+      "transferIdOrCheckNumber": null,
+      "dateShowsOnStatement": null,
+      "personOrBusinessName": null,
+      "detailsNotes": null,
+      "fromToCardMerchant": "No",
+      "accountForPaymentOrDeposit": "Checking",
+      "dateReversed": null,
+      "reversalReasonAndApproval": null,
+      "status": "OUTSTANDING"
+    },
+    {
+      "outstandingItemId": "outstanding-row-31",
+      "kind": "DEPOSIT",
+      "ledgerLink": null,
+      "workbookLink": {
+        "sheetKey": "Outstanding",
+        "ledgerRowIndex": 31
+      },
+      "amount": "0.00",
+      "extensions": {
+        "workbook": {
+          "sheet": "Outstanding",
+          "row": 31,
+          "visibleRowNumber": "18"
+        }
+      },
+      "dateSentOrReceived": null,
+      "incomingCheckOrTransferDate": null,
+      "transferIdOrCheckNumber": null,
+      "dateShowsOnStatement": null,
+      "personOrBusinessName": null,
+      "detailsNotes": null,
+      "fromToCardMerchant": "No",
+      "accountForPaymentOrDeposit": "Checking",
+      "dateReversed": null,
+      "reversalReasonAndApproval": null,
+      "status": "OUTSTANDING"
+    },
+    {
+      "outstandingItemId": "outstanding-row-32",
+      "kind": "DEPOSIT",
+      "ledgerLink": null,
+      "workbookLink": {
+        "sheetKey": "Outstanding",
+        "ledgerRowIndex": 32
+      },
+      "amount": "0.00",
+      "extensions": {
+        "workbook": {
+          "sheet": "Outstanding",
+          "row": 32,
+          "visibleRowNumber": "19"
+        }
+      },
+      "dateSentOrReceived": null,
+      "incomingCheckOrTransferDate": null,
+      "transferIdOrCheckNumber": null,
+      "dateShowsOnStatement": null,
+      "personOrBusinessName": null,
+      "detailsNotes": null,
+      "fromToCardMerchant": "No",
+      "accountForPaymentOrDeposit": "Checking",
+      "dateReversed": null,
+      "reversalReasonAndApproval": null,
+      "status": "OUTSTANDING"
+    },
+    {
+      "outstandingItemId": "outstanding-row-33",
+      "kind": "DEPOSIT",
+      "ledgerLink": null,
+      "workbookLink": {
+        "sheetKey": "Outstanding",
+        "ledgerRowIndex": 33
+      },
+      "amount": "0.00",
+      "extensions": {
+        "workbook": {
+          "sheet": "Outstanding",
+          "row": 33,
+          "visibleRowNumber": "20"
+        }
+      },
+      "dateSentOrReceived": null,
+      "incomingCheckOrTransferDate": null,
+      "transferIdOrCheckNumber": null,
+      "dateShowsOnStatement": null,
+      "personOrBusinessName": null,
+      "detailsNotes": null,
+      "fromToCardMerchant": "No",
+      "accountForPaymentOrDeposit": "Checking",
       "dateReversed": null,
       "reversalReasonAndApproval": null,
       "status": "OUTSTANDING"
     }
   ],
   "otherAssetItems": [
+  ],
+  "supplementalItems": [
+    {
+      "supplementalItemId": "supp-assetdetails-receivable-14",
+      "kind": "RECEIVABLE",
+      "counterpartyName": "SCA Kingdom of Atlantia",
+      "personId": "person-sca-kingdom-of-atlantia",
+      "year": 2025,
+      "reason": "Proceeds from event last year",
+      "subtypeCode": null,
+      "eventBudgetLabel": "Holiday Brawl 2025",
+      "budgetId": null,
+      "sourceLabel": "PayPal",
+      "amountAsOf": "1352.53",
+      "ledgerRowIndex": 4,
+      "workbookLink": {
+        "sheetKey": "AssetDetails",
+        "ledgerRowIndex": 14
+      },
+      "extensions": {
+        "workbook": {
+          "sheet": "AssetDetails",
+          "row": 14,
+          "section": "Receivables"
+        }
+      }
+    },
+    {
+      "supplementalItemId": "supp-assetdetails-receivable-15",
+      "kind": "RECEIVABLE",
+      "counterpartyName": "SCA Gilded Hedgehog",
+      "personId": "person-sca-gilded-hedgehog",
+      "year": 2025,
+      "reason": "Share of event profits",
+      "subtypeCode": null,
+      "eventBudgetLabel": "Holiday Brawl 2025",
+      "budgetId": null,
+      "sourceLabel": null,
+      "amountAsOf": "500.00",
+      "ledgerRowIndex": 5,
+      "workbookLink": {
+        "sheetKey": "AssetDetails",
+        "ledgerRowIndex": 15
+      },
+      "extensions": {
+        "workbook": {
+          "sheet": "AssetDetails",
+          "row": 15,
+          "section": "Receivables"
+        }
+      }
+    },
+    {
+      "supplementalItemId": "supp-assetdetails-prepaid-expense-31",
+      "kind": "PREPAID_EXPENSE",
+      "counterpartyName": "The Scholar's Abode",
+      "personId": "person-the-scholar-s-abode",
+      "year": 2025,
+      "reason": "Meeting Space for 2026 Q1",
+      "subtypeCode": null,
+      "eventBudgetLabel": "Meeting & Fight Space",
+      "budgetId": null,
+      "sourceLabel": null,
+      "amountAsOf": "300.00",
+      "ledgerRowIndex": 15,
+      "workbookLink": {
+        "sheetKey": "AssetDetails",
+        "ledgerRowIndex": 31
+      },
+      "extensions": {
+        "workbook": {
+          "sheet": "AssetDetails",
+          "row": 31,
+          "section": "Prepaid Expenses"
+        }
+      }
+    },
+    {
+      "supplementalItemId": "supp-assetdetails-prepaid-expense-32",
+      "kind": "PREPAID_EXPENSE",
+      "counterpartyName": "The Scholar's Abode",
+      "personId": "person-the-scholar-s-abode",
+      "year": 2025,
+      "reason": "Meeting Space for 2026 Q2",
+      "subtypeCode": null,
+      "eventBudgetLabel": "Meeting & Fight Space",
+      "budgetId": null,
+      "sourceLabel": null,
+      "amountAsOf": "300.00",
+      "ledgerRowIndex": 16,
+      "workbookLink": {
+        "sheetKey": "AssetDetails",
+        "ledgerRowIndex": 32
+      },
+      "extensions": {
+        "workbook": {
+          "sheet": "AssetDetails",
+          "row": 32,
+          "section": "Prepaid Expenses"
+        }
+      }
+    },
+    {
+      "supplementalItemId": "supp-assetdetails-prepaid-expense-33",
+      "kind": "PREPAID_EXPENSE",
+      "counterpartyName": "The Scholar's Abode",
+      "personId": "person-the-scholar-s-abode",
+      "year": 2025,
+      "reason": "Meeting Space, 2026, July & August",
+      "subtypeCode": null,
+      "eventBudgetLabel": "Meeting & Fight Space",
+      "budgetId": null,
+      "sourceLabel": null,
+      "amountAsOf": "200.00",
+      "ledgerRowIndex": 17,
+      "workbookLink": {
+        "sheetKey": "AssetDetails",
+        "ledgerRowIndex": 33
+      },
+      "extensions": {
+        "workbook": {
+          "sheet": "AssetDetails",
+          "row": 33,
+          "section": "Prepaid Expenses"
+        }
+      }
+    },
+    {
+      "supplementalItemId": "supp-assetdetails-other-asset-59",
+      "kind": "OTHER_ASSET",
+      "counterpartyName": "Irene Adkins",
+      "personId": "person-irene-adkins",
+      "year": 2025,
+      "reason": "Cash for Gate",
+      "subtypeCode": "C",
+      "eventBudgetLabel": "Holiday Brawl 2025",
+      "budgetId": null,
+      "sourceLabel": null,
+      "amountAsOf": "200.00",
+      "ledgerRowIndex": 29,
+      "workbookLink": {
+        "sheetKey": "AssetDetails",
+        "ledgerRowIndex": 59
+      },
+      "extensions": {
+        "workbook": {
+          "sheet": "AssetDetails",
+          "row": 59,
+          "section": "Other Assets"
+        }
+      }
+    },
+    {
+      "supplementalItemId": "supp-assetdetails-other-asset-60",
+      "kind": "OTHER_ASSET",
+      "counterpartyName": "Olde Reliable Hall",
+      "personId": "person-olde-reliable-hall",
+      "year": 2025,
+      "reason": "Deposit for Key ($50) & Cleaning",
+      "subtypeCode": "S",
+      "eventBudgetLabel": "Holiday Brawl 2025",
+      "budgetId": null,
+      "sourceLabel": null,
+      "amountAsOf": "275.00",
+      "ledgerRowIndex": 32,
+      "workbookLink": {
+        "sheetKey": "AssetDetails",
+        "ledgerRowIndex": 60
+      },
+      "extensions": {
+        "workbook": {
+          "sheet": "AssetDetails",
+          "row": 60,
+          "section": "Other Assets"
+        }
+      }
+    },
+    {
+      "supplementalItemId": "supp-liabilitydetails-deferred-revenue-12",
+      "kind": "DEFERRED_REVENUE",
+      "counterpartyName": "Anne McGuffin",
+      "personId": "person-anne-mcguffin",
+      "year": 2025,
+      "reason": "Gate Fee",
+      "subtypeCode": null,
+      "eventBudgetLabel": "Frozen Fingers A&S",
+      "budgetId": null,
+      "sourceLabel": null,
+      "amountAsOf": "30.00",
+      "ledgerRowIndex": 59,
+      "workbookLink": {
+        "sheetKey": "LiabilityDetails",
+        "ledgerRowIndex": 12
+      },
+      "extensions": {
+        "workbook": {
+          "sheet": "LiabilityDetails",
+          "row": 12,
+          "section": "Deferred Revenue"
+        }
+      }
+    },
+    {
+      "supplementalItemId": "supp-liabilitydetails-deferred-revenue-13",
+      "kind": "DEFERRED_REVENUE",
+      "counterpartyName": "Brant MacGuffin",
+      "personId": "person-brant-macguffin",
+      "year": 2025,
+      "reason": "Gate Fee & Lunch",
+      "subtypeCode": null,
+      "eventBudgetLabel": "Frozen Fingers A&S",
+      "budgetId": null,
+      "sourceLabel": null,
+      "amountAsOf": "40.00",
+      "ledgerRowIndex": 59,
+      "workbookLink": {
+        "sheetKey": "LiabilityDetails",
+        "ledgerRowIndex": 13
+      },
+      "extensions": {
+        "workbook": {
+          "sheet": "LiabilityDetails",
+          "row": 13,
+          "section": "Deferred Revenue"
+        }
+      }
+    },
+    {
+      "supplementalItemId": "supp-liabilitydetails-deferred-revenue-14",
+      "kind": "DEFERRED_REVENUE",
+      "counterpartyName": "Caroline MacCormick",
+      "personId": "person-caroline-maccormick",
+      "year": 2025,
+      "reason": "Gate Fee & Lunch",
+      "subtypeCode": null,
+      "eventBudgetLabel": "Frozen Fingers A&S",
+      "budgetId": null,
+      "sourceLabel": null,
+      "amountAsOf": "40.00",
+      "ledgerRowIndex": 59,
+      "workbookLink": {
+        "sheetKey": "LiabilityDetails",
+        "ledgerRowIndex": 14
+      },
+      "extensions": {
+        "workbook": {
+          "sheet": "LiabilityDetails",
+          "row": 14,
+          "section": "Deferred Revenue"
+        }
+      }
+    },
+    {
+      "supplementalItemId": "supp-liabilitydetails-deferred-revenue-15",
+      "kind": "DEFERRED_REVENUE",
+      "counterpartyName": "SCA Kingdom of Atlantia",
+      "personId": "person-sca-kingdom-of-atlantia",
+      "year": 2025,
+      "reason": "Gate Fees",
+      "subtypeCode": null,
+      "eventBudgetLabel": "12th Night",
+      "budgetId": null,
+      "sourceLabel": "PayPal",
+      "amountAsOf": "285.11",
+      "ledgerRowIndex": null,
+      "workbookLink": {
+        "sheetKey": "LiabilityDetails",
+        "ledgerRowIndex": 15
+      },
+      "extensions": {
+        "workbook": {
+          "sheet": "LiabilityDetails",
+          "row": 15,
+          "section": "Deferred Revenue"
+        }
+      }
+    },
+    {
+      "supplementalItemId": "supp-liabilitydetails-payable-38",
+      "kind": "PAYABLE",
+      "counterpartyName": "Syd Bond",
+      "personId": "person-syd-bond",
+      "year": 2025,
+      "reason": "Locker rental, August-December 2025",
+      "subtypeCode": null,
+      "eventBudgetLabel": "Storage Locker",
+      "budgetId": null,
+      "sourceLabel": null,
+      "amountAsOf": "50.00",
+      "ledgerRowIndex": 46,
+      "workbookLink": {
+        "sheetKey": "LiabilityDetails",
+        "ledgerRowIndex": 38
+      },
+      "extensions": {
+        "workbook": {
+          "sheet": "LiabilityDetails",
+          "row": 38,
+          "section": "Payables"
+        }
+      }
+    },
+    {
+      "supplementalItemId": "supp-liabilitydetails-payable-39",
+      "kind": "PAYABLE",
+      "counterpartyName": "East Kingdom",
+      "personId": "person-east-kingdom",
+      "year": 2025,
+      "reason": "NMR Owed from December 2025",
+      "subtypeCode": null,
+      "eventBudgetLabel": "Holiday Brawl 2025",
+      "budgetId": null,
+      "sourceLabel": null,
+      "amountAsOf": "70.00",
+      "ledgerRowIndex": null,
+      "workbookLink": {
+        "sheetKey": "LiabilityDetails",
+        "ledgerRowIndex": 39
+      },
+      "extensions": {
+        "workbook": {
+          "sheet": "LiabilityDetails",
+          "row": 39,
+          "section": "Payables"
+        }
+      }
+    },
+    {
+      "supplementalItemId": "supp-liabilitydetails-other-liability-54",
+      "kind": "OTHER_LIABILITY",
+      "counterpartyName": "SCA Atlantia",
+      "personId": "person-sca-atlantia",
+      "year": 2025,
+      "reason": "NMR from 2025",
+      "subtypeCode": "O",
+      "eventBudgetLabel": "Holiday Brawl 2025",
+      "budgetId": null,
+      "sourceLabel": null,
+      "amountAsOf": "40.00",
+      "ledgerRowIndex": 50,
+      "workbookLink": {
+        "sheetKey": "LiabilityDetails",
+        "ledgerRowIndex": 54
+      },
+      "extensions": {
+        "workbook": {
+          "sheet": "LiabilityDetails",
+          "row": 54,
+          "section": "Other Liabilities"
+        }
+      }
+    }
   ],
   "assets": [
     {

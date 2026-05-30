@@ -8,6 +8,7 @@ import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.service.DocumentStorageService;
 import nonprofitbookkeeping.service.DonorService;
 import nonprofitbookkeeping.service.FundAccountingService;
@@ -57,7 +58,12 @@ import java.util.Locale;
 import java.util.function.Supplier;
 
 /**
- * Represents the MainWindow component in the nonprofit bookkeeping application.
+ * Classic menu-bar UI system for the nonprofit bookkeeping application.
+ *
+ * <p>Status: live but non-default. {@link MainApp} selects this shell when
+ * {@code npbk.ui.variant} is set to a value other than {@code alternate}. It
+ * provides the traditional top {@link javafx.scene.control.MenuBar}, toolbar,
+ * navigation pane, workspace, and inspector layout.</p>
  */
 public class MainWindow extends BorderPane
 {
@@ -75,6 +81,9 @@ public class MainWindow extends BorderPane
     private final SettingsService settingsService = new SettingsService();
     private final SCALedgerPlugin scaLedgerPlugin = new SCALedgerPlugin();
     private final Supplier<Stage> stageSupplier;
+    private MenuItem importOutlandsLedgerItem;
+    private MenuItem importScaLedgerItem;
+    private MenuItem saveModifiedScaWorkbookItem;
     private DateRangeSelector dateRangeSelector;
 
     public MainWindow()
@@ -111,6 +120,9 @@ public class MainWindow extends BorderPane
     private MenuBar buildMenuBar()
     {
         Menu file = new Menu("File");
+        this.importOutlandsLedgerItem = item("Import Outlands Ledger...", null, this::importOutlandsLedger);
+        this.importScaLedgerItem = item("Import SCA Ledger...", null, this::importScaLedger);
+        this.saveModifiedScaWorkbookItem = item("Save Modified SCA Workbook...", null, this::saveModifiedScaWorkbook);
         file.getItems().addAll(
             item("Open Company", "Ctrl+O", this::openCompany),
             item("Close Company", "Ctrl+W", this::closeCompany),
@@ -123,10 +135,10 @@ public class MainWindow extends BorderPane
             new SeparatorMenuItem(),
             item("Import Financial File (OFX/QFX)...", null,
                 () -> new ImportFileActionFX(getOwningStage()).handle(null)),
-            item("Import Outlands Ledger...", null, this::importOutlandsLedger),
-            item("Import SCA Ledger...", null, this::importScaLedger),
+            this.importOutlandsLedgerItem,
+            this.importScaLedgerItem,
             new SeparatorMenuItem(),
-            item("Save Modified SCA Workbook...", null, this::saveModifiedScaWorkbook),
+            this.saveModifiedScaWorkbookItem,
             item("Export Account Statement (OFX/QFX)...", null,
                 () -> new ExportFileActionFX(getOwningStage()).handle(null)),
             new SeparatorMenuItem(),
@@ -164,6 +176,8 @@ public class MainWindow extends BorderPane
         database.getItems().addAll(
             item("Open/Create H2 DB...", null,
                 this::handleOpenOrCreateDatabase),
+            item("Recover H2 DB from corruption...", null,
+                this::handleRecoverH2Database),
             item("Import Legacy .npbk Archive...", null,
                 this::handleImportLegacyArchive),
             item("Import H2 script into DB...", null,
@@ -214,7 +228,21 @@ public class MainWindow extends BorderPane
             item("Help", null, () -> showLegacyPanel("Help", new HelpPanelFX(getOwningStage())))
         );
 
+        installCompanyStateMenuUpdates();
         return new MenuBar(file, edit, run, database, reports, fundraising, settings, plugins, help);
+    }
+
+    private void installCompanyStateMenuUpdates()
+    {
+        updateCompanyScopedMenuItems(CurrentCompany.isOpen());
+        CurrentCompany.CompanyListener.addCompanyListener(this::updateCompanyScopedMenuItems);
+    }
+
+    private void updateCompanyScopedMenuItems(boolean companyOpen)
+    {
+        this.importOutlandsLedgerItem.setDisable(!companyOpen);
+        this.importScaLedgerItem.setDisable(!companyOpen);
+        this.saveModifiedScaWorkbookItem.setDisable(!companyOpen);
     }
 
     private ToolBar buildToolBar()
@@ -446,6 +474,41 @@ public class MainWindow extends BorderPane
         catch (Exception ex)
         {
             info("Legacy import failed: " + UiErrors.safeMessage(ex));
+        }
+    }
+
+    private void handleRecoverH2Database()
+    {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Select Corrupted H2 Database to Recover");
+        chooser.getExtensionFilters().addAll(
+            new FileChooser.ExtensionFilter("H2 Database (*.mv.db)", "*.mv.db"),
+            new FileChooser.ExtensionFilter("All Files", "*.*"));
+        File dbFile = chooser.showOpenDialog(getOwningStage());
+        if (dbFile == null)
+        {
+            return;
+        }
+
+        Path dbPath = normalizeH2Base(dbFile.toPath());
+        try
+        {
+            H2SchemaMigrator.RepairResult repairResult = H2SchemaMigrator.repairCorruptedDatabase(dbPath);
+            String message = "H2 recovery completed for " + dbPath.toAbsolutePath();
+            if (repairResult != null)
+            {
+                message += "\nRecovery SQL: " + repairResult.recoveryScript().toAbsolutePath();
+                if (!repairResult.backupFiles().isEmpty())
+                {
+                    message += "\nBackups:\n" + String.join("\n", repairResult.backupFiles().stream()
+                        .map(path -> path.toAbsolutePath().toString()).toList());
+                }
+            }
+            info(message);
+        }
+        catch (Exception ex)
+        {
+            info("H2 recovery failed: " + UiErrors.safeMessage(ex));
         }
     }
 
