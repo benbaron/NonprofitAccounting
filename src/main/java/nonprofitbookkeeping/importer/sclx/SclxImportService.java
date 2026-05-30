@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
+import nonprofitbookkeeping.persistence.DocumentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,79 +79,86 @@ public class SclxImportService
         Objects.requireNonNull(target, "target");
         Objects.requireNonNull(options, "options");
 
-        log.debug(
-            "Importing SCLX document format={}, version={}, orgPresent={}, reportingPeriodPresent={}",
-            document.format(),
-            document.version(),
-            document.organization() != null,
-            document.reportingPeriod() != null);
-        validateEnvelope(document, options);
-        validateLedgerNativePolicy(document, options);
-
-        target.beginImport(document, options);
-
-        if (document.compatibility() != null)
+        try
         {
-            target.importCompatibility(document.compatibility());
+            log.debug(
+                "Importing SCLX document format={}, version={}, orgPresent={}, reportingPeriodPresent={}",
+                document.format(),
+                document.version(),
+                document.organization() != null,
+                document.reportingPeriod() != null);
+            validateEnvelope(document, options);
+            validateLedgerNativePolicy(document, options);
+
+            target.beginImport(document, options);
+
+            if (document.compatibility() != null)
+            {
+                target.importCompatibility(document.compatibility());
+            }
+            if (document.organization() != null)
+            {
+                target.importOrganization(document.organization());
+            }
+            if (document.reportingPeriod() != null)
+            {
+                target.importReportingPeriod(document.reportingPeriod());
+            }
+
+            target.importAccounts(normalize(document.chartOfAccounts(), options));
+            target.importFunds(normalize(document.funds(), options));
+            target.importBudgets(normalize(document.budgets(), options));
+            target.importPeople(normalize(document.people(), options));
+            target.importBankAccounts(normalize(document.bankAccounts(), options));
+            target.importOfficeAssignments(normalize(document.officeAssignments(), options));
+            target.importCommitteeMemberships(normalize(document.committeeMemberships(), options));
+            target.importEvents(normalize(document.events(), options));
+            target.importDocuments(normalize(document.documents(), options));
+            target.importTransactions(normalize(document.transactions(), options));
+            target.importOutstandingItems(normalize(document.outstandingItems(), options));
+            target.importOtherAssetItems(normalize(document.otherAssetItems(), options));
+            target.importSupplementalItems(normalize(document.supplementalItems(), options));
+            target.importAssets(normalize(document.assets(), options));
+            target.importSupplies(normalize(document.supplies(), options));
+            target.importBankingItems(normalize(document.bankingItems(), options));
+            target.importBankStatementImports(normalize(document.bankStatementImports(), options));
+
+            SclxImportResult result = new SclxImportResult(
+                document.version(),
+                size(document.chartOfAccounts()),
+                size(document.funds()),
+                size(document.budgets()),
+                size(document.people()),
+                size(document.events()),
+                size(document.documents()),
+                size(document.transactions()),
+                countLines(document.transactions()),
+                size(document.outstandingItems()),
+                size(document.otherAssetItems()),
+                size(document.supplementalItems()),
+                size(document.assets()),
+                size(document.supplies()),
+                size(document.bankingItems()),
+                size(document.bankStatementImports()));
+            log.debug(
+                "SCLX import staged counts accounts={}, funds={}, budgets={}, people={}, events={}, documents={}, txns={}, txnLines={}",
+                result.accountCount(),
+                result.fundCount(),
+                result.budgetCount(),
+                result.personCount(),
+                result.eventCount(),
+                result.documentCount(),
+                result.transactionCount(),
+                result.transactionLineCount());
+
+            target.completeImport(result);
+            log.debug("Completed SCLX import for version={}", result.version());
+            return result;
         }
-        if (document.organization() != null)
+        finally
         {
-            target.importOrganization(document.organization());
+            DocumentRepository.clearThreadScopedEphemeralDocuments();
         }
-        if (document.reportingPeriod() != null)
-        {
-            target.importReportingPeriod(document.reportingPeriod());
-        }
-
-        target.importAccounts(normalize(document.chartOfAccounts(), options));
-        target.importFunds(normalize(document.funds(), options));
-        target.importBudgets(normalize(document.budgets(), options));
-        target.importPeople(normalize(document.people(), options));
-        target.importBankAccounts(normalize(document.bankAccounts(), options));
-        target.importOfficeAssignments(normalize(document.officeAssignments(), options));
-        target.importCommitteeMemberships(normalize(document.committeeMemberships(), options));
-        target.importEvents(normalize(document.events(), options));
-        target.importDocuments(normalize(document.documents(), options));
-        target.importTransactions(normalize(document.transactions(), options));
-        target.importOutstandingItems(normalize(document.outstandingItems(), options));
-        target.importOtherAssetItems(normalize(document.otherAssetItems(), options));
-        target.importSupplementalItems(normalize(document.supplementalItems(), options));
-        target.importAssets(normalize(document.assets(), options));
-        target.importSupplies(normalize(document.supplies(), options));
-        target.importBankingItems(normalize(document.bankingItems(), options));
-        target.importBankStatementImports(normalize(document.bankStatementImports(), options));
-
-        SclxImportResult result = new SclxImportResult(
-            document.version(),
-            size(document.chartOfAccounts()),
-            size(document.funds()),
-            size(document.budgets()),
-            size(document.people()),
-            size(document.events()),
-            size(document.documents()),
-            size(document.transactions()),
-            countLines(document.transactions()),
-            size(document.outstandingItems()),
-            size(document.otherAssetItems()),
-            size(document.supplementalItems()),
-            size(document.assets()),
-            size(document.supplies()),
-            size(document.bankingItems()),
-            size(document.bankStatementImports()));
-        log.debug(
-            "SCLX import staged counts accounts={}, funds={}, budgets={}, people={}, events={}, documents={}, txns={}, txnLines={}",
-            result.accountCount(),
-            result.fundCount(),
-            result.budgetCount(),
-            result.personCount(),
-            result.eventCount(),
-            result.documentCount(),
-            result.transactionCount(),
-            result.transactionLineCount());
-
-        target.completeImport(result);
-        log.debug("Completed SCLX import for version={}", result.version());
-        return result;
     }
 
     private static void validateEnvelope(SclxDocument document, SclxImportOptions options)
