@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -18,17 +20,36 @@ import java.util.Optional;
  * company directory (for example {@code budgets.json}, {@code sales.json}, etc.).  The new
  * persistence model stores those JSON payloads in the {@code document} table so that the
  * information lives inside the database and participates in regular database backups.</p>
+ *
+ * <p>Raw SCLX import payloads are intentionally excluded from database persistence. They are
+ * only kept in thread-local memory for the duration of an import run so that large source JSON
+ * blobs do not bloat the {@code document} table or the underlying H2 file.</p>
  */
 @ApplicationScoped
 public class DocumentRepository
 {
-	
 	private static final String UPSERT_SQL =
 		"MERGE INTO document(name, content) KEY(name) VALUES (?, ?)";
 	private static final String SELECT_SQL =
 		"SELECT content FROM document WHERE name = ?";
 	private static final String DELETE_SQL =
 		"DELETE FROM document WHERE name = ?";
+	private static final String SCLX_RAW_PREFIX = "sclx.raw.";
+	private static final ThreadLocal<Map<String, String>> EPHEMERAL_SCLX_RAW_DOCUMENTS =
+		ThreadLocal.withInitial(HashMap::new);
+	
+	/**
+	 * Clears any thread-scoped raw SCLX payloads cached for the current import run.
+	 */
+	public static void clearThreadScopedEphemeralDocuments()
+	{
+		EPHEMERAL_SCLX_RAW_DOCUMENTS.remove();
+	}
+	
+	private static boolean isEphemeralSclxRawDocument(String name)
+	{
+		return name != null && name.startsWith(SCLX_RAW_PREFIX);
+	}
 	
 	/**
 	 * Stores or replaces the JSON payload associated with the supplied document name.
@@ -39,6 +60,11 @@ public class DocumentRepository
 	 */
 	public void upsert(String name, String content) throws SQLException
 	{
+		if (isEphemeralSclxRawDocument(name))
+		{
+			EPHEMERAL_SCLX_RAW_DOCUMENTS.get().put(name, content);
+			return;
+		}
 		
 		try (Connection c = Database.get().getConnection();
 			PreparedStatement ps = c.prepareStatement(UPSERT_SQL))
@@ -59,6 +85,10 @@ public class DocumentRepository
 	 */
 	public Optional<String> find(String name) throws SQLException
 	{
+		if (isEphemeralSclxRawDocument(name))
+		{
+			return Optional.ofNullable(EPHEMERAL_SCLX_RAW_DOCUMENTS.get().get(name));
+		}
 		
 		try (Connection c = Database.get().getConnection();
 			PreparedStatement ps = c.prepareStatement(SELECT_SQL))
@@ -89,6 +119,11 @@ public class DocumentRepository
 	 */
 	public void delete(String name) throws SQLException
 	{
+		if (isEphemeralSclxRawDocument(name))
+		{
+			EPHEMERAL_SCLX_RAW_DOCUMENTS.get().remove(name);
+			return;
+		}
 		
 		try (Connection c = Database.get().getConnection();
 			PreparedStatement ps = c.prepareStatement(DELETE_SQL))
