@@ -214,6 +214,52 @@ public class FundAccountingService
 		
 	}
 	
+
+	/**
+	 * Finds a fund by name.
+	 *
+	 * @param fundName the fund name
+	 * @return the fund, or {@code null} when no matching fund exists
+	 */
+	public Fund findFund(String fundName)
+	{
+		return fundName == null ? null : this.fundMap.get(fundName);
+	}
+
+	/**
+	 * Edits a fund's display name and balance.
+	 *
+	 * @param originalName current fund name
+	 * @param newName replacement fund name
+	 * @param balance replacement display balance
+	 */
+	public void editFund(String originalName, String newName, BigDecimal balance)
+	{
+		if (originalName == null || originalName.isBlank())
+		{
+			throw new IllegalArgumentException("Original fund name is required.");
+		}
+		if (newName == null || newName.isBlank())
+		{
+			throw new IllegalArgumentException("Fund name is required.");
+		}
+		Fund fund = this.fundMap.get(originalName);
+		if (fund == null)
+		{
+			throw new IllegalArgumentException("Fund not found.");
+		}
+		String trimmedName = newName.trim();
+		if (!originalName.equals(trimmedName) && this.fundMap.containsKey(trimmedName))
+		{
+			throw new IllegalArgumentException(
+				"Fund with name '" + trimmedName + "' already exists.");
+		}
+		this.fundMap.remove(originalName);
+		fund.setName(trimmedName);
+		fund.setBalance(balance == null ? BigDecimal.ZERO : balance);
+		this.fundMap.put(trimmedName, fund);
+	}
+
 	/**
 	 * Saves all funds to the persistent document store.
 	 *

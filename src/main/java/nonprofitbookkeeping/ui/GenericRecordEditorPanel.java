@@ -2,9 +2,11 @@ package nonprofitbookkeeping.ui;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
@@ -64,6 +66,7 @@ public class GenericRecordEditorPanel implements AppPanel
     private final GenericRecordCrudService crudService;
     private final Set<Map<String, Object>> pendingNewRows = Collections.newSetFromMap(new IdentityHashMap<>());
     private final Map<String, Double> selectedColumnWidths = new LinkedHashMap<>();
+    private final ObservableList<String> fundChoices = FXCollections.observableArrayList();
     private List<TableColumnMetadata> columns = List.of();
 
     public GenericRecordEditorPanel(String panelTitle, String tableName, String primaryKeyColumn, Supplier<String> idSupplier)
@@ -293,7 +296,7 @@ public class GenericRecordEditorPanel implements AppPanel
             tableColumn.setMinWidth(minWidthForTitle(headerTitle));
             tableColumn.setPrefWidth(selectedColumnWidths.getOrDefault(columnName, tableColumn.getMinWidth()));
             tableColumn.setCellValueFactory(cell -> new SimpleStringProperty(toDisplay(cell.getValue().get(columnName))));
-            tableColumn.setCellFactory(col -> new CommitOnFocusLossCell());
+            tableColumn.setCellFactory(col -> isFundNameColumn(columnName) ? new FundNameComboBoxCell(columnName) : new CommitOnFocusLossCell());
             tableColumn.setOnEditCommit(event ->
             {
                 Map<String, Object> row = event.getRowValue();
@@ -329,6 +332,131 @@ public class GenericRecordEditorPanel implements AppPanel
                 scrollBar.setMaxWidth(12);
             }
         });
+    }
+
+    private void refreshFundChoices()
+    {
+        try
+        {
+            fundChoices.setAll(FundNameLookup.listActiveFundNames());
+        }
+        catch (SQLException ex)
+        {
+            fundChoices.clear();
+            status.setText("Unable to load fund choices: " + ex.getMessage());
+        }
+    }
+
+    private static boolean isFundNameColumn(String columnName)
+    {
+        if (columnName == null)
+        {
+            return false;
+        }
+        String normalized = columnName.trim().toLowerCase();
+        return "fund_name".equals(normalized) || "associated_fund_name".equals(normalized);
+    }
+
+    private final class FundNameComboBoxCell extends TableCell<Map<String, Object>, String>
+    {
+        private final String columnName;
+        private ComboBox<String> comboBox;
+
+        private FundNameComboBoxCell(String columnName)
+        {
+            this.columnName = columnName;
+        }
+
+        @Override
+        public void startEdit()
+        {
+            if (!isEmpty())
+            {
+                super.startEdit();
+                createComboBox();
+                setText(null);
+                setGraphic(comboBox);
+                comboBox.requestFocus();
+                comboBox.show();
+            }
+        }
+
+        @Override
+        public void cancelEdit()
+        {
+            super.cancelEdit();
+            setText(getItem());
+            setGraphic(null);
+        }
+
+        @Override
+        protected void updateItem(String item, boolean empty)
+        {
+            super.updateItem(item, empty);
+            if (empty)
+            {
+                setText(null);
+                setGraphic(null);
+                getStyleClass().remove(PENDING_ROW_TEXT_DARK_CLASS);
+            }
+            else if (isEditing())
+            {
+                if (comboBox != null)
+                {
+                    comboBox.setValue(item);
+                }
+                setText(null);
+                setGraphic(comboBox);
+                applyPendingRowTextStyle();
+            }
+            else
+            {
+                setText(item);
+                setGraphic(null);
+                applyPendingRowTextStyle();
+            }
+        }
+
+        @Override
+        public void commitEdit(String value)
+        {
+            super.commitEdit(value);
+            Map<String, Object> row = getTableRow() == null ? null : getTableRow().getItem();
+            if (row != null)
+            {
+                row.put(columnName, value);
+                status.setText("Updated " + toDisplayTitle(columnName) + " (pending save)");
+            }
+        }
+
+        private void createComboBox()
+        {
+            refreshFundChoices();
+            comboBox = new ComboBox<>(fundChoices);
+            comboBox.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
+            comboBox.setValue(getItem());
+            comboBox.setOnAction(event -> commitEdit(comboBox.getValue()));
+            comboBox.focusedProperty().addListener((obs, oldValue, hasFocus) -> {
+                if (!hasFocus)
+                {
+                    commitEdit(comboBox.getValue());
+                }
+            });
+        }
+
+        private void applyPendingRowTextStyle()
+        {
+            TableRow<Map<String, Object>> row = getTableRow();
+            getStyleClass().remove(PENDING_ROW_TEXT_DARK_CLASS);
+            if (row != null && pendingNewRows.contains(row.getItem()))
+            {
+                String preference = PreferencesService.getPendingRowTextColorPreference();
+                if (preference == null || preference.isBlank() || "black".equalsIgnoreCase(preference))
+                {
+                    getStyleClass().add(PENDING_ROW_TEXT_DARK_CLASS);
+                }
+            }
+        }
     }
 
     private final class CommitOnFocusLossCell extends TableCell<Map<String, Object>, String>

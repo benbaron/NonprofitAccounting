@@ -51,11 +51,8 @@ import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.ui.panels.UndepositedFundsPanelFX;
 import nonprofitbookkeeping.ui.panels.DocumentsPanelFX;
 import nonprofitbookkeeping.ui.panels.DonorsPanelFX;
-import nonprofitbookkeeping.ui.panels.DonationsPanelFX;
-import nonprofitbookkeeping.ui.panels.GrantsPanelFX;
 import nonprofitbookkeeping.ui.panels.JournalEntryWorkspaceFX;
 import nonprofitbookkeeping.service.DonorService;
-import nonprofitbookkeeping.service.GrantsService;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -575,8 +572,6 @@ public class MainWindowAlternate extends BorderPane
         VBox fundraisingGroup = new VBox(6,
             new Label("Fundraising"),
             actionButton("Donors", this::openDonorsDirect),
-            actionButton("Donations", this::openDonationsDirect),
-            actionButton("Grants", this::openGrantsDirect),
             actionButton("Funds", () -> openPanel(AppPanelId.FUNDS)));
 
         VBox bankingGroup = new VBox(6,
@@ -785,19 +780,6 @@ public class MainWindowAlternate extends BorderPane
     {
         showAlternatePane(new DonorsPanelFX(new DonorService(), null));
         openInspectorForSelection("Fundraising", "Donors panel opened in alternate shell.");
-    }
-
-    private void openDonationsDirect()
-    {
-        Stage owner = getOwningStage();
-        showAlternatePane(new DonationsPanelFX(owner));
-        openInspectorForSelection("Fundraising", "Donations panel opened in alternate shell.");
-    }
-
-    private void openGrantsDirect()
-    {
-        showAlternatePane(new GrantsPanelFX(new GrantsService()));
-        openInspectorForSelection("Fundraising", "Grants panel opened in alternate shell.");
     }
 
     private Stage getOwningStage()

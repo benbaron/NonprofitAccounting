@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -67,13 +70,16 @@ import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.model.DonorContact;
 import nonprofitbookkeeping.model.SettingsModel;
 import nonprofitbookkeeping.model.supplemental.SupplementalLineKind;
 import nonprofitbookkeeping.model.supplemental.TxnSupplementalLineBase;
+import nonprofitbookkeeping.service.DonorService;
 import nonprofitbookkeeping.service.SettingsService;
 import nonprofitbookkeeping.core.Database;
 import java.io.IOException;
 import java.util.EnumMap;
+import nonprofitbookkeeping.ui.FundNameLookup;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.helpers.FocusCommitTextFieldTableCell;
 import nonprofitbookkeeping.ui.javafx.supplemental.EntryRef;
@@ -98,6 +104,12 @@ import nonprofitbookkeeping.model.Person;
  */
 public class JournalEntryWorkspaceFX extends BorderPane
 {
+	private static final String INFO_MODULE = "module";
+	private static final String INFO_MODULE_DONATION = "DONATION";
+	private static final String INFO_DONATION_ID = "donation_id";
+	private static final String INFO_DONOR_ID = "donor_external_id";
+	private static final String INFO_DONOR_NAME = "donor_name";
+
 	/** CSS class used when account cell references an unknown account. */
 	private static final String ACCOUNT_CELL_MISSING_CLASS =
 		"account-cell-missing";
@@ -150,8 +162,29 @@ public class JournalEntryWorkspaceFX extends BorderPane
 	/** The budget tracking field. */
 	private final TextField budgetTrackingField = new TextField();
 	
-	/** The associated fund name field. */
-	private final TextField associatedFundNameField = new TextField();
+	/** The fund names available from the active database. */
+	private final ObservableList<String> fundNameChoices =
+		FXCollections.observableArrayList();
+
+	/** The associated fund name selector. */
+	private final ComboBox<String> associatedFundNameField = new ComboBox<>();
+
+	/** Enables donation metadata on this journal transaction. */
+	private final CheckBox donationScheduleEnabled =
+		new CheckBox("Donation schedule");
+
+	/** Donation id attached to this journal transaction. */
+	private final TextField donationIdField = new TextField();
+
+	/** Donors available from the donor list. */
+	private final ObservableList<DonorContact> donorChoices =
+		FXCollections.observableArrayList();
+
+	/** Donor id selector for the donation subschedule. */
+	private final ComboBox<DonorContact> donorIdBox = new ComboBox<>();
+
+	/** Donor name selector for the donation subschedule. */
+	private final ComboBox<DonorContact> donorNameBox = new ComboBox<>();
 	
 	/** The debit total label. */
 	private final Label debitTotalLabel = new Label();
@@ -258,6 +291,8 @@ public class JournalEntryWorkspaceFX extends BorderPane
 		
 		this.chartOfAccounts = resolveChartOfAccounts();
 		this.accountsByName = buildAccountsByName(this.chartOfAccounts);
+		configureFundSelector();
+		configureDonationSchedule();
 		this.onSave = onSave != null ? onSave : tx -> {};
 		this.original = existing;
 		this.headingText = headingText;
@@ -579,6 +614,30 @@ public class JournalEntryWorkspaceFX extends BorderPane
 	}
 	
 	
+
+	/**
+	 * Builds the donation subschedule panel hosted by the journal editor.
+	 *
+	 * @return the node
+	 */
+	private Node buildDonationSchedulePanel()
+	{
+		GridPane grid = new GridPane();
+		grid.setHgap(10);
+		grid.setVgap(8);
+		grid.getColumnConstraints().setAll(new ColumnConstraints(),
+			new ColumnConstraints());
+
+		Button editDonor = new Button("Edit Selected Donor");
+		editDonor.setOnAction(e -> editSelectedDonor());
+		addDetailField(grid, 0, "Use Donation Schedule", this.donationScheduleEnabled);
+		addDetailField(grid, 1, "Donation ID", this.donationIdField);
+		addDetailField(grid, 2, "Donor ID", this.donorIdBox);
+		addDetailField(grid, 3, "Donor Name", this.donorNameBox);
+		addDetailField(grid, 4, "Donor", editDonor);
+		return card("Donation Subschedule", grid);
+	}
+
 	/**
 	 * Builds the supplemental panel.
 	 *
@@ -604,7 +663,8 @@ public class JournalEntryWorkspaceFX extends BorderPane
 		this.supplementalTabs.setMinHeight(180);
 		VBox.setVgrow(this.supplementalTabs, Priority.ALWAYS);
 		
-		block.getChildren().addAll(heading, toggles, this.supplementalTabs);
+		block.getChildren().addAll(buildDonationSchedulePanel(), heading, toggles,
+			this.supplementalTabs);
 		return block;
 		
 	}
@@ -700,6 +760,211 @@ public class JournalEntryWorkspaceFX extends BorderPane
 	}
 	
 	
+
+	private void configureDonationSchedule()
+	{
+		this.donationIdField.setPromptText("Auto-generated when enabled");
+		this.donorIdBox.setItems(this.donorChoices);
+		this.donorNameBox.setItems(this.donorChoices);
+		this.donorIdBox.setPromptText("Select donor id");
+		this.donorNameBox.setPromptText("Select donor name");
+		this.donorIdBox.setConverter(donorConverter(true));
+		this.donorNameBox.setConverter(donorConverter(false));
+		this.donorIdBox.setOnShowing(e -> refreshDonorChoices());
+		this.donorNameBox.setOnShowing(e -> refreshDonorChoices());
+		this.donorIdBox.valueProperty().addListener((obs, oldValue, newValue) -> {
+			if (newValue != null && this.donorNameBox.getValue() != newValue)
+			{
+				this.donorNameBox.setValue(newValue);
+			}
+		});
+		this.donorNameBox.valueProperty().addListener((obs, oldValue, newValue) -> {
+			if (newValue != null && this.donorIdBox.getValue() != newValue)
+			{
+				this.donorIdBox.setValue(newValue);
+			}
+		});
+		this.donationScheduleEnabled.selectedProperty().addListener(
+			(obs, oldValue, enabled) -> updateDonationScheduleEnabled());
+		refreshDonorChoices();
+		updateDonationScheduleEnabled();
+	}
+
+	private StringConverter<DonorContact> donorConverter(boolean idFirst)
+	{
+		return new StringConverter<>()
+		{
+			@Override
+			public String toString(DonorContact donor)
+			{
+				if (donor == null)
+				{
+					return "";
+				}
+				String id = donor.getId() == null ? "" : donor.getId();
+				String name = donor.getName() == null ? "" : donor.getName();
+				return idFirst ? id + " — " + name : name + " — " + id;
+			}
+
+			@Override
+			public DonorContact fromString(String value)
+			{
+				return null;
+			}
+		};
+	}
+
+	private void refreshDonorChoices()
+	{
+		DonorContact selected = selectedDonor();
+		try
+		{
+			DonorService service = new DonorService();
+			service.loadDonors(null);
+			this.donorChoices.setAll(service.getAllDonors().stream()
+				.filter(donor -> donor.getId() != null && !donor.getId().isBlank())
+				.sorted((a, b) -> donorSortKey(a).compareToIgnoreCase(donorSortKey(b)))
+				.toList());
+			selectDonor(selected == null ? null : selected.getId());
+		}
+		catch (IOException ex)
+		{
+			this.donorChoices.clear();
+			this.donorIdBox.setPromptText("Unable to load donors");
+			this.donorNameBox.setPromptText("Unable to load donors");
+		}
+	}
+
+	private static String donorSortKey(DonorContact donor)
+	{
+		String name = donor.getName() == null ? "" : donor.getName();
+		String id = donor.getId() == null ? "" : donor.getId();
+		return name + " " + id;
+	}
+
+	private void selectDonor(String donorId)
+	{
+		if (donorId != null)
+		{
+			for (DonorContact donor : this.donorChoices)
+			{
+				if (donorId.equals(donor.getId()))
+				{
+					this.donorIdBox.setValue(donor);
+					this.donorNameBox.setValue(donor);
+					return;
+				}
+			}
+		}
+		this.donorIdBox.setValue(null);
+		this.donorNameBox.setValue(null);
+	}
+
+	private DonorContact selectedDonor()
+	{
+		DonorContact donor = this.donorIdBox.getValue();
+		return donor == null ? this.donorNameBox.getValue() : donor;
+	}
+
+	private void updateDonationScheduleEnabled()
+	{
+		boolean enabled = this.donationScheduleEnabled.isSelected();
+		this.donationIdField.setDisable(!enabled);
+		this.donorIdBox.setDisable(!enabled);
+		this.donorNameBox.setDisable(!enabled);
+		if (enabled && this.donationIdField.getText().isBlank())
+		{
+			this.donationIdField.setText(UUID.randomUUID().toString());
+		}
+	}
+
+	private void editSelectedDonor()
+	{
+		DonorContact selected = selectedDonor();
+		if (selected == null)
+		{
+			AlertBox.showError(getScene() == null ? null : getScene().getWindow(),
+				"Select a donor first.");
+			return;
+		}
+
+		Dialog<DonorContact> dialog = new Dialog<>();
+		dialog.setTitle("Edit Donor");
+		dialog.setHeaderText("Edit donor " + selected.getId());
+		dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK,
+			ButtonType.CANCEL);
+		TextField idField = new TextField(selected.getId());
+		idField.setEditable(false);
+		TextField nameField = new TextField(selected.getName());
+		TextField emailField = new TextField(selected.getEmail());
+		TextField phoneField = new TextField(selected.getPhone());
+		GridPane grid = new GridPane();
+		grid.setHgap(10);
+		grid.setVgap(8);
+		grid.setPadding(PanelChrome.PANEL_PADDING);
+		grid.addRow(0, new Label("Donor ID:"), idField);
+		grid.addRow(1, new Label("Name:"), nameField);
+		grid.addRow(2, new Label("Email:"), emailField);
+		grid.addRow(3, new Label("Phone:"), phoneField);
+		dialog.getDialogPane().setContent(grid);
+		dialog.setResultConverter(button -> {
+			if (button != ButtonType.OK)
+			{
+				return null;
+			}
+			return new DonorContact(selected.getId(), nameField.getText(),
+				emailField.getText(), phoneField.getText());
+		});
+		dialog.showAndWait().ifPresent(updated -> {
+			DonorService service = new DonorService();
+			service.editDonor(selected.getId(), updated);
+			refreshDonorChoices();
+			selectDonor(updated.getId());
+		});
+	}
+
+	private void configureFundSelector()
+	{
+		this.associatedFundNameField.setItems(this.fundNameChoices);
+		this.associatedFundNameField.setPromptText("Select fund");
+		this.associatedFundNameField.setOnShowing(e -> refreshFundChoices());
+		refreshFundChoices();
+	}
+
+	private void refreshFundChoices()
+	{
+		try
+		{
+			String selected = this.associatedFundNameField.getValue();
+			this.fundNameChoices.setAll(FundNameLookup.listActiveFundNames());
+			selectFundName(selected);
+		}
+		catch (SQLException ex)
+		{
+			this.fundNameChoices.clear();
+			this.associatedFundNameField.setPromptText("Unable to load funds");
+		}
+	}
+
+	private void selectFundName(String fundName)
+	{
+		if (fundName != null && this.fundNameChoices.contains(fundName))
+		{
+			this.associatedFundNameField.getSelectionModel().select(fundName);
+		}
+		else
+		{
+			this.associatedFundNameField.getSelectionModel().clearSelection();
+			this.associatedFundNameField.setValue(null);
+		}
+	}
+
+	private String selectedFundName()
+	{
+		String value = this.associatedFundNameField.getValue();
+		return value == null ? "" : value.trim();
+	}
+
 	/**
 	 * Card.
 	 *
@@ -1850,6 +2115,43 @@ public class JournalEntryWorkspaceFX extends BorderPane
 		
 	}
 	
+
+	private void applyDonationInfo(Map<String, String> info)
+	{
+		if (INFO_MODULE_DONATION.equalsIgnoreCase(info.get(INFO_MODULE)))
+		{
+			info.remove(INFO_MODULE);
+		}
+		info.remove(INFO_DONATION_ID);
+		info.remove(INFO_DONOR_ID);
+		info.remove(INFO_DONOR_NAME);
+		if (!this.donationScheduleEnabled.isSelected())
+		{
+			return;
+		}
+		String donationId = this.donationIdField.getText() == null ? "" :
+			this.donationIdField.getText().trim();
+		if (donationId.isBlank())
+		{
+			donationId = UUID.randomUUID().toString();
+			this.donationIdField.setText(donationId);
+		}
+		DonorContact donor = selectedDonor();
+		if (donor == null)
+		{
+			throw new IllegalArgumentException(
+				"Select a donor for the donation schedule.");
+		}
+		info.put(INFO_MODULE, INFO_MODULE_DONATION);
+		info.put(INFO_DONATION_ID, donationId);
+		info.put(INFO_DONOR_ID, donor.getId());
+		info.put(INFO_DONOR_NAME, donor.getName() == null ? "" : donor.getName());
+		if (this.toFromField.getText() == null || this.toFromField.getText().isBlank())
+		{
+			this.toFromField.setText(donor.getName());
+		}
+	}
+
 	/**
 	 * Persist.
 	 */
@@ -1876,6 +2178,15 @@ public class JournalEntryWorkspaceFX extends BorderPane
 			return;
 		}
 		
+		if (this.donationScheduleEnabled.isSelected() && selectedDonor() == null)
+		{
+			String message = "Select a donor for the donation schedule.";
+			showValidationError(message);
+			AlertBox.showError(getScene() == null ? null : getScene().getWindow(),
+				message);
+			return;
+		}
+
 		showBalancedState();
 		
 		BigDecimal debit = BigDecimal.ZERO;
@@ -1918,8 +2229,15 @@ public class JournalEntryWorkspaceFX extends BorderPane
 			
 		}
 		
+		Map<String, String> info = new HashMap<>();
+		if (this.original != null && this.original.getInfo() != null)
+		{
+			info.putAll(this.original.getInfo());
+		}
+		applyDonationInfo(info);
+
 		AccountingTransaction tx =
-			new AccountingTransaction(new Account(), entries, Map.of(),
+			new AccountingTransaction(new Account(), entries, info,
 				this.original != null ?
 					this.original.getBookingDateTimestamp() :
 					Instant.now().toEpochMilli());
@@ -1938,7 +2256,8 @@ public class JournalEntryWorkspaceFX extends BorderPane
 			this.clearBankField.getText() : this.bankField.getText());
 		tx.setReconciled(this.reconciledCheckBox.isSelected());
 		tx.setBudgetTracking(this.budgetTrackingField.getText());
-		tx.setAssociatedFundName(this.associatedFundNameField.getText());
+		tx.setAssociatedFundName(selectedFundName());
+		tx.setInfo(info);
 		tx.setSupplementalLines(collectSupplementalLines());
 		
 		this.onSave.accept(tx);
@@ -1961,7 +2280,8 @@ public class JournalEntryWorkspaceFX extends BorderPane
 		this.bankField.setText(tx.getBank());
 		this.reconciledCheckBox.setSelected(tx.isReconciled());
 		this.budgetTrackingField.setText(tx.getBudgetTracking());
-		this.associatedFundNameField.setText(tx.getAssociatedFundName());
+		refreshFundChoices();
+		selectFundName(tx.getAssociatedFundName());
 		
 		this.lines.clear();
 		
@@ -2001,6 +2321,25 @@ public class JournalEntryWorkspaceFX extends BorderPane
 		
 	}
 	
+
+	private void loadDonationInfo(Map<String, String> info)
+	{
+		boolean donation = info != null &&
+			INFO_MODULE_DONATION.equalsIgnoreCase(info.get(INFO_MODULE));
+		this.donationScheduleEnabled.setSelected(donation);
+		if (!donation)
+		{
+			this.donationIdField.clear();
+			selectDonor(null);
+			updateDonationScheduleEnabled();
+			return;
+		}
+		this.donationIdField.setText(info.getOrDefault(INFO_DONATION_ID, ""));
+		refreshDonorChoices();
+		selectDonor(info.get(INFO_DONOR_ID));
+		updateDonationScheduleEnabled();
+	}
+
 	/**
 	 * Resolve account.
 	 *
