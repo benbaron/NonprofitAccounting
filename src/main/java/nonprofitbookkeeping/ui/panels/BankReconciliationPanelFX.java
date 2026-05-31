@@ -52,34 +52,33 @@ public class BankReconciliationPanelFX extends BorderPane
 	private HBox buildHeader()
 	{
 		GridPane meta = new GridPane();
-		meta.setHgap(8);
-		meta.setVgap(6);
-		int row = 0;
-		addMeta(meta, row++, "Bank", this.bankField);
-		addMeta(meta, row++, "Account", this.accountField);
-		addMeta(meta, row++, "Institution", this.institutionField);
-		addMeta(meta, row++, "Contact", this.contactField);
-		addMeta(meta, row++, "Account Number", this.accountNumberField);
-		addMeta(meta, row++, "Account Type", this.accountTypeField);
-		addMeta(meta, row++, "Signature Req", this.signatureField);
-		addMeta(meta, row++, "Interest Bearing", this.interestField);
-		addMeta(meta, row++, "Currency", this.currencyField);
-		addMeta(meta, row, "Year", this.yearField);
+		meta.setHgap(16);
+		meta.setVgap(8);
+		addMeta(meta, 0, 0, "Bank", this.bankField);
+		addMeta(meta, 1, 0, "Account", this.accountField);
+		addMeta(meta, 2, 0, "Institution", this.institutionField);
+		addMeta(meta, 3, 0, "Contact", this.contactField);
+		addMeta(meta, 4, 0, "Account Number", this.accountNumberField);
+		addMeta(meta, 0, 2, "Account Type", this.accountTypeField);
+		addMeta(meta, 1, 2, "Signature Req", this.signatureField);
+		addMeta(meta, 2, 2, "Interest Bearing", this.interestField);
+		addMeta(meta, 3, 2, "Currency", this.currencyField);
+		addMeta(meta, 4, 2, "Year", this.yearField);
 
 		Button load = new Button("Load");
 		load.setOnAction(e -> loadYear());
 		Button save = new Button("Save Year");
 		save.setOnAction(e -> saveYear());
-		HBox bar = new HBox(10, meta, load, save);
+		HBox bar = new HBox(14, meta, load, save);
 		bar.setPadding(new Insets(0, 0, 10, 0));
 		return bar;
 	}
 
-	private void addMeta(GridPane meta, int row, String label, TextField field)
+	private void addMeta(GridPane meta, int row, int columnOffset, String label, TextField field)
 	{
-		meta.add(new Label(label), 0, row);
-		field.setPrefWidth(180);
-		meta.add(field, 1, row);
+		meta.add(new Label(label), columnOffset, row);
+		field.setPrefWidth(220);
+		meta.add(field, columnOffset + 1, row);
 	}
 
 	private void buildTable()

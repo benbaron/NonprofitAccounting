@@ -54,14 +54,16 @@ public class BudgetEditorPanel implements AppPanel
 
 		this.root.setTop(new VBox(6, title, actions, new Separator()));
 		this.table.setEditable(true);
-		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+		this.table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
 		TableColumn<BudgetRow, String> account = new TableColumn<>("Account");
+		account.setPrefWidth(420);
 		account.setCellValueFactory(v -> new ReadOnlyStringWrapper(v.getValue().account()));
 		account.setCellFactory(TextFieldTableCell.forTableColumn());
 		account.setOnEditCommit(event ->
 			this.table.getItems().set(event.getTablePosition().getRow(),
 				event.getRowValue().withAccount(event.getNewValue())));
 		TableColumn<BudgetRow, String> fund = new TableColumn<>("Fund");
+		fund.setPrefWidth(420);
 		fund.setCellValueFactory(v -> new ReadOnlyStringWrapper(v.getValue().fund()));
 		fund.setCellFactory(ComboBoxTableCell.forTableColumn(this.fundChoices));
 		fund.setOnEditStart(event -> refreshFundChoices());
@@ -69,12 +71,14 @@ public class BudgetEditorPanel implements AppPanel
 			this.table.getItems().set(event.getTablePosition().getRow(),
 				event.getRowValue().withFund(event.getNewValue())));
 		TableColumn<BudgetRow, String> period = new TableColumn<>("Period");
+		period.setPrefWidth(320);
 		period.setCellValueFactory(v -> new ReadOnlyStringWrapper(v.getValue().period()));
 		period.setCellFactory(TextFieldTableCell.forTableColumn());
 		period.setOnEditCommit(event ->
 			this.table.getItems().set(event.getTablePosition().getRow(),
 				event.getRowValue().withPeriod(event.getNewValue())));
 		TableColumn<BudgetRow, String> amount = new TableColumn<>("Budget Amount");
+		amount.setPrefWidth(260);
 		amount.setCellValueFactory(v -> new ReadOnlyStringWrapper(v.getValue().amount()));
 		amount.setCellFactory(TextFieldTableCell.forTableColumn());
 		amount.setOnEditCommit(event ->
