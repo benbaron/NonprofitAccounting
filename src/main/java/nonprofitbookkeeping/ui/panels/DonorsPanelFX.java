@@ -57,7 +57,7 @@ public class DonorsPanelFX extends BorderPane
 		setPadding(PanelChrome.PANEL_PADDING);
 		buildTable();
 		setTop(PanelChrome.topSection("Donors"));
-		setCenter(this.table);
+		setCenter(scrollableTablePane());
 		setBottom(buttonBar());
 		refresh();
 		
@@ -102,10 +102,23 @@ public class DonorsPanelFX extends BorderPane
 		phoneCol.setCellValueFactory(new PropertyValueFactory<>("phone"));
 		this.table.getColumns().addAll(idCol, nameCol, emailCol, phoneCol);
 		this.table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+		this.table.setMinWidth(1180);
+		this.table.setPrefHeight(900);
 		this.table.setItems(this.donors);
 		
 	}
 	
+	private ScrollPane scrollableTablePane()
+	{
+		ScrollPane scrollPane = new ScrollPane(this.table);
+		scrollPane.setFitToWidth(false);
+		scrollPane.setFitToHeight(false);
+		scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+		scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+		scrollPane.setPannable(true);
+		return scrollPane;
+	}
+
 	/**
 	 * Builds and returns an {@link HBox} containing "Add Donor", "Edit", and "Delete" buttons.
 	 * These buttons provide functionality to manage donor records in the table.
