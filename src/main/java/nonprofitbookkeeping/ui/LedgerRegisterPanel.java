@@ -104,17 +104,19 @@ public class LedgerRegisterPanel implements AppPanel
 
 	private void buildTable()
 	{
-		txnTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-		txnTable.getColumns().add(col("Date", row -> safe(row.transaction().getDate())));
-		txnTable.getColumns().add(col("Payee", row -> safe(row.transaction().getToFrom())));
-		txnTable.getColumns().add(col("Memo", row -> safe(row.transaction().getMemo())));
-		txnTable.getColumns().add(col("Bank", row -> safe(row.transaction().getBank())));
-		txnTable.getColumns().add(col("Account",
+		txnTable.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+		txnTable.getColumns().add(sizedCol("Date", 140, row -> safe(row.transaction().getDate())));
+		txnTable.getColumns().add(sizedCol("Payee", 220, row -> safe(row.transaction().getToFrom())));
+		txnTable.getColumns().add(sizedCol("Memo", 300, row -> safe(row.transaction().getMemo())));
+		txnTable.getColumns().add(sizedCol("Bank", 180, row -> safe(row.transaction().getBank())));
+		txnTable.getColumns().add(sizedCol("Account", 220,
 			row -> row.entry() == null ? "" : safe(row.entry().getAccountName())));
-		txnTable.getColumns().add(col("Fund",
+		txnTable.getColumns().add(sizedCol("Fund", 180,
 			row -> row.entry() == null ? "" : safe(row.entry().getFundNumber())));
-		txnTable.getColumns().add(subrecordColumn());
-		txnTable.getColumns().add(col("Status",
+		TableColumn<LedgerViewRow, String> subrecords = subrecordColumn();
+		subrecords.setPrefWidth(240);
+		txnTable.getColumns().add(subrecords);
+		txnTable.getColumns().add(sizedCol("Status", 160,
 			row -> row.transaction().isReconciled() ? "Reconciled" : "Unreconciled"));
 	}
 
@@ -203,6 +205,14 @@ public class LedgerRegisterPanel implements AppPanel
 	{
 		TableColumn<LedgerViewRow, String> c = new TableColumn<>(name);
 		c.setCellValueFactory(v -> new SimpleStringProperty(getter.apply(v.getValue())));
+		return c;
+	}
+
+	private TableColumn<LedgerViewRow, String> sizedCol(String name, double width,
+		java.util.function.Function<LedgerViewRow, String> getter)
+	{
+		TableColumn<LedgerViewRow, String> c = col(name, getter);
+		c.setPrefWidth(width);
 		return c;
 	}
 

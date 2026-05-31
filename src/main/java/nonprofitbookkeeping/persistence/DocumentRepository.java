@@ -22,8 +22,9 @@ import java.util.Optional;
  * information lives inside the database and participates in regular database backups.</p>
  *
  * <p>Raw SCLX import payloads are intentionally excluded from database persistence. They are
- * only kept in thread-local memory for the duration of an import run so that large source JSON
- * blobs do not bloat the {@code document} table or the underlying H2 file.</p>
+ * kept in thread-local memory until explicitly cleared so follow-up exports in the same
+ * workflow can reproduce the source bytes without bloating the {@code document} table or
+ * the underlying H2 file.</p>
  */
 @ApplicationScoped
 public class DocumentRepository

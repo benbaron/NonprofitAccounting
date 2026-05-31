@@ -89,15 +89,19 @@ public class DonorsPanelFX extends BorderPane
 	private void buildTable()
 	{
 		TableColumn<DonorContact, String> idCol = new TableColumn<>("ID");
+		idCol.setPrefWidth(420);
 		idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
 		TableColumn<DonorContact, String> nameCol = new TableColumn<>("Name");
+		nameCol.setPrefWidth(260);
 		nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
 		TableColumn<DonorContact, String> emailCol = new TableColumn<>("Email");
+		emailCol.setPrefWidth(280);
 		emailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
 		TableColumn<DonorContact, String> phoneCol = new TableColumn<>("Phone");
+		phoneCol.setPrefWidth(220);
 		phoneCol.setCellValueFactory(new PropertyValueFactory<>("phone"));
 		this.table.getColumns().addAll(idCol, nameCol, emailCol, phoneCol);
-		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		this.table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
 		this.table.setItems(this.donors);
 		
 	}

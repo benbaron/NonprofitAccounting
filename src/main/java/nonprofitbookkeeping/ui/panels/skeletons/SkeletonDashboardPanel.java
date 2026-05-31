@@ -32,7 +32,7 @@ import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 
 /**
  * A JavaFX panel that serves as a dashboard, displaying key financial figures
- * (Total Assets, Total Liabilities, Equity, YTD Income) and a list of recent transactions.
+ * (Total Assets, Total Liabilities, Equity, and Income) and a list of recent transactions.
  * The panel listens for changes in the {@link CurrentCompany} and reloads its data accordingly.
  * Key financial figures are calculated by iterating through accounts and transactions
  * from the current company's {@link Ledger} and {@link ChartOfAccounts}.
@@ -52,7 +52,7 @@ public class SkeletonDashboardPanel extends BorderPane
 	private Label totalLiabilitiesValueLabel = new Label(CompanySummary.getTotalLiabilities());
 	/** Label to display the calculated total equity value. Initializes with a value from {@link CompanySummary}. */
 	private Label equityValueLabel = new Label(CompanySummary.getTotalEquity());
-	/** Label to display the calculated year-to-date (YTD) income value. Initializes with a value from {@link CompanySummary}. */
+	/** Label to display the calculated net income value. Initializes with a value from {@link CompanySummary}. */
 	private Label ytdIncomeValueLabel = new Label(CompanySummary.getYtdIncomeValue());
 	
 	/** Label showing the name of the currently open company. */
@@ -89,7 +89,7 @@ public class SkeletonDashboardPanel extends BorderPane
 		keyFiguresGrid.add(this.totalLiabilitiesValueLabel, 1, 1);
 		keyFiguresGrid.add(new Label("Equity:"), 2, 0);
 		keyFiguresGrid.add(this.equityValueLabel, 3, 0);
-		keyFiguresGrid.add(new Label("YTD Income:"), 2, 1);
+		keyFiguresGrid.add(new Label("Income:"), 2, 1);
 		keyFiguresGrid.add(this.ytdIncomeValueLabel, 3, 1);
 		
 		ScrollPane keyFiguresScrollPane = new ScrollPane();
@@ -100,6 +100,7 @@ public class SkeletonDashboardPanel extends BorderPane
 		
 		Label panelTitle = new Label("Dashboard");
 		panelTitle.getStyleClass().add("journal-entry-heading");
+		this.companyNameLabel.setStyle("-fx-font-size: 1.5em; -fx-font-weight: bold;");
 		VBox topBox = new VBox(5, panelTitle, this.companyNameLabel, keyFiguresScrollPane);
 		this.setTop(topBox);
 		
@@ -110,7 +111,7 @@ public class SkeletonDashboardPanel extends BorderPane
 		TableColumn<AccountingTransaction, String> dateCol = new TableColumn<>("Date");
 		dateCol.setCellValueFactory(
 			cellData -> new SimpleStringProperty(cellData.getValue().getDate()));
-		dateCol.setPrefWidth(100);
+		dateCol.setPrefWidth(120);
 		
 		TableColumn<AccountingTransaction, String> accountCol = new TableColumn<>("Account");
                 accountCol.setCellValueFactory(cellData -> {
@@ -123,14 +124,14 @@ public class SkeletonDashboardPanel extends BorderPane
                         }
                         return new SimpleStringProperty(name);
                 });
-                accountCol.setPrefWidth(150);
+                accountCol.setPrefWidth(220);
 		
 		TableColumn<AccountingTransaction, String> descriptionCol =
 			new TableColumn<>("Description");
 		descriptionCol.setCellValueFactory(cellData -> new SimpleStringProperty(
 			cellData.getValue().getDescription() != null ? cellData.getValue().getDescription() :
 				cellData.getValue().getMemo()));
-		descriptionCol.setPrefWidth(300);
+		descriptionCol.setPrefWidth(950);
 		
 		TableColumn<AccountingTransaction, String> amountCol = new TableColumn<>("Amount");
                amountCol.setCellValueFactory(cellData -> {
@@ -138,9 +139,10 @@ public class SkeletonDashboardPanel extends BorderPane
                        return new SimpleStringProperty(
                                FormatUtils.formatCurrency(totalAmount != null ? totalAmount : BigDecimal.ZERO));
                });
-		amountCol.setPrefWidth(100);
+		amountCol.setPrefWidth(140);
 		amountCol.getStyleClass().add("table-column-numeric");
 		
+		this.recentTransactionsTable.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
 		this.recentTransactionsTable.getColumns()
 			.addAll(dateCol,
 				accountCol,
@@ -175,7 +177,7 @@ public class SkeletonDashboardPanel extends BorderPane
 	 *       and applying all transaction entries.</li>
 	 *   <li>Sums these account balances to determine Total Assets, Total Liabilities, and Total Equity
 	 *       (sum of equity-type accounts), Total Income, and Total Expenses.</li>
-	 *   <li>Calculates Year-to-Date (YTD) Net Income (Total Income - Total Expenses).</li>
+	 *   <li>Calculates Net Income (Total Income - Total Expenses).</li>
 	 *   <li>Updates the corresponding labels ({@link #totalAssetsValueLabel}, etc.) with these calculated figures.</li>
 	 *   <li>Populates the {@link #recentTransactionsTable} with a limited number of the most recent transactions (up to 10).</li>
 	 *   <li>Sets appropriate placeholder text for the recent transactions table if no data is available.</li>
@@ -193,7 +195,7 @@ public class SkeletonDashboardPanel extends BorderPane
                        this.totalAssetsValueLabel.setText(FormatUtils.formatCurrency(BigDecimal.ZERO));
                        this.totalLiabilitiesValueLabel.setText(FormatUtils.formatCurrency(BigDecimal.ZERO));
                        this.equityValueLabel.setText(FormatUtils.formatCurrency(BigDecimal.ZERO));
-                       this.ytdIncomeValueLabel.setText("YTD Net Income: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
+                       this.ytdIncomeValueLabel.setText("Net Income: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
 			this.recentTransactionsTable
 				.setPlaceholder(new Label("No company open."));
 			return;
@@ -232,7 +234,7 @@ public class SkeletonDashboardPanel extends BorderPane
                this.totalAssetsValueLabel.setText(FormatUtils.formatCurrency(totalAssets));
                this.totalLiabilitiesValueLabel.setText(FormatUtils.formatCurrency(totalLiabilities));
                this.equityValueLabel.setText(FormatUtils.formatCurrency(totalEquity));
-               this.ytdIncomeValueLabel.setText("YTD Net Income: " + FormatUtils.formatCurrency(ytdIncome));
+               this.ytdIncomeValueLabel.setText("Net Income: " + FormatUtils.formatCurrency(ytdIncome));
 		
 		if (this.transactionDataList.isEmpty())
 		{
