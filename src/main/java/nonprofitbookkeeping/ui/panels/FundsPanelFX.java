@@ -242,6 +242,7 @@ public class FundsPanelFX extends BorderPane
 					Fund f = new Fund(name);
 					f.setBalance(bal);
 					this.service.addFund(f);
+					save();
 					alert("Fund added.");
 					refresh();
 				}
