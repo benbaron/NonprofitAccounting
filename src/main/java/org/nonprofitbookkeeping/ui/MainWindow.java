@@ -12,7 +12,6 @@ import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.service.DocumentStorageService;
 import nonprofitbookkeeping.service.DonorService;
 import nonprofitbookkeeping.service.FundAccountingService;
-import nonprofitbookkeeping.service.GrantsService;
 import nonprofitbookkeeping.service.InventoryService;
 import nonprofitbookkeeping.service.LegacyNpbkImportService;
 import nonprofitbookkeeping.service.ReconciliationService;
@@ -37,11 +36,9 @@ import nonprofitbookkeeping.ui.actions.scaledger.ImportFromOutlandsLedgerActionF
 import nonprofitbookkeeping.ui.actions.scaledger.SaveModifiedCopyActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.LoadXlsmTableActionFX;
 import nonprofitbookkeeping.ui.panels.SqlQueryPanelFX;
-import nonprofitbookkeeping.ui.panels.DonationsPanelFX;
 import nonprofitbookkeeping.ui.panels.DonorsPanelFX;
 import nonprofitbookkeeping.ui.panels.DocumentsPanelFX;
 import nonprofitbookkeeping.ui.panels.FundsPanelFX;
-import nonprofitbookkeeping.ui.panels.GrantsPanelFX;
 import nonprofitbookkeeping.ui.panels.HelpPanelFX;
 import nonprofitbookkeeping.ui.panels.InventoryPanelFX;
 import nonprofitbookkeeping.ui.panels.JournalPanelFX;
@@ -75,7 +72,6 @@ public class MainWindow extends BorderPane
     private final DocumentStorageService documentStorageService = new DocumentStorageService();
     private final FundAccountingService fundAccountingService = new FundAccountingService();
     private final DonorService donorService = new DonorService();
-    private final GrantsService grantsService = new GrantsService();
     private final UndepositedFundsService undepositedFundsService = new UndepositedFundsService();
     private final SalesService salesService = new SalesService();
     private final SettingsService settingsService = new SettingsService();
@@ -204,10 +200,6 @@ public class MainWindow extends BorderPane
         fundraising.getItems().addAll(
             item("Donors", null,
                 () -> showLegacyPanel("Donors", new DonorsPanelFX(donorService, null))),
-            item("Donations", null,
-                () -> showLegacyPanel("Donations", new DonationsPanelFX(getOwningStage()))),
-            item("Grants", null,
-                () -> showLegacyPanel("Grants", new GrantsPanelFX(grantsService))),
             item("Funds & Fund Accounting", null,
                 () -> showLegacyPanel("Funds", new FundsPanelFX(fundAccountingService, null)))
         );
