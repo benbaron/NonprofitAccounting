@@ -182,7 +182,7 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		this.transactionsTable = new TableView<>(this.transactionDataList);
 		this.transactionsTable
 			.setColumnResizePolicy(
-				TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+				TableView.UNCONSTRAINED_RESIZE_POLICY);
 		this.transactionsTable.setPlaceholder(
 			new Label(
 				"Select account and date range, then click 'Load Transactions'."));
@@ -191,8 +191,9 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		// Set up column data
 		setupTableColumns();
 		
-		HBox totalsBox = new HBox(UiSpacing.GRID_H_GAP);
-		totalsBox.setPadding(UiSpacing.actionBarTopMargin());
+		HBox totalsBox = new HBox(UiSpacing.SECTION_SPACING * 2);
+		totalsBox.setPadding(new Insets(UiSpacing.SECTION_SPACING, 0, UiSpacing.SECTION_SPACING, 0));
+		totalsBox.setMinHeight(48);
 		this.totalDebitsLabel = new Label(
 			"Total Debits: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
 		this.totalCreditsLabel = new Label(

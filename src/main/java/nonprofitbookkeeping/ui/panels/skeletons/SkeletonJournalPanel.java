@@ -331,7 +331,7 @@ public class SkeletonJournalPanel extends BorderPane
 		
 		ToolBar editorToolbar =
 			new ToolBar(this.createTransactionButton, this.editSelectedButton,
-				new Separator(), this.closeEditorButton);
+				this.deleteEntryButton, new Separator(), this.closeEditorButton);
 		editorToolbar.setPadding(new Insets(0, 0, 0, 0));
 		
 		VBox editorHeader = new VBox(6);
@@ -345,12 +345,8 @@ public class SkeletonJournalPanel extends BorderPane
 		editorPane.setTop(editorHeader);
 		editorPane.setCenter(this.editorHost);
 		
-		ToolBar tableActionsToolbar = new ToolBar(this.deleteEntryButton);
-		tableActionsToolbar.setPadding(new Insets(10, 0, 0, 0));
-		
 		BorderPane tablePane = new BorderPane();
 		tablePane.setCenter(this.journalDisplayTable);
-		tablePane.setBottom(tableActionsToolbar);
 		
 		SplitPane contentSplitPane = new SplitPane(tablePane, editorPane);
 		contentSplitPane.setDividerPositions(0.62);

@@ -95,6 +95,7 @@ public class DashboardPanelFX extends BorderPane
 	private void buildTopBanner()
 	{
 		this.companyLbl.getStyleClass().add("company-indicator");
+		this.companyLbl.setStyle("-fx-font-size: 1.5em; -fx-font-weight: bold;");
 		this.reloadBtn.setOnAction(e -> loadCompany(CurrentCompany.getCompany()));
 		
 		HBox banner = new HBox(UiSpacing.SECTION_SPACING, new Label("Current Company:"), this.companyLbl, this.reloadBtn);
@@ -160,7 +161,12 @@ public class DashboardPanelFX extends BorderPane
 		
 		this.table.getColumns().addAll(dateCol, descCol, amtCol, balCol, memoCol);
 		this.table.setItems(this.rows);
-		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		dateCol.setPrefWidth(120);
+		descCol.setPrefWidth(650);
+		amtCol.setPrefWidth(140);
+		balCol.setPrefWidth(140);
+		memoCol.setPrefWidth(350);
+		this.table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
 	}
 	
 	/**
