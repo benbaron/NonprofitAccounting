@@ -197,7 +197,6 @@ public class NonprofitBookkeepingFX extends Application
 		static DocumentStorageService dss = null;
 		static FundAccountingService fas = null;
 		static DonorService donorService = null;
-		static GrantsService grantsService = null;
 		static UndepositedFundsService undepositedFundsService = null;
 		public static SalesService salesService;
 		
@@ -218,7 +217,6 @@ public class NonprofitBookkeepingFX extends Application
 				dss = new DocumentStorageService();
 				fas = new FundAccountingService();
 				donorService = new DonorService();
-				grantsService = new GrantsService();
 				undepositedFundsService = new UndepositedFundsService();
 				
 			}
@@ -540,12 +538,6 @@ public class NonprofitBookkeepingFX extends Application
 			e -> showPanel(
 				new DonorsPanelFX(ServiceContainer.donorService, null),
 				"Donors"));
-		add(this.fundraisingMenu, "Donations",
-			e -> showPanel(new DonationsPanelFX(this.primaryStage),
-				"Donations"));
-		add(this.fundraisingMenu, "Grants",
-			e -> showPanel(new GrantsPanelFX(ServiceContainer.grantsService),
-				"Grants"));
 		add(this.fundraisingMenu, "Funds & Fund Accounting",
 			e -> showPanel(
 				new FundsPanelFX(ServiceContainer.fas, null),
