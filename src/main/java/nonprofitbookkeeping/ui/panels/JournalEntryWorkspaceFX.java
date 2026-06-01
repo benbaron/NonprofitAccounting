@@ -389,40 +389,46 @@ public class JournalEntryWorkspaceFX extends BorderPane
 		
 		VBox root = new VBox(14);
 		root.getStyleClass().add("journal-entry-workspace");
-		
+
 		Node topBar = buildTopBar();
-		Node linesWorkspace = buildLinesWorkspace();
+		Node lineControls = buildLineControls();
 		Node metadataArea = buildMetadataArea();
 		Node supplementalPanel = buildSupplementalPanel();
-		
-		root.getChildren().addAll(
-			topBar,
-			linesWorkspace,
-			metadataArea,
-			supplementalPanel
-		);
-		
-		VBox.setVgrow(linesWorkspace, Priority.ALWAYS);
+
+		VBox topContent = new VBox(14, topBar, lineControls);
+		topContent.setMinWidth(1120);
+		ScrollPane topPane = scrollablePane(topContent, 230);
+
+		configureTable();
+		this.table.setMinWidth(1120);
+		this.table.setMinHeight(360);
+		this.table.setPrefHeight(520);
+		ScrollPane tablePane = scrollablePane(this.table, 360);
+
+		VBox bottomContent = new VBox(12, metadataArea, supplementalPanel);
+		bottomContent.setMinWidth(1120);
+		ScrollPane bottomPane = scrollablePane(bottomContent, 380);
+
+		root.getChildren().addAll(topPane, tablePane, bottomPane);
+		VBox.setVgrow(tablePane, Priority.ALWAYS);
 		root.setMinWidth(100);
 		root.setMinHeight(100);
-		
+
 		ScrollPane scrollPane = new ScrollPane(root);
 		scrollPane.setFitToWidth(true);
 		scrollPane.setFitToHeight(false);
 		scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-		scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+		scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
 		scrollPane.setPannable(true);
 		setCenter(scrollPane);
-		
+
 		root.prefWidthProperty().bind(Bindings.createDoubleBinding(
 			() -> Math.max(960, scrollPane.getViewportBounds().getWidth()),
 			scrollPane.viewportBoundsProperty()));
 
-		this.table.prefHeightProperty().bind(Bindings.max(260,
-			root.heightProperty().multiply(0.40)));
 		this.supplementalTabs.prefHeightProperty().bind(Bindings.max(180,
-			root.heightProperty().multiply(0.22)));
-		
+			bottomContent.heightProperty().multiply(0.40)));
+
 		this.supplementalTabs.setPersonRefs(loadPersonRefs());
 		
 		this.table.setId("entryTable");
@@ -431,6 +437,19 @@ public class JournalEntryWorkspaceFX extends BorderPane
 		this.memoArea.setId("memoArea");
 	}
 	
+	private ScrollPane scrollablePane(Node content, double preferredViewportHeight)
+	{
+		ScrollPane scrollPane = new ScrollPane(content);
+		scrollPane.setFitToWidth(false);
+		scrollPane.setFitToHeight(false);
+		scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+		scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+		scrollPane.setPannable(true);
+		scrollPane.setPrefViewportHeight(preferredViewportHeight);
+		scrollPane.setMaxWidth(Double.MAX_VALUE);
+		return scrollPane;
+	}
+
 	/**
 	 * Builds the top bar.
 	 *
@@ -534,33 +553,29 @@ public class JournalEntryWorkspaceFX extends BorderPane
 	 *
 	 * @return the node
 	 */
-	private Node buildLinesWorkspace()
+	private Node buildLineControls()
 	{
 		VBox block = new VBox(10);
 		block.setAlignment(Pos.TOP_LEFT);
-		
+
 		Label heading = sectionHeading("Entry Lines");
-		
+
 		ToolBar toolbar =
 			new ToolBar(this.addLineButton, this.duplicateLineButton,
 				this.removeLineButton);
 		toolbar.getStyleClass().add("toolbar-plain");
-		
+
 		this.addLineButton.setGraphic(null);
 		this.addLineButton.getStyleClass().add("btn-add-line");
 		this.addLineButton.setOnAction(e -> addLine());
-		
+
 		this.duplicateLineButton.setOnAction(e -> duplicateSelectedLine());
 		this.removeLineButton.setOnAction(e -> removeSelectedLines());
-		
-		configureTable();
-		this.table.setMinHeight(260);
-		VBox.setVgrow(this.table, Priority.ALWAYS);
-		
-		block.getChildren().addAll(heading, toolbar, this.table);
+
+		block.getChildren().addAll(heading, toolbar);
 		return block;
 	}
-	
+
 	/**
 	 * Builds the party document card.
 	 *
@@ -1144,9 +1159,10 @@ public class JournalEntryWorkspaceFX extends BorderPane
 	{
 		this.table.setEditable(true);
 		this.table.setColumnResizePolicy(
-			TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+			TableView.UNCONSTRAINED_RESIZE_POLICY);
 		
 		TableColumn<Line, String> accountCol = new TableColumn<>("Account");
+		accountCol.setPrefWidth(640);
 		accountCol.setCellValueFactory(cd -> cd.getValue().account);
 		accountCol.setCellFactory(accountCellFactory());
 		accountCol.setOnEditCommit(ev -> {
@@ -1159,6 +1175,8 @@ public class JournalEntryWorkspaceFX extends BorderPane
 		TableColumn<Line, BigDecimal> debitCol = amtCol("Debit", l -> l.debit);
 		TableColumn<Line, BigDecimal> creditCol =
 			amtCol("Credit", l -> l.credit);
+		debitCol.setPrefWidth(240);
+		creditCol.setPrefWidth(240);
 		
 		debitCol.setOnEditCommit(ev -> {
 			Line row = ev.getRowValue();
