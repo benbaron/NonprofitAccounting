@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "npbk-semantic-report-1",
+  "templateId": "TransactionsList",
+  "type": "tableReport",
+  "title": "Transactions List",
+  "subtitle": "Workbook-modeled transaction list report",
+  "sourceSheet": "TransactionsList",
+  "tableKey": "transactionsList.rows",
+  "columns": [
+    { "label": "Date", "field": "date", "format": "date", "width": 110 },
+    { "label": "Reference", "field": "reference", "width": 120 },
+    { "label": "Payee", "field": "payee", "width": 220 },
+    { "label": "Memo", "field": "memo", "width": 320 },
+    { "label": "Account", "field": "account", "width": 240 },
+    { "label": "Fund", "field": "fund", "width": 180 },
+    { "label": "Amount", "field": "amount", "format": "currency", "width": 130 }
+  ]
+}
