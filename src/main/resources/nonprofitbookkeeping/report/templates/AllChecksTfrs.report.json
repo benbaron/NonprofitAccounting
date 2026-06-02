@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "npbk-semantic-report-1",
+  "templateId": "AllChecksTfrs",
+  "type": "tableReport",
+  "title": "All Checks & Transfers",
+  "subtitle": "Workbook-modeled bank/check/transfer report",
+  "sourceSheet": "AllChecksTfrs",
+  "tableKey": "allChecksTfrs.rows",
+  "columns": [
+    { "label": "Date", "field": "date", "format": "date", "width": 110 },
+    { "label": "Check/Ref", "field": "reference", "width": 120 },
+    { "label": "Payee", "field": "payee", "width": 220 },
+    { "label": "Bank", "field": "bank", "width": 180 },
+    { "label": "Memo", "field": "memo", "width": 320 },
+    { "label": "Amount", "field": "amount", "format": "currency", "width": 130 },
+    { "label": "Status", "field": "status", "width": 140 }
+  ]
+}

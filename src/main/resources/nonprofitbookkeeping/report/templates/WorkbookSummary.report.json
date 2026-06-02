@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "npbk-semantic-report-1",
+  "templateId": "WorkbookSummary",
+  "type": "sectionReport",
+  "title": "Workbook Summary",
+  "subtitle": "Workbook-modeled summary and control report",
+  "sourceSheet": "WorkbookSummary",
+  "sections": [
+    {
+      "title": "Reporting Period",
+      "rows": [
+        { "type": "valueRow", "line": "", "label": "Period Start", "valueKey": "context.periodStart", "format": "date" },
+        { "type": "valueRow", "line": "", "label": "Period End", "valueKey": "context.periodEnd", "format": "date" }
+      ]
+    },
+    {
+      "title": "Statement Checks",
+      "rows": [
+        { "type": "valueRow", "line": "", "label": "Total Assets", "valueKey": "workbookSummary.totalAssets", "format": "currency" },
+        { "type": "valueRow", "line": "", "label": "Total Liabilities", "valueKey": "workbookSummary.totalLiabilities", "format": "currency" },
+        { "type": "valueRow", "line": "", "label": "Total Net Assets", "valueKey": "workbookSummary.totalNetAssets", "format": "currency" },
+        { "type": "valueRow", "line": "", "label": "Net Income / Loss", "valueKey": "workbookSummary.netIncomeLoss", "format": "currency" },
+        { "type": "valueRow", "line": "", "label": "Balance Check", "valueKey": "workbookSummary.balanceCheck", "format": "currency", "emphasis": true }
+      ]
+    }
+  ]
+}

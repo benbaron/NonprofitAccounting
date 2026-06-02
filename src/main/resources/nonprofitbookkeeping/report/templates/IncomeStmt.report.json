@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "npbk-semantic-report-1",
+  "templateId": "IncomeStmt",
+  "type": "sectionReport",
+  "title": "Income Statement",
+  "subtitle": "SCA workbook-modeled report form",
+  "sourceSheet": "IncomeStmt",
+  "sections": [
+    {
+      "title": "Income",
+      "rows": [
+        { "type": "staticRow", "line": "1a", "label": "Fundraising: non-medieval activities to earn income", "note": "Map via income accounts and BudgetCategory" },
+        { "type": "staticRow", "line": "2.0", "label": "Direct Contributions / Donations", "note": "Map via income accounts and donor/contribution records" },
+        { "type": "staticRow", "line": "3a", "label": "Activity Related: medieval activities to earn income", "note": "Map via income accounts and Activity/Event" },
+        { "type": "valueRow", "line": "", "label": "Total Income", "valueKey": "incomeStmt.totalIncome", "format": "currency", "sourceCell": "IncomeStmt!H20", "emphasis": true }
+      ]
+    },
+    {
+      "title": "Expenses",
+      "rows": [
+        { "type": "staticRow", "line": "21b", "label": "Occupancy - Activity Related", "note": "Map via expense accounts and BudgetCategory" },
+        { "type": "staticRow", "line": "", "label": "Administrative and activity expenses", "note": "Expand from Chart of Accounts report mappings" },
+        { "type": "valueRow", "line": "", "label": "Total Expenses", "valueKey": "incomeStmt.totalExpenses", "format": "currency", "sourceCell": "IncomeStmt!H44", "emphasis": true }
+      ]
+    },
+    {
+      "title": "Net Activity",
+      "rows": [
+        { "type": "valueRow", "line": "", "label": "Net Income / Loss", "valueKey": "incomeStmt.netIncomeLoss", "format": "currency", "sourceCell": "IncomeStmt!H48", "emphasis": true }
+      ]
+    }
+  ]
+}
