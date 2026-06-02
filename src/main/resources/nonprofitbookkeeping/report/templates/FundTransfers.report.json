@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "npbk-semantic-report-1",
+  "templateId": "FundTransfers",
+  "type": "tableReport",
+  "title": "Fund Transfers",
+  "subtitle": "Workbook-modeled fund transfer report",
+  "sourceSheet": "FundTransfers",
+  "tableKey": "fundTransfers.rows",
+  "columns": [
+    { "label": "Date", "field": "date", "format": "date", "width": 110 },
+    { "label": "Reference", "field": "reference", "width": 120 },
+    { "label": "From Fund", "field": "fromFund", "width": 180 },
+    { "label": "To Fund", "field": "toFund", "width": 180 },
+    { "label": "Memo", "field": "memo", "width": 320 },
+    { "label": "Amount", "field": "amount", "format": "currency", "width": 130 }
+  ]
+}
