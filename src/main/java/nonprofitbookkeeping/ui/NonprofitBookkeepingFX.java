@@ -508,9 +508,7 @@ public class NonprofitBookkeepingFX extends Application
 			e -> showPanel(new InventoryPanelFX(ServiceContainer.iss, null),
 				"Inventory"));
 		this.runMenu.getItems().add(new SeparatorMenuItem());
-		add(this.runMenu, "Generate Excel Template Report...",
-			e -> new ExcelTemplateReportActionFX(this.primaryStage).handle(e));
-		bar.getMenus().add(this.runMenu);
+
 		
 		/* DATABASE 
 		 * -------------  */

@@ -12,7 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import nonprofitbookkeeping.reports.jasper.runtime.ReportMetadata;
+import nonprofitbookkeeping.reports.ReportMetadata;
 import nonprofitbookkeeping.service.ReportService;
 // Added for listener
 import nonprofitbookkeeping.model.CurrentCompany;

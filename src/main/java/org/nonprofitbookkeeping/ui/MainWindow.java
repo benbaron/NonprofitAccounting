@@ -23,7 +23,6 @@ import nonprofitbookkeeping.tools.H2ScriptCompanyExporter;
 import nonprofitbookkeeping.tools.H2ScriptCompanyImporter;
 import nonprofitbookkeeping.tools.H2SchemaMigrator;
 import nonprofitbookkeeping.ui.RecordServicePanelRegistry;
-import nonprofitbookkeeping.ui.actions.ExcelTemplateReportActionFX;
 import nonprofitbookkeeping.ui.actions.ExportCoaXlsxActionFX;
 import nonprofitbookkeeping.ui.actions.ExportFileActionFX;
 import nonprofitbookkeeping.ui.actions.ImportCoaXlsxActionFX;
@@ -158,14 +157,12 @@ public class MainWindow extends BorderPane
                 () -> showLegacyPanel("Undeposited Funds", new UndepositedFundsPanelFX(undepositedFundsService))),
             item("Sales & COGS", null,
                 () -> showLegacyPanel("Sales & COGS", new SalesAndCOGPanelFX(salesService, null))),
+
             new SeparatorMenuItem(),
             item("Documents & Attachments", null,
                 () -> showLegacyPanel("Documents", new DocumentsPanelFX(documentStorageService))),
             item("Inventory & Depreciation", null,
-                () -> showLegacyPanel("Inventory", new InventoryPanelFX(inventoryService, null))),
-            new SeparatorMenuItem(),
-            item("Generate Excel Template Report...", null,
-                () -> new ExcelTemplateReportActionFX(getOwningStage()).handle(null))
+                () -> showLegacyPanel("Inventory", new InventoryPanelFX(inventoryService, null)))
         );
 
         Menu database = new Menu("Database");
