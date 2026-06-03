@@ -107,10 +107,23 @@ public class ReportsPanelFX extends BorderPane
 			}
 			
 		});
+		Button workbookReports = new Button("Workbook Reports");
+		workbookReports.setOnAction(e -> openWorkbookReportsDialog());
 		return new ToolBar(new Label("Type:"), typeBox, new Label("From:"),
 			from, new Label("To:"),
-			to, gen);
+			to, gen, new Separator(), workbookReports);
 		
+	}
+	
+	/**
+	 * Opens the semantic JSON workbook-report preview panel.
+	 */
+	private void openWorkbookReportsDialog()
+	{
+		Stage dlg = new Stage();
+		dlg.setTitle("Workbook Reports");
+		dlg.setScene(new Scene(new SemanticReportPreviewPanelFX(), 1100, 760));
+		dlg.showAndWait();
 	}
 	
 	/**
