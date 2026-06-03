@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.sql.SQLException;
 
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.core.FlywayMigrationRunner;
 import nonprofitbookkeeping.preferences.PreferencesManager;
 import nonprofitbookkeeping.tools.H2SchemaMigrator;
 import nonprofitbookkeeping.tools.H2ScriptCompanyExporter;
@@ -16,6 +17,7 @@ class AlternateDatabaseContextSwitcher
         Database.init(basePath);
         try
         {
+            FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
             Database.get().ensureSchema();
         }
         catch (SQLException ex)
