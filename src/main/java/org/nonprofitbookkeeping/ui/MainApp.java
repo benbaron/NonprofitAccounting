@@ -22,7 +22,7 @@ public class MainApp extends Application
         String uiVariant = System.getProperty("npbk.ui.variant", "alternate").trim().toLowerCase();
         boolean alternate = "alternate".equals(uiVariant);
         javafx.scene.Parent root = alternate ? new MainWindowAlternate() : new MainWindow();
-
+        root = new MainWindowAlternate();
         Scene scene = new Scene(root, 1200, 800);
 
         URL stylesheet = getClass().getResource("/themes/light.css");
