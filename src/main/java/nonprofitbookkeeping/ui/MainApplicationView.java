@@ -18,7 +18,6 @@ import nonprofitbookkeeping.ui.panels.BankReconciliationPanelFX;
 import nonprofitbookkeeping.ui.panels.IncomeStatementPanelFX;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonDashboardPanel;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonJournalPanel;
-import nonprofitbookkeeping.ui.panels.skeletons.SkeletonReportsPanel;
 import nonprofitbookkeeping.ui.panels.AccountTransactionDetailsPanelFX; 
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.ChartOfAccounts;
@@ -178,7 +177,6 @@ public class MainApplicationView extends BorderPane
 		this.coaTab = new Tab("Chart of Accounts",
 			createMergedCoaPanel(this.coaEditorPanel));
 		
-		this.reportsTab = new Tab("Reports", new SkeletonReportsPanel());
 		this.incomeStatementTab = new Tab("Income Statement",
 			new IncomeStatementPanelFX());
 		this.balanceSheetTab = new Tab("Balance Sheet",
