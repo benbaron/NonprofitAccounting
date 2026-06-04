@@ -404,29 +404,8 @@ public class MainWindow extends BorderPane
         Path basePath = normalizeH2Base(selectedFile.toPath());
         try
         {
-            Database.init(basePath);
-            H2SchemaMigrator.RepairResult repairResult = null;
-            try
-            {
-                Database.get().ensureSchema();
-            }
-            catch (SQLException ex)
-            {
-                if (!H2ScriptCompanyExporter.isFileCorruption(ex))
-                {
-                    throw ex;
-                }
-                repairResult = H2SchemaMigrator.repairCorruptedDatabase(basePath);
-            }
-            String message = "Database ready: " + basePath.toAbsolutePath();
-            if (repairResult != null && !repairResult.backupFiles().isEmpty())
-            {
-                message += "\nRecovered from corruption. Backups:\n" +
-                    String.join("\n", repairResult.backupFiles().stream()
-                        .map(path -> path.toAbsolutePath().toString())
-                        .toList());
-            }
-            info(message);
+            DatabaseOpenService.OpenResult result = DatabaseOpenService.openDatabase(basePath);
+            info(result.successMessage());
         }
         catch (Exception ex)
         {
