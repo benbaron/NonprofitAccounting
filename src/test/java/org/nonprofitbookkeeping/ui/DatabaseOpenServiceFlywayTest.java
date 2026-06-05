@@ -38,6 +38,8 @@ class DatabaseOpenServiceFlywayTest
                 "shared open path should record successful Flyway V003 migration");
             assertTrue(successfulFlywayVersionExists(connection, "4"),
                 "shared open path should record successful Flyway V004 migration");
+            assertTrue(successfulFlywayVersionExists(connection, "5"),
+                "shared open path should record successful Flyway V005 migration");
             assertTrue(tableExists(connection, "TXN"),
                 "Flyway/compatibility path should create canonical txn table");
             assertTrue(tableExists(connection, "JOURNAL_TRANSACTION"),
@@ -58,6 +60,16 @@ class DatabaseOpenServiceFlywayTest
                 "Flyway V004 should create imported other-asset item staging table");
             assertTrue(tableExists(connection, "IMPORTED_OUTSTANDING_ITEM_RECORD"),
                 "Flyway V004 should create imported outstanding item staging table");
+            assertTrue(tableExists(connection, "IMPORTED_ASSET_RECORD"),
+                "Flyway V005 should create imported asset staging table");
+            assertTrue(tableExists(connection, "IMPORTED_BUDGET"),
+                "Flyway V005 should create imported budget staging table");
+            assertTrue(tableExists(connection, "IMPORTED_BUDGET_LINE"),
+                "Flyway V005 should create imported budget line staging table");
+            assertTrue(tableExists(connection, "IMPORTED_BANK_STATEMENT"),
+                "Flyway V005 should create imported bank statement staging table");
+            assertTrue(tableExists(connection, "IMPORTED_BANKING_ITEM"),
+                "Flyway V005 should create imported banking item staging table");
         }
     }
 
