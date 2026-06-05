@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
@@ -14,7 +15,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -23,22 +23,26 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Validates the first Flyway baseline against the current runtime schema needs.
+ * Validates Flyway runtime schema coverage against the current application needs.
  *
- * <p>This test is intentionally conservative. It does not require the Flyway
- * baseline to be byte-for-byte identical to {@link Database#ensureSchema()} yet,
- * because the codebase is still transitioning away from repository-owned DDL.
- * It does require Flyway to create the core tables/columns used by current
- * runtime services and writes a fuller drift report for follow-up work.</p>
+ * <p>This is still a transitional gate. It requires the Flyway migrations to
+ * create the current minimum runtime tables and columns, including known import
+ * staging tables through V005. It also writes a drift/self-DDL report so the
+ * remaining schema-authority cleanup can proceed without guessing.</p>
  */
 class FlywayBaselineValidationTest
 {
+    private static final Set<String> REQUIRED_FLYWAY_VERSIONS = orderedSet("1", "2", "3", "4", "5");
+
     private static final Set<String> REQUIRED_RUNTIME_TABLES = orderedSet(
         "SCHEMA_MIGRATION_HISTORY",
+        "FLYWAY_SCHEMA_HISTORY",
         "COMPANY_PROFILE",
         "CHART_OF_ACCOUNTS",
         "ACCOUNT",
@@ -91,7 +95,40 @@ class FlywayBaselineValidationTest
         "JSON_STORAGE",
         "COMPANY_STORE",
         "SALE_RECORD",
-        "ALIAS_REVIEW_QUEUE"
+        "ALIAS_REVIEW_QUEUE",
+        "SCLX_IMPORT_RUN",
+        "SCLX_IMPORT_ERROR",
+        "IMPORTED_ORGANIZATION_RECORD",
+        "IMPORTED_FUND_RECORD",
+        "IMPORTED_EVENT_RECORD",
+        "IMPORTED_DOCUMENT_RECORD",
+        "IMPORTED_REPORTING_PERIOD_RECORD",
+        "IMPORTED_SUPPLY_RECORD",
+        "IMPORTED_OTHER_ASSET_ITEM_RECORD",
+        "IMPORTED_OUTSTANDING_ITEM_RECORD",
+        "IMPORTED_ASSET_RECORD",
+        "IMPORTED_BUDGET",
+        "IMPORTED_BUDGET_LINE",
+        "IMPORTED_BANK_STATEMENT",
+        "IMPORTED_BANKING_ITEM"
+    );
+
+    private static final Set<String> FLYWAY_OWNED_STAGING_TABLES = orderedSet(
+        "SCLX_IMPORT_RUN",
+        "SCLX_IMPORT_ERROR",
+        "IMPORTED_ORGANIZATION_RECORD",
+        "IMPORTED_FUND_RECORD",
+        "IMPORTED_EVENT_RECORD",
+        "IMPORTED_DOCUMENT_RECORD",
+        "IMPORTED_REPORTING_PERIOD_RECORD",
+        "IMPORTED_SUPPLY_RECORD",
+        "IMPORTED_OTHER_ASSET_ITEM_RECORD",
+        "IMPORTED_OUTSTANDING_ITEM_RECORD",
+        "IMPORTED_ASSET_RECORD",
+        "IMPORTED_BUDGET",
+        "IMPORTED_BUDGET_LINE",
+        "IMPORTED_BANK_STATEMENT",
+        "IMPORTED_BANKING_ITEM"
     );
 
     private static final Map<String, Set<String>> REQUIRED_RUNTIME_COLUMNS = requiredColumns();
@@ -100,17 +137,26 @@ class FlywayBaselineValidationTest
     Path tempDir;
 
     @Test
-    void flywayBaselineCreatesCurrentRuntimeCoreAndReportsDrift() throws Exception
+    void flywayCreatesCurrentRuntimeMinimumAndReportsSchemaDrift() throws Exception
     {
         DbSnapshot flyway = createFlywaySnapshot(tempDir.resolve("flyway-baseline"));
         DbSnapshot ensure = createEnsureSchemaSnapshot(tempDir.resolve("ensure-schema"));
+        List<SelfDdlReference> selfDdlReferences = findSelfDdlReferences();
 
         List<String> failures = new ArrayList<>();
+        for (String version : REQUIRED_FLYWAY_VERSIONS)
+        {
+            if (!flyway.successfulFlywayVersions().contains(version))
+            {
+                failures.add("Flyway migration version did not run successfully: " + version);
+            }
+        }
+
         for (String table : REQUIRED_RUNTIME_TABLES)
         {
             if (!flyway.tables().containsKey(table))
             {
-                failures.add("Flyway baseline is missing required table: " + table);
+                failures.add("Flyway is missing required table: " + table);
                 continue;
             }
             Set<String> requiredColumns = REQUIRED_RUNTIME_COLUMNS.getOrDefault(table, Set.of());
@@ -119,13 +165,13 @@ class FlywayBaselineValidationTest
             {
                 if (!actualColumns.contains(column))
                 {
-                    failures.add("Flyway baseline is missing required column: " + table + "." + column);
+                    failures.add("Flyway is missing required column: " + table + "." + column);
                 }
             }
         }
 
-        Path report = writeDriftReport(flyway, ensure, failures);
-        assertTrue(failures.isEmpty(), () -> "Flyway baseline does not satisfy current runtime schema minimum. See " + report + "\n" + String.join("\n", failures));
+        Path report = writeDriftReport(flyway, ensure, failures, selfDdlReferences);
+        assertTrue(failures.isEmpty(), () -> "Flyway does not satisfy current runtime schema minimum. See " + report + "\n" + String.join("\n", failures));
     }
 
     private DbSnapshot createFlywaySnapshot(Path databaseBase) throws SQLException
@@ -182,18 +228,60 @@ class FlywayBaselineValidationTest
                 }
             }
 
-            return new DbSnapshot(name, tables);
+            Set<String> versions = new TreeSet<>();
+            if (tables.containsKey("FLYWAY_SCHEMA_HISTORY"))
+            {
+                try (ResultSet rs = connection.createStatement().executeQuery(
+                    "SELECT version FROM flyway_schema_history WHERE success = TRUE AND version IS NOT NULL"))
+                {
+                    while (rs.next())
+                    {
+                        versions.add(rs.getString(1));
+                    }
+                }
+            }
+
+            return new DbSnapshot(name, tables, versions);
         }
     }
 
-    private Path writeDriftReport(DbSnapshot flyway, DbSnapshot ensure, List<String> failures) throws IOException
+    private List<SelfDdlReference> findSelfDdlReferences() throws IOException
+    {
+        Path sourceRoot = Path.of("src", "main", "java");
+        if (!Files.exists(sourceRoot))
+        {
+            return List.of();
+        }
+
+        Pattern createTablePattern = Pattern.compile("CREATE\\s+TABLE(?:\\s+IF\\s+NOT\\s+EXISTS)?\\s+([A-Za-z0-9_]+)", Pattern.CASE_INSENSITIVE);
+        List<SelfDdlReference> references = new ArrayList<>();
+        try (var paths = Files.walk(sourceRoot))
+        {
+            for (Path path : paths.filter(path -> path.toString().endsWith(".java")).toList())
+            {
+                String text = Files.readString(path, StandardCharsets.UTF_8);
+                Matcher matcher = createTablePattern.matcher(text);
+                while (matcher.find())
+                {
+                    String table = normalize(matcher.group(1));
+                    references.add(new SelfDdlReference(path.toString(), table, FLYWAY_OWNED_STAGING_TABLES.contains(table) || REQUIRED_RUNTIME_TABLES.contains(table)));
+                }
+            }
+        }
+        return references;
+    }
+
+    private Path writeDriftReport(DbSnapshot flyway, DbSnapshot ensure, List<String> failures, List<SelfDdlReference> selfDdlReferences) throws IOException
     {
         Path report = Path.of("target", "schema-drift", "flyway-vs-ensure-schema.md");
         Files.createDirectories(report.getParent());
 
         StringBuilder out = new StringBuilder();
-        out.append("# Flyway baseline vs ensureSchema drift report\n\n");
+        out.append("# Flyway runtime schema validation report\n\n");
         out.append("This report is generated by `FlywayBaselineValidationTest`.\n\n");
+        out.append("## Successful Flyway versions\n\n");
+        appendSet(out, "Versions", flyway.successfulFlywayVersions());
+
         out.append("## Validation failures\n\n");
         if (failures.isEmpty())
         {
@@ -215,6 +303,25 @@ class FlywayBaselineValidationTest
 
         appendSet(out, "Tables present in ensureSchema but missing from Flyway", missingFromFlyway);
         appendSet(out, "Tables present in Flyway but missing from ensureSchema", extraInFlyway);
+
+        out.append("## Repository/self-DDL inventory\n\n");
+        if (selfDdlReferences.isEmpty())
+        {
+            out.append("No CREATE TABLE references found under `src/main/java`.\n\n");
+        }
+        else
+        {
+            out.append("| File | Table | Covered by current Flyway/runtime required set |\n");
+            out.append("|---|---|---:|\n");
+            for (SelfDdlReference reference : selfDdlReferences)
+            {
+                out.append("| `").append(reference.file()).append("` | `")
+                    .append(reference.table()).append("` | ")
+                    .append(reference.coveredByFlywayGate() ? "yes" : "no")
+                    .append(" |\n");
+            }
+            out.append('\n');
+        }
 
         out.append("## Column drift\n\n");
         for (String table : intersect(ensure.tables().keySet(), flyway.tables().keySet()))
@@ -300,12 +407,29 @@ class FlywayBaselineValidationTest
         columns.put("FUND_TRANSFER", orderedSet("ID", "TRANSFER_DATE", "FROM_FUND_ID", "TO_FUND_ID", "AMOUNT", "STATUS", "POSTED_TXN_ID"));
         columns.put("DEPRECIATION_RUN", orderedSet("DEPRECIATION_RUN_ID", "RUN_DATE", "RUN_STATUS", "POSTED_TXN_ID"));
         columns.put("DEPRECIATION_RECORD", orderedSet("DEPRECIATION_RECORD_ID", "DEPRECIATION_RUN_ID", "ASSET_RECORD_ID", "NET_DEPRECIATION"));
+        columns.put("SCLX_IMPORT_RUN", orderedSet("ID", "SOURCE_NAME", "IMPORTED_AT", "STATUS"));
+        columns.put("SCLX_IMPORT_ERROR", orderedSet("ID", "IMPORT_RUN_ID", "SEVERITY", "MESSAGE"));
+        columns.put("IMPORTED_ORGANIZATION_RECORD", orderedSet("ORGANIZATION_ID", "NAME"));
+        columns.put("IMPORTED_FUND_RECORD", orderedSet("FUND_ID", "NAME", "RESTRICTED"));
+        columns.put("IMPORTED_EVENT_RECORD", orderedSet("EVENT_ID", "NAME"));
+        columns.put("IMPORTED_DOCUMENT_RECORD", orderedSet("DOCUMENT_ID"));
+        columns.put("IMPORTED_REPORTING_PERIOD_RECORD", orderedSet("PERIOD_KEY", "START_DATE", "END_DATE"));
+        columns.put("IMPORTED_SUPPLY_RECORD", orderedSet("SUPPLY_ID"));
+        columns.put("IMPORTED_OTHER_ASSET_ITEM_RECORD", orderedSet("OTHER_ASSET_ITEM_ID"));
+        columns.put("IMPORTED_OUTSTANDING_ITEM_RECORD", orderedSet("OUTSTANDING_ITEM_ID"));
+        columns.put("IMPORTED_ASSET_RECORD", orderedSet("ASSET_ID", "ACCUMULATED_DEPRECIATION", "ITEM_TYPE"));
+        columns.put("IMPORTED_BUDGET", orderedSet("BUDGET_ID"));
+        columns.put("IMPORTED_BUDGET_LINE", orderedSet("BUDGET_ID", "LINE_ORDINAL"));
+        columns.put("IMPORTED_BANK_STATEMENT", orderedSet("IMPORT_ID"));
+        columns.put("IMPORTED_BANKING_ITEM", orderedSet("BANKING_ITEM_ID"));
         return columns;
     }
 
-    private record DbSnapshot(String name, Map<String, TableDef> tables) {}
+    private record DbSnapshot(String name, Map<String, TableDef> tables, Set<String> successfulFlywayVersions) {}
 
     private record TableDef(String name, String type, Map<String, ColumnDef> columns) {}
 
     private record ColumnDef(String name, String type, int size, int scale, boolean nullable) {}
+
+    private record SelfDdlReference(String file, String table, boolean coveredByFlywayGate) {}
 }
