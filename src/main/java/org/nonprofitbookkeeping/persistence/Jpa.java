@@ -14,8 +14,9 @@ import java.util.Map;
 /**
  * Simple JPA bootstrap helper for a desktop (RESOURCE_LOCAL) application.
  *
- * This is intentionally minimal: you can replace it later with your preferred
- * factory / DI approach.
+ * <p>Schema creation is owned by Flyway plus the temporary compatibility path in
+ * {@code Database.ensureSchema()}. Hibernate should validate mappings against
+ * the existing database instead of mutating schema.</p>
  */
 @ApplicationScoped
 public class Jpa
@@ -34,7 +35,7 @@ public class Jpa
         props.put("jakarta.persistence.jdbc.url", jdbcUrl());
         props.put("jakarta.persistence.jdbc.user", jdbcUser());
         props.put("jakarta.persistence.jdbc.password", jdbcPass());
-        props.put("hibernate.hbm2ddl.auto", "update");
+        props.put("hibernate.hbm2ddl.auto", "validate");
         props.put("hibernate.show_sql", "false");
         return props;
     }
