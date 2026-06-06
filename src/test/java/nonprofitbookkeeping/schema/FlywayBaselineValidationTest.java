@@ -14,6 +14,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -199,19 +200,22 @@ class FlywayBaselineValidationTest
         {
             DatabaseMetaData meta = connection.getMetaData();
             Map<String, TableDef> tables = new TreeMap<>();
+            Map<String, String> actualTableNames = new TreeMap<>();
             try (ResultSet rs = meta.getTables(null, "PUBLIC", "%", new String[] {"TABLE", "VIEW"}))
             {
                 while (rs.next())
                 {
-                    String tableName = normalize(rs.getString("TABLE_NAME"));
+                    String actualTableName = rs.getString("TABLE_NAME");
+                    String tableName = normalize(actualTableName);
                     String tableType = rs.getString("TABLE_TYPE");
                     tables.put(tableName, new TableDef(tableName, tableType, new TreeMap<>()));
+                    actualTableNames.put(tableName, actualTableName);
                 }
             }
 
             for (String table : new ArrayList<>(tables.keySet()))
             {
-                try (ResultSet rs = meta.getColumns(null, "PUBLIC", table, "%"))
+                try (ResultSet rs = meta.getColumns(null, "PUBLIC", actualTableNames.get(table), "%"))
                 {
                     while (rs.next())
                     {
@@ -229,10 +233,14 @@ class FlywayBaselineValidationTest
             }
 
             Set<String> versions = new TreeSet<>();
-            if (tables.containsKey("FLYWAY_SCHEMA_HISTORY"))
+            String flywayHistoryTable = actualTableNames.get("FLYWAY_SCHEMA_HISTORY");
+            if (flywayHistoryTable != null)
             {
-                try (ResultSet rs = connection.createStatement().executeQuery(
-                    "SELECT version FROM flyway_schema_history WHERE success = true AND version IS NOT NULL"))
+                String quotedTable = quoteIdentifier(flywayHistoryTable);
+                try (Statement st = connection.createStatement();
+                     ResultSet rs = st.executeQuery(
+                         "SELECT " + quoteIdentifier("version") + " FROM " + quotedTable +
+                             " WHERE " + quoteIdentifier("success") + " = TRUE AND " + quoteIdentifier("version") + " IS NOT NULL"))
                 {
                     while (rs.next())
                     {
@@ -377,6 +385,11 @@ class FlywayBaselineValidationTest
     private static String normalize(String value)
     {
         return value == null ? "" : value.toUpperCase(Locale.ROOT);
+    }
+
+    private static String quoteIdentifier(String value)
+    {
+        return "\"" + value.replace("\"", "\"\"") + "\"";
     }
 
     private static Set<String> orderedSet(String... values)

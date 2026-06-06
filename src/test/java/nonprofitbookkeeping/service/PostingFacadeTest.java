@@ -4,7 +4,6 @@ import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
-import nonprofitbookkeeping.persistence.JournalRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -12,6 +11,7 @@ import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -31,14 +31,19 @@ class PostingFacadeTest {
         DefaultPostingFacade facade = new DefaultPostingFacade();
         PostingCommand cmd = new PostingCommand(txn(1, new BigDecimal("100.00")), "TEST", "r1", "ORIGINAL", "k1");
         PostingReference posted = facade.post(cmd);
-        assertEquals("journal_transaction:1", posted.canonicalRef());
+        assertEquals("txn:1", posted.canonicalRef());
+        assertLegacyAndCanonicalRowsExist(1, 2);
 
         PostingReference reversed = facade.reverse(posted.journalTxnId(), "void");
         assertTrue(reversed.journalTxnId() > posted.journalTxnId());
+        assertEquals("txn:" + reversed.journalTxnId(), reversed.canonicalRef());
+        assertLegacyAndCanonicalRowsExist(reversed.journalTxnId(), 2);
 
         PostingCommand amendCmd = new PostingCommand(txn(3, new BigDecimal("150.00")), "TEST", "r1", "ADJUSTMENT", "k2");
         PostingReference amended = facade.amend(posted.journalTxnId(), amendCmd, "adjust");
         assertEquals(3, amended.journalTxnId());
+        assertEquals("txn:3", amended.canonicalRef());
+        assertLegacyAndCanonicalRowsExist(3, 2);
 
         PostingCommand bad = new PostingCommand(unbalancedTxn(4), "TEST", "r2", "ORIGINAL", "k3");
         assertThrows(IllegalArgumentException.class, () -> facade.post(bad));
@@ -73,10 +78,34 @@ class PostingFacadeTest {
 
     private void seedAccounts() throws Exception {
         try (Connection c = Database.get().getConnection();
-             PreparedStatement ps = c.prepareStatement("MERGE INTO account(account_number, name, account_type, increase_side) KEY(account_number) VALUES (?,?,?,?)")) {
-            ps.setString(1, "1000"); ps.setString(2, "Cash"); ps.setString(3, "ASSET"); ps.setString(4, "DEBIT"); ps.addBatch();
-            ps.setString(1, "4000"); ps.setString(2, "Revenue"); ps.setString(3, "INCOME"); ps.setString(4, "CREDIT"); ps.addBatch();
+             PreparedStatement ps = c.prepareStatement("""
+                 MERGE INTO account(account_number, name, account_type, increase_side, code, normal_balance, chart_id, is_posting, is_active)
+                 KEY(account_number) VALUES (?,?,?,?,?,?,?,?,?)
+                 """)) {
+            ps.setString(1, "1000"); ps.setString(2, "Cash"); ps.setString(3, "ASSET"); ps.setString(4, "DEBIT");
+            ps.setString(5, "1000"); ps.setString(6, "DEBIT"); ps.setLong(7, 1L); ps.setBoolean(8, true); ps.setBoolean(9, true); ps.addBatch();
+            ps.setString(1, "4000"); ps.setString(2, "Revenue"); ps.setString(3, "INCOME"); ps.setString(4, "CREDIT");
+            ps.setString(5, "4000"); ps.setString(6, "CREDIT"); ps.setLong(7, 1L); ps.setBoolean(8, true); ps.setBoolean(9, true); ps.addBatch();
             ps.executeBatch();
+        }
+    }
+
+    private void assertLegacyAndCanonicalRowsExist(int txnId, int expectedSplits) throws Exception {
+        try (Connection c = Database.get().getConnection()) {
+            assertEquals(1, count(c, "SELECT COUNT(*) FROM journal_transaction WHERE id = ?", txnId));
+            assertEquals(expectedSplits, count(c, "SELECT COUNT(*) FROM journal_entry WHERE txn_id = ?", txnId));
+            assertEquals(1, count(c, "SELECT COUNT(*) FROM txn WHERE id = ?", txnId));
+            assertEquals(expectedSplits, count(c, "SELECT COUNT(*) FROM txn_split WHERE txn_id = ?", txnId));
+        }
+    }
+
+    private int count(Connection c, String sql, int txnId) throws Exception {
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, txnId);
+            try (ResultSet rs = ps.executeQuery()) {
+                assertTrue(rs.next());
+                return rs.getInt(1);
+            }
         }
     }
 }
