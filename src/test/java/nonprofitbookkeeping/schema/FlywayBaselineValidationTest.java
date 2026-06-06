@@ -1,13 +1,9 @@
 package nonprofitbookkeeping.schema;
 
-import nonprofitbookkeeping.core.Database;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -24,18 +20,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Validates Flyway runtime schema coverage against the current application needs.
+ * Validates that Flyway can create the current minimum runtime schema.
  *
- * <p>This is still a transitional gate. It requires the Flyway migrations to
- * create the current minimum runtime tables and columns, including known import
- * staging tables through V005. It also writes a drift/self-DDL report so the
- * remaining schema-authority cleanup can proceed without guessing.</p>
+ * <p>Flyway versions are normalized before comparison because migration files
+ * such as {@code V001__...sql} may be recorded by Flyway/H2 as {@code 001}
+ * even though the logical required version is {@code 1}.</p>
  */
 class FlywayBaselineValidationTest
 {
@@ -114,42 +107,23 @@ class FlywayBaselineValidationTest
         "IMPORTED_BANKING_ITEM"
     );
 
-    private static final Set<String> FLYWAY_OWNED_STAGING_TABLES = orderedSet(
-        "SCLX_IMPORT_RUN",
-        "SCLX_IMPORT_ERROR",
-        "IMPORTED_ORGANIZATION_RECORD",
-        "IMPORTED_FUND_RECORD",
-        "IMPORTED_EVENT_RECORD",
-        "IMPORTED_DOCUMENT_RECORD",
-        "IMPORTED_REPORTING_PERIOD_RECORD",
-        "IMPORTED_SUPPLY_RECORD",
-        "IMPORTED_OTHER_ASSET_ITEM_RECORD",
-        "IMPORTED_OUTSTANDING_ITEM_RECORD",
-        "IMPORTED_ASSET_RECORD",
-        "IMPORTED_BUDGET",
-        "IMPORTED_BUDGET_LINE",
-        "IMPORTED_BANK_STATEMENT",
-        "IMPORTED_BANKING_ITEM"
-    );
-
     private static final Map<String, Set<String>> REQUIRED_RUNTIME_COLUMNS = requiredColumns();
 
     @TempDir
     Path tempDir;
 
     @Test
-    void flywayCreatesCurrentRuntimeMinimumAndReportsSchemaDrift() throws Exception
+    void flywayCreatesCurrentRuntimeMinimum() throws Exception
     {
         DbSnapshot flyway = createFlywaySnapshot(tempDir.resolve("flyway-baseline"));
-        DbSnapshot ensure = createEnsureSchemaSnapshot(tempDir.resolve("ensure-schema"));
-        List<SelfDdlReference> selfDdlReferences = findSelfDdlReferences();
 
         List<String> failures = new ArrayList<>();
         for (String version : REQUIRED_FLYWAY_VERSIONS)
         {
             if (!flyway.successfulFlywayVersions().contains(version))
             {
-                failures.add("Flyway migration version did not run successfully: " + version);
+                failures.add("Flyway migration version did not run successfully: " + version
+                    + " (actual successful versions: " + flyway.successfulFlywayVersions() + ")");
             }
         }
 
@@ -171,8 +145,7 @@ class FlywayBaselineValidationTest
             }
         }
 
-        Path report = writeDriftReport(flyway, ensure, failures, selfDdlReferences);
-        assertTrue(failures.isEmpty(), () -> "Flyway does not satisfy current runtime schema minimum. See " + report + "\n" + String.join("\n", failures));
+        assertTrue(failures.isEmpty(), () -> String.join("\n", failures));
     }
 
     private DbSnapshot createFlywaySnapshot(Path databaseBase) throws SQLException
@@ -184,17 +157,10 @@ class FlywayBaselineValidationTest
             .cleanDisabled(false)
             .load()
             .migrate();
-        return snapshot("flyway", url);
+        return snapshot(url);
     }
 
-    private DbSnapshot createEnsureSchemaSnapshot(Path databaseBase) throws SQLException
-    {
-        Database.init(databaseBase);
-        Database.get().ensureSchema();
-        return snapshot("ensureSchema", Database.get().getJdbcUrl());
-    }
-
-    private DbSnapshot snapshot(String name, String url) throws SQLException
+    private DbSnapshot snapshot(String url) throws SQLException
     {
         try (Connection connection = DriverManager.getConnection(url, "sa", ""))
         {
@@ -207,8 +173,7 @@ class FlywayBaselineValidationTest
                 {
                     String actualTableName = rs.getString("TABLE_NAME");
                     String tableName = normalize(actualTableName);
-                    String tableType = rs.getString("TABLE_TYPE");
-                    tables.put(tableName, new TableDef(tableName, tableType, new TreeMap<>()));
+                    tables.put(tableName, new TableDef(tableName, new TreeMap<>()));
                     actualTableNames.put(tableName, actualTableName);
                 }
             }
@@ -219,15 +184,7 @@ class FlywayBaselineValidationTest
                 {
                     while (rs.next())
                     {
-                        String columnName = normalize(rs.getString("COLUMN_NAME"));
-                        ColumnDef column = new ColumnDef(
-                            columnName,
-                            normalize(rs.getString("TYPE_NAME")),
-                            rs.getInt("COLUMN_SIZE"),
-                            rs.getInt("DECIMAL_DIGITS"),
-                            rs.getInt("NULLABLE") == DatabaseMetaData.columnNullable
-                        );
-                        tables.get(table).columns().put(columnName, column);
+                        tables.get(table).columns().put(normalize(rs.getString("COLUMN_NAME")), true);
                     }
                 }
             }
@@ -236,145 +193,21 @@ class FlywayBaselineValidationTest
             String flywayHistoryTable = actualTableNames.get("FLYWAY_SCHEMA_HISTORY");
             if (flywayHistoryTable != null)
             {
-                String quotedTable = quoteIdentifier(flywayHistoryTable);
                 try (Statement st = connection.createStatement();
-                     ResultSet rs = st.executeQuery(
-                         "SELECT " + quoteIdentifier("version") + " FROM " + quotedTable +
-                             " WHERE " + quoteIdentifier("success") + " = TRUE AND " + quoteIdentifier("version") + " IS NOT NULL"))
+                     ResultSet rs = st.executeQuery("SELECT * FROM " + quoteIdentifier(flywayHistoryTable)))
                 {
                     while (rs.next())
                     {
-                        versions.add(rs.getString(1));
+                        if (rs.getBoolean("success"))
+                        {
+                            versions.add(normalizeFlywayVersion(rs.getString("version")));
+                        }
                     }
                 }
             }
 
-            return new DbSnapshot(name, tables, versions);
+            return new DbSnapshot(tables, versions);
         }
-    }
-
-    private List<SelfDdlReference> findSelfDdlReferences() throws IOException
-    {
-        Path sourceRoot = Path.of("src", "main", "java");
-        if (!Files.exists(sourceRoot))
-        {
-            return List.of();
-        }
-
-        Pattern createTablePattern = Pattern.compile("CREATE\\s+TABLE(?:\\s+IF\\s+NOT\\s+EXISTS)?\\s+([A-Za-z0-9_]+)", Pattern.CASE_INSENSITIVE);
-        List<SelfDdlReference> references = new ArrayList<>();
-        try (var paths = Files.walk(sourceRoot))
-        {
-            for (Path path : paths.filter(path -> path.toString().endsWith(".java")).toList())
-            {
-                String text = Files.readString(path, StandardCharsets.UTF_8);
-                Matcher matcher = createTablePattern.matcher(text);
-                while (matcher.find())
-                {
-                    String table = normalize(matcher.group(1));
-                    references.add(new SelfDdlReference(path.toString(), table, FLYWAY_OWNED_STAGING_TABLES.contains(table) || REQUIRED_RUNTIME_TABLES.contains(table)));
-                }
-            }
-        }
-        return references;
-    }
-
-    private Path writeDriftReport(DbSnapshot flyway, DbSnapshot ensure, List<String> failures, List<SelfDdlReference> selfDdlReferences) throws IOException
-    {
-        Path report = Path.of("target", "schema-drift", "flyway-vs-ensure-schema.md");
-        Files.createDirectories(report.getParent());
-
-        StringBuilder out = new StringBuilder();
-        out.append("# Flyway runtime schema validation report\n\n");
-        out.append("This report is generated by `FlywayBaselineValidationTest`.\n\n");
-        out.append("## Successful Flyway versions\n\n");
-        appendSet(out, "Versions", flyway.successfulFlywayVersions());
-
-        out.append("## Validation failures\n\n");
-        if (failures.isEmpty())
-        {
-            out.append("No minimum-runtime failures.\n\n");
-        }
-        else
-        {
-            for (String failure : failures)
-            {
-                out.append("- ").append(failure).append('\n');
-            }
-            out.append('\n');
-        }
-
-        Set<String> missingFromFlyway = new TreeSet<>(ensure.tables().keySet());
-        missingFromFlyway.removeAll(flyway.tables().keySet());
-        Set<String> extraInFlyway = new TreeSet<>(flyway.tables().keySet());
-        extraInFlyway.removeAll(ensure.tables().keySet());
-
-        appendSet(out, "Tables present in ensureSchema but missing from Flyway", missingFromFlyway);
-        appendSet(out, "Tables present in Flyway but missing from ensureSchema", extraInFlyway);
-
-        out.append("## Repository/self-DDL inventory\n\n");
-        if (selfDdlReferences.isEmpty())
-        {
-            out.append("No CREATE TABLE references found under `src/main/java`.\n\n");
-        }
-        else
-        {
-            out.append("| File | Table | Covered by current Flyway/runtime required set |\n");
-            out.append("|---|---|---:|\n");
-            for (SelfDdlReference reference : selfDdlReferences)
-            {
-                out.append("| `").append(reference.file()).append("` | `")
-                    .append(reference.table()).append("` | ")
-                    .append(reference.coveredByFlywayGate() ? "yes" : "no")
-                    .append(" |\n");
-            }
-            out.append('\n');
-        }
-
-        out.append("## Column drift\n\n");
-        for (String table : intersect(ensure.tables().keySet(), flyway.tables().keySet()))
-        {
-            TableDef ensureTable = ensure.tables().get(table);
-            TableDef flywayTable = flyway.tables().get(table);
-            Set<String> missingColumns = new TreeSet<>(ensureTable.columns().keySet());
-            missingColumns.removeAll(flywayTable.columns().keySet());
-            Set<String> extraColumns = new TreeSet<>(flywayTable.columns().keySet());
-            extraColumns.removeAll(ensureTable.columns().keySet());
-
-            if (missingColumns.isEmpty() && extraColumns.isEmpty())
-            {
-                continue;
-            }
-
-            out.append("### ").append(table).append("\n\n");
-            appendSet(out, "Missing from Flyway", missingColumns);
-            appendSet(out, "Extra in Flyway", extraColumns);
-        }
-
-        Files.writeString(report, out.toString());
-        return report;
-    }
-
-    private static void appendSet(StringBuilder out, String title, Set<String> values)
-    {
-        out.append("### ").append(title).append("\n\n");
-        if (values.isEmpty())
-        {
-            out.append("None.\n\n");
-            return;
-        }
-        for (String value : values)
-        {
-            out.append("- `").append(value).append("`\n");
-        }
-        out.append('\n');
-    }
-
-    private static Set<String> intersect(Set<String> left, Set<String> right)
-    {
-        Set<String> out = new TreeSet<>(left);
-        out.retainAll(right);
-        return out;
     }
 
     private static String h2Url(Path databaseBase)
@@ -385,6 +218,15 @@ class FlywayBaselineValidationTest
     private static String normalize(String value)
     {
         return value == null ? "" : value.toUpperCase(Locale.ROOT);
+    }
+
+    private static String normalizeFlywayVersion(String value)
+    {
+        if (value == null || value.isBlank())
+        {
+            return "";
+        }
+        return value.strip().replaceFirst("^0+(?!$)", "");
     }
 
     private static String quoteIdentifier(String value)
@@ -438,11 +280,7 @@ class FlywayBaselineValidationTest
         return columns;
     }
 
-    private record DbSnapshot(String name, Map<String, TableDef> tables, Set<String> successfulFlywayVersions) {}
+    private record DbSnapshot(Map<String, TableDef> tables, Set<String> successfulFlywayVersions) {}
 
-    private record TableDef(String name, String type, Map<String, ColumnDef> columns) {}
-
-    private record ColumnDef(String name, String type, int size, int scale, boolean nullable) {}
-
-    private record SelfDdlReference(String file, String table, boolean coveredByFlywayGate) {}
+    private record TableDef(String name, Map<String, Boolean> columns) {}
 }
