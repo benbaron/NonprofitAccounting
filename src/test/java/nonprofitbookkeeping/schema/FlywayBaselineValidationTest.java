@@ -232,7 +232,7 @@ class FlywayBaselineValidationTest
             if (tables.containsKey("FLYWAY_SCHEMA_HISTORY"))
             {
                 try (ResultSet rs = connection.createStatement().executeQuery(
-                    "SELECT version FROM flyway_schema_history WHERE success = TRUE AND version IS NOT NULL"))
+                    "SELECT version FROM flyway_schema_history WHERE success = true AND version IS NOT NULL"))
                 {
                     while (rs.next())
                     {
