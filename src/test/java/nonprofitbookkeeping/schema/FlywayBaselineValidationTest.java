@@ -27,8 +27,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Validates that Flyway can create the current minimum runtime schema.
  *
  * <p>Flyway versions are normalized before comparison because migration files
- * such as {@code V001__...sql} may be recorded by Flyway/H2 as {@code 001}
- * even though the logical required version is {@code 1}.</p>
+ * such as {@code V001__...sql} may be recorded by Flyway/H2 as {@code 001},
+ * {@code 004.0}, or another equivalent numeric representation.</p>
  */
 class FlywayBaselineValidationTest
 {
@@ -226,7 +226,9 @@ class FlywayBaselineValidationTest
         {
             return "";
         }
-        return value.strip().replaceFirst("^0+(?!$)", "");
+        String normalized = value.strip().replaceFirst("^0+(?=\\d)", "");
+        normalized = normalized.replaceFirst("\\.0+$", "");
+        return normalized.isBlank() ? "0" : normalized;
     }
 
     private static String quoteIdentifier(String value)
