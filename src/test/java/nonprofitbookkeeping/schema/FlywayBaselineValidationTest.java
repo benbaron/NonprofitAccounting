@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class FlywayBaselineValidationTest
 {
-    private static final Set<String> REQUIRED_FLYWAY_VERSIONS = orderedSet("1", "2", "3", "4", "5");
+    private static final Set<String> REQUIRED_FLYWAY_VERSIONS = orderedSet("1", "2", "3", "4", "5", "6");
 
     private static final Set<String> REQUIRED_RUNTIME_TABLES = orderedSet(
         "SCHEMA_MIGRATION_HISTORY",
