@@ -1,6 +1,7 @@
 package org.nonprofitbookkeeping.service;
 
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.core.FlywayMigrationRunner;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -34,6 +35,7 @@ class AccountLookupServiceTest
     void listActivePostingAccounts_filtersAndSortsByCode() throws Exception
     {
         Database.init(tempDir.resolve("account-lookup"));
+        FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
 
         try (Connection c = Database.get().getConnection(); Statement st = c.createStatement())
