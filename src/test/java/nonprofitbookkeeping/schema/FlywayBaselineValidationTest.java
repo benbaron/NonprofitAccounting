@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class FlywayBaselineValidationTest
 {
-    private static final Set<String> REQUIRED_FLYWAY_VERSIONS = orderedSet("1", "2", "3", "4", "5", "6");
+    private static final Set<String> REQUIRED_FLYWAY_VERSIONS = orderedSet("1", "2", "3", "4", "5", "6", "7");
 
     private static final Set<String> REQUIRED_RUNTIME_TABLES = orderedSet(
         "SCHEMA_MIGRATION_HISTORY",
@@ -266,6 +266,7 @@ class FlywayBaselineValidationTest
         columns.put("DEPRECIATION_RECORD", orderedSet("DEPRECIATION_RECORD_ID", "DEPRECIATION_RUN_ID", "ASSET_RECORD_ID", "NET_DEPRECIATION"));
         columns.put("SCLX_IMPORT_RUN", orderedSet("ID", "SOURCE_NAME", "IMPORTED_AT", "STATUS"));
         columns.put("SCLX_IMPORT_ERROR", orderedSet("ID", "IMPORT_RUN_ID", "SEVERITY", "MESSAGE"));
+        columns.put("ALIAS_REVIEW_QUEUE", orderedSet("ID", "ALIAS_DOMAIN", "ALIAS_TEXT", "NORMALIZATION_KEY", "CANDIDATE_COUNT", "REASON", "STATUS", "CREATED_AT", "RESOLVER", "RESOLUTION_NOTE"));
         columns.put("IMPORTED_ORGANIZATION_RECORD", orderedSet("ORGANIZATION_ID", "NAME"));
         columns.put("IMPORTED_FUND_RECORD", orderedSet("FUND_ID", "NAME", "RESTRICTED"));
         columns.put("IMPORTED_EVENT_RECORD", orderedSet("EVENT_ID", "NAME"));
