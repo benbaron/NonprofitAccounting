@@ -57,6 +57,7 @@ public class Jpa
         props.put("jakarta.persistence.jdbc.password", jdbcPass());
         props.put("hibernate.hbm2ddl.auto", "validate");
         props.put("hibernate.show_sql", "false");
+        props.put("hibernate.type.preferred_instant_jdbc_type", "TIMESTAMP");
         return props;
     }
 
