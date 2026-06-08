@@ -12,6 +12,7 @@
             <property name="hibernate.hbm2ddl.auto" value="validate"/>
             <property name="hibernate.show_sql" value="false"/>
             <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.type.preferred_instant_jdbc_type" value="TIMESTAMP"/>
         </properties>
     </persistence-unit>
 </persistence>

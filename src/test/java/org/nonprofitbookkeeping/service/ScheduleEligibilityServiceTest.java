@@ -1,6 +1,7 @@
 package org.nonprofitbookkeeping.service;
 
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.core.FlywayMigrationRunner;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -36,8 +37,7 @@ class ScheduleEligibilityServiceTest
     @Test
     void normalizedAccountRule_overridesSubtypeRule() throws Exception
     {
-        Database.init(tempDir.resolve("eligibility-normalized-override"));
-        Database.get().ensureSchema();
+        initializeDatabase("eligibility-normalized-override");
 
         long accountId;
         long receivableKindId;
@@ -81,8 +81,7 @@ class ScheduleEligibilityServiceTest
     @Test
     void legacyFallback_usedWhenNormalizedRulesAbsent() throws Exception
     {
-        Database.init(tempDir.resolve("eligibility-legacy-fallback"));
-        Database.get().ensureSchema();
+        initializeDatabase("eligibility-legacy-fallback");
 
         long accountId;
         long payableKindId;
@@ -112,8 +111,7 @@ class ScheduleEligibilityServiceTest
     @Test
     void normalizedRules_ignoreInactiveOrOutOfWindowReleases() throws Exception
     {
-        Database.init(tempDir.resolve("eligibility-release-window"));
-        Database.get().ensureSchema();
+        initializeDatabase("eligibility-release-window");
 
         long accountId;
         long inventoryKindId;
@@ -154,6 +152,13 @@ class ScheduleEligibilityServiceTest
         ScheduleEligibilityService service = new ScheduleEligibilityService(jpa);
 
         assertEquals(Set.of("INVENTORY"), service.allowedScheduleKindCodes(account));
+    }
+
+    private void initializeDatabase(String name) throws Exception
+    {
+        Database.init(tempDir.resolve(name));
+        FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
+        Database.get().ensureSchema();
     }
 
     private static Account accountWith(long id, AccountSubtype subtype) throws Exception
