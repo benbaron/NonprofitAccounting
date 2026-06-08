@@ -58,7 +58,7 @@ public class FundTransferPostingService {
             {
                 FinanceWriteEnforcement.runWithinFacadeScope(() ->
                     lifecycleService.transitionStatus(transferId, "POSTED",
-                        (long) posted.journalTxnId(), "posted via facade"));
+                        postedTxnId(posted), "posted via facade"));
             }
             catch (Exception e)
             {
@@ -90,6 +90,11 @@ public class FundTransferPostingService {
             "FUNDS:" + transferId + ":A");
         return postingFacade.amend(oldJournalTxnId, amended,
             "Fund transfer financial edit");
+    }
+
+    private static long postedTxnId(PostingReference posted) {
+        Long canonicalTxnId = posted.canonicalTxnId();
+        return canonicalTxnId == null ? posted.journalTxnId() : canonicalTxnId;
     }
 
     private static void validateInputs(long transferId, String fromFund,
