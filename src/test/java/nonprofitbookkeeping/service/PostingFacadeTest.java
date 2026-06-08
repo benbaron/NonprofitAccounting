@@ -32,21 +32,31 @@ class PostingFacadeTest {
         PostingCommand cmd = new PostingCommand(txn(1, new BigDecimal("100.00")), "TEST", "r1", "ORIGINAL", "k1");
         PostingReference posted = facade.post(cmd);
         assertEquals("txn:1", posted.canonicalRef());
+        assertEquals(1L, posted.canonicalTxnId());
         assertLegacyAndCanonicalRowsExist(1, 2);
 
         PostingReference reversed = facade.reverse(posted.journalTxnId(), "void");
         assertTrue(reversed.journalTxnId() > posted.journalTxnId());
         assertEquals("txn:" + reversed.journalTxnId(), reversed.canonicalRef());
+        assertEquals((long) reversed.journalTxnId(), reversed.canonicalTxnId());
         assertLegacyAndCanonicalRowsExist(reversed.journalTxnId(), 2);
 
         PostingCommand amendCmd = new PostingCommand(txn(3, new BigDecimal("150.00")), "TEST", "r1", "ADJUSTMENT", "k2");
         PostingReference amended = facade.amend(posted.journalTxnId(), amendCmd, "adjust");
         assertEquals(3, amended.journalTxnId());
         assertEquals("txn:3", amended.canonicalRef());
+        assertEquals(3L, amended.canonicalTxnId());
         assertLegacyAndCanonicalRowsExist(3, 2);
 
         PostingCommand bad = new PostingCommand(unbalancedTxn(4), "TEST", "r2", "ORIGINAL", "k3");
         assertThrows(IllegalArgumentException.class, () -> facade.post(bad));
+    }
+
+    @Test
+    void canonicalTxnId_returnsNullForNonCanonicalReferences() {
+        assertNull(new PostingReference(7, null).canonicalTxnId());
+        assertNull(new PostingReference(7, "journal_transaction:7").canonicalTxnId());
+        assertNull(new PostingReference(7, "txn:").canonicalTxnId());
     }
 
     private AccountingTransaction txn(int id, BigDecimal amount) {

@@ -57,7 +57,7 @@ public class GrantsFinancePostingService {
         try
         {
             FinanceWriteEnforcement.runWithinFacadeScope(() -> {
-                persistEffectivePosting(grantRecordId, ref.journalTxnId());
+                persistEffectivePosting(grantRecordId, ref);
                 populateGrantPostingLink(grantRecordId, ref.journalTxnId(), amount,
                     eventDate, eventType);
             });
@@ -96,7 +96,7 @@ public class GrantsFinancePostingService {
         try
         {
             FinanceWriteEnforcement.runWithinFacadeScope(() -> {
-                persistEffectivePosting(grantRecordId, ref.journalTxnId());
+                persistEffectivePosting(grantRecordId, ref);
                 populateGrantPostingLink(grantRecordId, ref.journalTxnId(), amount,
                     eventDate, eventType);
             });
@@ -136,13 +136,15 @@ public class GrantsFinancePostingService {
         }
     }
 
-    private void persistEffectivePosting(String grantRecordId, int txnId)
+    private void persistEffectivePosting(String grantRecordId, PostingReference reference)
         throws SQLException {
         FinanceWriteEnforcement.requireFacadeScope("grant_record.canonical_txn_id");
+        Long canonicalTxnId = reference.canonicalTxnId();
+        long effectiveTxnId = canonicalTxnId == null ? reference.journalTxnId() : canonicalTxnId;
         String sql = "UPDATE grant_record SET canonical_txn_id=? WHERE grant_record_id=?";
         try (Connection c = Database.get().getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setInt(1, txnId);
+            ps.setLong(1, effectiveTxnId);
             ps.setString(2, grantRecordId);
             int updated = ps.executeUpdate();
             if (updated == 0) {
