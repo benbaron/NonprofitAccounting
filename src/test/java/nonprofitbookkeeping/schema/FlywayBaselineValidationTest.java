@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class FlywayBaselineValidationTest
 {
-    private static final Set<String> REQUIRED_FLYWAY_VERSIONS = orderedSet("1", "2", "3", "4", "5", "6", "7", "8");
+    private static final Set<String> REQUIRED_FLYWAY_VERSIONS = orderedSet("1", "2", "3", "4", "5", "6", "7", "8", "9");
 
     private static final Set<String> REQUIRED_RUNTIME_TABLES = orderedSet(
         "SCHEMA_MIGRATION_HISTORY",
@@ -257,6 +257,7 @@ class FlywayBaselineValidationTest
         columns.put("TXN_SPLIT", orderedSet("ID", "TXN_ID", "ACCOUNT_ID", "FUND_ID", "ACTIVITY_ID", "MERCHANT_ID", "NMR_FLAG", "NOTES", "AMOUNT_SIGNED"));
         columns.put("FUND", orderedSet("ID", "CODE", "NAME", "FUND_TYPE", "IS_ACTIVE", "CREATED_AT", "UPDATED_AT"));
         columns.put("COUNTERPARTY", orderedSet("ID", "DISPLAY_NAME", "KIND", "EMAIL", "PHONE", "NOTES", "IS_ACTIVE"));
+        columns.put("MERCHANT", orderedSet("ID", "NAME", "NOTES", "IS_ACTIVE"));
         columns.put("DONATION_RECORD", orderedSet("DONATION_ID", "AMOUNT", "CASH_ACCOUNT_NUMBER", "REVENUE_ACCOUNT_NUMBER", "JOURNAL_TXN_ID"));
         columns.put("GRANT_RECORD", orderedSet("GRANT_RECORD_ID", "GRANT_ID", "AMOUNT", "JOURNAL_TXN_ID", "CANONICAL_TXN_ID"));
         columns.put("BANKING_TRANSACTION_RECORD", orderedSet("BANKING_RECORD_ID", "BANK_ID_RECORD_ID", "JOURNAL_TXN_ID", "TRANSACTION_DATE", "AMOUNT", "MATCH_STATUS"));
