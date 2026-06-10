@@ -249,6 +249,27 @@ class FlywayBaselineValidationTest
     private static Map<String, Set<String>> requiredColumns()
     {
         Map<String, Set<String>> columns = new LinkedHashMap<>();
+        columns.put("COMPANY_PROFILE", orderedSet(
+            "ID",
+            "NAME",
+            "ADDRESS",
+            "PHONE",
+            "EMAIL",
+            "FISCAL_YEAR_START",
+            "BASE_CURRENCY",
+            "STARTING_BALANCE_DATE",
+            "CHART_OF_ACCOUNTS_TYPE",
+            "ADMIN_USERNAME",
+            "ADMIN_PASSWORD",
+            "DEFAULT_BANK_ACCOUNT",
+            "ENABLE_FUND_ACCOUNTING",
+            "ENABLE_INVENTORY",
+            "ENABLE_MULTI_CURRENCY",
+            "LEGAL_STRUCTURE",
+            "TAX_ID",
+            "COMPANY_FILE_DIR",
+            "COMPANY_FILE_NAME"
+        ));
         columns.put("ACCOUNT", orderedSet("ACCOUNT_NUMBER", "ID", "CODE", "CHART_ID", "NORMAL_BALANCE", "IS_POSTING", "IS_ACTIVE"));
         columns.put("JOURNAL_TRANSACTION", orderedSet("ID", "DATE_TEXT", "MEMO", "TO_FROM", "CHECK_NUMBER", "RECONCILED", "BUDGET_TRACKING", "ASSOCIATED_FUND_NAME"));
         columns.put("JOURNAL_ENTRY", orderedSet("ID", "TXN_ID", "AMOUNT", "ACCOUNT_NUMBER", "ACCOUNT_SIDE", "ACCOUNT_NAME", "FUND_NUMBER"));
