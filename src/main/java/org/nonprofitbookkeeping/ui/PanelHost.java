@@ -4,9 +4,6 @@
 package org.nonprofitbookkeeping.ui;
 
 import javafx.scene.layout.BorderPane;
-import nonprofitbookkeeping.ui.panels.ChartOfAccountsTablePanelFX;
-import nonprofitbookkeeping.ui.panels.JournalPanelFX;
-import nonprofitbookkeeping.ui.panels.ReportsPanelFX;
 import org.nonprofitbookkeeping.ui.panels.DashboardPanelFX;
 
 import java.util.EnumMap;
@@ -98,9 +95,7 @@ public class PanelHost extends BorderPane
                 DashboardPanelFX::reloadData,
                 DashboardPanelFX::reloadData);
 
-            case LEDGER_REGISTER -> new FxAppPanelAdapter<>("Ledger Register", JournalPanelFX::new,
-                JournalPanelFX::refreshData,
-                JournalPanelFX::refreshData);
+            case LEDGER_REGISTER -> new LedgerRegisterPanel();
 
             case SCHEDULES -> new SchedulesPanel();
             case INVENTORY -> new InventoryPanel();
@@ -111,11 +106,9 @@ public class PanelHost extends BorderPane
             case ASSETS_REGISTER -> new AssetsRegisterPanel();
             case DEPRECIATION_RUNS -> new DepreciationRunsPanel();
 
-            case REPORT_LIBRARY, REPORTS_WORKSPACE -> new FxAppPanelAdapter<>("Reports", ReportsPanelFX::new);
+            case REPORT_LIBRARY, REPORTS_WORKSPACE -> new ReportLibraryPanel();
 
-            case CHART_OF_ACCOUNTS -> new FxAppPanelAdapter<>("Chart of Accounts", ChartOfAccountsTablePanelFX::new,
-                ChartOfAccountsTablePanelFX::refreshData,
-                ChartOfAccountsTablePanelFX::refreshData);
+            case CHART_OF_ACCOUNTS -> new ChartOfAccountsPanel();
             case FUNDS -> new FundsPanel();
             case SETTINGS -> new SettingsPanel();
         };
