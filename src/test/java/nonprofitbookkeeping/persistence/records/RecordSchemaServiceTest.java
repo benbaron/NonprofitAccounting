@@ -1,6 +1,7 @@
 package nonprofitbookkeeping.persistence.records;
 
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.core.FlywayMigrationRunner;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -21,6 +22,7 @@ class RecordSchemaServiceTest
     void setUp() throws SQLException
     {
         Database.init(tempDir.resolve("record-schema-db"));
+        FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
         new DocumentRecordRepository().listAll();
     }

@@ -1,6 +1,7 @@
 package nonprofitbookkeeping.service;
 
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.core.FlywayMigrationRunner;
 import nonprofitbookkeeping.model.Grant;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -22,6 +23,7 @@ class GrantsFinancePostingServiceTest {
     @Test
     void awardAndEdit_postingsAndLinksPersist() throws Exception {
         Database.init(tempDir.resolve("grants-fin"));
+        FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
         seedAccounts();
         seedGrant("GR-1");
@@ -55,6 +57,7 @@ class GrantsFinancePostingServiceTest {
     @Test
     void postFinancialEvent_unknownGrantRecord_throws() throws Exception {
         Database.init(tempDir.resolve("grants-fin-missing"));
+        FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
         seedAccounts();
 

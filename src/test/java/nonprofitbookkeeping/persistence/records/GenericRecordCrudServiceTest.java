@@ -1,6 +1,7 @@
 package nonprofitbookkeeping.persistence.records;
 
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.core.FlywayMigrationRunner;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -24,6 +25,7 @@ class GenericRecordCrudServiceTest
     void setUp() throws SQLException
     {
         Database.init(tempDir.resolve("generic-record-crud-db"));
+        FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
         new FundRecordRepository().listAll();
         this.service = new GenericRecordCrudService(new RecordSchemaService());

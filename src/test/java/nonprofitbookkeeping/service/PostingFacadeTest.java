@@ -1,6 +1,7 @@
 package nonprofitbookkeeping.service;
 
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.core.FlywayMigrationRunner;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
@@ -25,6 +26,7 @@ class PostingFacadeTest {
     void post_reverse_amend_and_unbalanced_rejection() throws Exception {
         Path dbPath = tempDir.resolve("posting-facade");
         Database.init(dbPath);
+        FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
         seedAccounts();
 

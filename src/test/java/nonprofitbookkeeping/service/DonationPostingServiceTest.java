@@ -1,6 +1,7 @@
 package nonprofitbookkeeping.service;
 
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.core.FlywayMigrationRunner;
 import nonprofitbookkeeping.model.DonationRecord;
 
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,7 @@ class DonationPostingServiceTest
 	{
 		Path dbPath = tempDir.resolve("donation-posting");
 		Database.init(dbPath);
+		FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
 		Database.get().ensureSchema();
 		seedAccounts();
 		seedDonor();
@@ -61,6 +63,7 @@ class DonationPostingServiceTest
 	{
 		Path dbPath = tempDir.resolve("donation-reverse-policy");
 		Database.init(dbPath);
+		FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
 		Database.get().ensureSchema();
 		seedAccounts();
 		seedDonor();

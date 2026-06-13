@@ -44,6 +44,7 @@ import javafx.scene.input.KeyCombination;
 import nonprofitbookkeeping.core.ApplicationContext;
 import nonprofitbookkeeping.core.ApplicationContextImpl;
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.core.FlywayMigrationRunner;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.plugin.Plugin;
@@ -787,6 +788,7 @@ public class NonprofitBookkeepingFX extends Application
 			H2SchemaMigrator.RepairResult repairResult = null;
 			try
 			{
+				FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
 				Database.get().ensureSchema();
 			}
 			catch (SQLException ex)

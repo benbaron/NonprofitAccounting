@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.core.FlywayMigrationRunner;
 import nonprofitbookkeeping.persistence.DocumentRepository;
 
 class FundNameLookupTest
@@ -22,6 +23,7 @@ class FundNameLookupTest
 	void listActiveFundNamesIncludesLegacyFundsDocument() throws Exception
 	{
 		Database.init(this.tempDir.resolve("fund-lookup"));
+		FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
 		Database.get().ensureSchema();
 
 		try (Connection connection = Database.get().getConnection();

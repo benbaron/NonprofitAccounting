@@ -1,6 +1,7 @@
 package org.nonprofitbookkeeping.service;
 
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.core.FlywayMigrationRunner;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -20,6 +21,7 @@ class ReadModelMaintenanceServiceTest {
     @Test
     void rebuildAndDriftDetection_workFromCanonical() throws Exception {
         Database.init(tempDir.resolve("rm-maint"));
+        FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
         seedCanonical();
 
