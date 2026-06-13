@@ -691,20 +691,6 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 
 	private void ensureFundTransferIntegrityArtifacts(Statement st) throws SQLException
 	{
-		st.execute("""
-			    ALTER TABLE fund_transfer_integrity_event
-			    ADD CONSTRAINT IF NOT EXISTS fk_ft_integrity_event_transfer
-			    FOREIGN KEY (transfer_id) REFERENCES fund_transfer(id) ON DELETE CASCADE
-			""");
-		st.execute("""
-			    ALTER TABLE fund_transfer_repair_queue
-			    ADD CONSTRAINT IF NOT EXISTS fk_ft_repair_transfer
-			    FOREIGN KEY (transfer_id) REFERENCES fund_transfer(id) ON DELETE CASCADE
-			""");
-		st.execute("""
-			    CREATE INDEX IF NOT EXISTS ix_ft_repair_open
-			    ON fund_transfer_repair_queue(resolved_at, issue_code, detected_at)
-			""");
 	}
 
 	private void backfillLegacyTxnMap(Connection c) throws SQLException
