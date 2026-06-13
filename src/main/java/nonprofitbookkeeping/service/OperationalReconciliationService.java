@@ -101,13 +101,23 @@ public class OperationalReconciliationService
 			 var ps = c.prepareStatement("""
 				UPDATE banking_transaction_record
 				   SET journal_txn_id = ?,
+				       canonical_txn_id = ?,
 				       match_status = 'ADJUSTED',
 				       matched_at = CURRENT_TIMESTAMP
 				 WHERE banking_record_id = ?
 				"""))
 		{
 			ps.setInt(1, ref.journalTxnId());
-			ps.setString(2, bankingRecordId);
+			Long canonicalTxnId = ref.canonicalTxnId();
+			if (canonicalTxnId == null)
+			{
+				ps.setNull(2, java.sql.Types.BIGINT);
+			}
+			else
+			{
+				ps.setLong(2, canonicalTxnId);
+			}
+			ps.setString(3, bankingRecordId);
 			ps.executeUpdate();
 		}
 		return ref;

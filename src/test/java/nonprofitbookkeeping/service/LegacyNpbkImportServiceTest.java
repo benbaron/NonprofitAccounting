@@ -3,6 +3,7 @@ package nonprofitbookkeeping.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.core.FlywayMigrationRunner;
 import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
@@ -41,6 +42,7 @@ class LegacyNpbkImportServiceTest
         {
                 Path dbBase = this.tempDir.resolve("testdb");
                 Database.init(dbBase);
+                FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
                 Database.get().ensureSchema();
         }
 
@@ -78,6 +80,7 @@ class LegacyNpbkImportServiceTest
                 // Reinitialize database to ensure a clean state
                 Path secondDb = this.tempDir.resolve("testdb2");
                 Database.init(secondDb);
+                FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
                 Database.get().ensureSchema();
 
                 Company company = createCompany("JSON Co");

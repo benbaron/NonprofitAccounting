@@ -1,6 +1,7 @@
 package nonprofitbookkeeping.persistence;
 
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.core.FlywayMigrationRunner;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
@@ -30,6 +31,7 @@ class JournalRepositoryPostingSupportTest {
     @Test
     void findById_loadsEntriesAndInfo_andReserveNextIdAdvances() throws Exception {
         Database.init(tempDir.resolve("jr-posting-support"));
+        FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
         seedAccounts();
 
@@ -66,6 +68,7 @@ class JournalRepositoryPostingSupportTest {
     @Test
     void reserveNextId_concurrentReservationsRemainUniqueWhenPersisted() throws Exception {
         Database.init(tempDir.resolve("jr-posting-concurrency"));
+        FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
         seedAccounts();
         JournalRepository repo = new JournalRepository();

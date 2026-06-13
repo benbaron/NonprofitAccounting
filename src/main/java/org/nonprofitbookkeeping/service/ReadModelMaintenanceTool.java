@@ -1,6 +1,7 @@
 package org.nonprofitbookkeeping.service;
 
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.core.FlywayMigrationRunner;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -17,6 +18,7 @@ public final class ReadModelMaintenanceTool {
             System.exit(2);
         }
         Database.init(Path.of(args[0]));
+        FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
 
         ReadModelMaintenanceService service = new ReadModelMaintenanceService();

@@ -1,6 +1,7 @@
 package nonprofitbookkeeping.service;
 
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.core.FlywayMigrationRunner;
 import nonprofitbookkeeping.model.SaleRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,7 @@ public class SalesServiceTest {
     void setUp() throws Exception {
         Path dbFile = this.tempDir.resolve("sales-db");
         Database.init(dbFile);
+        FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
         this.service = new SalesService();
     }

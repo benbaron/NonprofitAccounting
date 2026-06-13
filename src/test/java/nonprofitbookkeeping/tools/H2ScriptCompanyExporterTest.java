@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.core.FlywayMigrationRunner;
 
 class H2ScriptCompanyExporterTest
 {
@@ -20,6 +21,7 @@ class H2ScriptCompanyExporterTest
 	{
 		Path dbBase = tempDir.resolve("company-db");
 		Database.init(dbBase);
+		FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
 		Database.get().ensureSchema();
 
 		Path exportFile = tempDir.resolve("backup.sql");

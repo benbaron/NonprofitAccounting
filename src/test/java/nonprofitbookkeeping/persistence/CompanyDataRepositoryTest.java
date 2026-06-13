@@ -1,6 +1,7 @@
 package nonprofitbookkeeping.persistence;
 
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.core.FlywayMigrationRunner;
 import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountType;
@@ -32,6 +33,7 @@ class CompanyDataRepositoryTest
         {
                 Path dbFile = this.tempDir.resolve("company-data-test");
                 Database.init(dbFile);
+                FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
                 Database.get().ensureSchema();
         }
 

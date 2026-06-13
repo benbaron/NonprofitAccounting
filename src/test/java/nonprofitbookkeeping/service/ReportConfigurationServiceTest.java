@@ -1,6 +1,7 @@
 package nonprofitbookkeeping.service;
 
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.core.FlywayMigrationRunner;
 import nonprofitbookkeeping.model.reports.ReportConfiguration;
 import nonprofitbookkeeping.persistence.DocumentRepository;
 import nonprofitbookkeeping.ui.helpers.DateSelectionMode;
@@ -31,6 +32,7 @@ class ReportConfigurationServiceTest {
     void setUp() throws Exception {
         Path dbFile = this.tempDir.resolve("report-config-db");
         Database.init(dbFile);
+        FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
         this.configService = new ReportConfigurationService();
         this.companyDirectory = this.tempDir.toFile();
