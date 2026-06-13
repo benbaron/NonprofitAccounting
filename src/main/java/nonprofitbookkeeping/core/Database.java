@@ -180,7 +180,6 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 			ensureAccountAndLegacyJournalTables(st);
 			ensureJpaTables(st);
 			ensureJpaConstraints(st);
-			ensureFundTransferIntegrityArtifacts(st);
 			backfillLegacyTxnMap(c);
 			ensureCompatibilityViews(st);
 			ensurePeopleAndCounterparty(st);
@@ -687,10 +686,6 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 			    ADD CONSTRAINT IF NOT EXISTS fk_account_subtype_schedule_default_schedule_kind
 			    FOREIGN KEY (schedule_kind_id) REFERENCES schedule_kind(id)
 			""");
-	}
-
-	private void ensureFundTransferIntegrityArtifacts(Statement st) throws SQLException
-	{
 	}
 
 	private void backfillLegacyTxnMap(Connection c) throws SQLException
