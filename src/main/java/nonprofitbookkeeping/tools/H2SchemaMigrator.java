@@ -1,6 +1,7 @@
 package nonprofitbookkeeping.tools;
 
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.core.FlywayMigrationRunner;
 import org.h2.tools.Recover;
 
 import java.io.IOException;
@@ -77,6 +78,7 @@ public final class H2SchemaMigrator
         RepairResult repairResult = null;
         try
         {
+            FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
             Database.get().ensureSchema();
         }
         catch (SQLException ex)
@@ -113,8 +115,10 @@ public final class H2SchemaMigrator
         List<Path> backupFiles = backupExistingDbFiles(effectiveDbPath);
 
         Database.init(effectiveDbPath);
+        FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
         H2ScriptCompanyImporter.importScript(recoveryScript);
+        FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
         return new RepairResult(recoveryScript, List.copyOf(backupFiles));
     }

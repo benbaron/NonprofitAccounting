@@ -1,6 +1,7 @@
 package nonprofitbookkeeping.service;
 
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.core.FlywayMigrationRunner;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -20,6 +21,7 @@ class FundTransferPostingServiceTest {
     @Test
     void createAndAmendTransfer_usesFacadeAndLifecycle() throws Exception {
         Database.init(tempDir.resolve("fund-transfer"));
+        FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
         seed();
         long transferId = insertTransfer("APPROVED");
@@ -42,6 +44,7 @@ class FundTransferPostingServiceTest {
     @Test
     void postTransfer_invalidFundPair_throws() throws Exception {
         Database.init(tempDir.resolve("fund-transfer-invalid"));
+        FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
         seed();
         long transferId = insertTransfer("APPROVED");

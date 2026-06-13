@@ -1,6 +1,7 @@
 package nonprofitbookkeeping.persistence;
 
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.core.FlywayMigrationRunner;
 import nonprofitbookkeeping.model.BankStatementRecord;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -26,6 +27,7 @@ class BankStatementRepositoryTest
 	{
 		Path dbPath = tempDir.resolve("bank-statement-repo");
 		Database.init(dbPath);
+		FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
 		Database.get().ensureSchema();
 		try (Connection c = Database.get().getConnection();
 			 PreparedStatement ps = c.prepareStatement(

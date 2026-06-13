@@ -1,6 +1,7 @@
 package nonprofitbookkeeping.service;
 
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.core.FlywayMigrationRunner;
 import nonprofitbookkeeping.model.BankingTransactionRecord;
 import nonprofitbookkeeping.model.LedgerMatchRecord;
 import nonprofitbookkeeping.persistence.BankingTransactionRepository;
@@ -26,6 +27,7 @@ class OperationalReconciliationServiceTest
 	{
 		Path dbPath = tempDir.resolve("operational-reconciliation-service");
 		Database.init(dbPath);
+		FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
 		Database.get().ensureSchema();
 		seedBankId();
 
@@ -65,6 +67,7 @@ class OperationalReconciliationServiceTest
 	{
 		Path dbPath = tempDir.resolve("operational-reconciliation-booking");
 		Database.init(dbPath);
+		FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
 		Database.get().ensureSchema();
 		seedBankId();
 		seedJournalTxn(101, 555000111L);
@@ -86,6 +89,7 @@ class OperationalReconciliationServiceTest
 	{
 		Path dbPath = tempDir.resolve("operational-reconciliation-adjustment");
 		Database.init(dbPath);
+		FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
 		Database.get().ensureSchema();
 		seedBankId();
 		seedAccounts();

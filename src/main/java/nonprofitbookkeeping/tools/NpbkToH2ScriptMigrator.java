@@ -4,6 +4,7 @@ package nonprofitbookkeeping.tools;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.core.FlywayMigrationRunner;
 import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.ChartOfAccounts;
@@ -93,6 +94,7 @@ public final class NpbkToH2ScriptMigrator
 		try
 		{
 			Database.init(tempDb);
+			FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
 			Database.get().ensureSchema();
 			
 			Company company = readCompany(source);
