@@ -173,6 +173,7 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 	 */
 	public void ensureSchema() throws SQLException
 	{
+		FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
 		try (Connection c = getConnection(); Statement st = c.createStatement())
 		{
 			ensureMigrationTables(st);
