@@ -180,7 +180,6 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 			ensureAccountAndLegacyJournalTables(st);
 			ensureJpaTables(st);
 			ensureJpaConstraints(st);
-			ensureFundTransferIntegrityArtifacts(st);
 			backfillLegacyTxnMap(c);
 			ensureCompatibilityViews(st);
 			ensurePeopleAndCounterparty(st);
@@ -686,24 +685,6 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 			    ALTER TABLE account_subtype_schedule_default
 			    ADD CONSTRAINT IF NOT EXISTS fk_account_subtype_schedule_default_schedule_kind
 			    FOREIGN KEY (schedule_kind_id) REFERENCES schedule_kind(id)
-			""");
-	}
-
-	private void ensureFundTransferIntegrityArtifacts(Statement st) throws SQLException
-	{
-		st.execute("""
-			    ALTER TABLE fund_transfer_integrity_event
-			    ADD CONSTRAINT IF NOT EXISTS fk_ft_integrity_event_transfer
-			    FOREIGN KEY (transfer_id) REFERENCES fund_transfer(id) ON DELETE CASCADE
-			""");
-		st.execute("""
-			    ALTER TABLE fund_transfer_repair_queue
-			    ADD CONSTRAINT IF NOT EXISTS fk_ft_repair_transfer
-			    FOREIGN KEY (transfer_id) REFERENCES fund_transfer(id) ON DELETE CASCADE
-			""");
-		st.execute("""
-			    CREATE INDEX IF NOT EXISTS ix_ft_repair_open
-			    ON fund_transfer_repair_queue(resolved_at, issue_code, detected_at)
 			""");
 	}
 
