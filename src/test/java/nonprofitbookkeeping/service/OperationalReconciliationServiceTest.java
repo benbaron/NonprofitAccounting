@@ -96,6 +96,7 @@ class OperationalReconciliationServiceTest
 		PostingReference ref = service.postAdjustment("btx-ops-3", cmd);
 		assertEquals("ADJUSTED", readMatchStatus("btx-ops-3"));
 		assertEquals(ref.journalTxnId(), readJournalTxnId("btx-ops-3"));
+		assertEquals(ref.canonicalTxnId(), readCanonicalTxnId("btx-ops-3"));
 	}
 
 	private void seedBankId() throws Exception
@@ -174,6 +175,22 @@ class OperationalReconciliationServiceTest
 			{
 				assertEquals(true, rs.next());
 				return rs.getInt(1);
+			}
+		}
+	}
+
+	private Long readCanonicalTxnId(String bankingRecordId) throws Exception
+	{
+		try (Connection c = Database.get().getConnection();
+			 PreparedStatement ps = c.prepareStatement(
+				 "SELECT canonical_txn_id FROM banking_transaction_record WHERE banking_record_id = ?"))
+		{
+			ps.setString(1, bankingRecordId);
+			try (var rs = ps.executeQuery())
+			{
+				assertEquals(true, rs.next());
+				long value = rs.getLong(1);
+				return rs.wasNull() ? null : value;
 			}
 		}
 	}
