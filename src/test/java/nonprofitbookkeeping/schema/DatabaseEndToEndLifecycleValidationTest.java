@@ -26,6 +26,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -165,7 +166,21 @@ class DatabaseEndToEndLifecycleValidationTest
         match.setReviewerUser("e2e-test");
         new OperationalReconciliationService().confirmMatch(match);
         new OperationalReconciliationService().reconcileFromBookingTimestamps("OPERATING-1000",
-            "2026-06-30", new BigDecimal("25.00"), java.util.List.of(0L));
+            "2026-06-30", new BigDecimal("25.00"), List.of(bookingTimestampFor(manualPosting.journalTxnId())));
+    }
+
+    private long bookingTimestampFor(int txnId) throws Exception
+    {
+        try (Connection c = Database.get().getConnection();
+             PreparedStatement ps = c.prepareStatement("SELECT booking_ts FROM journal_transaction WHERE id = ?"))
+        {
+            ps.setInt(1, txnId);
+            try (ResultSet rs = ps.executeQuery())
+            {
+                assertTrue(rs.next(), "expected journal transaction " + txnId + " to exist");
+                return rs.getLong(1);
+            }
+        }
     }
 
     private void assertPostedTransactionIsVisibleEverywhere(int txnId) throws Exception
