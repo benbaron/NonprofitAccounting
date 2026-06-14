@@ -2,16 +2,8 @@ name: Maven Tests
 
 on:
   pull_request:
-    paths:
-      - '.github/workflows/maven-tests.yml'
-      - 'pom.xml'
-      - 'src/**'
   push:
     branches: [ main ]
-    paths:
-      - '.github/workflows/maven-tests.yml'
-      - 'pom.xml'
-      - 'src/**'
 
 jobs:
   maven-tests:
