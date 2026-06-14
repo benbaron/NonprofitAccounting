@@ -22,11 +22,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class EnsureSchemaOperationalLinkageCompatibilityValidationTest
 {
-    // LEDGER_RECORD is deliberately left to the banking/reconciliation slice because
-    // runBankingReconciliationSchemaMigration still adds reconciliation columns to it.
     private static final List<String> OPERATIONAL_LINKAGE_TABLES = List.of(
         "BANK_ID_RECORD",
         "BANKING_TRANSACTION_RECORD",
+        "LEDGER_RECORD",
         "ASSET_RECORD_DETAIL",
         "INVENTORY_ASSET_LINK",
         "DEPRECIATION_RUN",
