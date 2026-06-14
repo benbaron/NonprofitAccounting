@@ -27,7 +27,6 @@ public final class Database
 	private final String pass = "";
 	
 	private static final String MIGRATION_RECONCILED_BACKFILL_V1 = "reconciled-backfill-v1";
-	private static final String MIGRATION_BANKING_RECON_SCHEMA_V1 = "banking-reconciliation-schema-v1";
 	private static final String MIGRATION_OPERATIONAL_LINK_BACKFILL_V1 = "operational-link-backfill-v1";
 
 	private static final String SQL_COUNTERPARTY_FROM_PERSON =
@@ -186,7 +185,6 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 			ensureRemainingLegacyTables(st);
 			ensureOperationalLinkageTables(st);
 			runOperationalLinkBackfillMigration(c);
-			runBankingReconciliationSchemaMigration(c);
 			runFinancePostingEnforcementPreflight(c);
 		}
 		
@@ -1410,20 +1408,6 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 		markMigrationApplied(c, MIGRATION_RECONCILED_BACKFILL_V1);
 	}
 
-	private void runBankingReconciliationSchemaMigration(Connection c)
-		throws SQLException
-	{
-		if (isMigrationApplied(c, MIGRATION_BANKING_RECON_SCHEMA_V1))
-		{
-			return;
-		}
-		try (Statement st = c.createStatement())
-		{
-			st.execute(
-				"UPDATE banking_transaction_record SET match_status = 'UNMATCHED' WHERE match_status IS NULL;");
-		}
-		markMigrationApplied(c, MIGRATION_BANKING_RECON_SCHEMA_V1);
-	}
 
 	private void runOperationalLinkBackfillMigration(Connection c)
 		throws SQLException
