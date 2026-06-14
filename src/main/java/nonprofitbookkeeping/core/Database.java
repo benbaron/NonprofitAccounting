@@ -179,7 +179,6 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 			ensureJpaTables(st);
 			ensureJpaConstraints(st);
 			backfillLegacyTxnMap(c);
-			ensureCompatibilityViews(st);
 			ensurePeopleAndCounterparty(st);
 			runReconciledDataBackfill(c);
 			ensureRemainingLegacyTables(st);
@@ -548,89 +547,6 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 		}
 	}
 
-	private void ensureCompatibilityViews(Statement st) throws SQLException
-	{
-		st.execute("""
-			    CREATE TABLE IF NOT EXISTS rm_donation_summary(
-			      txn_id BIGINT PRIMARY KEY,
-			      total_amount DECIMAL(19,2) NOT NULL DEFAULT 0,
-			      line_count INT NOT NULL DEFAULT 0,
-			      refreshed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
-			    )
-			""");
-		st.execute("""
-			    CREATE TABLE IF NOT EXISTS rm_grant_summary(
-			      txn_id BIGINT PRIMARY KEY,
-			      grant_link_count INT NOT NULL DEFAULT 0,
-			      refreshed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
-			    )
-			""");
-		st.execute("""
-			    CREATE TABLE IF NOT EXISTS rm_fund_summary(
-			      txn_id BIGINT PRIMARY KEY,
-			      primary_fund_code VARCHAR(64),
-			      net_amount DECIMAL(19,2) NOT NULL DEFAULT 0,
-			      refreshed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
-			    )
-			""");
-		st.execute("""
-			    CREATE TABLE IF NOT EXISTS rm_reconciliation_summary(
-			      txn_id BIGINT PRIMARY KEY,
-			      absolute_amount DECIMAL(19,2) NOT NULL DEFAULT 0,
-			      split_count INT NOT NULL DEFAULT 0,
-			      refreshed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
-			    )
-			""");
-		st.execute("""
-			    CREATE TABLE IF NOT EXISTS rm_depreciation_summary(
-			      depreciation_run_id VARCHAR(255) PRIMARY KEY,
-			      record_count INT NOT NULL DEFAULT 0,
-			      net_depreciation_total DECIMAL(19,2) NOT NULL DEFAULT 0,
-			      refreshed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
-			    )
-			""");
-		st.execute("""
-			    CREATE OR REPLACE VIEW v_journal_transaction AS
-			    SELECT
-			      COALESCE(m.legacy_txn_id, t.id) AS id,
-			      EXTRACT(EPOCH FROM t.created_at) * 1000 AS booking_ts,
-			      CAST(t.txn_date AS VARCHAR(32)) AS date_text,
-			      t.memo AS memo,
-			      cp.display_name AS to_from,
-			      CAST(NULL AS VARCHAR(64)) AS check_number,
-			      CAST(NULL AS VARCHAR(64)) AS clear_bank,
-			      CAST(NULL AS VARCHAR(128)) AS bank_name,
-			      FALSE AS reconciled,
-			      CAST(NULL AS VARCHAR(512)) AS budget_tracking,
-			      f.name AS associated_fund_name
-			    FROM txn t
-			    LEFT JOIN legacy_txn_map m ON m.canonical_txn_id = t.id
-			    LEFT JOIN counterparty cp ON cp.id = t.payee_id
-			    LEFT JOIN (
-			      SELECT ts.txn_id, MIN(ts.fund_id) AS fund_id
-			      FROM txn_split ts
-			      GROUP BY ts.txn_id
-			    ) tf ON tf.txn_id = t.id
-			    LEFT JOIN fund f ON f.id = tf.fund_id
-			""");
-		st.execute("""
-			    CREATE OR REPLACE VIEW v_journal_entry AS
-			    SELECT
-			      ts.id AS id,
-			      COALESCE(m.legacy_txn_id, ts.txn_id) AS txn_id,
-			      ABS(ts.amount_signed) AS amount,
-			      a.account_number AS account_number,
-			      CASE WHEN ts.amount_signed < 0 THEN 'CREDIT' ELSE 'DEBIT' END AS account_side,
-			      a.name AS account_name,
-			      f.code AS fund_number
-			    FROM txn_split ts
-			    JOIN txn t ON t.id = ts.txn_id
-			    JOIN account a ON a.id = ts.account_id
-			    JOIN fund f ON f.id = ts.fund_id
-			    LEFT JOIN legacy_txn_map m ON m.canonical_txn_id = t.id
-			""");
-	}
-	
 	private void ensurePeopleAndCounterparty(Statement st) throws SQLException
 	{
 		st.execute("CREATE UNIQUE INDEX IF NOT EXISTS donor_external_id_idx ON donor(external_id);");
