@@ -32,7 +32,10 @@ class EnsureSchemaCompatibilityViewsValidationTest
 
     private static final List<String> COMPATIBILITY_VIEWS = List.of(
         "V_JOURNAL_TRANSACTION",
-        "V_JOURNAL_ENTRY"
+        "V_JOURNAL_ENTRY",
+        "V_GRANT_RESTRICTION_REPORTING",
+        "V_FINANCE_POSTING_ENFORCEMENT_EXCEPTIONS",
+        "V_FINANCE_POSTING_ENFORCEMENT_DASHBOARD"
     );
 
     @TempDir
