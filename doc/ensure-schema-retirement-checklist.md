@@ -14,62 +14,42 @@ ensureSchema remains only as a temporary compatibility/backfill bridge.
 
 Because this project is still in early development and there are no significant legacy databases to preserve, prefer clean Flyway ownership and development database reset over elaborate compatibility code.
 
-## Classification legend
-
-Use these states when retiring each helper or schema group:
-
-| State | Meaning |
-|---|---|
-| Flyway-owned | A migration now creates/updates this schema object. Java DDL should be removed or guarded. |
-| To migrate | Still created or altered primarily by `ensureSchema()` and should move to Flyway. |
-| Compatibility/backfill | Keep temporarily because it repairs or populates data, not because it defines future schema. |
-| Removable | Can be deleted after tests confirm Flyway/fresh DB behavior. |
-| Needs decision | Requires an architectural decision before migration/removal. |
-
 ## Current `ensureSchema()` sequence
 
-As of this checklist, `ensureSchema()` runs these high-level steps:
+As of this review, `ensureSchema()` runs these high-level steps:
 
 ```text
-ensureMigrationTables
-ensureCompanyProfile
-ensureAccountAndLegacyJournalTables
-ensureJpaTables
-ensureJpaConstraints
-ensureFundTransferIntegrityArtifacts
-backfillLegacyTxnMap
-ensureCompatibilityViews
-ensurePeopleAndCounterparty
-runReconciledDataBackfill
-ensureRemainingLegacyTables
-ensureOperationalLinkageTables
-runOperationalLinkBackfillMigration
-runReportingScheduleConfigurationMigration
-runBankingReconciliationSchemaMigration
+FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled()
+DatabaseCompatibilityBackfills.run
+  - normalizeLegacyAccounts
+  - backfillLegacyTxnMap
+  - ensurePeopleAndCounterparty
+  - runReconciledDataBackfill
+  - runOperationalLinkBackfillMigration
 runFinancePostingEnforcementPreflight
 ```
 
-## Retirement checklist
+No remaining `ensureSchema()` step should create tables, indexes, foreign keys, views, or other canonical schema objects. Any future schema change belongs in Flyway.
 
-| Area | Current role | Target classification | Next action |
-|---|---|---|---|
-| `ensureMigrationTables` | Creates internal `schema_migration_history` used by Java-side migrations/backfills. | Compatibility/backfill | Keep only while Java backfill keys remain. Consider replacing with Flyway callbacks or idempotent backfill migrations. |
-| `ensureCompanyProfile` | Creates/extends app company profile table. | To migrate | Move full table definition to Flyway. Remove duplicate Java `CREATE/ALTER` after validation. |
-| `ensureAccountAndLegacyJournalTables` | Creates legacy `account`, `account_fund`, `journal_transaction`, `journal_entry`, `transaction_info`, and related compatibility tables. | Needs decision | Keep while legacy journal remains write authority. Move stable legacy table shape to Flyway; avoid new Java DDL. |
-| Canonical columns on `account` | Adds `id`, `code`, `chart_id`, `subtype`, `normal_balance`, parent and status fields. | To migrate / Needs decision | Decide final account identity model. Prefer canonical id-based Flyway shape for fresh DBs. |
-| `ensureJpaTables` | Creates canonical JPA-oriented tables such as chart, fund, txn, txn_split, report mapping, aliases, and fund transfers. | To migrate | Move canonical table DDL to Flyway and remove duplicate Java creation. |
-| `ensureJpaConstraints` | Adds physical constraints for part of the canonical model. | To migrate | Move FK/unique/index/check constraints into Flyway. Verify against JPA validate. |
-| `ensureFundTransferIntegrityArtifacts` | No longer seeds `fund_transfer_status_transition`; still repairs/adds fund-transfer FK constraints and `ix_ft_repair_open`. | Flyway-owned target / Compatibility repair | Seed removal is covered by `FundTransferStatusTransitionSeedValidationTest`. Do not remove remaining FK/index repair statements until separate metadata validation covers them. |
-| `backfillLegacyTxnMap` | Mirrors legacy journal rows into canonical `txn` / `txn_split`. | Compatibility/backfill / Needs decision | Keep while legacy journal remains write authority. Later replace with canonical-first posting. |
-| `ensureCompatibilityViews` | Creates compatibility views for old/new query paths. | Compatibility/backfill | Keep only if active code still queries the views. Otherwise migrate or remove. |
-| `ensurePeopleAndCounterparty` | Creates/updates people, donor, counterparty, merchant-related structures. | To migrate | Move stable schema to Flyway. Keep only data copy/backfill logic in Java if needed. |
-| `runReconciledDataBackfill` | Backfills reconciliation flags/data. | Compatibility/backfill | Keep as data migration until no active dev DB requires it; otherwise turn into Flyway data migration. |
-| `ensureRemainingLegacyTables` | Creates miscellaneous older app tables. | Needs decision | Inventory active code references. Remove unused tables; migrate active ones to Flyway. |
-| `ensureOperationalLinkageTables` | Creates linkage tables used by operational modules. | To migrate | Move stable linkage schema to Flyway in a bounded PR. |
-| `runOperationalLinkBackfillMigration` | Backfills operational links. | Compatibility/backfill | Keep only if needed for active dev data. Otherwise replace with dev DB reset guidance. |
-| `runReportingScheduleConfigurationMigration` | Creates/backfills report schedule configuration. | To migrate / Compatibility | Put stable schedule tables in Flyway. Keep any data seeding/backfill separately. |
-| `runBankingReconciliationSchemaMigration` | Creates/backfills banking and reconciliation structures. | To migrate | Move banking/reconciliation schema to Flyway. Keep only data repair if needed. |
-| `runFinancePostingEnforcementPreflight` | Checks/repairs finance-posting prerequisites. | Compatibility/backfill | Keep as validation/preflight if useful, but avoid schema creation here. |
+## Remaining responsibility review
+
+| Area | Current role | Classification | Review decision | Next action |
+|---|---|---|---|---|
+| Java migration-marker helpers (`isMigrationApplied`, `markMigrationApplied`) | Reads/writes `schema_migration_history` rows for Java backfill idempotency inside `DatabaseCompatibilityBackfills`. | Transitional compatibility marker | Keep for now because `runReconciledDataBackfill` and `runOperationalLinkBackfillMigration` still need idempotency markers; do not reintroduce Java DDL for the marker table. | Remove the marker helpers only after the two Java backfills are either moved to Flyway data migrations or retired. |
+| `normalizeLegacyAccounts` | Normalizes legacy `account` data (`code`, `normal_balance`). | Data repair / compatibility | Keep temporarily. This is data mutation, not schema ownership, but it should be renamed or moved out of `ensureSchema()` after legacy journal authority is decided. | Focused tests now document legacy account normalization; decide whether to keep it until legacy journal write authority is settled or retire it with the legacy write path. |
+| `backfillLegacyTxnMap` | Populates `legacy_txn_map` from legacy journal rows and canonical `txn` rows with matching IDs. | Data backfill / needs decision | Keep while legacy journal and canonical transaction models coexist. Focused tests now document its narrow same-ID, missing-row behavior. | Decide canonical-first vs legacy-first transaction write authority before retiring. |
+| `ensurePeopleAndCounterparty` | Backfills donor `external_id` and person `type`. | Data repair / compatibility | Keep temporarily. Schema/index creation has been removed; remaining statements repair data only. | Rename in a later cleanup to make the data-repair role explicit. |
+| `runReconciledDataBackfill` | Seeds default chart/fund when missing, links accounts to a chart, mirrors legacy journal rows into canonical `txn`/`txn_split`, copies party data, and parses legacy dates. | Data backfill / high-risk | Keep for now. It transforms transaction data and now has focused behavior coverage before any future retirement decision. | Move safe seed data to Flyway where appropriate; keep transaction transforms guarded until canonical write authority is settled. |
+| `runOperationalLinkBackfillMigration` | Links donation/grant operational records to journal transactions and queues unresolved backfill issues. | Data backfill / medium-risk | Keep for now. Existing operational schema guards cover table shape, and focused behavior tests now document matched/unmatched donation and grant handling. | Decide whether this backfill should move to Flyway data migration, remain in `DatabaseCompatibilityBackfills`, or be retired for development databases. |
+| `runFinancePostingEnforcementPreflight` | Fails startup when finance posting enforcement exceptions exist. | Runtime preflight | Keep as validation/preflight, not schema work. | Consider moving to a dedicated startup validation service once `ensureSchema()` is renamed or retired. |
+
+## Immediate follow-up slices
+
+1. Completed: focused tests document `runOperationalLinkBackfillMigration` behavior for matched and unmatched donation/grant records.
+2. Completed: focused tests document `runReconciledDataBackfill` behavior for legacy journal to canonical transaction mirroring and date parsing.
+3. Completed: startup compatibility/backfill routines have moved into `DatabaseCompatibilityBackfills`.
+4. Completed: focused tests document `backfillLegacyTxnMap` behavior for same-ID legacy/canonical rows, pre-existing mappings, and unmatched rows.
+5. Once Java backfills are gone or relocated, delete the Java migration-marker helpers and stop using `schema_migration_history` outside Flyway-managed data.
 
 ## Rules for future PRs
 
@@ -80,22 +60,10 @@ runFinancePostingEnforcementPreflight
    - compatibility
    - backfill
    - repair
+   - preflight
    - removal of duplicate Java DDL
-5. Each migration PR should include a validation test or update an existing schema validation test.
+5. Each migration/backfill PR should include a validation test or update an existing focused test.
 6. Prefer deleting obsolete compatibility code over preserving speculative legacy support.
-
-## Suggested first code slice
-
-The first code PR after this checklist should move one bounded group from Java DDL to Flyway. Good candidates are:
-
-```text
-company_profile
-people/counterparty/merchant tables
-operational linkage tables
-report schedule configuration tables
-```
-
-Avoid starting with the legacy journal/account identity model unless the write-ledger cutover decision has been made.
 
 ## Completion criteria
 
@@ -105,6 +73,6 @@ Avoid starting with the legacy journal/account identity model unless the write-l
 1. Fresh development databases are fully created by Flyway.
 2. Hibernate validates successfully without Java DDL creating missing tables.
 3. ensureSchema() no longer creates canonical tables or constraints.
-4. Any remaining ensureSchema() code is clearly data repair/backfill or can be deleted.
+4. Any remaining ensureSchema() code is clearly data repair/backfill/preflight or can be deleted.
 5. Tests cover the normal database-open path used by MainWindow and MainWindowAlternate.
 ```
