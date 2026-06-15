@@ -221,11 +221,9 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 
 	private void ensurePeopleAndCounterparty(Statement st) throws SQLException
 	{
-		st.execute("CREATE UNIQUE INDEX IF NOT EXISTS donor_external_id_idx ON donor(external_id);");
 		st.execute(
 			"UPDATE donor SET external_id = name WHERE external_id IS NULL AND name IS NOT NULL;");
 		st.execute("UPDATE person SET type = 'DONOR' WHERE type IS NULL OR TRIM(type) = '';");
-		st.execute("CREATE INDEX IF NOT EXISTS person_name_idx ON person(name)");
 	}
 	
 	private void runFinancePostingEnforcementPreflight(Connection c) throws SQLException

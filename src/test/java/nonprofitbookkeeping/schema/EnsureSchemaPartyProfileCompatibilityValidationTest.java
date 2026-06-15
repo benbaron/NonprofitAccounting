@@ -32,19 +32,23 @@ class EnsureSchemaPartyProfileCompatibilityValidationTest
     Path tempDir;
 
     @Test
-    void ensureSchemaDoesNotChangeFlywayOwnedPartyProfileColumns() throws Exception
+    void ensureSchemaDoesNotChangeFlywayOwnedPartyProfileColumnsOrIndexes() throws Exception
     {
         Database.init(tempDir.resolve("party-profile-compatibility"));
         Database database = Database.get();
 
         migrateWithFlyway(database);
         Map<String, Set<String>> flywayColumns = tableColumns(database, PARTY_PROFILE_TABLES);
+        Map<String, Set<String>> flywayIndexes = tableIndexes(database, PARTY_PROFILE_TABLES);
 
         database.ensureSchema();
         Map<String, Set<String>> postEnsureSchemaColumns = tableColumns(database, PARTY_PROFILE_TABLES);
+        Map<String, Set<String>> postEnsureSchemaIndexes = tableIndexes(database, PARTY_PROFILE_TABLES);
 
         assertEquals(flywayColumns, postEnsureSchemaColumns,
             "party/profile columns should be Flyway-owned; ensureSchema must not add or remove columns");
+        assertEquals(flywayIndexes, postEnsureSchemaIndexes,
+            "party/profile indexes should be Flyway-owned; ensureSchema must not add or remove indexes");
     }
 
     private static void migrateWithFlyway(Database database)
@@ -83,6 +87,38 @@ class EnsureSchemaPartyProfileCompatibilityValidationTest
             }
         }
         return columns;
+    }
+
+    private static Map<String, Set<String>> tableIndexes(Database database, Set<String> tableNames) throws SQLException
+    {
+        Map<String, Set<String>> out = new LinkedHashMap<>();
+        for (String tableName : tableNames)
+        {
+            out.put(tableName, tableIndexes(database, tableName));
+        }
+        return out;
+    }
+
+    private static Set<String> tableIndexes(Database database, String tableName) throws SQLException
+    {
+        Set<String> indexes = new TreeSet<>();
+        try (Connection connection = DriverManager.getConnection(database.getJdbcUrl(), database.getUser(), database.getPass()))
+        {
+            DatabaseMetaData meta = connection.getMetaData();
+            try (ResultSet rs = meta.getIndexInfo(null, "PUBLIC", tableName, false, false))
+            {
+                while (rs.next())
+                {
+                    String indexName = normalize(rs.getString("INDEX_NAME"));
+                    String columnName = normalize(rs.getString("COLUMN_NAME"));
+                    if (!indexName.isBlank() && !columnName.isBlank())
+                    {
+                        indexes.add(indexName + "." + columnName);
+                    }
+                }
+            }
+        }
+        return indexes;
     }
 
     private static String normalize(String value)
