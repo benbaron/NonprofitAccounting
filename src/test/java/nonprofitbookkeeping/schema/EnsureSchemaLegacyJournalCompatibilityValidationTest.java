@@ -20,40 +20,44 @@ import java.util.TreeSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class EnsureSchemaFundTransferIntegrityCompatibilityValidationTest
+class EnsureSchemaLegacyJournalCompatibilityValidationTest
 {
-    private static final List<String> FUND_TRANSFER_INTEGRITY_TABLES = List.of(
-        "FUND_TRANSFER",
-        "FUND_TRANSFER_STATUS_TRANSITION",
-        "FUND_TRANSFER_INTEGRITY_EVENT",
-        "FUND_TRANSFER_REPAIR_QUEUE"
+    private static final List<String> LEGACY_JOURNAL_TABLES = List.of(
+        "ACCOUNT",
+        "ACCOUNT_FUND",
+        "JOURNAL_TRANSACTION",
+        "JOURNAL_ENTRY",
+        "TRANSACTION_INFO",
+        "TXN_SUPPLEMENTAL_LINE",
+        "LEGACY_TXN_MAP"
     );
 
     @TempDir
     Path tempDir;
 
     @Test
-    void ensureSchemaDoesNotChangeFlywayOwnedFundTransferIntegrityColumns() throws Exception
+    void ensureSchemaDoesNotChangeFlywayOwnedLegacyJournalColumns() throws Exception
     {
-        Database.init(tempDir.resolve("fund-transfer-integrity-compatibility"));
+        Database.init(tempDir.resolve("legacy-journal-compatibility"));
         Database database = Database.get();
 
         migrateWithFlyway(database);
-        Map<String, Set<String>> flywayColumns = tableColumns(database, FUND_TRANSFER_INTEGRITY_TABLES);
-        Map<String, Set<ForeignKeyDefinition>> flywayForeignKeys = importedForeignKeys(database, FUND_TRANSFER_INTEGRITY_TABLES);
-        Map<String, Set<String>> flywayIndexes = tableIndexes(database, FUND_TRANSFER_INTEGRITY_TABLES);
+        Map<String, Set<String>> flywayColumns = tableColumns(database, LEGACY_JOURNAL_TABLES);
+        Map<String, Set<ForeignKeyDefinition>> flywayForeignKeys = importedForeignKeys(database, LEGACY_JOURNAL_TABLES);
+        Map<String, Set<String>> flywayIndexes = tableIndexes(database, LEGACY_JOURNAL_TABLES);
 
         database.ensureSchema();
-        Map<String, Set<String>> postEnsureSchemaColumns = tableColumns(database, FUND_TRANSFER_INTEGRITY_TABLES);
-        Map<String, Set<ForeignKeyDefinition>> postEnsureSchemaForeignKeys = importedForeignKeys(database, FUND_TRANSFER_INTEGRITY_TABLES);
-        Map<String, Set<String>> postEnsureSchemaIndexes = tableIndexes(database, FUND_TRANSFER_INTEGRITY_TABLES);
+        Map<String, Set<String>> postEnsureSchemaColumns = tableColumns(database, LEGACY_JOURNAL_TABLES);
+        Map<String, Set<ForeignKeyDefinition>> postEnsureSchemaForeignKeys =
+            importedForeignKeys(database, LEGACY_JOURNAL_TABLES);
+        Map<String, Set<String>> postEnsureSchemaIndexes = tableIndexes(database, LEGACY_JOURNAL_TABLES);
 
         assertEquals(flywayColumns, postEnsureSchemaColumns,
-            "fund-transfer integrity columns should be Flyway-owned; ensureSchema must not add or remove columns");
+            "legacy journal/account columns should be Flyway-owned; ensureSchema must not add or remove columns");
         assertEquals(flywayForeignKeys, postEnsureSchemaForeignKeys,
-            "fund-transfer integrity foreign keys should be Flyway-owned; ensureSchema must not add or remove foreign keys");
+            "legacy journal/account foreign keys should be Flyway-owned; ensureSchema must not add or remove foreign keys");
         assertEquals(flywayIndexes, postEnsureSchemaIndexes,
-            "fund-transfer integrity indexes should be Flyway-owned; ensureSchema must not add or remove indexes");
+            "legacy journal/account indexes should be Flyway-owned; ensureSchema must not add or remove indexes");
     }
 
     private static void migrateWithFlyway(Database database)

@@ -427,70 +427,6 @@ public final class Account implements Serializable
 	}
 	
 	/**
-	 * Coerce account type.
-	 *
-	 * @param value the value
-	 * @return the account type
-	 */
-	private static AccountType coerceAccountType(Object value)
-	{
-		
-		if (value instanceof AccountType type)
-		{
-			return type;
-		}
-		
-		if (value instanceof String text)
-		{
-			String trimmed = text.trim();
-			
-			if (trimmed.isEmpty())
-			{
-				return null;
-			}
-			
-			AccountType parsed =
-				AccountType.fromString(trimmed.toUpperCase(Locale.ROOT));
-			return parsed == AccountType.UNKNOWN ? null : parsed;
-		}
-		
-		return null;
-		
-	}
-	
-	/**
-	 * Coerce account side.
-	 *
-	 * @param value the value
-	 * @return the account side
-	 */
-	private static AccountSide coerceAccountSide(Object value)
-	{
-		
-		if (value instanceof AccountSide side)
-		{
-			return side;
-		}
-		
-		if (value instanceof String text)
-		{
-			String trimmed = text.trim();
-			
-			if (trimmed.isEmpty())
-			{
-				return null;
-			}
-			
-			AccountSide parsed =
-				AccountSide.fromString(trimmed.toUpperCase(Locale.ROOT));
-			return parsed == AccountSide.UNKNOWN ? null : parsed;
-		}
-		
-		return null;
-		
-	}
-	
-	/**
 	 * Default increase side.
 	 *
 	 * @param type the type
@@ -514,56 +450,6 @@ public final class Account implements Serializable
 				CREDITCARD -> AccountSide.CREDIT;
 			case ROOT, UNKNOWN -> null;
 		};
-		
-	}
-	
-	/**
-	 * Coerce opening balance.
-	 *
-	 * @param value the value
-	 * @return the big decimal
-	 */
-	private static BigDecimal coerceOpeningBalance(Object value)
-	{
-		
-		if (value == null)
-		{
-			return BigDecimal.ZERO;
-		}
-		
-		if (value instanceof BigDecimal bd)
-		{
-			return bd;
-		}
-		
-		if (value instanceof Number number)
-		{
-			return new BigDecimal(number.toString());
-		}
-		
-		if (value instanceof String text)
-		{
-			String trimmed = text.trim();
-			
-			if (trimmed.isEmpty())
-			{
-				return BigDecimal.ZERO;
-			}
-			
-			try
-			{
-				return new BigDecimal(trimmed);
-			}
-			catch (NumberFormatException ex)
-			{
-				throw new IllegalArgumentException(
-					"Unable to parse opening balance: " + text, ex);
-			}
-			
-		}
-		
-		throw new IllegalArgumentException(
-			"Unsupported opening balance type: " + value.getClass().getName());
 		
 	}
 	

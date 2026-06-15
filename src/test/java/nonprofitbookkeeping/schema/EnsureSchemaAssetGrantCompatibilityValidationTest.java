@@ -20,40 +20,44 @@ import java.util.TreeSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class EnsureSchemaFundTransferIntegrityCompatibilityValidationTest
+class EnsureSchemaAssetGrantCompatibilityValidationTest
 {
-    private static final List<String> FUND_TRANSFER_INTEGRITY_TABLES = List.of(
-        "FUND_TRANSFER",
-        "FUND_TRANSFER_STATUS_TRANSITION",
-        "FUND_TRANSFER_INTEGRITY_EVENT",
-        "FUND_TRANSFER_REPAIR_QUEUE"
+    private static final List<String> ASSET_GRANT_TABLES = List.of(
+        "ASSET_RECORD_DETAIL",
+        "INVENTORY_ASSET_LINK",
+        "DEPRECIATION_RUN",
+        "DEPRECIATION_RECORD",
+        "DEPRECIATION_RUN_EVENT",
+        "GRANT_RECORD",
+        "GRANT_POSTING_LINK"
     );
 
     @TempDir
     Path tempDir;
 
     @Test
-    void ensureSchemaDoesNotChangeFlywayOwnedFundTransferIntegrityColumns() throws Exception
+    void ensureSchemaDoesNotChangeFlywayOwnedAssetDepreciationAndGrantArtifacts() throws Exception
     {
-        Database.init(tempDir.resolve("fund-transfer-integrity-compatibility"));
+        Database.init(tempDir.resolve("asset-grant-compatibility"));
         Database database = Database.get();
 
         migrateWithFlyway(database);
-        Map<String, Set<String>> flywayColumns = tableColumns(database, FUND_TRANSFER_INTEGRITY_TABLES);
-        Map<String, Set<ForeignKeyDefinition>> flywayForeignKeys = importedForeignKeys(database, FUND_TRANSFER_INTEGRITY_TABLES);
-        Map<String, Set<String>> flywayIndexes = tableIndexes(database, FUND_TRANSFER_INTEGRITY_TABLES);
+        Map<String, Set<String>> flywayColumns = tableColumns(database, ASSET_GRANT_TABLES);
+        Map<String, Set<ForeignKeyDefinition>> flywayForeignKeys = importedForeignKeys(database, ASSET_GRANT_TABLES);
+        Map<String, Set<String>> flywayIndexes = tableIndexes(database, ASSET_GRANT_TABLES);
 
         database.ensureSchema();
-        Map<String, Set<String>> postEnsureSchemaColumns = tableColumns(database, FUND_TRANSFER_INTEGRITY_TABLES);
-        Map<String, Set<ForeignKeyDefinition>> postEnsureSchemaForeignKeys = importedForeignKeys(database, FUND_TRANSFER_INTEGRITY_TABLES);
-        Map<String, Set<String>> postEnsureSchemaIndexes = tableIndexes(database, FUND_TRANSFER_INTEGRITY_TABLES);
+        Map<String, Set<String>> postEnsureSchemaColumns = tableColumns(database, ASSET_GRANT_TABLES);
+        Map<String, Set<ForeignKeyDefinition>> postEnsureSchemaForeignKeys =
+            importedForeignKeys(database, ASSET_GRANT_TABLES);
+        Map<String, Set<String>> postEnsureSchemaIndexes = tableIndexes(database, ASSET_GRANT_TABLES);
 
         assertEquals(flywayColumns, postEnsureSchemaColumns,
-            "fund-transfer integrity columns should be Flyway-owned; ensureSchema must not add or remove columns");
+            "asset/depreciation/grant columns should be Flyway-owned; ensureSchema must not add or remove columns");
         assertEquals(flywayForeignKeys, postEnsureSchemaForeignKeys,
-            "fund-transfer integrity foreign keys should be Flyway-owned; ensureSchema must not add or remove foreign keys");
+            "asset/depreciation/grant foreign keys should be Flyway-owned; ensureSchema must not add or remove foreign keys");
         assertEquals(flywayIndexes, postEnsureSchemaIndexes,
-            "fund-transfer integrity indexes should be Flyway-owned; ensureSchema must not add or remove indexes");
+            "asset/depreciation/grant indexes should be Flyway-owned; ensureSchema must not add or remove indexes");
     }
 
     private static void migrateWithFlyway(Database database)
