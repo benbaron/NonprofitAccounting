@@ -692,21 +692,6 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 	private void ensureFundTransferIntegrityArtifacts(Statement st) throws SQLException
 	{
 		st.execute("""
-			    MERGE INTO fund_transfer_status_transition (from_status, to_status, is_allowed, notes)
-			    KEY (from_status, to_status)
-			    VALUES
-			      ('DRAFT', 'APPROVED', TRUE, 'Ready for posting.'),
-			      ('DRAFT', 'VOIDED', TRUE, 'Cancelled before approval.'),
-			      ('APPROVED', 'POSTING', TRUE, 'Posting transaction started.'),
-			      ('APPROVED', 'VOIDED', TRUE, 'Cancelled after approval.'),
-			      ('POSTING', 'POSTED', TRUE, 'Atomic post complete.'),
-			      ('POSTING', 'FAILED', TRUE, 'Posting failed; no posting txn persisted.'),
-			      ('FAILED', 'APPROVED', TRUE, 'Retry after remediation.'),
-			      ('FAILED', 'VOIDED', TRUE, 'Abandon failed transfer.'),
-			      ('POSTED', 'VOIDED', FALSE, 'Disallow direct void; require reversing transfer.'),
-			      ('VOIDED', 'DRAFT', FALSE, 'No reopen from void.')
-			""");
-		st.execute("""
 			    ALTER TABLE fund_transfer_integrity_event
 			    ADD CONSTRAINT IF NOT EXISTS fk_ft_integrity_event_transfer
 			    FOREIGN KEY (transfer_id) REFERENCES fund_transfer(id) ON DELETE CASCADE
