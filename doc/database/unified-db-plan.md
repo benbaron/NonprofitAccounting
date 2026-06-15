@@ -448,28 +448,67 @@ runLegacyCompatibilityBackfills()
 runStartupDataRepairs()
 ```
 
-Final acceptance criteria:
+## Final acceptance criteria
 
 ```text
-1. Fresh development databases are fully created by Flyway.
-2. Hibernate validates successfully without Java DDL creating missing tables.
-3. Database.ensureSchema() no longer creates canonical tables, columns, indexes, FKs, unique constraints, or check constraints.
-4. Any remaining Java startup database work is explicitly data repair/backfill.
-5. Tests cover the normal database-open path used by the application.
+1. Fresh development databases are created by Flyway.
+2. Hibernate/JPA validates against the Flyway-created schema.
+3. Database.ensureSchema() no longer creates or alters canonical schema objects.
+4. Any remaining Java startup database work is clearly limited to data repair, data backfill, or temporary compatibility.
+5. The normal database-open path is covered by tests.
 ```
 
-## Rules for every future slice
+## Streamlined rules for future slices
 
-Use this pattern for every group:
+Use a risk-tiered workflow rather than one guard PR for every small removal.
 
 ```text
-1. Guard first.
-2. Remove only what the guard proves safe.
-3. Keep seed/backfill/repair behavior until separately covered.
-4. Use Maven, not Gradle.
-5. Prefer small PRs.
+1. Remove duplicate Java DDL whenever Flyway already creates the same table/column/index/constraint and an existing schema test covers the affected area.
+2. Add a new guard test only when coverage is missing, the object is high-risk, or behavior is ambiguous.
+3. Group related removals by subsystem instead of one object at a time.
+4. Keep seed/backfill/repair behavior until it is either moved to Flyway, proven obsolete, or explicitly reclassified.
+5. Use Maven, not Gradle.
 6. Avoid broad formatting changes.
 7. Do not change posting/write-ledger behavior unless the PR is explicitly about that.
+```
+
+## Practical risk tiers
+
+```text
+Low risk:
+- Duplicate CREATE TABLE / ALTER TABLE / CREATE INDEX already present in Flyway baseline.
+- Existing tests validate the table/column group.
+- No data transformation or posting behavior involved.
+Action: remove in a grouped cleanup PR.
+
+Medium risk:
+- Seed/default data, compatibility views, or startup repair statements.
+- Existing tests partially cover the area.
+Action: add or extend one focused test, then move/remove the Java code.
+
+High risk:
+- Legacy journal/account identity model.
+- Posting/write-ledger behavior.
+- Backfills that transform real transaction data.
+- Anything affecting canonical txn/txn_split writes.
+Action: guard first, then remove in smaller PRs.
+```
+
+## Preferred PR pattern
+
+```text
+1. Identify a subsystem.
+2. Confirm Flyway owns its schema shape.
+3. Confirm existing test coverage or add one focused test.
+4. Remove all clearly duplicate Java schema DDL for that subsystem in one PR.
+5. Leave true seed/backfill/repair code for a separate PR unless it is obviously obsolete.
+```
+
+## Current project rule of thumb
+
+```text
+Do not require a new guard test for every table.
+Require enough coverage for the subsystem being changed.
 ```
 
 Maven focused-test pattern:
