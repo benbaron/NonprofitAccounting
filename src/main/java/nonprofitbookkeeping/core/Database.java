@@ -174,7 +174,6 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 		FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
 		try (Connection c = getConnection(); Statement st = c.createStatement())
 		{
-			ensureMigrationTables(st);
 			ensureAccountAndLegacyJournalTables(st);
 			backfillLegacyTxnMap(c);
 			ensurePeopleAndCounterparty(st);
@@ -183,16 +182,6 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 			runFinancePostingEnforcementPreflight(c);
 		}
 		
-	}
-	
-	private void ensureMigrationTables(Statement st) throws SQLException
-	{
-		st.execute("""
-			    CREATE TABLE IF NOT EXISTS schema_migration_history(
-			      migration_key VARCHAR(128) PRIMARY KEY,
-			      applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
-			    )
-			""");
 	}
 	
 	private void ensureAccountAndLegacyJournalTables(Statement st)
