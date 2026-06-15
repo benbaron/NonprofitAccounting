@@ -181,8 +181,6 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 			backfillLegacyTxnMap(c);
 			ensurePeopleAndCounterparty(st);
 			runReconciledDataBackfill(c);
-			ensureRemainingLegacyTables(st);
-			ensureSalesTables(st);
 			runOperationalLinkBackfillMigration(c);
 			runFinancePostingEnforcementPreflight(c);
 		}
@@ -413,70 +411,6 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 			"UPDATE donor SET external_id = name WHERE external_id IS NULL AND name IS NOT NULL;");
 		st.execute("UPDATE person SET type = 'DONOR' WHERE type IS NULL OR TRIM(type) = '';");
 		st.execute("CREATE INDEX IF NOT EXISTS person_name_idx ON person(name)");
-	}
-	
-	private void ensureRemainingLegacyTables(Statement st) throws SQLException
-	{
-		st.execute("""
-			    CREATE TABLE IF NOT EXISTS undeposited_funds_item(
-			      id BIGINT AUTO_INCREMENT PRIMARY KEY,
-			      date_sent_received VARCHAR(32),
-			      date_transfer_or_check VARCHAR(64),
-			      date_on_statement VARCHAR(32),
-			      name_of_person_business VARCHAR(255),
-			      details_notes VARCHAR(512),
-			      from_to_card_merchant VARCHAR(255),
-			      account_for_payment_or_deposit VARCHAR(128),
-			      amount DECIMAL(12,2),
-			      date_reversed VARCHAR(32),
-			      reversal_approved_by VARCHAR(255)
-			    )
-			""");
-		st.execute(
-			"CREATE INDEX IF NOT EXISTS undeposited_funds_item_idx ON undeposited_funds_item(id)");
-		st.execute("""
-			    CREATE TABLE IF NOT EXISTS document(
-			      name VARCHAR(128) PRIMARY KEY,
-			      content CLOB
-			    )
-			""");
-		st.execute("""
-			    CREATE TABLE IF NOT EXISTS json_storage(
-			      storage_key VARCHAR(255) PRIMARY KEY,
-			      payload CLOB
-			    )
-			""");
-		st.execute("""
-			    CREATE TABLE IF NOT EXISTS company_store(
-			      id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-			      name VARCHAR(255) NOT NULL,
-			      payload BLOB NOT NULL,
-			      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
-			    )
-			""");
-		st.execute("""
-			    ALTER TABLE IF EXISTS imported_asset_record
-			    ADD COLUMN IF NOT EXISTS accumulated_depreciation DECIMAL(19,2)
-			""");
-	}
-
-	private void ensureSalesTables(Statement st) throws SQLException
-	{
-		st.execute("""
-			    CREATE TABLE IF NOT EXISTS sale_record(
-			      sale_id VARCHAR(255) PRIMARY KEY,
-			      sale_date_text VARCHAR(64),
-			      item VARCHAR(255),
-			      qty INT NOT NULL,
-			      unit_price DECIMAL(19,2),
-			      unit_cost DECIMAL(19,2),
-			      details CLOB,
-			      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-			      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
-			    )
-			""");
-		st.execute(
-			"CREATE INDEX IF NOT EXISTS sale_record_date_idx ON sale_record(sale_date_text);");
 	}
 	
 	private void runFinancePostingEnforcementPreflight(Connection c) throws SQLException
