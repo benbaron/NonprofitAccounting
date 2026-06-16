@@ -21,15 +21,15 @@ class LegacyAccountNormalizationBehaviorValidationTest
     Path tempDir;
 
     @Test
-    void ensureSchemaNormalizesLegacyAccountCodeAndNormalBalanceOnlyWhenMissing() throws Exception
+    void flywayNormalizesLegacyAccountCodeAndNormalBalanceOnlyWhenMissing() throws Exception
     {
         Database.init(tempDir.resolve("legacy-account-normalization-behavior"));
         Database database = Database.get();
 
-        migrateWithFlyway(database);
+        migrateWithFlyway(database, "15");
         seedLegacyAccounts(database);
 
-        database.ensureSchema();
+        migrateWithFlyway(database);
         database.ensureSchema();
 
         assertAccount(database, "1000", "1000", "DEBIT");
@@ -40,13 +40,21 @@ class LegacyAccountNormalizationBehaviorValidationTest
 
     private static void migrateWithFlyway(Database database)
     {
-        Flyway.configure()
+        migrateWithFlyway(database, null);
+    }
+
+    private static void migrateWithFlyway(Database database, String target)
+    {
+        var configuration = Flyway.configure()
             .dataSource(database.getJdbcUrl(), database.getUser(), database.getPass())
             .locations("classpath:db/migration")
             .baselineOnMigrate(true)
-            .baselineVersion("0")
-            .load()
-            .migrate();
+            .baselineVersion("0");
+        if (target != null)
+        {
+            configuration.target(target);
+        }
+        configuration.load().migrate();
     }
 
     private static void seedLegacyAccounts(Database database) throws SQLException
@@ -81,14 +89,4 @@ class LegacyAccountNormalizationBehaviorValidationTest
         }
     }
 
-    private static int queryInt(Database database, String sql) throws SQLException
-    {
-        try (Connection connection = DriverManager.getConnection(database.getJdbcUrl(), database.getUser(), database.getPass());
-             PreparedStatement ps = connection.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery())
-        {
-            rs.next();
-            return rs.getInt(1);
-        }
-    }
 }

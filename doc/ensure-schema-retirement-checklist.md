@@ -21,10 +21,9 @@ As of this review, `ensureSchema()` runs these high-level steps:
 ```text
 FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled()
 DatabaseCompatibilityBackfills.run
-  - normalizeLegacyAccounts
-  - backfillLegacyTxnMap
-  - runReconciledDataBackfill
-  - runOperationalLinkBackfillMigration
+  - LegacyTransactionMapCompatibilityBackfill
+  - ReconciledDataCompatibilityBackfill
+  - OperationalLinkCompatibilityBackfill
 runFinancePostingEnforcementPreflight
 ```
 
@@ -35,7 +34,7 @@ No remaining `ensureSchema()` step should create tables, indexes, foreign keys, 
 | Area | Current role | Classification | Review decision | Next action |
 |---|---|---|---|---|
 | Java migration-marker helpers (`isMigrationApplied`, `markMigrationApplied`) | Retired from Java startup; `DatabaseCompatibilityBackfills` now relies on idempotent SQL guards instead of writing `schema_migration_history`. | Removed compatibility marker | Completed. Backfills no longer read or write Java migration markers. | Keep `schema_migration_history` only as a Flyway-owned legacy table until broader schema cleanup removes or documents it. |
-| `LegacyAccountCompatibilityBackfill` | Normalizes legacy `account` data (`code`, `normal_balance`). | Data repair / compatibility | Keep temporarily. This is data mutation, not schema ownership, and is now separated from transaction and operational backfills by risk. | Decide whether to keep it until legacy journal write authority is settled or retire it with the legacy write path. |
+| Legacy account normalization | Retired from Java startup; legacy `account.code` and `account.normal_balance` are normalized by Flyway migration `V016__backfill_legacy_account_normalization.sql`. | Data repair / moved to Flyway | Completed. This safe one-time account repair no longer runs during `ensureSchema()`. | Keep migration coverage while legacy account rows may need compatibility normalization. |
 | `LegacyTransactionMapCompatibilityBackfill` | Populates `legacy_txn_map` from legacy journal rows and canonical `txn` rows with matching IDs. | Data backfill / needs decision | Keep while legacy journal and canonical transaction models coexist. It is now isolated from higher-risk transaction mirroring. | Decide canonical-first vs legacy-first transaction write authority before retiring. |
 | `repairPeopleAndCounterparties` | Retired from Java startup; donor `external_id`, person `type`, and party-derived `counterparty` rows are backfilled by Flyway migration `V015__backfill_party_counterparty_compatibility.sql`. | Data repair / moved to Flyway | Completed. This safe party/counterparty repair no longer runs during `ensureSchema()`. | Keep focused migration coverage and remove this row once downstream code no longer needs legacy party compatibility notes. |
 | `ReconciledDataCompatibilityBackfill` | Coordinates decision-sized subroutines that link accounts to a chart, mirror legacy journal rows into canonical `txn`/`txn_split`, and parse legacy dates. Default chart/fund seed data and party/counterparty repair data now live in Flyway. | Data backfill / high-risk | Keep for now. It transforms transaction data and is now isolated from low-risk normalization and operational-link repairs. | Keep transaction transforms guarded until canonical write authority is settled; continue moving safe one-time data repairs to Flyway where appropriate. |
@@ -54,6 +53,7 @@ No remaining `ensureSchema()` step should create tables, indexes, foreign keys, 
 8. Completed: safe party/counterparty repairs moved from startup compatibility code to Flyway migration `V015__backfill_party_counterparty_compatibility.sql`.
 9. Completed: Java backfill marker helpers were removed; startup backfills no longer read or write `schema_migration_history`.
 10. Completed: startup compatibility backfills are separated by ownership/risk behind a small `DatabaseCompatibilityBackfills` orchestrator.
+11. Completed: safe legacy account normalization moved from startup compatibility code to Flyway migration `V016__backfill_legacy_account_normalization.sql`.
 
 ## `runReconciledDataBackfill` subroutine decision map
 

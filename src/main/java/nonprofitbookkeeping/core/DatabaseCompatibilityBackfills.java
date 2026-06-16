@@ -5,8 +5,6 @@ import java.sql.SQLException;
 
 final class DatabaseCompatibilityBackfills
 {
-    private final LegacyAccountCompatibilityBackfill legacyAccountBackfill =
-        new LegacyAccountCompatibilityBackfill();
     private final LegacyTransactionMapCompatibilityBackfill legacyTransactionMapBackfill =
         new LegacyTransactionMapCompatibilityBackfill();
     private final ReconciledDataCompatibilityBackfill reconciledDataBackfill =
@@ -16,7 +14,6 @@ final class DatabaseCompatibilityBackfills
 
     void run(Connection c) throws SQLException
     {
-        legacyAccountBackfill.run(c);
         legacyTransactionMapBackfill.run(c);
         reconciledDataBackfill.run(c);
         operationalLinkBackfill.run(c);
