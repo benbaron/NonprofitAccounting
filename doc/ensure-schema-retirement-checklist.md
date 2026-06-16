@@ -39,7 +39,7 @@ No remaining `ensureSchema()` step should create tables, indexes, foreign keys, 
 | `normalizeLegacyAccounts` | Normalizes legacy `account` data (`code`, `normal_balance`). | Data repair / compatibility | Keep temporarily. This is data mutation, not schema ownership, but it should be renamed or moved out of `ensureSchema()` after legacy journal authority is decided. | Focused tests now document legacy account normalization; decide whether to keep it until legacy journal write authority is settled or retire it with the legacy write path. |
 | `backfillLegacyTxnMap` | Populates `legacy_txn_map` from legacy journal rows and canonical `txn` rows with matching IDs. | Data backfill / needs decision | Keep while legacy journal and canonical transaction models coexist. Focused tests now document its narrow same-ID, missing-row behavior. | Decide canonical-first vs legacy-first transaction write authority before retiring. |
 | `repairPeopleAndCounterparties` | Backfills donor `external_id` and person `type`. | Data repair / compatibility | Keep temporarily. Schema/index creation has been removed; remaining statements repair data only, and focused tests now document the behavior. | Decide whether to keep this repair until party/profile write authority is settled or retire it with the legacy write path. |
-| `runReconciledDataBackfill` | Seeds default chart/fund when missing, links accounts to a chart, mirrors legacy journal rows into canonical `txn`/`txn_split`, copies party data, and parses legacy dates. | Data backfill / high-risk | Keep for now. It transforms transaction data and now has focused behavior coverage before any future retirement decision. | Move safe seed data to Flyway where appropriate; keep transaction transforms guarded until canonical write authority is settled. |
+| `runReconciledDataBackfill` | Coordinates decision-sized subroutines that seed default chart/fund data, link accounts to a chart, mirror legacy journal rows into canonical `txn`/`txn_split`, copy party data, and parse legacy dates. | Data backfill / high-risk | Keep for now. It transforms transaction data, now has focused behavior coverage, and is decomposed so each subroutine can be moved, kept, or retired independently. | Use the subroutine decision map below to move safe seed data to Flyway where appropriate; keep transaction transforms guarded until canonical write authority is settled. |
 | `runOperationalLinkBackfillMigration` | Links donation/grant operational records to journal transactions and queues unresolved backfill issues. | Data backfill / medium-risk | Keep for now. Existing operational schema guards cover table shape, and focused behavior tests now document matched/unmatched donation and grant handling. | Decide whether this backfill should move to Flyway data migration, remain in `DatabaseCompatibilityBackfills`, or be retired for development databases. |
 | `runFinancePostingEnforcementPreflight` | Fails startup when finance posting enforcement exceptions exist. | Runtime preflight | Keep as validation/preflight, not schema work. | Consider moving to a dedicated startup validation service once `ensureSchema()` is renamed or retired. |
 
@@ -50,7 +50,19 @@ No remaining `ensureSchema()` step should create tables, indexes, foreign keys, 
 3. Completed: startup compatibility/backfill routines have moved into `DatabaseCompatibilityBackfills`.
 4. Completed: focused tests document `backfillLegacyTxnMap` behavior for same-ID legacy/canonical rows, pre-existing mappings, and unmatched rows.
 5. Completed: focused tests document `repairPeopleAndCounterparties` behavior for donor external IDs and person type defaults.
-6. Once Java backfills are gone or relocated, delete the Java migration-marker helpers and stop using `schema_migration_history` outside Flyway-managed data.
+6. Completed: `runReconciledDataBackfill` is decomposed into decision-sized subroutines with a subroutine decision map.
+7. Once Java backfills are gone or relocated, delete the Java migration-marker helpers and stop using `schema_migration_history` outside Flyway-managed data.
+
+## `runReconciledDataBackfill` subroutine decision map
+
+| Subroutine | Current role | Classification | Decision rule |
+|---|---|---|---|
+| `seedDefaultChartAndFund` | Inserts the default legacy chart and `GENERAL` fund when absent. | Static seed / Flyway candidate | Move to Flyway if these defaults are required for every fresh database; otherwise delete when startup no longer depends on implicit defaults. |
+| `linkLegacyAccountsToDefaultChart` | Links accounts without `chart_id` to the first chart. | Data repair / needs write-authority decision | Keep only while legacy account rows may exist without chart linkage; otherwise migrate once or retire. |
+| `mirrorLegacyJournalTransactions` | Creates canonical `txn` rows for legacy `journal_transaction` rows that do not already have canonical rows. | Data transform / high-risk | Keep guarded until canonical transaction write authority is settled; do not move blindly because it creates canonical transactions from legacy state. |
+| `mirrorLegacyJournalSplits` | Creates canonical `txn_split` rows from legacy `journal_entry` rows. | Data transform / high-risk | Keep guarded with transaction mirroring; retire only after canonical writes are authoritative. |
+| `backfillCounterpartiesFromPeopleAndDonors` | Creates `counterparty` rows from `person` and `donor` data. | Data repair / Flyway candidate | Move to a one-time Flyway migration if needed for existing data; delete if current write paths create counterparties directly. |
+| `updateTxnDatesFromLegacyText` | Parses legacy `journal_transaction.date_text` values into canonical `txn.txn_date`. | Data transform / parsing compatibility | Keep only while legacy textual dates need migration; otherwise retire once canonical dates are authoritative. |
 
 ## Rules for future PRs
 

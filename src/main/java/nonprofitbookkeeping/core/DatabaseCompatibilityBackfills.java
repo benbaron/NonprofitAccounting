@@ -127,22 +127,45 @@ final class DatabaseCompatibilityBackfills
 
         try (Statement st = c.createStatement())
         {
-            st.execute(
-                SQL_DEFAULT_CHART_INSERT);
-            st.execute(
-                SQL_DEFAULT_FUND_INSERT);
-            st.execute(
-                SQL_ACCOUNT_CHART_UPDATE);
-            st.execute(SQL_BACKFILL_TXN_INSERT);
-            st.execute(SQL_BACKFILL_TXN_SPLIT_INSERT);
-            st.execute(
-                SQL_COUNTERPARTY_FROM_PERSON);
-            st.execute(
-                SQL_COUNTERPARTY_FROM_DONOR);
+            seedDefaultChartAndFund(st);
+            linkLegacyAccountsToDefaultChart(st);
+            mirrorLegacyJournalTransactions(st);
+            mirrorLegacyJournalSplits(st);
+            backfillCounterpartiesFromPeopleAndDonors(st);
         }
 
         updateTxnDatesFromLegacyText(c);
         markMigrationApplied(c, MIGRATION_RECONCILED_BACKFILL_V1);
+    }
+
+    private void seedDefaultChartAndFund(Statement st) throws SQLException
+    {
+        st.execute(SQL_DEFAULT_CHART_INSERT);
+        st.execute(SQL_DEFAULT_FUND_INSERT);
+    }
+
+    private void linkLegacyAccountsToDefaultChart(Statement st)
+        throws SQLException
+    {
+        st.execute(SQL_ACCOUNT_CHART_UPDATE);
+    }
+
+    private void mirrorLegacyJournalTransactions(Statement st)
+        throws SQLException
+    {
+        st.execute(SQL_BACKFILL_TXN_INSERT);
+    }
+
+    private void mirrorLegacyJournalSplits(Statement st) throws SQLException
+    {
+        st.execute(SQL_BACKFILL_TXN_SPLIT_INSERT);
+    }
+
+    private void backfillCounterpartiesFromPeopleAndDonors(Statement st)
+        throws SQLException
+    {
+        st.execute(SQL_COUNTERPARTY_FROM_PERSON);
+        st.execute(SQL_COUNTERPARTY_FROM_DONOR);
     }
 
     private void runOperationalLinkBackfillMigration(Connection c)
