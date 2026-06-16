@@ -13,9 +13,6 @@ import java.util.List;
 
 final class ReconciledDataCompatibilityBackfill
 {
-    private static final String SQL_ACCOUNT_CHART_UPDATE =
-        "UPDATE account SET chart_id = (SELECT MIN(id) FROM chart_of_accounts) WHERE chart_id IS NULL";
-
     private static final String SQL_BACKFILL_TXN_INSERT =
         """
             INSERT INTO txn(id, txn_date, memo, created_at, updated_at)
@@ -49,18 +46,11 @@ final class ReconciledDataCompatibilityBackfill
     {
         try (Statement st = c.createStatement())
         {
-            linkLegacyAccountsToDefaultChart(st);
             mirrorLegacyJournalTransactions(st);
             mirrorLegacyJournalSplits(st);
         }
 
         updateTxnDatesFromLegacyText(c);
-    }
-
-    private void linkLegacyAccountsToDefaultChart(Statement st)
-        throws SQLException
-    {
-        st.execute(SQL_ACCOUNT_CHART_UPDATE);
     }
 
     private void mirrorLegacyJournalTransactions(Statement st)
