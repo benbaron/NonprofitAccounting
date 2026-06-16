@@ -120,6 +120,18 @@ public class GrantRecordsPanel implements AppPanel
         }
     }
 
+    @Override
+    public void onDelete()
+    {
+        onDeleteSelected();
+    }
+
+    @Override
+    public void onCancel()
+    {
+        load();
+    }
+
     private void onDeleteSelected()
     {
         GrantRow selected = this.table.getSelectionModel().getSelectedItem();

@@ -212,6 +212,18 @@ public class AssetsRegisterPanel implements AppPanel
 		}
 	}
 
+	@Override
+	public void onDelete()
+	{
+		onDeleteSelected();
+	}
+
+	@Override
+	public void onCancel()
+	{
+		loadFromService();
+	}
+
 	private void onDeleteSelected()
 	{
 		AssetRow selected = this.table.getSelectionModel().getSelectedItem();

@@ -134,6 +134,18 @@ public class FundRecordsPanel implements AppPanel
         }
     }
 
+    @Override
+    public void onDelete()
+    {
+        onDeleteSelected();
+    }
+
+    @Override
+    public void onCancel()
+    {
+        load();
+    }
+
     private void onDeleteSelected()
     {
         FundRow selected = this.table.getSelectionModel().getSelectedItem();

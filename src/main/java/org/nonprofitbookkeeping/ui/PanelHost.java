@@ -66,6 +66,8 @@ public class PanelHost extends BorderPane
     public void newItemActive() { AppPanel p = getActive(); if (p != null) p.onNew(); }
     public void copySelectionActive() { AppPanel p = getActive(); if (p != null) p.onCopy(); }
     public void pasteActive() { AppPanel p = getActive(); if (p != null) p.onPaste(); }
+    public void deleteActive() { AppPanel p = getActive(); if (p != null) p.onDelete(); }
+    public void cancelActive() { AppPanel p = getActive(); if (p != null) p.onCancel(); }
 
     private AppPanel getActive() { return activeId == null ? null : panels.get(activeId); }
 

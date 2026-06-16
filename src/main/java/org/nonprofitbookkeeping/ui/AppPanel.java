@@ -14,4 +14,6 @@ public interface AppPanel
     default void onNew() {}
     default void onCopy() {}
     default void onPaste() {}
+    default void onDelete() {}
+    default void onCancel() {}
 }

@@ -31,8 +31,10 @@ public class BudgetEditorPanel implements AppPanel
         title.getStyleClass().add("panel-title");
 
         Button add = new Button("+ Add Budget Line");
+        Button delete = new Button("Delete Selected");
         Button save = new Button("Save");
-        HBox actions = new HBox(8, add, save);
+        Button cancel = new Button("Cancel");
+        HBox actions = new HBox(8, add, delete, save, cancel);
 
         root.setTop(new VBox(6, title, actions, new Separator()));
 
@@ -54,7 +56,9 @@ public class BudgetEditorPanel implements AppPanel
             refreshFundChoices();
             table.getItems().add(new BudgetRow("", defaultFundChoice(), "", "0.00"));
         });
+        delete.setOnAction(e -> onDelete());
         save.setOnAction(e -> onSave());
+        cancel.setOnAction(e -> onCancel());
     }
 
     private TableColumn<BudgetRow, String> col(String name, java.util.function.Function<BudgetRow, String> getter)
@@ -99,6 +103,24 @@ public class BudgetEditorPanel implements AppPanel
     @Override public void onSave()
     {
         status.setText("Saved " + table.getItems().size() + " budget row(s)");
+    }
+
+    @Override public void onDelete()
+    {
+        BudgetRow selected = table.getSelectionModel().getSelectedItem();
+        if (selected == null)
+        {
+            status.setText("Select a budget row to delete.");
+            return;
+        }
+        table.getItems().remove(selected);
+        status.setText("Deleted selected budget row.");
+    }
+
+    @Override public void onCancel()
+    {
+        table.getSelectionModel().clearSelection();
+        status.setText("Cancelled budget edit and cleared the selection.");
     }
 
     public record BudgetRow(String account, String fund, String period, String amount)

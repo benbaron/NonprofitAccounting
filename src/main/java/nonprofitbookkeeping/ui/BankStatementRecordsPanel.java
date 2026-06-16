@@ -124,6 +124,18 @@ public class BankStatementRecordsPanel implements AppPanel
         }
     }
 
+    @Override
+    public void onDelete()
+    {
+        onDeleteSelected();
+    }
+
+    @Override
+    public void onCancel()
+    {
+        load();
+    }
+
     private void onDeleteSelected()
     {
         Row selected = this.table.getSelectionModel().getSelectedItem();

@@ -59,6 +59,21 @@ class PanelHostLifecycleTest
         assertTrue(cachedPanels.containsKey(AppPanelId.DASHBOARD));
     }
 
+
+    @Test
+    void panelHostDelegatesDeleteAndCancelToActivePanel()
+    {
+        TrackingPanel panel = new TrackingPanel("COA");
+        PanelHost host = new PanelHost(id -> panel);
+
+        host.show(AppPanelId.CHART_OF_ACCOUNTS);
+        host.deleteActive();
+        host.cancelActive();
+
+        assertEquals(1, panel.deleteCalls);
+        assertEquals(1, panel.cancelCalls);
+    }
+
     @Test
     void adapterLifecycleHooksDelegateToFxPanelCallbacks()
     {
@@ -99,6 +114,8 @@ class PanelHostLifecycleTest
         private final String title;
         private boolean dirty;
         private int saveCalls;
+        private int deleteCalls;
+        private int cancelCalls;
 
         private TrackingPanel(String title)
         {
@@ -127,6 +144,18 @@ class PanelHostLifecycleTest
         {
             saveCalls++;
             dirty = false;
+        }
+
+        @Override
+        public void onDelete()
+        {
+            deleteCalls++;
+        }
+
+        @Override
+        public void onCancel()
+        {
+            cancelCalls++;
         }
 
         @Override

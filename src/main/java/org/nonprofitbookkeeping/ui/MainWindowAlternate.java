@@ -547,14 +547,20 @@ public class MainWindowAlternate extends BorderPane
 
         Button newButton = actionButton("New", this::runNewAction);
         Button saveButton = actionButton("Save", this::runSaveAction);
+        Button deleteButton = actionButton("Delete", this::runDeleteAction);
+        Button cancelButton = actionButton("Cancel", this::runCancelAction);
         boolean panelCommandAvailable = hasActivePanelCommandTarget();
         newButton.setDisable(!panelCommandAvailable);
         saveButton.setDisable(!panelCommandAvailable);
+        deleteButton.setDisable(!panelCommandAvailable);
+        cancelButton.setDisable(!panelCommandAvailable);
 
         VBox quickActions = new VBox(6,
             new Label("Toolbar-style actions"),
             newButton,
             saveButton,
+            deleteButton,
+            cancelButton,
             actionButton("Find", this::openSearchPage),
             actionButton("Journal", () -> openPanel(AppPanelId.LEDGER_REGISTER)));
 
@@ -735,6 +741,28 @@ public class MainWindowAlternate extends BorderPane
         }
         this.panelHost.saveActive();
         openInspectorForSelection("Command", "Save action sent to active workspace panel: " + this.panelHost.getActiveTitle());
+    }
+
+    private void runDeleteAction()
+    {
+        if (!hasActivePanelCommandTarget())
+        {
+            openInspectorForSelection("Command", "Delete is unavailable until a panel-host workspace is active.");
+            return;
+        }
+        this.panelHost.deleteActive();
+        openInspectorForSelection("Command", "Delete action sent to active workspace panel: " + this.panelHost.getActiveTitle());
+    }
+
+    private void runCancelAction()
+    {
+        if (!hasActivePanelCommandTarget())
+        {
+            openInspectorForSelection("Command", "Cancel is unavailable until a panel-host workspace is active.");
+            return;
+        }
+        this.panelHost.cancelActive();
+        openInspectorForSelection("Command", "Cancel action sent to active workspace panel: " + this.panelHost.getActiveTitle());
     }
 
     private boolean hasActivePanelCommandTarget()

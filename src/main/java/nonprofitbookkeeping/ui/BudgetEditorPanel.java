@@ -167,6 +167,19 @@ public class BudgetEditorPanel implements AppPanel
 		return this.fundChoices.isEmpty() ? "" : this.fundChoices.get(0);
 	}
 
+	@Override
+	public void onDelete()
+	{
+		onDeleteSelected();
+	}
+
+	@Override
+	public void onCancel()
+	{
+		this.table.getSelectionModel().clearSelection();
+		this.status.setText("Cancelled budget edit and cleared the selection.");
+	}
+
 	private void onDeleteSelected()
 	{
 		BudgetRow selected = this.table.getSelectionModel().getSelectedItem();

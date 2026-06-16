@@ -69,6 +69,40 @@ class MainWindowAlternateCommandCenterTest
     }
 
     @Test
+    void commandCenterExposesCompleteToolbarActions() throws Exception
+    {
+        CountDownLatch latch = new CountDownLatch(1);
+        Throwable[] error = new Throwable[1];
+
+        Platform.runLater(() -> {
+            try
+            {
+                MainWindowAlternate window = new MainWindowAlternate();
+                List<String> buttonLabels = window.commandCenterActionLabelsForTest();
+
+                assertTrue(buttonLabels.contains("New"));
+                assertTrue(buttonLabels.contains("Save"));
+                assertTrue(buttonLabels.contains("Delete"));
+                assertTrue(buttonLabels.contains("Cancel"));
+            }
+            catch (Throwable t)
+            {
+                error[0] = t;
+            }
+            finally
+            {
+                latch.countDown();
+            }
+        });
+
+        assertTrue(latch.await(20, TimeUnit.SECONDS));
+        if (error[0] != null)
+        {
+            throw new AssertionError("MainWindowAlternate complete toolbar action test failed", error[0]);
+        }
+    }
+
+    @Test
     void bankingActionFailuresSurfaceInspectorMessages() throws Exception
     {
         CountDownLatch latch = new CountDownLatch(1);
