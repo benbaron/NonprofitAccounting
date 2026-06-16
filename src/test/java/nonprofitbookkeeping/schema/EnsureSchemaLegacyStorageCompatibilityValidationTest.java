@@ -12,6 +12,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -19,36 +20,38 @@ import java.util.TreeSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class EnsureSchemaPartyProfileCompatibilityValidationTest
+class EnsureSchemaLegacyStorageCompatibilityValidationTest
 {
-    private static final Set<String> PARTY_PROFILE_TABLES = Set.of(
-        "PERSON",
-        "DONOR",
-        "COUNTERPARTY",
-        "MERCHANT"
+    private static final List<String> LEGACY_STORAGE_TABLES = List.of(
+        "UNDEPOSITED_FUNDS_ITEM",
+        "DOCUMENT",
+        "JSON_STORAGE",
+        "COMPANY_STORE",
+        "IMPORTED_ASSET_RECORD",
+        "SALE_RECORD"
     );
 
     @TempDir
     Path tempDir;
 
     @Test
-    void ensureSchemaDoesNotChangeFlywayOwnedPartyProfileColumnsOrIndexes() throws Exception
+    void ensureSchemaDoesNotChangeFlywayOwnedLegacyStorageColumnsOrIndexes() throws Exception
     {
-        Database.init(tempDir.resolve("party-profile-compatibility"));
+        Database.init(tempDir.resolve("legacy-storage-compatibility"));
         Database database = Database.get();
 
         migrateWithFlyway(database);
-        Map<String, Set<String>> flywayColumns = tableColumns(database, PARTY_PROFILE_TABLES);
-        Map<String, Set<String>> flywayIndexes = tableIndexes(database, PARTY_PROFILE_TABLES);
+        Map<String, Set<String>> flywayColumns = tableColumns(database, LEGACY_STORAGE_TABLES);
+        Map<String, Set<String>> flywayIndexes = tableIndexes(database, LEGACY_STORAGE_TABLES);
 
         database.ensureSchema();
-        Map<String, Set<String>> postEnsureSchemaColumns = tableColumns(database, PARTY_PROFILE_TABLES);
-        Map<String, Set<String>> postEnsureSchemaIndexes = tableIndexes(database, PARTY_PROFILE_TABLES);
+        Map<String, Set<String>> postEnsureSchemaColumns = tableColumns(database, LEGACY_STORAGE_TABLES);
+        Map<String, Set<String>> postEnsureSchemaIndexes = tableIndexes(database, LEGACY_STORAGE_TABLES);
 
         assertEquals(flywayColumns, postEnsureSchemaColumns,
-            "party/profile columns should be Flyway-owned; ensureSchema must not add or remove columns");
+            "legacy storage/sales columns should be Flyway-owned; ensureSchema must not add or remove columns");
         assertEquals(flywayIndexes, postEnsureSchemaIndexes,
-            "party/profile indexes should be Flyway-owned; ensureSchema must not add or remove indexes");
+            "legacy storage/sales indexes should be Flyway-owned; ensureSchema must not add or remove indexes");
     }
 
     private static void migrateWithFlyway(Database database)
@@ -62,7 +65,7 @@ class EnsureSchemaPartyProfileCompatibilityValidationTest
             .migrate();
     }
 
-    private static Map<String, Set<String>> tableColumns(Database database, Set<String> tableNames) throws SQLException
+    private static Map<String, Set<String>> tableColumns(Database database, List<String> tableNames) throws SQLException
     {
         Map<String, Set<String>> out = new LinkedHashMap<>();
         for (String tableName : tableNames)
@@ -89,7 +92,7 @@ class EnsureSchemaPartyProfileCompatibilityValidationTest
         return columns;
     }
 
-    private static Map<String, Set<String>> tableIndexes(Database database, Set<String> tableNames) throws SQLException
+    private static Map<String, Set<String>> tableIndexes(Database database, List<String> tableNames) throws SQLException
     {
         Map<String, Set<String>> out = new LinkedHashMap<>();
         for (String tableName : tableNames)
