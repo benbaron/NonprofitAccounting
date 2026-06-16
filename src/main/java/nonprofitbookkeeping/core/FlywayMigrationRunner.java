@@ -1,8 +1,13 @@
 package nonprofitbookkeeping.core;
 
 import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.exception.FlywayValidateException;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -48,19 +53,78 @@ public final class FlywayMigrationRunner
 
         try
         {
-            Flyway.configure()
-                .dataSource(jdbcUrl, user, password)
-                .locations("classpath:db/migration")
-                .baselineOnMigrate(true)
-                .baselineVersion("0")
-                .load()
-                .migrate();
+            prepareLegacyScheduleDefaultCompatibility(jdbcUrl, user, password);
+            Flyway flyway = configuredFlyway(jdbcUrl, user, password);
+            try
+            {
+                flyway.migrate();
+            }
+            catch (FlywayValidateException ex)
+            {
+                if (!hasFailedMigration(ex))
+                {
+                    throw ex;
+                }
+                flyway.repair();
+                flyway.migrate();
+            }
         }
         catch (RuntimeException ex)
         {
             MIGRATED_URLS.remove(jdbcUrl);
             throw new SQLException("Flyway migration failed for " + jdbcUrl, ex);
         }
+    }
+
+    private static void prepareLegacyScheduleDefaultCompatibility(String jdbcUrl, String user, String password) throws SQLException
+    {
+        try (Connection connection = DriverManager.getConnection(jdbcUrl, user, password))
+        {
+            if (!tableExists(connection, "ACCOUNT_SUBTYPE_SCHEDULE_DEFAULT") ||
+                columnExists(connection, "ACCOUNT_SUBTYPE_SCHEDULE_DEFAULT", "IS_REQUIRED"))
+            {
+                return;
+            }
+            try (Statement st = connection.createStatement())
+            {
+                st.execute("""
+                    ALTER TABLE account_subtype_schedule_default
+                    ADD COLUMN IF NOT EXISTS is_required BOOLEAN DEFAULT TRUE
+                    """);
+            }
+        }
+    }
+
+    private static boolean tableExists(Connection connection, String tableName) throws SQLException
+    {
+        try (ResultSet rs = connection.getMetaData().getTables(null, "PUBLIC", tableName, new String[] {"TABLE"}))
+        {
+            return rs.next();
+        }
+    }
+
+    private static boolean columnExists(Connection connection, String tableName, String columnName) throws SQLException
+    {
+        try (ResultSet rs = connection.getMetaData().getColumns(null, "PUBLIC", tableName, columnName))
+        {
+            return rs.next();
+        }
+    }
+
+    private static Flyway configuredFlyway(String jdbcUrl, String user, String password)
+    {
+        return Flyway.configure()
+            .dataSource(jdbcUrl, user, password)
+            .locations("classpath:db/migration")
+            .baselineOnMigrate(true)
+            .baselineVersion("0")
+            .load();
+    }
+
+    private static boolean hasFailedMigration(FlywayValidateException ex)
+    {
+        String message = ex.getMessage();
+        return message != null && message.contains("Detected failed migration");
     }
 
     static void resetForTest()
