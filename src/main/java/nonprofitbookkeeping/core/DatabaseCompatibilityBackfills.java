@@ -33,16 +33,6 @@ final class DatabaseCompatibilityBackfills
     private static final String SQL_MIGRATION_UPSERT =
         "MERGE INTO schema_migration_history (migration_key, applied_at) KEY(migration_key) VALUES (?, CURRENT_TIMESTAMP)";
 
-    private static final String SQL_DEFAULT_CHART_INSERT =
-        "INSERT INTO chart_of_accounts(name, version, status, created_at, updated_at) " +
-        "SELECT 'Default Legacy Chart','legacy','ACTIVE',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP " +
-        "WHERE NOT EXISTS (SELECT 1 FROM chart_of_accounts)";
-
-    private static final String SQL_DEFAULT_FUND_INSERT =
-        "INSERT INTO fund(id, code, name, fund_type, is_active, created_at, updated_at) " +
-        "SELECT 1, 'GENERAL', 'General Fund', 'UNRESTRICTED', TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP " +
-        "WHERE NOT EXISTS (SELECT 1 FROM fund WHERE id = 1)";
-
     private static final String SQL_ACCOUNT_CHART_UPDATE =
         "UPDATE account SET chart_id = (SELECT MIN(id) FROM chart_of_accounts) WHERE chart_id IS NULL";
 
@@ -127,7 +117,6 @@ final class DatabaseCompatibilityBackfills
 
         try (Statement st = c.createStatement())
         {
-            seedDefaultChartAndFund(st);
             linkLegacyAccountsToDefaultChart(st);
             mirrorLegacyJournalTransactions(st);
             mirrorLegacyJournalSplits(st);
@@ -136,12 +125,6 @@ final class DatabaseCompatibilityBackfills
 
         updateTxnDatesFromLegacyText(c);
         markMigrationApplied(c, MIGRATION_RECONCILED_BACKFILL_V1);
-    }
-
-    private void seedDefaultChartAndFund(Statement st) throws SQLException
-    {
-        st.execute(SQL_DEFAULT_CHART_INSERT);
-        st.execute(SQL_DEFAULT_FUND_INSERT);
     }
 
     private void linkLegacyAccountsToDefaultChart(Statement st)

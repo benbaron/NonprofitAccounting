@@ -69,6 +69,27 @@ class ReconciledDataBackfillBehaviorValidationTest
             """));
     }
 
+    @Test
+    void flywaySeedsDefaultLegacyChartAndFundBeforeEnsureSchema() throws Exception
+    {
+        Database.init(tempDir.resolve("default-chart-fund-flyway-seed"));
+        Database database = Database.get();
+
+        migrateWithFlyway(database);
+
+        assertEquals(1, queryInt(database,
+            "SELECT COUNT(*) FROM chart_of_accounts WHERE name = 'Default Legacy Chart' AND version = 'legacy'"));
+        assertEquals(1, queryInt(database,
+            "SELECT COUNT(*) FROM fund WHERE id = 1 AND code = 'GENERAL'"));
+
+        database.ensureSchema();
+
+        assertEquals(1, queryInt(database,
+            "SELECT COUNT(*) FROM chart_of_accounts WHERE name = 'Default Legacy Chart' AND version = 'legacy'"));
+        assertEquals(1, queryInt(database,
+            "SELECT COUNT(*) FROM fund WHERE id = 1 AND code = 'GENERAL'"));
+    }
+
     private static void migrateWithFlyway(Database database)
     {
         Flyway.configure()
