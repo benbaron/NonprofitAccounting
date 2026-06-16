@@ -28,6 +28,25 @@ runFinancePostingEnforcementPreflight
 
 No remaining `ensureSchema()` step should create tables, indexes, foreign keys, views, or other canonical schema objects. Any future schema change belongs in Flyway.
 
+
+## Current status
+
+The safe and medium-risk cleanup slices are complete: canonical schema DDL is owned by Flyway, Java migration markers are gone from startup backfills, static seed data and one-time repairs now live in Flyway migrations `V014` through `V018`, and `DatabaseCompatibilityBackfills` has been reduced to the two remaining transaction-compatibility routines.
+
+The project is not fully done because `ensureSchema()` still runs two transaction compatibility backfills and one runtime preflight. The remaining Java work is intentionally narrower and higher-decision-risk than the completed seed/repair slices:
+
+1. `LegacyTransactionMapCompatibilityBackfill` maps same-ID legacy journal transactions to canonical transactions in `legacy_txn_map`.
+2. `ReconciledDataCompatibilityBackfill` creates canonical `txn`/`txn_split` data from legacy journal rows and parses legacy date text.
+3. `runFinancePostingEnforcementPreflight` remains a startup validation step, not schema work.
+
+## Projected plan
+
+1. **Decision gate: transaction write authority.** Decide whether canonical `txn`/`txn_split` writes are authoritative, legacy journal writes are still authoritative, or both models must coexist temporarily. Do not move or delete the remaining transaction transforms until this decision is explicit.
+2. **Smallest remaining cleanup: `LegacyTransactionMapCompatibilityBackfill`.** If same-ID legacy/canonical mapping is still needed, either move it to a Flyway data migration with a focused test or document why it must remain a startup compatibility backfill. If it is no longer needed, delete it and update `LegacyTxnMapBackfillBehaviorValidationTest`.
+3. **High-risk cleanup: `ReconciledDataCompatibilityBackfill`.** Split the remaining transaction transform into separate decisions for `mirrorLegacyJournalTransactions`, `mirrorLegacyJournalSplits`, and `updateTxnDatesFromLegacyText`. Move only proven one-time data migrations to Flyway; otherwise keep guarded startup behavior until canonical transaction writes are settled.
+4. **Preflight extraction.** Once backfills are moved or retired, move `runFinancePostingEnforcementPreflight` to a named startup validation service or keep it as the only remaining `ensureSchema()` responsibility while renaming/retiring `ensureSchema()`.
+5. **Final retirement.** When no Java compatibility backfills remain, delete `DatabaseCompatibilityBackfills`, remove its call from `Database.ensureSchema()`, and keep the normal database-open path covered by tests that migrate with Flyway and validate with JPA.
+
 ## Remaining responsibility review
 
 | Area | Current role | Classification | Review decision | Next action |
