@@ -26,8 +26,9 @@ class ReconciledDataBackfillBehaviorValidationTest
         Database.init(tempDir.resolve("reconciled-data-backfill-behavior"));
         Database database = Database.get();
 
-        migrateWithFlyway(database);
+        migrateWithFlyway(database, "14");
         seedReconciledBackfillScenario(database);
+        migrateWithFlyway(database);
 
         database.ensureSchema();
         database.ensureSchema();
@@ -92,13 +93,21 @@ class ReconciledDataBackfillBehaviorValidationTest
 
     private static void migrateWithFlyway(Database database)
     {
-        Flyway.configure()
+        migrateWithFlyway(database, null);
+    }
+
+    private static void migrateWithFlyway(Database database, String targetVersion)
+    {
+        var configuration = Flyway.configure()
             .dataSource(database.getJdbcUrl(), database.getUser(), database.getPass())
             .locations("classpath:db/migration")
             .baselineOnMigrate(true)
-            .baselineVersion("0")
-            .load()
-            .migrate();
+            .baselineVersion("0");
+        if (targetVersion != null)
+        {
+            configuration.target(targetVersion);
+        }
+        configuration.load().migrate();
     }
 
     private static void seedReconciledBackfillScenario(Database database) throws SQLException

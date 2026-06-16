@@ -16,17 +16,6 @@ final class DatabaseCompatibilityBackfills
     private static final String MIGRATION_RECONCILED_BACKFILL_V1 = "reconciled-backfill-v1";
     private static final String MIGRATION_OPERATIONAL_LINK_BACKFILL_V1 = "operational-link-backfill-v1";
 
-    private static final String SQL_COUNTERPARTY_FROM_PERSON =
-        "INSERT INTO counterparty(display_name, kind, email, phone, is_active) " +
-        "SELECT p.name, UPPER(COALESCE(p.type, 'DONOR')), p.email, p.phone, TRUE FROM person p " +
-        "WHERE NOT EXISTS (SELECT 1 FROM counterparty c WHERE c.display_name = p.name AND c.kind = UPPER(COALESCE(p.type, 'DONOR')))";
-
-    private static final String SQL_COUNTERPARTY_FROM_DONOR =
-        "INSERT INTO counterparty(display_name, kind, email, phone, is_active) " +
-        "SELECT d.name, 'DONOR', d.email, d.phone, TRUE FROM donor d " +
-        "WHERE d.name IS NOT NULL AND NOT EXISTS " +
-        "(SELECT 1 FROM counterparty c WHERE c.display_name = d.name AND c.kind = 'DONOR')";
-
     private static final String SQL_MIGRATION_EXISTS =
         "SELECT 1 FROM schema_migration_history WHERE migration_key = ?";
 
@@ -71,7 +60,6 @@ final class DatabaseCompatibilityBackfills
         {
             normalizeLegacyAccounts(st);
             backfillLegacyTxnMap(c);
-            repairPeopleAndCounterparties(st);
             runReconciledDataBackfill(c);
             runOperationalLinkBackfillMigration(c);
         }
@@ -101,13 +89,6 @@ final class DatabaseCompatibilityBackfills
         }
     }
 
-    private void repairPeopleAndCounterparties(Statement st) throws SQLException
-    {
-        st.execute(
-            "UPDATE donor SET external_id = name WHERE external_id IS NULL AND name IS NOT NULL;");
-        st.execute("UPDATE person SET type = 'DONOR' WHERE type IS NULL OR TRIM(type) = '';");
-    }
-
     private void runReconciledDataBackfill(Connection c) throws SQLException
     {
         if (isMigrationApplied(c, MIGRATION_RECONCILED_BACKFILL_V1))
@@ -120,7 +101,6 @@ final class DatabaseCompatibilityBackfills
             linkLegacyAccountsToDefaultChart(st);
             mirrorLegacyJournalTransactions(st);
             mirrorLegacyJournalSplits(st);
-            backfillCounterpartiesFromPeopleAndDonors(st);
         }
 
         updateTxnDatesFromLegacyText(c);
@@ -142,13 +122,6 @@ final class DatabaseCompatibilityBackfills
     private void mirrorLegacyJournalSplits(Statement st) throws SQLException
     {
         st.execute(SQL_BACKFILL_TXN_SPLIT_INSERT);
-    }
-
-    private void backfillCounterpartiesFromPeopleAndDonors(Statement st)
-        throws SQLException
-    {
-        st.execute(SQL_COUNTERPARTY_FROM_PERSON);
-        st.execute(SQL_COUNTERPARTY_FROM_DONOR);
     }
 
     private void runOperationalLinkBackfillMigration(Connection c)
