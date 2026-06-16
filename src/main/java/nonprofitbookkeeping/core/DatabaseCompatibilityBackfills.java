@@ -81,7 +81,7 @@ final class DatabaseCompatibilityBackfills
         {
             normalizeLegacyAccounts(st);
             backfillLegacyTxnMap(c);
-            ensurePeopleAndCounterparty(st);
+            repairPeopleAndCounterparties(st);
             runReconciledDataBackfill(c);
             runOperationalLinkBackfillMigration(c);
         }
@@ -111,7 +111,7 @@ final class DatabaseCompatibilityBackfills
         }
     }
 
-    private void ensurePeopleAndCounterparty(Statement st) throws SQLException
+    private void repairPeopleAndCounterparties(Statement st) throws SQLException
     {
         st.execute(
             "UPDATE donor SET external_id = name WHERE external_id IS NULL AND name IS NOT NULL;");
