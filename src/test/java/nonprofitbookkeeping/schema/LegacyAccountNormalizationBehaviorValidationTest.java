@@ -21,36 +21,40 @@ class LegacyAccountNormalizationBehaviorValidationTest
     Path tempDir;
 
     @Test
-    void ensureSchemaNormalizesLegacyAccountCodeAndNormalBalanceOnlyWhenMissing() throws Exception
+    void flywayNormalizesLegacyAccountCodeAndNormalBalanceOnlyWhenMissing() throws Exception
     {
         Database.init(tempDir.resolve("legacy-account-normalization-behavior"));
         Database database = Database.get();
 
-        migrateWithFlyway(database);
+        migrateWithFlyway(database, "15");
         seedLegacyAccounts(database);
 
-        database.ensureSchema();
+        migrateWithFlyway(database);
         database.ensureSchema();
 
         assertAccount(database, "1000", "1000", "DEBIT");
         assertAccount(database, "2000", "2000", "CREDIT");
         assertAccount(database, "3000", "3000", "CREDIT");
         assertAccount(database, "4000", "custom-code", "CREDIT");
-        assertEquals(1, queryInt(database,
-            "SELECT COUNT(*) FROM schema_migration_history WHERE migration_key = 'reconciled-backfill-v1'"));
-        assertEquals(1, queryInt(database,
-            "SELECT COUNT(*) FROM schema_migration_history WHERE migration_key = 'operational-link-backfill-v1'"));
     }
 
     private static void migrateWithFlyway(Database database)
     {
-        Flyway.configure()
+        migrateWithFlyway(database, null);
+    }
+
+    private static void migrateWithFlyway(Database database, String target)
+    {
+        var configuration = Flyway.configure()
             .dataSource(database.getJdbcUrl(), database.getUser(), database.getPass())
             .locations("classpath:db/migration")
             .baselineOnMigrate(true)
-            .baselineVersion("0")
-            .load()
-            .migrate();
+            .baselineVersion("0");
+        if (target != null)
+        {
+            configuration.target(target);
+        }
+        configuration.load().migrate();
     }
 
     private static void seedLegacyAccounts(Database database) throws SQLException
@@ -58,8 +62,6 @@ class LegacyAccountNormalizationBehaviorValidationTest
         try (Connection connection = DriverManager.getConnection(database.getJdbcUrl(), database.getUser(), database.getPass());
              Statement st = connection.createStatement())
         {
-            st.execute("INSERT INTO schema_migration_history(migration_key) VALUES ('reconciled-backfill-v1')");
-            st.execute("INSERT INTO schema_migration_history(migration_key) VALUES ('operational-link-backfill-v1')");
             st.execute("INSERT INTO account(account_number, name, increase_side) VALUES ('1000', 'Debit Account', 'DEBIT')");
             st.execute("INSERT INTO account(account_number, name, increase_side) VALUES ('2000', 'Credit Account', 'CREDIT')");
             st.execute("INSERT INTO account(account_number, name, increase_side) VALUES ('3000', 'Short Credit Account', 'CR')");
@@ -87,14 +89,4 @@ class LegacyAccountNormalizationBehaviorValidationTest
         }
     }
 
-    private static int queryInt(Database database, String sql) throws SQLException
-    {
-        try (Connection connection = DriverManager.getConnection(database.getJdbcUrl(), database.getUser(), database.getPass());
-             PreparedStatement ps = connection.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery())
-        {
-            rs.next();
-            return rs.getInt(1);
-        }
-    }
 }

@@ -21,7 +21,7 @@ class LegacyTxnMapBackfillBehaviorValidationTest
     Path tempDir;
 
     @Test
-    void ensureSchemaBackfillsOnlyMissingLegacyTxnMapRowsForMatchingIds() throws Exception
+    void ensureSchemaBackfillsLegacyTxnMapRowsAfterIdempotentTransactionMirroring() throws Exception
     {
         Database.init(tempDir.resolve("legacy-txn-map-backfill-behavior"));
         Database database = Database.get();
@@ -36,11 +36,11 @@ class LegacyTxnMapBackfillBehaviorValidationTest
             "SELECT COUNT(*) FROM legacy_txn_map WHERE legacy_txn_id = 5001 AND canonical_txn_id = 5001"));
         assertEquals(1, queryInt(database,
             "SELECT COUNT(*) FROM legacy_txn_map WHERE legacy_txn_id = 5002 AND canonical_txn_id = 5002 AND checksum = 'already-mapped'"));
-        assertEquals(0, queryInt(database,
-            "SELECT COUNT(*) FROM legacy_txn_map WHERE legacy_txn_id = 5003"));
+        assertEquals(1, queryInt(database,
+            "SELECT COUNT(*) FROM legacy_txn_map WHERE legacy_txn_id = 5003 AND canonical_txn_id = 5003"));
         assertEquals(0, queryInt(database,
             "SELECT COUNT(*) FROM legacy_txn_map WHERE canonical_txn_id = 5004"));
-        assertEquals(2, queryInt(database, "SELECT COUNT(*) FROM legacy_txn_map"));
+        assertEquals(3, queryInt(database, "SELECT COUNT(*) FROM legacy_txn_map"));
     }
 
     private static void migrateWithFlyway(Database database)
@@ -59,8 +59,6 @@ class LegacyTxnMapBackfillBehaviorValidationTest
         try (Connection connection = DriverManager.getConnection(database.getJdbcUrl(), database.getUser(), database.getPass());
              Statement st = connection.createStatement())
         {
-            st.execute("INSERT INTO schema_migration_history(migration_key) VALUES ('reconciled-backfill-v1')");
-            st.execute("INSERT INTO schema_migration_history(migration_key) VALUES ('operational-link-backfill-v1')");
             st.execute("INSERT INTO journal_transaction(id, date_text, memo) VALUES (5001, '2026-06-15', 'matching legacy txn')");
             st.execute("INSERT INTO txn(id, txn_date, memo) VALUES (5001, DATE '2026-06-15', 'matching canonical txn')");
             st.execute("INSERT INTO journal_transaction(id, date_text, memo) VALUES (5002, '2026-06-16', 'pre-mapped legacy txn')");

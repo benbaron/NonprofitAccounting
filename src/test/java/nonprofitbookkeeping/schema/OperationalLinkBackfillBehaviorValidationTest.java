@@ -21,15 +21,15 @@ class OperationalLinkBackfillBehaviorValidationTest
     Path tempDir;
 
     @Test
-    void ensureSchemaBackfillsOperationalLinksAndQueuesUnmatchedRecords() throws Exception
+    void flywayBackfillsOperationalLinksAndQueuesUnmatchedRecordsBeforeEnsureSchema() throws Exception
     {
         Database.init(tempDir.resolve("operational-link-backfill-behavior"));
         Database database = Database.get();
 
-        migrateWithFlyway(database);
+        migrateWithFlyway(database, "17");
         seedOperationalBackfillScenario(database);
+        migrateWithFlyway(database);
 
-        database.ensureSchema();
         database.ensureSchema();
 
         assertEquals(1001, queryInt(database,
@@ -57,22 +57,25 @@ class OperationalLinkBackfillBehaviorValidationTest
               AND domain_id = 'grant-unmatched'
               AND issue_code = 'NO_MATCHED_JOURNAL_TXN'
             """));
-        assertEquals(1, queryInt(database, """
-            SELECT COUNT(*)
-            FROM schema_migration_history
-            WHERE migration_key = 'operational-link-backfill-v1'
-            """));
     }
 
     private static void migrateWithFlyway(Database database)
     {
-        Flyway.configure()
+        migrateWithFlyway(database, null);
+    }
+
+    private static void migrateWithFlyway(Database database, String targetVersion)
+    {
+        var configuration = Flyway.configure()
             .dataSource(database.getJdbcUrl(), database.getUser(), database.getPass())
             .locations("classpath:db/migration")
             .baselineOnMigrate(true)
-            .baselineVersion("0")
-            .load()
-            .migrate();
+            .baselineVersion("0");
+        if (targetVersion != null)
+        {
+            configuration.target(targetVersion);
+        }
+        configuration.load().migrate();
     }
 
     private static void seedOperationalBackfillScenario(Database database) throws SQLException
@@ -80,7 +83,6 @@ class OperationalLinkBackfillBehaviorValidationTest
         try (Connection connection = DriverManager.getConnection(database.getJdbcUrl(), database.getUser(), database.getPass());
              Statement st = connection.createStatement())
         {
-            st.execute("INSERT INTO schema_migration_history(migration_key) VALUES ('reconciled-backfill-v1')");
             st.execute("INSERT INTO account(account_number, name) VALUES ('1000', 'Cash')");
             st.execute("INSERT INTO account(account_number, name) VALUES ('4000', 'Revenue')");
             st.execute("INSERT INTO donor(external_id, name) VALUES ('donor-1', 'Matched Donor')");

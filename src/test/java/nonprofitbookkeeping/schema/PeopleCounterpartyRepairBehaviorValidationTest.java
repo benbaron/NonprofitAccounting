@@ -63,8 +63,6 @@ class PeopleCounterpartyRepairBehaviorValidationTest
         try (Connection connection = DriverManager.getConnection(database.getJdbcUrl(), database.getUser(), database.getPass());
              Statement st = connection.createStatement())
         {
-            st.execute("INSERT INTO schema_migration_history(migration_key) VALUES ('reconciled-backfill-v1')");
-            st.execute("INSERT INTO schema_migration_history(migration_key) VALUES ('operational-link-backfill-v1')");
             st.execute("INSERT INTO donor(name) VALUES ('Missing External')");
             st.execute("INSERT INTO donor(external_id, name) VALUES ('existing-id', 'Already External')");
             st.execute("INSERT INTO donor(name) VALUES ('No Name')");

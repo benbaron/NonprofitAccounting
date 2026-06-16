@@ -63,11 +63,6 @@ class ReconciledDataBackfillBehaviorValidationTest
             "SELECT COUNT(*) FROM counterparty WHERE display_name = 'Pat Donor' AND kind = 'DONOR'"));
         assertEquals(1, queryInt(database,
             "SELECT COUNT(*) FROM counterparty WHERE display_name = 'Pat Person' AND kind = 'DONOR'"));
-        assertEquals(1, queryInt(database, """
-            SELECT COUNT(*)
-            FROM schema_migration_history
-            WHERE migration_key = 'reconciled-backfill-v1'
-            """));
     }
 
     @Test
@@ -115,7 +110,6 @@ class ReconciledDataBackfillBehaviorValidationTest
         try (Connection connection = DriverManager.getConnection(database.getJdbcUrl(), database.getUser(), database.getPass());
              Statement st = connection.createStatement())
         {
-            st.execute("INSERT INTO schema_migration_history(migration_key) VALUES ('operational-link-backfill-v1')");
             st.execute("INSERT INTO account(account_number, name, increase_side) VALUES ('1000', 'Cash', 'DEBIT')");
             st.execute("INSERT INTO account(account_number, name, increase_side) VALUES ('4000', 'Revenue', 'CREDIT')");
             st.execute("INSERT INTO donor(external_id, name, email, phone) VALUES ('donor-1', 'Pat Donor', 'pat@example.org', '555-0100')");
