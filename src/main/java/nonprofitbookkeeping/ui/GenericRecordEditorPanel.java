@@ -212,6 +212,18 @@ public class GenericRecordEditorPanel implements AppPanel
         status.setText("Added new unsaved row. Press Save to persist.");
     }
 
+    @Override
+    public void onDelete()
+    {
+        onDeleteSelected();
+    }
+
+    @Override
+    public void onCancel()
+    {
+        loadFromService();
+    }
+
     private void onDeleteSelected()
     {
         Map<String, Object> selected = table.getSelectionModel().getSelectedItem();

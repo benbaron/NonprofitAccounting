@@ -26,8 +26,10 @@ public class AssetsRegisterPanel implements AppPanel
 		title.getStyleClass().add("panel-title");
 		
 		Button add = new Button("+ Add Asset");
+		Button delete = new Button("Delete Selected");
 		Button save = new Button("Save");
-		HBox actions = new HBox(8, add, save);
+		Button cancel = new Button("Cancel");
+		HBox actions = new HBox(8, add, delete, save, cancel);
 		
 		root.setTop(new VBox(6, title, actions, new Separator()));
 		
@@ -55,7 +57,9 @@ public class AssetsRegisterPanel implements AppPanel
 		add.setOnAction(
 			e -> table.getItems().add(
 				new AssetRow("New Asset", "", "", "0.00", "0", "0", "0.00")));
+		delete.setOnAction(e -> onDelete());
 		save.setOnAction(e -> onSave());
+		cancel.setOnAction(e -> onCancel());
 		
 	}
 	
@@ -89,6 +93,26 @@ public class AssetsRegisterPanel implements AppPanel
 		status.setText("Saved " + table.getItems().size() +
 			" asset row(s) with inline depreciation fields");
 		
+	}
+
+	@Override
+	public void onDelete()
+	{
+		AssetRow selected = table.getSelectionModel().getSelectedItem();
+		if (selected == null)
+		{
+			status.setText("Select an asset row to delete.");
+			return;
+		}
+		table.getItems().remove(selected);
+		status.setText("Deleted selected asset row.");
+	}
+
+	@Override
+	public void onCancel()
+	{
+		table.getSelectionModel().clearSelection();
+		status.setText("Cancelled asset edit and cleared the selection.");
 	}
 	
 	public static final class AssetRow
