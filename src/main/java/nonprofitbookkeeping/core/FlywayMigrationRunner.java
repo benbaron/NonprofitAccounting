@@ -1,6 +1,7 @@
 package nonprofitbookkeeping.core;
 
 import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.exception.FlywayValidateException;
 
 import java.sql.SQLException;
 import java.util.Set;
@@ -48,19 +49,42 @@ public final class FlywayMigrationRunner
 
         try
         {
-            Flyway.configure()
-                .dataSource(jdbcUrl, user, password)
-                .locations("classpath:db/migration")
-                .baselineOnMigrate(true)
-                .baselineVersion("0")
-                .load()
-                .migrate();
+            Flyway flyway = configuredFlyway(jdbcUrl, user, password);
+            try
+            {
+                flyway.migrate();
+            }
+            catch (FlywayValidateException ex)
+            {
+                if (!hasFailedMigration(ex))
+                {
+                    throw ex;
+                }
+                flyway.repair();
+                flyway.migrate();
+            }
         }
         catch (RuntimeException ex)
         {
             MIGRATED_URLS.remove(jdbcUrl);
             throw new SQLException("Flyway migration failed for " + jdbcUrl, ex);
         }
+    }
+
+    private static Flyway configuredFlyway(String jdbcUrl, String user, String password)
+    {
+        return Flyway.configure()
+            .dataSource(jdbcUrl, user, password)
+            .locations("classpath:db/migration")
+            .baselineOnMigrate(true)
+            .baselineVersion("0")
+            .load();
+    }
+
+    private static boolean hasFailedMigration(FlywayValidateException ex)
+    {
+        String message = ex.getMessage();
+        return message != null && message.contains("Detected failed migration");
     }
 
     static void resetForTest()
