@@ -21,15 +21,15 @@ class OperationalLinkBackfillBehaviorValidationTest
     Path tempDir;
 
     @Test
-    void ensureSchemaBackfillsOperationalLinksAndQueuesUnmatchedRecords() throws Exception
+    void flywayBackfillsOperationalLinksAndQueuesUnmatchedRecordsBeforeEnsureSchema() throws Exception
     {
         Database.init(tempDir.resolve("operational-link-backfill-behavior"));
         Database database = Database.get();
 
-        migrateWithFlyway(database);
+        migrateWithFlyway(database, "17");
         seedOperationalBackfillScenario(database);
+        migrateWithFlyway(database);
 
-        database.ensureSchema();
         database.ensureSchema();
 
         assertEquals(1001, queryInt(database,
@@ -61,13 +61,21 @@ class OperationalLinkBackfillBehaviorValidationTest
 
     private static void migrateWithFlyway(Database database)
     {
-        Flyway.configure()
+        migrateWithFlyway(database, null);
+    }
+
+    private static void migrateWithFlyway(Database database, String targetVersion)
+    {
+        var configuration = Flyway.configure()
             .dataSource(database.getJdbcUrl(), database.getUser(), database.getPass())
             .locations("classpath:db/migration")
             .baselineOnMigrate(true)
-            .baselineVersion("0")
-            .load()
-            .migrate();
+            .baselineVersion("0");
+        if (targetVersion != null)
+        {
+            configuration.target(targetVersion);
+        }
+        configuration.load().migrate();
     }
 
     private static void seedOperationalBackfillScenario(Database database) throws SQLException

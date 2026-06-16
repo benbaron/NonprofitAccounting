@@ -9,13 +9,10 @@ final class DatabaseCompatibilityBackfills
         new LegacyTransactionMapCompatibilityBackfill();
     private final ReconciledDataCompatibilityBackfill reconciledDataBackfill =
         new ReconciledDataCompatibilityBackfill();
-    private final OperationalLinkCompatibilityBackfill operationalLinkBackfill =
-        new OperationalLinkCompatibilityBackfill();
 
     void run(Connection c) throws SQLException
     {
         legacyTransactionMapBackfill.run(c);
         reconciledDataBackfill.run(c);
-        operationalLinkBackfill.run(c);
     }
 }
