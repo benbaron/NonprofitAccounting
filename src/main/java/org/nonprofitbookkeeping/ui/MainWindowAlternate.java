@@ -37,8 +37,6 @@ import nonprofitbookkeeping.ui.panels.LedgerReconcilePanelFX;
 import nonprofitbookkeeping.service.ReconciliationService;
 import nonprofitbookkeeping.service.UndepositedFundsService;
 import nonprofitbookkeeping.service.DocumentStorageService;
-import nonprofitbookkeeping.model.Company;
-import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.ui.panels.UndepositedFundsPanelFX;
 import nonprofitbookkeeping.ui.panels.DocumentsPanelFX;
 import nonprofitbookkeeping.ui.panels.DonorsPanelFX;
@@ -94,7 +92,8 @@ public class MainWindowAlternate extends BorderPane
     private final TitledPane importToolsPane = new TitledPane();
     private final WorkspaceRouter workspaceRouter = new WorkspaceRouter();
     private final BankingPanelFactory bankingPanelFactory;
-    private final AlternateDataContextService contextService = new AlternateDataContextService();
+    private final AlternateDataContextService contextService;
+    private final UiSessionContext sessionContext;
     private final Label headerTitle = new Label("Dashboard");
     private final Label headerSubtitle = new Label("No company open");
     private final AlternateNavigationModel navigationModel = new AlternateNavigationModel();
@@ -139,7 +138,19 @@ public class MainWindowAlternate extends BorderPane
 
     MainWindowAlternate(BankingPanelFactory bankingPanelFactory)
     {
+        this(bankingPanelFactory, new AlternateDataContextService());
+    }
+
+    MainWindowAlternate(BankingPanelFactory bankingPanelFactory, AlternateDataContextService contextService)
+    {
         this.bankingPanelFactory = bankingPanelFactory;
+        this.contextService = contextService;
+        this.sessionContext = contextService.sessionContext();
+        this.sessionContext.companyOpenProperty().addListener((obs, oldValue, newValue) -> {
+            refreshIconBarState();
+            rebuildNavigationButtons();
+        });
+        this.sessionContext.databaseOpenProperty().addListener((obs, oldValue, newValue) -> rebuildNavigationButtons());
         setTop(buildHeader());
         setCenter(buildWorkspace());
         setLeft(buildIconRail());
@@ -176,6 +187,7 @@ public class MainWindowAlternate extends BorderPane
     {
         this.headerTitle.setStyle("-fx-font-size: 22px; -fx-font-weight: 700;");
         this.headerSubtitle.setStyle("-fx-text-fill: #5c6482;");
+        this.headerSubtitle.textProperty().bind(this.sessionContext.activeCompanyDisplayLabelProperty());
 
         VBox heading = new VBox(2, this.headerTitle, this.headerSubtitle);
         Region spacer = new Region();
@@ -948,7 +960,7 @@ public class MainWindowAlternate extends BorderPane
 
     private void refreshIconBarState()
     {
-        boolean companyLoaded = this.contextService.isCompanyOpen();
+        boolean companyLoaded = this.sessionContext.isCompanyOpen();
         for (Button iconButton : this.iconRailButtons)
         {
             iconButton.setDisable(!companyLoaded);
@@ -959,8 +971,8 @@ public class MainWindowAlternate extends BorderPane
     private void rebuildNavigationButtons()
     {
         this.navButtons.getChildren().clear();
-        boolean databaseOpen = this.contextService.isDatabaseOpen();
-        boolean companyOpen = this.contextService.isCompanyOpen();
+        boolean databaseOpen = this.sessionContext.isDatabaseOpen();
+        boolean companyOpen = this.sessionContext.isCompanyOpen();
 
         if (!databaseOpen)
         {
@@ -1028,18 +1040,7 @@ public class MainWindowAlternate extends BorderPane
     private void refreshHeaderLabels()
     {
         this.headerTitle.setText(panelTitle(this.activePanelId));
-        this.headerSubtitle.setText(activeCompanyName());
         refreshIconBarState();
-    }
-
-    private String activeCompanyName()
-    {
-        Company company = CurrentCompany.getCompany();
-        if (CurrentCompany.isOpen() && company != null && company.getName() != null && !company.getName().isBlank())
-        {
-            return company.getName();
-        }
-        return this.contextService.activeCompanyDisplayLabel();
     }
 
     private String panelTitle(AppPanelId panelId)
