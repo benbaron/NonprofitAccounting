@@ -14,7 +14,7 @@ public final class AlternateReportsOverviewView {
             new Label("Reports"),
             new HBox(8, new Button("General Ledger"), new Button("Trial Balance"), new Button("Balance Sheet")),
             new Label("Basis = Accrual | Filter bar placeholder"),
-            new Label("Accounts Receivable ..."));
+            new Label("No service-backed data source is wired for this panel yet."));
         root.setPadding(new Insets(12));
         return root;
     }

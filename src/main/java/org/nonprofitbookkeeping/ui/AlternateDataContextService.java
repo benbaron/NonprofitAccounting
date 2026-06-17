@@ -19,6 +19,7 @@ public class AlternateDataContextService
     private final CompanyRepository companyRepository;
     private final AlternateRecentsStore recentsStore;
     private final AlternateDatabaseContextSwitcher databaseContextSwitcher;
+    private final UiSessionContext sessionContext;
     private Path activeDatabaseBasePath;
     private Long activeCompanyId;
     private String activeCompanyLabel;
@@ -37,13 +38,21 @@ public class AlternateDataContextService
 
     AlternateDataContextService(CompanyRepository companyRepository, AlternateRecentsStore recentsStore, AlternateDatabaseContextSwitcher databaseContextSwitcher)
     {
+        this(companyRepository, recentsStore, databaseContextSwitcher, new UiSessionContext());
+    }
+
+    AlternateDataContextService(CompanyRepository companyRepository, AlternateRecentsStore recentsStore,
+                                AlternateDatabaseContextSwitcher databaseContextSwitcher, UiSessionContext sessionContext)
+    {
         this.companyRepository = companyRepository;
         this.recentsStore = recentsStore;
         this.databaseContextSwitcher = databaseContextSwitcher;
+        this.sessionContext = sessionContext;
         String lastPath = PreferencesManager.getLastDatabasePath();
         if (lastPath != null && !lastPath.isBlank())
         {
             this.activeDatabaseBasePath = normalizeH2Base(Path.of(lastPath)).toAbsolutePath().normalize();
+            this.sessionContext.openDatabase(this.activeDatabaseBasePath);
         }
     }
 
@@ -59,13 +68,29 @@ public class AlternateDataContextService
         this.activeDatabaseBasePath = databasePath == null
             ? null
             : normalizeH2Base(databasePath).toAbsolutePath().normalize();
+        if (this.activeDatabaseBasePath == null)
+        {
+            this.sessionContext.clearDatabase();
+        }
+        else
+        {
+            this.sessionContext.openDatabase(this.activeDatabaseBasePath);
+        }
+        this.activeCompanyId = null;
+        this.activeCompanyLabel = null;
     }
 
     public void clearActiveCompanyContext()
     {
         activeCompanyId = null;
         activeCompanyLabel = null;
+        sessionContext.clearCompany();
         PreferencesService.setLastUsedCompanyId(null);
+    }
+
+    public UiSessionContext sessionContext()
+    {
+        return sessionContext;
     }
 
     public Path activeDatabaseBasePath()
@@ -85,17 +110,17 @@ public class AlternateDataContextService
 
     public boolean isDatabaseOpen()
     {
-        return activeDatabaseBasePath != null;
+        return sessionContext.isDatabaseOpen();
     }
 
     public boolean isCompanyOpen()
     {
-        return activeCompanyId != null;
+        return sessionContext.isCompanyOpen();
     }
 
     public String activeCompanyDisplayLabel()
     {
-        return activeCompanyLabel == null || activeCompanyLabel.isBlank() ? "No company open" : activeCompanyLabel;
+        return sessionContext.activeCompanyDisplayLabel();
     }
 
     public List<CompanyRecord> listCompanies() throws SQLException
@@ -144,6 +169,7 @@ public class AlternateDataContextService
     {
         activeCompanyId = companyId;
         activeCompanyLabel = companyLabel;
+        sessionContext.openCompany(companyId, companyLabel);
         PreferencesService.setLastUsedCompanyId(companyId);
         recentsStore.rememberCompany(activeDatabaseBasePath, companyId, companyLabel);
     }

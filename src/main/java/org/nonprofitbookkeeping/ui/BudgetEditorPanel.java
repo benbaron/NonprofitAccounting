@@ -19,9 +19,11 @@ import java.sql.SQLException;
  */
 public class BudgetEditorPanel implements AppPanel
 {
+    static final String NO_SERVICE_DATA_MESSAGE = "No service-backed data source is wired for this panel yet.";
+
     private final BorderPane root = new BorderPane();
     private final TableView<BudgetRow> table = new TableView<>();
-    private final Label status = new Label("Ready");
+    private final Label status = new Label(NO_SERVICE_DATA_MESSAGE);
     private final ObservableList<String> fundChoices = FXCollections.observableArrayList();
 
     public BudgetEditorPanel()
@@ -45,16 +47,13 @@ public class BudgetEditorPanel implements AppPanel
         table.getColumns().add(fundCol());
         table.getColumns().add(col("Period", BudgetRow::period));
         table.getColumns().add(col("Budget Amount", BudgetRow::amount));
-        table.getItems().addAll(
-            new BudgetRow("Program Supplies", defaultFundChoice(), "2026-Q1", "3500.00"),
-            new BudgetRow("Office Rent", defaultFundChoice(), "2026-Q1", "4800.00")
-        );
+        table.setPlaceholder(new Label(NO_SERVICE_DATA_MESSAGE));
         root.setCenter(table);
         root.setBottom(new VBox(new Separator(), status));
 
         add.setOnAction(e -> {
             refreshFundChoices();
-            table.getItems().add(new BudgetRow("", defaultFundChoice(), "", "0.00"));
+            status.setText(NO_SERVICE_DATA_MESSAGE);
         });
         delete.setOnAction(e -> onDelete());
         save.setOnAction(e -> onSave());
@@ -102,7 +101,7 @@ public class BudgetEditorPanel implements AppPanel
 
     @Override public void onSave()
     {
-        status.setText("Saved " + table.getItems().size() + " budget row(s)");
+        status.setText(NO_SERVICE_DATA_MESSAGE);
     }
 
     @Override public void onDelete()

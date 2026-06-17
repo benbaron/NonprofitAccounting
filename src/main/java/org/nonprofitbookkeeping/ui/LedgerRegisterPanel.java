@@ -14,8 +14,11 @@ import javafx.scene.layout.VBox;
  */
 public class LedgerRegisterPanel implements AppPanel
 {
+    static final String NO_SERVICE_DATA_MESSAGE = "No service-backed data source is wired for this panel yet.";
+
     private final BorderPane root = new BorderPane();
     private final TableView<Row> txnTable = new TableView<>();
+    private final Label status = new Label(NO_SERVICE_DATA_MESSAGE);
 
     public LedgerRegisterPanel()
     {
@@ -30,10 +33,11 @@ public class LedgerRegisterPanel implements AppPanel
         Button refresh = new Button("Refresh");
         HBox actions = new HBox(8, refresh);
 
-        VBox header = new VBox(6, title, range, actions, new Separator());
+        VBox header = new VBox(6, title, range, actions, status, new Separator());
         root.setTop(header);
 
         buildTable();
+        txnTable.setPlaceholder(new Label(NO_SERVICE_DATA_MESSAGE));
         root.setCenter(txnTable);
 
         txnTable.setRowFactory(tv -> {
@@ -56,11 +60,8 @@ public class LedgerRegisterPanel implements AppPanel
         });
 
         refresh.setOnAction(e -> {
-            // sample data panel remains static; no editor navigation.
+            status.setText(NO_SERVICE_DATA_MESSAGE);
         });
-
-        txnTable.getItems().addAll(new Row("2026-01-05", "Payee A", "Memo A", "Cash/Bank", "Posted"),
-            new Row("2026-01-12", "Payee B", "Memo B", "Cash/Bank", "Posted"));
     }
 
     private void buildTable()
