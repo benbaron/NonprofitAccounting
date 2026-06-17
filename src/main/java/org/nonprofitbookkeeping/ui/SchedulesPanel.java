@@ -1,7 +1,6 @@
 package org.nonprofitbookkeeping.ui;
 
 import org.nonprofitbookkeeping.model.Account;
-import org.nonprofitbookkeeping.model.AccountSubtype;
 import org.nonprofitbookkeeping.service.AccountLookupService;
 import org.nonprofitbookkeeping.service.ScheduleEligibilityService;
 
@@ -26,6 +25,7 @@ import java.util.Set;
 public class SchedulesPanel implements AppPanel
 {
     private final BorderPane root = new BorderPane();
+    static final String NO_SERVICE_DATA_MESSAGE = "No service-backed data source is wired for this panel yet.";
 
     private final ComboBox<Account> accountSelect = new ComboBox<>();
     private final TabPane tabs = new TabPane();
@@ -123,9 +123,9 @@ public class SchedulesPanel implements AppPanel
                     accountSelect.getSelectionModel().select(0);
                     return;
                 }
-                loadFallbackAccounts("seed data unavailable");
+                showNoAccountsMessage("No service-backed accounts are available.");
             },
-            ex -> loadFallbackAccounts("lookup failed: " + UiErrors.safeMessage(ex)));
+            ex -> showNoAccountsMessage("Unable to load accounts: " + UiErrors.safeMessage(ex)));
     }
 
     private List<Account> loadDbAccounts()
@@ -134,28 +134,11 @@ public class SchedulesPanel implements AppPanel
         return lookup.listActivePostingAccounts();
     }
 
-    private void loadFallbackAccounts(String reason)
+    private void showNoAccountsMessage(String message)
     {
-        accountSelect.getItems().setAll(
-            demoAccount("I.c", "Receivables", AccountSubtype.RECEIVABLE),
-            demoAccount("II.b", "Payables", AccountSubtype.PAYABLE),
-            demoAccount("I.i", "Prepaid Expenses", AccountSubtype.PREPAID),
-            demoAccount("II.c", "Other Liabilities", AccountSubtype.OTHER_LIABILITY),
-            demoAccount("I.a", "Checking / Cash", AccountSubtype.CASH)
-        );
-        accountSelect.getSelectionModel().select(0);
-        status.setText("Using fallback demo accounts (" + reason + ").");
-    }
-
-    private Account demoAccount(String code, String name, AccountSubtype subtype)
-    {
-        Account a = new Account();
-        a.setCode(code);
-        a.setName(name);
-        a.setSubtype(subtype);
-        a.setActive(true);
-        a.setPosting(true);
-        return a;
+        accountSelect.getItems().clear();
+        accountSelect.getSelectionModel().clearSelection();
+        status.setText(message + " " + NO_SERVICE_DATA_MESSAGE);
     }
 
     private void applyGating(Account account)

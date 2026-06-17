@@ -15,9 +15,12 @@ import javafx.scene.layout.VBox;
  */
 public class AssetsRegisterPanel implements AppPanel
 {
+	static final String NO_SERVICE_DATA_MESSAGE =
+		"No service-backed data source is wired for this panel yet.";
+
 	private final BorderPane root = new BorderPane();
 	private final TableView<AssetRow> table = new TableView<>();
-	private final Label status = new Label("Ready");
+	private final Label status = new Label(NO_SERVICE_DATA_MESSAGE);
 	
 	public AssetsRegisterPanel()
 	{
@@ -45,18 +48,13 @@ public class AssetsRegisterPanel implements AppPanel
 		table.getColumns()
 			.add(col("Useful Life (yrs)", AssetRow::usefulLifeYearsProperty));
 		table.getColumns().add(col("Book Value", AssetRow::bookValueProperty));
-		table.getItems().addAll(
-			new AssetRow("Laptop Fleet", "Equipment", "2025-03-01", "4500.00",
-				"20", "5", "3600.00"),
-			new AssetRow("Office Furniture", "Furniture", "2024-05-15",
-				"2800.00", "10", "10", "2400.00"));
+		table.setPlaceholder(new Label(NO_SERVICE_DATA_MESSAGE));
 		
 		root.setCenter(table);
 		root.setBottom(new VBox(new Separator(), status));
 		
 		add.setOnAction(
-			e -> table.getItems().add(
-				new AssetRow("New Asset", "", "", "0.00", "0", "0", "0.00")));
+			e -> status.setText(NO_SERVICE_DATA_MESSAGE));
 		delete.setOnAction(e -> onDelete());
 		save.setOnAction(e -> onSave());
 		cancel.setOnAction(e -> onCancel());
@@ -90,8 +88,7 @@ public class AssetsRegisterPanel implements AppPanel
 	@Override
 	public void onSave()
 	{
-		status.setText("Saved " + table.getItems().size() +
-			" asset row(s) with inline depreciation fields");
+		status.setText(NO_SERVICE_DATA_MESSAGE);
 		
 	}
 

@@ -4,10 +4,6 @@ import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.chart.AreaChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
@@ -259,9 +255,9 @@ public class MainWindowAlternate extends BorderPane
         GridPane grid = new GridPane();
         grid.setHgap(12);
         grid.setVgap(12);
-        grid.add(buildCard("Receivables", "$11,230", "+8.2%"), 0, 0);
-        grid.add(buildCard("Payables", "$5,830", "-1.1%"), 1, 0);
-        grid.add(buildCard("Profit & Loss", "$23,009", "+14.5%"), 2, 0);
+        grid.add(buildCard("Receivables", "No data", "No service-backed data source is wired for this panel yet."), 0, 0);
+        grid.add(buildCard("Payables", "No data", "No service-backed data source is wired for this panel yet."), 1, 0);
+        grid.add(buildCard("Profit & Loss", "No data", "No service-backed data source is wired for this panel yet."), 2, 0);
         grid.add(buildChartCard(), 0, 1, 2, 1);
         grid.add(buildBalancesCard(), 2, 1);
         return new ScrollPane(grid);
@@ -282,18 +278,8 @@ public class MainWindowAlternate extends BorderPane
 
     private VBox buildChartCard()
     {
-        CategoryAxis xAxis = new CategoryAxis();
-        NumberAxis yAxis = new NumberAxis();
-        AreaChart<String, Number> chart = new AreaChart<>(xAxis, yAxis);
-        chart.setLegendVisible(false);
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.getData().add(new XYChart.Data<>("Jan", 9));
-        series.getData().add(new XYChart.Data<>("Feb", 12));
-        series.getData().add(new XYChart.Data<>("Mar", 11));
-        series.getData().add(new XYChart.Data<>("Apr", 15));
-        chart.getData().add(series);
-
-        VBox box = new VBox(8, new Label("Cash Flow"), chart);
+        VBox box = new VBox(8, new Label("Cash Flow"),
+            new Label("No service-backed data source is wired for this panel yet."));
         box.setPadding(new Insets(12));
         box.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
         return box;
@@ -302,10 +288,7 @@ public class MainWindowAlternate extends BorderPane
     private VBox buildBalancesCard()
     {
         VBox list = new VBox(6,
-            new Label("Operating  ·  $12,004"),
-            new Label("Payroll      ·  $3,420"),
-            new Label("Savings      ·  $7,230"),
-            new Label("Undeposited  ·  $980"));
+            new Label("No service-backed data source is wired for this panel yet."));
         VBox box = new VBox(8, new Label("Account Balances"), new Separator(), list);
         box.setPadding(new Insets(12));
         box.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
