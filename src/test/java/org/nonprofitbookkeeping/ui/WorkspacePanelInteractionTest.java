@@ -2,6 +2,7 @@ package org.nonprofitbookkeeping.ui;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.CountDownLatch;
@@ -19,6 +20,7 @@ import javafx.scene.control.TreeTableView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.nonprofitbookkeeping.ui.alternate.AlternateManualJournalView;
 
 class WorkspacePanelInteractionTest
 {
@@ -118,6 +120,62 @@ class WorkspacePanelInteractionTest
             HBox actions = assertInstanceOf(HBox.class, top.getChildren().get(2));
             assertEquals(1, actions.getChildren().size());
         });
+    }
+
+    @Test
+    void alternateManualJournalViewDoesNotRenderDemoOpeningBalance() throws Exception
+    {
+        runOnFxThread(() -> {
+            VBox root = assertInstanceOf(VBox.class, AlternateManualJournalView.build());
+
+            String renderedText = root.getChildren().stream()
+                .filter(Label.class::isInstance)
+                .map(Label.class::cast)
+                .map(Label::getText)
+                .reduce("", (left, right) -> left + "\n" + right);
+
+            assertTrue(renderedText.contains(AlternateManualJournalView.NO_SERVICE_DATA_MESSAGE));
+            assertFalse(renderedText.contains("MJE-00014"));
+            assertFalse(renderedText.contains("$125.00"));
+            assertFalse(renderedText.contains("opening balance"));
+        });
+    }
+
+    @Test
+    void mainWindowAlternateDashboardUsesEmptyStatesInsteadOfDemoValues() throws Exception
+    {
+        runOnFxThread(() -> {
+            MainWindowAlternate window = new MainWindowAlternate();
+
+            String renderedText = collectLabels(window);
+
+            assertTrue(renderedText.contains(MainWindowAlternate.NO_SERVICE_DATA_MESSAGE));
+            assertFalse(renderedText.contains("$"));
+            assertFalse(renderedText.contains("Role: Accountant"));
+            assertFalse(renderedText.contains("Signed in user"));
+        });
+    }
+
+    private static String collectLabels(javafx.scene.Parent parent)
+    {
+        StringBuilder text = new StringBuilder();
+        if (parent instanceof javafx.scene.control.ScrollPane scrollPane
+            && scrollPane.getContent() instanceof javafx.scene.Parent content)
+        {
+            text.append(collectLabels(content));
+        }
+        for (javafx.scene.Node child : parent.getChildrenUnmodifiable())
+        {
+            if (child instanceof Label label)
+            {
+                text.append(label.getText()).append('\n');
+            }
+            if (child instanceof javafx.scene.Parent childParent)
+            {
+                text.append(collectLabels(childParent));
+            }
+        }
+        return text.toString();
     }
 
     private static void runOnFxThread(FxRunnable runnable) throws Exception

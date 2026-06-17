@@ -57,7 +57,7 @@ public class ChartOfAccountsPanel implements AppPanel
         subtype.setCellValueFactory(v -> new SimpleStringProperty(String.valueOf(v.getValue().getSubtype())));
 
         this.table.getColumns().addAll(code, name, type, subtype);
-        this.table.setPlaceholder(new Label("No accounts found. Run the seed command to create starter data."));
+        this.table.setPlaceholder(new Label("No service-backed accounts are available for the active context."));
         this.root.setCenter(this.table);
 
         reload();

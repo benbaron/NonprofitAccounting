@@ -69,6 +69,8 @@ import org.nonprofitbookkeeping.ui.routing.WorkspaceRouter;
 public class MainWindowAlternate extends BorderPane
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(MainWindowAlternate.class);
+    static final String NO_SERVICE_DATA_MESSAGE =
+        "No service-backed data source is wired for this panel yet.";
     private static final Map<String, Color> SURFACE_COLORS = Map.of(
         "Slate", Color.web("#eef1f8"),
         "Warm", Color.web("#f7f2ee"),
@@ -267,9 +269,9 @@ public class MainWindowAlternate extends BorderPane
         GridPane grid = new GridPane();
         grid.setHgap(12);
         grid.setVgap(12);
-        grid.add(buildCard("Receivables", "No data", "No service-backed data source is wired for this panel yet."), 0, 0);
-        grid.add(buildCard("Payables", "No data", "No service-backed data source is wired for this panel yet."), 1, 0);
-        grid.add(buildCard("Profit & Loss", "No data", "No service-backed data source is wired for this panel yet."), 2, 0);
+        grid.add(buildCard("Receivables", "No data", NO_SERVICE_DATA_MESSAGE), 0, 0);
+        grid.add(buildCard("Payables", "No data", NO_SERVICE_DATA_MESSAGE), 1, 0);
+        grid.add(buildCard("Profit & Loss", "No data", NO_SERVICE_DATA_MESSAGE), 2, 0);
         grid.add(buildChartCard(), 0, 1, 2, 1);
         grid.add(buildBalancesCard(), 2, 1);
         return new ScrollPane(grid);
@@ -291,7 +293,7 @@ public class MainWindowAlternate extends BorderPane
     private VBox buildChartCard()
     {
         VBox box = new VBox(8, new Label("Cash Flow"),
-            new Label("No service-backed data source is wired for this panel yet."));
+            new Label(NO_SERVICE_DATA_MESSAGE));
         box.setPadding(new Insets(12));
         box.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
         return box;
@@ -300,7 +302,7 @@ public class MainWindowAlternate extends BorderPane
     private VBox buildBalancesCard()
     {
         VBox list = new VBox(6,
-            new Label("No service-backed data source is wired for this panel yet."));
+            new Label(NO_SERVICE_DATA_MESSAGE));
         VBox box = new VBox(8, new Label("Account Balances"), new Separator(), list);
         box.setPadding(new Insets(12));
         box.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
@@ -331,7 +333,7 @@ public class MainWindowAlternate extends BorderPane
             new Label("Status"),
             this.alternateStatus,
             new Separator(),
-            new Label("Custom Fields / Localization / Expenses / Bank placeholders added in alternate templates."));
+            new Label("Custom fields, localization, expenses, and bank settings are not wired yet."));
         this.alternateSettingsPane.setSpacing(8);
         this.alternateSettingsPane.setPadding(new Insets(12));
         this.alternateSettingsPane.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
@@ -492,8 +494,8 @@ public class MainWindowAlternate extends BorderPane
         this.profilePane.getChildren().setAll(
             title,
             new Separator(),
-            new Label("Signed in user"),
-            new Label("Role: Accountant"),
+            new Label("No signed-in user service is wired yet."),
+            new Label("No role or permissions service is wired yet."),
             new Label("Preferences and account details will be wired in a later phase."));
         this.profilePane.setPadding(new Insets(12));
         this.profilePane.setSpacing(10);
