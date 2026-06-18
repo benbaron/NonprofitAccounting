@@ -4,6 +4,8 @@ import java.nio.file.Path;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.binding.ObjectBinding;
+import javafx.beans.binding.StringBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
@@ -23,6 +25,13 @@ import nonprofitbookkeeping.model.CurrentCompany;
  */
 public class UiSessionContext
 {
+    public enum SessionState
+    {
+        NO_DATABASE,
+        DATABASE_OPEN_NO_COMPANY,
+        COMPANY_OPEN
+    }
+
     private final ObjectProperty<Path> activeDatabaseBasePath = new SimpleObjectProperty<>();
     private final ObjectProperty<Long> activeCompanyId = new SimpleObjectProperty<>();
     private final StringProperty activeCompanyDisplayLabel = new SimpleStringProperty("No company open");
@@ -30,7 +39,11 @@ public class UiSessionContext
     private final BooleanProperty populatedCompany = new SimpleBooleanProperty(false);
     private final BooleanProperty newlyCreatedCompany = new SimpleBooleanProperty(false);
     private final BooleanBinding databaseOpen = Bindings.isNotNull(activeDatabaseBasePath);
-    private final BooleanBinding companyOpen = Bindings.isNotNull(activeCompanyId);
+    private final BooleanBinding companyOpen = databaseOpen.and(Bindings.isNotNull(activeCompanyId));
+    private final ObjectBinding<SessionState> sessionState = Bindings.createObjectBinding(this::calculateSessionState,
+        activeDatabaseBasePath, activeCompanyId);
+    private final StringBinding sessionDisplayLabel = Bindings.createStringBinding(this::calculateSessionDisplayLabel,
+        activeDatabaseBasePath, activeCompanyId, activeCompanyDisplayLabel);
 
     public ObjectProperty<Path> activeDatabaseBasePathProperty()
     {
@@ -80,6 +93,26 @@ public class UiSessionContext
     public boolean isCompanyOpen()
     {
         return companyOpen.get();
+    }
+
+    public ObjectBinding<SessionState> sessionStateProperty()
+    {
+        return sessionState;
+    }
+
+    public SessionState sessionState()
+    {
+        return sessionState.get();
+    }
+
+    public StringBinding sessionDisplayLabelProperty()
+    {
+        return sessionDisplayLabel;
+    }
+
+    public String sessionDisplayLabel()
+    {
+        return sessionDisplayLabel.get();
     }
 
     public BooleanProperty sampleCompanyProperty()
@@ -160,6 +193,25 @@ public class UiSessionContext
             activeCompanyId.set(CurrentCompany.getCurrentCompanyId());
             activeCompanyDisplayLabel.set(normalizeDisplayLabel(company.getName()));
         }
+    }
+
+    private SessionState calculateSessionState()
+    {
+        if (activeDatabaseBasePath.get() == null)
+        {
+            return SessionState.NO_DATABASE;
+        }
+        return activeCompanyId.get() == null ? SessionState.DATABASE_OPEN_NO_COMPANY : SessionState.COMPANY_OPEN;
+    }
+
+    private String calculateSessionDisplayLabel()
+    {
+        return switch (calculateSessionState())
+        {
+            case NO_DATABASE -> "No database open";
+            case DATABASE_OPEN_NO_COMPANY -> "Database open — no company open";
+            case COMPANY_OPEN -> activeCompanyDisplayLabel();
+        };
     }
 
     private void applyMetadata(CompanyMetadata metadata)
