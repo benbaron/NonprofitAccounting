@@ -2,12 +2,9 @@ package org.nonprofitbookkeeping.ui;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 
 /**
  * Represents the LedgerRegisterPanel component in the nonprofit bookkeeping application.
@@ -16,29 +13,28 @@ public class LedgerRegisterPanel implements AppPanel
 {
     static final String NO_SERVICE_DATA_MESSAGE = "No service-backed data source is wired for this panel yet.";
 
-    private final BorderPane root = new BorderPane();
+    private final AlternatePanelScaffold root = new AlternatePanelScaffold("Ledger Register");
     private final TableView<Row> txnTable = new TableView<>();
     private final Label status = new Label(NO_SERVICE_DATA_MESSAGE);
 
     public LedgerRegisterPanel()
     {
-        root.setPadding(new Insets(8));
-
-        Label title = new Label("Ledger Register");
         Label range = new Label();
         range.textProperty().bind(Bindings.createStringBinding(() -> "Date Range: " + DateRangeContext.get(),
             DateRangeContext.selectedProperty()));
-        title.getStyleClass().add("panel-title");
+        range.getStyleClass().add("alternate-panel-subtitle");
 
         Button refresh = new Button("Refresh");
-        HBox actions = new HBox(8, refresh);
-
-        VBox header = new VBox(6, title, range, actions, status, new Separator());
-        root.setTop(header);
+        HBox filterBar = new HBox(8, range);
+        root.setSubtitle("Read-only ledger view for the selected date range.");
+        root.setSecondaryActions(java.util.List.of(refresh));
+        root.setFilterBar(filterBar);
+        root.setFooter(status);
 
         buildTable();
         txnTable.setPlaceholder(new Label(NO_SERVICE_DATA_MESSAGE));
-        root.setCenter(txnTable);
+        root.setContent(txnTable);
+        root.showEmpty(NO_SERVICE_DATA_MESSAGE);
 
         txnTable.setRowFactory(tv -> {
             TableRow<Row> r = new TableRow<>();
@@ -61,6 +57,7 @@ public class LedgerRegisterPanel implements AppPanel
 
         refresh.setOnAction(e -> {
             status.setText(NO_SERVICE_DATA_MESSAGE);
+            root.showEmpty(NO_SERVICE_DATA_MESSAGE);
         });
     }
 

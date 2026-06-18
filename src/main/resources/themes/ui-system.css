@@ -266,3 +266,52 @@
 .tab-readonly {
     -fx-background-color: -npbk-surface-muted;
 }
+
+.alternate-panel-scaffold {
+    -fx-padding: 12;
+    -fx-background-color: -npbk-surface-default;
+}
+
+.alternate-panel-header {
+    -fx-padding: 0 0 10 0;
+    -fx-border-color: transparent transparent -npbk-border-default transparent;
+}
+
+.alternate-panel-title {
+    -fx-font-size: 18;
+    -fx-font-weight: bold;
+    -fx-text-fill: -npbk-text-default;
+}
+
+.alternate-panel-subtitle,
+.alternate-panel-footer {
+    -fx-text-fill: -npbk-text-muted;
+}
+
+.alternate-panel-actions,
+.alternate-panel-filter-bar {
+    -fx-alignment: center-left;
+}
+
+.alternate-panel-filter-bar {
+    -fx-padding: 6 0 0 0;
+}
+
+.alternate-panel-content {
+    -fx-padding: 10 0 8 0;
+}
+
+.alternate-panel-state {
+    -fx-padding: 24;
+    -fx-text-alignment: center;
+    -fx-text-fill: -npbk-text-muted;
+}
+
+.alternate-panel-error-state {
+    -fx-text-fill: -npbk-validation-error;
+}
+
+.alternate-panel-banner {
+    -fx-padding: 8 10 8 10;
+    -fx-background-radius: 6;
+}
