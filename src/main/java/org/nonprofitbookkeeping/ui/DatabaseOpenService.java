@@ -17,14 +17,14 @@ import java.sql.SQLException;
  * legacy compatibility/backfill path through {@link Database#ensureSchema()}.
  * Keeping this in one service prevents the two UI interfaces from drifting.</p>
  */
-final class DatabaseOpenService
+public final class DatabaseOpenService
 {
     private DatabaseOpenService()
     {
         // utility class
     }
 
-    static OpenResult openDatabase(Path basePath) throws Exception
+    public static OpenResult openDatabase(Path basePath) throws Exception
     {
         Database.init(basePath);
         H2SchemaMigrator.RepairResult repairResult = null;
@@ -45,9 +45,9 @@ final class DatabaseOpenService
         return new OpenResult(basePath, repairResult);
     }
 
-    record OpenResult(Path basePath, H2SchemaMigrator.RepairResult repairResult)
+    public record OpenResult(Path basePath, H2SchemaMigrator.RepairResult repairResult)
     {
-        String successMessage()
+        public String successMessage()
         {
             String message = "Database ready: " + basePath.toAbsolutePath();
             if (repairResult != null && !repairResult.backupFiles().isEmpty())
