@@ -17,6 +17,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TitledPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -157,6 +158,7 @@ public class MainWindowAlternate extends BorderPane
         setCenter(buildWorkspace());
         setLeft(buildIconRail());
         setPadding(new Insets(10));
+        getStyleClass().add("alternate-shell-root");
         setBackground(new Background(new BackgroundFill(SURFACE_COLORS.get("Slate"), CornerRadii.EMPTY, Insets.EMPTY)));
         openPanel(AppPanelId.DASHBOARD);
     }
@@ -164,31 +166,33 @@ public class MainWindowAlternate extends BorderPane
     private Node buildIconRail()
     {
         this.iconRailButtons.clear();
-        this.iconRailButtons.add(iconButton("◉", this::openProfilePage));
-        this.iconRailButtons.add(iconButton("⌂", () -> openPanel(AppPanelId.DASHBOARD)));
-        this.iconRailButtons.add(iconButton("⌕", this::openSearchPage));
-        this.iconRailButtons.add(iconButton("☰", this::openCommandCenter));
-        this.iconRailButtons.add(iconButton("⚙", () -> openPanel(AppPanelId.SETTINGS)));
+        this.iconRailButtons.add(iconButton("◉", "Profile", this::openProfilePage));
+        this.iconRailButtons.add(iconButton("⌂", "Dashboard", () -> openPanel(AppPanelId.DASHBOARD)));
+        this.iconRailButtons.add(iconButton("⌕", "Search", this::openSearchPage));
+        this.iconRailButtons.add(iconButton("☰", "Command Center", this::openCommandCenter));
+        this.iconRailButtons.add(iconButton("⚙", "Settings", () -> openPanel(AppPanelId.SETTINGS)));
         VBox rail = new VBox(14, this.iconRailButtons.toArray(Button[]::new));
         rail.setPadding(new Insets(14, 8, 14, 8));
-        rail.setStyle("-fx-background-color: #1f2431; -fx-background-radius: 14;");
+        rail.getStyleClass().add("alternate-icon-rail");
         refreshIconBarState();
         return rail;
     }
 
-    private Button iconButton(String text, Runnable action)
+    private Button iconButton(String text, String label, Runnable action)
     {
         Button button = new Button(text);
         button.setMinSize(46, 46);
         button.setOnAction(e -> action.run());
-        button.setStyle("-fx-background-color: #2c3347; -fx-text-fill: white; -fx-background-radius: 12; -fx-font-size: 20px;");
+        button.getStyleClass().add("alternate-icon-rail-button");
+        button.setTooltip(new Tooltip(label));
+        button.setAccessibleText(label);
         return button;
     }
 
     private Node buildHeader()
     {
-        this.headerTitle.setStyle("-fx-font-size: 22px; -fx-font-weight: 700;");
-        this.headerSubtitle.setStyle("-fx-text-fill: #5c6482;");
+        this.headerTitle.getStyleClass().add("alternate-shell-title");
+        this.headerSubtitle.getStyleClass().add("alternate-shell-subtitle");
         this.headerSubtitle.textProperty().bind(this.sessionContext.sessionDisplayLabelProperty());
 
         VBox heading = new VBox(2, this.headerTitle, this.headerSubtitle);
@@ -223,7 +227,7 @@ public class MainWindowAlternate extends BorderPane
         StackPane.setMargin(this.dashboardCanvas, new Insets(8));
         StackPane.setMargin(this.panelHost, new Insets(8));
         HBox.setHgrow(this.workspaceSurface, Priority.ALWAYS);
-        this.workspaceSurface.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 18;");
+        this.workspaceSurface.getStyleClass().add("alternate-workspace-surface");
 
         HBox body = new HBox(12, leftNav, this.workspaceSurface);
         body.setAlignment(Pos.TOP_LEFT);
@@ -243,7 +247,7 @@ public class MainWindowAlternate extends BorderPane
         VBox wrapper = new VBox(10, new Label("Navigation"), this.navButtons, this.importToolsPane);
         wrapper.setPadding(new Insets(12));
         wrapper.setMinWidth(240);
-        wrapper.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 16;");
+        wrapper.getStyleClass().add("alternate-left-navigation");
         return wrapper;
     }
 
@@ -281,12 +285,12 @@ public class MainWindowAlternate extends BorderPane
     {
         Label t = new Label(title);
         Label v = new Label(value);
-        v.setStyle("-fx-font-size: 20px; -fx-font-weight: 700;");
+        v.getStyleClass().add("alternate-dashboard-card-value");
         Label d = new Label(delta);
-        d.setStyle("-fx-text-fill: #5962cc;");
+        d.getStyleClass().add("alternate-dashboard-card-status");
         VBox box = new VBox(8, t, v, d);
         box.setPadding(new Insets(12));
-        box.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
+        box.getStyleClass().add("alternate-dashboard-card");
         return box;
     }
 
@@ -295,7 +299,7 @@ public class MainWindowAlternate extends BorderPane
         VBox box = new VBox(8, new Label("Cash Flow"),
             new Label(NO_SERVICE_DATA_MESSAGE));
         box.setPadding(new Insets(12));
-        box.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
+        box.getStyleClass().add("alternate-dashboard-card");
         return box;
     }
 
@@ -305,7 +309,7 @@ public class MainWindowAlternate extends BorderPane
             new Label(NO_SERVICE_DATA_MESSAGE));
         VBox box = new VBox(8, new Label("Account Balances"), new Separator(), list);
         box.setPadding(new Insets(12));
-        box.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
+        box.getStyleClass().add("alternate-dashboard-card");
         return box;
     }
 
@@ -336,7 +340,7 @@ public class MainWindowAlternate extends BorderPane
             new Label("Custom fields, localization, expenses, and bank settings are not wired yet."));
         this.alternateSettingsPane.setSpacing(8);
         this.alternateSettingsPane.setPadding(new Insets(12));
-        this.alternateSettingsPane.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
+        this.alternateSettingsPane.getStyleClass().add("alternate-content-card");
         return this.alternateSettingsPane;
     }
 
@@ -490,7 +494,7 @@ public class MainWindowAlternate extends BorderPane
     private VBox buildProfilePane()
     {
         Label title = new Label("User Profile");
-        title.setStyle("-fx-font-size: 18px; -fx-font-weight: 700;");
+        title.getStyleClass().add("alternate-panel-title");
         this.profilePane.getChildren().setAll(
             title,
             new Separator(),
@@ -499,7 +503,7 @@ public class MainWindowAlternate extends BorderPane
             new Label("Preferences and account details will be wired in a later phase."));
         this.profilePane.setPadding(new Insets(12));
         this.profilePane.setSpacing(10);
-        this.profilePane.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
+        this.profilePane.getStyleClass().add("alternate-content-card");
         return this.profilePane;
     }
 
@@ -518,7 +522,7 @@ public class MainWindowAlternate extends BorderPane
             status);
         this.searchPane.setPadding(new Insets(12));
         this.searchPane.setSpacing(10);
-        this.searchPane.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
+        this.searchPane.getStyleClass().add("alternate-content-card");
         return this.searchPane;
     }
 
@@ -581,7 +585,7 @@ public class MainWindowAlternate extends BorderPane
         VBox pane = new VBox(10, new Label("Command Center"), new Separator(), fileGroup, new Separator(), runGroup, new Separator(), reportActions, new Separator(), quickActions, new Separator(), fundraisingGroup, new Separator(), bankingGroup, new Separator(), helpGroup);
         pane.setPadding(new Insets(12));
         pane.setSpacing(10);
-        pane.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
+        pane.getStyleClass().add("alternate-content-card");
         return pane;
     }
 
@@ -947,9 +951,9 @@ public class MainWindowAlternate extends BorderPane
     private void buildAlternateBudgetEditorPane()
     {
         Label title = new Label("Budget Editor");
-        title.setStyle("-fx-font-size: 18px; -fx-font-weight: 700;");
+        title.getStyleClass().add("alternate-panel-title");
         Label subtitle = new Label("Native-first budget workspace using journal-style entry flow.");
-        subtitle.setStyle("-fx-text-fill: #5c6482;");
+        subtitle.getStyleClass().add("alternate-panel-subtitle");
         Node body;
         try
         {
@@ -960,7 +964,7 @@ public class MainWindowAlternate extends BorderPane
         catch (IllegalStateException missingContext)
         {
             Label contextRequired = new Label("Open a company to use the budget editor.");
-            contextRequired.setStyle("-fx-text-fill: #8a4f4f;");
+            contextRequired.getStyleClass().addAll("alternate-panel-banner", "alternate-panel-warning-banner");
             body = contextRequired;
         }
         VBox content = new VBox(8, title, subtitle, body);
@@ -972,9 +976,9 @@ public class MainWindowAlternate extends BorderPane
     private void buildAlternateSchedulesPane()
     {
         Label title = new Label("Schedules");
-        title.setStyle("-fx-font-size: 18px; -fx-font-weight: 700;");
+        title.getStyleClass().add("alternate-panel-title");
         Label subtitle = new Label("Scheduled reports and recurring tasks.");
-        subtitle.setStyle("-fx-text-fill: #5c6482;");
+        subtitle.getStyleClass().add("alternate-panel-subtitle");
         ListView<String> schedules = new ListView<>();
         schedules.getItems().setAll(this.alternatePreferences.get(SCHEDULED_REPORTS_KEY, "")
             .lines()
@@ -1195,6 +1199,36 @@ public class MainWindowAlternate extends BorderPane
         return this.iconRailButtons.stream()
             .map(Button::isDisable)
             .toList();
+    }
+
+    List<String> testIconRailAccessibleLabels()
+    {
+        return this.iconRailButtons.stream()
+            .map(Button::getAccessibleText)
+            .toList();
+    }
+
+    List<String> testIconRailTooltipLabels()
+    {
+        return this.iconRailButtons.stream()
+            .map(button -> button.getTooltip() == null ? null : button.getTooltip().getText())
+            .toList();
+    }
+
+    List<String> testIconRailButtonStyleClasses()
+    {
+        return this.iconRailButtons.stream()
+            .flatMap(button -> button.getStyleClass().stream())
+            .toList();
+    }
+
+    List<String> testShellSurfaceStyleClasses()
+    {
+        return List.of(
+            getStyleClass().contains("alternate-shell-root") ? "alternate-shell-root" : "",
+            this.workspaceSurface.getStyleClass().contains("alternate-workspace-surface") ? "alternate-workspace-surface" : "",
+            this.headerTitle.getStyleClass().contains("alternate-shell-title") ? "alternate-shell-title" : "",
+            this.headerSubtitle.getStyleClass().contains("alternate-shell-subtitle") ? "alternate-shell-subtitle" : "");
     }
 
 }
