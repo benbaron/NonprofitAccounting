@@ -189,7 +189,7 @@ public class MainWindowAlternate extends BorderPane
     {
         this.headerTitle.setStyle("-fx-font-size: 22px; -fx-font-weight: 700;");
         this.headerSubtitle.setStyle("-fx-text-fill: #5c6482;");
-        this.headerSubtitle.textProperty().bind(this.sessionContext.activeCompanyDisplayLabelProperty());
+        this.headerSubtitle.textProperty().bind(this.sessionContext.sessionDisplayLabelProperty());
 
         VBox heading = new VBox(2, this.headerTitle, this.headerSubtitle);
         Region spacer = new Region();
