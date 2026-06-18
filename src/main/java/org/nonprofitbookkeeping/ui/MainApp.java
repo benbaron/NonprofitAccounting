@@ -25,11 +25,8 @@ public class MainApp extends Application
         root = new MainWindowAlternate();
         Scene scene = new Scene(root, 1200, 800);
 
-        URL stylesheet = getClass().getResource("/themes/light.css");
-        if (stylesheet != null)
-        {
-            scene.getStylesheets().add(stylesheet.toExternalForm());
-        }
+        addStylesheet(scene, "/themes/light.css");
+        addStylesheet(scene, "/themes/ui-system.css");
 
         if (!alternate)
         {
@@ -39,5 +36,14 @@ public class MainApp extends Application
         stage.setTitle("SCA Ledger (H2 + Jakarta) — Prototype");
         stage.setScene(scene);
         stage.show();
+    }
+
+    private void addStylesheet(Scene scene, String resourcePath)
+    {
+        URL stylesheet = getClass().getResource(resourcePath);
+        if (stylesheet != null)
+        {
+            scene.getStylesheets().add(stylesheet.toExternalForm());
+        }
     }
 }

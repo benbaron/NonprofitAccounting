@@ -249,4 +249,42 @@ class MainWindowAlternateCommandCenterTest
         }
     }
 
+    @Test
+    void iconRailUsesStyleClassesTooltipsAndAccessibleLabels() throws Exception
+    {
+        CountDownLatch latch = new CountDownLatch(1);
+        Throwable[] error = new Throwable[1];
+
+        Platform.runLater(() -> {
+            try
+            {
+                MainWindowAlternate window = new MainWindowAlternate();
+
+                assertEquals(List.of("Profile", "Dashboard", "Search", "Command Center", "Settings"),
+                    window.testIconRailAccessibleLabels());
+                assertEquals(List.of("Profile", "Dashboard", "Search", "Command Center", "Settings"),
+                    window.testIconRailTooltipLabels());
+                assertTrue(window.testIconRailButtonStyleClasses().contains("alternate-icon-rail-button"));
+                assertTrue(window.testShellSurfaceStyleClasses().contains("alternate-shell-root"));
+                assertTrue(window.testShellSurfaceStyleClasses().contains("alternate-workspace-surface"));
+                assertTrue(window.testShellSurfaceStyleClasses().contains("alternate-shell-title"));
+                assertTrue(window.testShellSurfaceStyleClasses().contains("alternate-shell-subtitle"));
+            }
+            catch (Throwable t)
+            {
+                error[0] = t;
+            }
+            finally
+            {
+                latch.countDown();
+            }
+        });
+
+        assertTrue(latch.await(20, TimeUnit.SECONDS));
+        if (error[0] != null)
+        {
+            throw new AssertionError("MainWindowAlternate icon rail styling/accessibility test failed", error[0]);
+        }
+    }
+
 }
