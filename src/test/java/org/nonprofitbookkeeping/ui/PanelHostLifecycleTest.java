@@ -2,6 +2,7 @@ package org.nonprofitbookkeeping.ui;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Field;
@@ -26,8 +27,9 @@ class PanelHostLifecycleTest
 
         host.show(AppPanelId.CHART_OF_ACCOUNTS);
         coa.markDirty();
-        host.show(AppPanelId.LEDGER_REGISTER);
+        SaveResult result = host.show(AppPanelId.LEDGER_REGISTER);
 
+        assertEquals(SaveResult.Status.SAVED, result.status());
         assertEquals(1, coa.saveCalls);
         assertEquals(0, ledger.saveCalls);
     }
@@ -86,11 +88,69 @@ class PanelHostLifecycleTest
             n -> newCalls.incrementAndGet()));
 
         host.show(AppPanelId.DASHBOARD);
-        host.saveActive();
+        SaveResult result = host.saveActive();
         host.newItemActive();
 
+        assertEquals(SaveResult.Status.SAVED, result.status());
         assertEquals(1, saveCalls.get());
         assertEquals(1, newCalls.get());
+    }
+
+    @Test
+    void saveActiveReportsNoChangesForCleanBackwardCompatiblePanel()
+    {
+        TrackingPanel panel = new TrackingPanel("COA");
+        PanelHost host = new PanelHost(id -> panel);
+
+        host.show(AppPanelId.CHART_OF_ACCOUNTS);
+        SaveResult result = host.saveActive();
+
+        assertEquals(SaveResult.Status.NO_CHANGES, result.status());
+        assertEquals(0, panel.saveCalls);
+    }
+
+    @Test
+    void saveActiveReportsUnsupportedFromSaveAwarePanel()
+    {
+        AppPanel panel = new UnsupportedSavePanel();
+        PanelHost host = new PanelHost(id -> panel);
+
+        host.show(AppPanelId.SETTINGS);
+        SaveResult result = host.saveActive();
+
+        assertEquals(SaveResult.Status.UNSUPPORTED, result.status());
+    }
+
+    @Test
+    void saveActiveReportsFailedAndKeepsPanelWhenSaveThrows()
+    {
+        TrackingPanel failing = new TrackingPanel("Failing");
+        failing.failSave = true;
+        TrackingPanel next = new TrackingPanel("Next");
+        PanelHost host = new PanelHost(id -> id == AppPanelId.CHART_OF_ACCOUNTS ? failing : next);
+
+        host.show(AppPanelId.CHART_OF_ACCOUNTS);
+        failing.markDirty();
+        SaveResult result = host.show(AppPanelId.LEDGER_REGISTER);
+
+        assertEquals(SaveResult.Status.FAILED, result.status());
+        assertSame(failing.root(), host.getCenter());
+        assertEquals("Failing", host.getActiveTitle());
+    }
+
+    @Test
+    void switchingIsBlockedWhenActivePanelCannotNavigateAway()
+    {
+        GuardedPanel guarded = new GuardedPanel("Admin Operation");
+        TrackingPanel next = new TrackingPanel("Next");
+        PanelHost host = new PanelHost(id -> id == AppPanelId.CHART_OF_ACCOUNTS ? guarded : next);
+
+        host.show(AppPanelId.CHART_OF_ACCOUNTS);
+        SaveResult result = host.show(AppPanelId.LEDGER_REGISTER);
+
+        assertEquals(SaveResult.Status.FAILED, result.status());
+        assertFalse(guarded.saveAttempted);
+        assertSame(guarded.root(), host.getCenter());
     }
 
 
@@ -109,13 +169,15 @@ class PanelHostLifecycleTest
         }
     }
 
-    private static final class TrackingPanel implements AppPanel, PanelHost.DirtyAwarePanel
+    private static class TrackingPanel implements AppPanel, PanelHost.DirtyAwarePanel
     {
         private final String title;
         private boolean dirty;
         private int saveCalls;
         private int deleteCalls;
         private int cancelCalls;
+        private boolean failSave;
+        private final javafx.scene.layout.VBox root = new javafx.scene.layout.VBox();
 
         private TrackingPanel(String title)
         {
@@ -136,12 +198,16 @@ class PanelHostLifecycleTest
         @Override
         public javafx.scene.Node root()
         {
-            return new javafx.scene.layout.VBox();
+            return root;
         }
 
         @Override
         public void onSave()
         {
+            if (failSave)
+            {
+                throw new IllegalStateException("boom");
+            }
             saveCalls++;
             dirty = false;
         }
@@ -162,6 +228,36 @@ class PanelHostLifecycleTest
         public boolean isDirty()
         {
             return dirty;
+        }
+    }
+
+    private static final class UnsupportedSavePanel implements AppPanel, AppPanel.SaveAware
+    {
+        @Override public String title() { return "Unsupported"; }
+        @Override public javafx.scene.Node root() { return new javafx.scene.layout.VBox(); }
+        @Override public SaveResult save() { return SaveResult.unsupported("No persistence."); }
+    }
+
+    private static final class GuardedPanel extends TrackingPanel implements PanelHost.NavigationGuardPanel
+    {
+        private boolean saveAttempted;
+
+        private GuardedPanel(String title)
+        {
+            super(title);
+        }
+
+        @Override
+        public void onSave()
+        {
+            saveAttempted = true;
+            super.onSave();
+        }
+
+        @Override
+        public boolean canNavigateAway()
+        {
+            return false;
         }
     }
 }

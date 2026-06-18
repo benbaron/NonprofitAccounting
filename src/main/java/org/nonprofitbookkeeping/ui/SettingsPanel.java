@@ -12,7 +12,7 @@ import javafx.scene.layout.VBox;
 /**
  * Represents the SettingsPanel component in the nonprofit bookkeeping application.
  */
-public class SettingsPanel implements AppPanel
+public class SettingsPanel implements AppPanel, AppPanel.SaveAware
 {
     private final BorderPane root = new BorderPane();
 
@@ -38,5 +38,11 @@ public class SettingsPanel implements AppPanel
 
     @Override public void onNew() {
         // placeholder
+    }
+
+    @Override
+    public SaveResult save()
+    {
+        return SaveResult.unsupported("Save is not supported because this panel has no persistence workflow yet.");
     }
 }

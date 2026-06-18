@@ -40,15 +40,21 @@ public class PanelHost extends BorderPane
         this.panelFactory = panelFactory;
     }
 
-    public void show(AppPanelId id)
+    public SaveResult show(AppPanelId id)
     {
+        SaveResult saveResult = SaveResult.noChanges();
         if (activeId != null && activeId != id)
         {
-            saveActive();
+            saveResult = prepareActiveForNavigation();
+            if (saveResult.failed())
+            {
+                return saveResult;
+            }
         }
         AppPanel panel = panels.computeIfAbsent(id, this::create);
         activeId = id;
         setCenter(panel.root());
+        return saveResult;
     }
 
     public String getActiveTitle()
@@ -57,11 +63,51 @@ public class PanelHost extends BorderPane
         return p == null ? "(none)" : p.title();
     }
 
-    public void saveActive() { AppPanel p = getActive(); if (p != null) p.onSave(); }
+    public SaveResult saveActive()
+    {
+        AppPanel p = getActive();
+        if (p == null)
+        {
+            return SaveResult.noChanges("No active panel.");
+        }
+        if (p instanceof AppPanel.SaveAware saveAware)
+        {
+            try
+            {
+                return saveAware.save();
+            }
+            catch (RuntimeException ex)
+            {
+                return SaveResult.failed("Save failed for " + p.title() + ": " + ex.getMessage(), ex);
+            }
+        }
+        if (!isDirty(p))
+        {
+            return SaveResult.noChanges("No changes to save for " + p.title() + ".");
+        }
+        try
+        {
+            p.onSave();
+            return SaveResult.saved("Saved " + p.title() + ".");
+        }
+        catch (RuntimeException ex)
+        {
+            return SaveResult.failed("Save failed for " + p.title() + ": " + ex.getMessage(), ex);
+        }
+    }
+    public SaveResult prepareActiveForNavigation()
+    {
+        if (!canNavigateAway())
+        {
+            return SaveResult.failed("Active panel blocked navigation.", null);
+        }
+        return saveActive();
+    }
+
     public boolean isActiveDirty()
     {
         AppPanel p = getActive();
-        return p instanceof DirtyAwarePanel dirtyAwarePanel && dirtyAwarePanel.isDirty();
+        return isDirty(p);
     }
     public void newItemActive() { AppPanel p = getActive(); if (p != null) p.onNew(); }
     public void copySelectionActive() { AppPanel p = getActive(); if (p != null) p.onCopy(); }
@@ -82,9 +128,25 @@ public class PanelHost extends BorderPane
         return panelFactory.create(id);
     }
 
+    private boolean canNavigateAway()
+    {
+        AppPanel p = getActive();
+        return !(p instanceof NavigationGuardPanel guard) || guard.canNavigateAway();
+    }
+
+    private boolean isDirty(AppPanel p)
+    {
+        return p instanceof DirtyAwarePanel dirtyAwarePanel && dirtyAwarePanel.isDirty();
+    }
+
     interface DirtyAwarePanel
     {
         boolean isDirty();
+    }
+
+    interface NavigationGuardPanel
+    {
+        boolean canNavigateAway();
     }
 
     private static class DefaultPanelFactory implements PanelFactory
