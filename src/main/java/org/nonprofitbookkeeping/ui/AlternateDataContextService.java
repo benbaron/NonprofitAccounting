@@ -48,6 +48,7 @@ public class AlternateDataContextService
         this.recentsStore = recentsStore;
         this.databaseContextSwitcher = databaseContextSwitcher;
         this.sessionContext = sessionContext;
+        UiServiceRegistry.bindSessionContext(this.sessionContext);
         String lastPath = PreferencesManager.getLastDatabasePath();
         if (lastPath != null && !lastPath.isBlank())
         {
