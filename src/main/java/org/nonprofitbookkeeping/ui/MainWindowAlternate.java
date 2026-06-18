@@ -736,8 +736,8 @@ public class MainWindowAlternate extends BorderPane
             openInspectorForSelection("Command", "Save is unavailable until a panel-host workspace is active.");
             return;
         }
-        this.panelHost.saveActive();
-        openInspectorForSelection("Command", "Save action sent to active workspace panel: " + this.panelHost.getActiveTitle());
+        SaveResult result = this.panelHost.saveActive();
+        openInspectorForSelection("Command", saveMessageFor(this.panelHost.getActiveTitle(), result));
     }
 
     private void runDeleteAction()
@@ -760,6 +760,28 @@ public class MainWindowAlternate extends BorderPane
         }
         this.panelHost.cancelActive();
         openInspectorForSelection("Command", "Cancel action sent to active workspace panel: " + this.panelHost.getActiveTitle());
+    }
+
+    private String saveMessageFor(String title, SaveResult result)
+    {
+        return switch (result.status())
+        {
+            case SAVED -> "Saved active workspace panel: " + title;
+            case NO_CHANGES -> "No changes to save for active workspace panel: " + title;
+            case UNSUPPORTED -> "Save is not supported for active workspace panel: " + title;
+            case FAILED -> result.message();
+        };
+    }
+
+    private String navigationSaveMessage(String title, SaveResult result)
+    {
+        return switch (result.status())
+        {
+            case SAVED -> "Saved changes before leaving " + title + ".";
+            case NO_CHANGES -> "No changes to save before leaving " + title + ".";
+            case UNSUPPORTED -> "No save performed before leaving " + title + ": " + result.message();
+            case FAILED -> "Cannot leave " + title + ": " + result.message();
+        };
     }
 
     private boolean hasActivePanelCommandTarget()
@@ -867,11 +889,12 @@ public class MainWindowAlternate extends BorderPane
         }
         if (this.activePanelId != id)
         {
-            String saveMessage = this.panelHost.isActiveDirty()
-                ? "Unsaved changes detected. Saving state before leaving " + panelTitle(this.activePanelId) + "..."
-                : "Saving state before leaving " + panelTitle(this.activePanelId) + "...";
-            this.alternateStatus.setText(saveMessage);
-            dismissActiveContext();
+            SaveResult result = dismissActiveContext();
+            this.alternateStatus.setText(navigationSaveMessage(panelTitle(this.activePanelId), result));
+            if (result.failed())
+            {
+                return;
+            }
         }
         this.activePanelId = id;
         refreshHeaderLabels();
@@ -909,7 +932,12 @@ public class MainWindowAlternate extends BorderPane
         }
         else if (panelHostBackedPanel)
         {
-            this.panelHost.show(id);
+            SaveResult switchResult = this.panelHost.show(id);
+            if (switchResult.failed())
+            {
+                this.alternateStatus.setText(navigationSaveMessage(panelTitle(this.activePanelId), switchResult));
+                return;
+            }
             this.activeAdaptedPanel = null;
             LOGGER.debug("Panel strategy {} ({}) for {}", PanelAdaptationPlan.strategyFor(id), PanelAdaptationPlan.phaseFor(id), id);
         }
@@ -1067,20 +1095,29 @@ public class MainWindowAlternate extends BorderPane
         this.alternateStatus.setText(title + "\n" + body);
     }
 
-    private void dismissActiveContext()
+    private SaveResult dismissActiveContext()
     {
         if (this.activeAdaptedPanel != null)
         {
             this.activeAdaptedPanel.onLeave();
-            this.activeAdaptedPanel.saveContext();
-            this.activeAdaptedPanel = null;
+            SaveResult result = this.activeAdaptedPanel.saveContext();
+            if (!result.failed())
+            {
+                this.activeAdaptedPanel = null;
+            }
+            return result;
         }
-        this.panelHost.saveActive();
+        return this.panelHost.prepareActiveForNavigation();
     }
 
     private void openRecordServicePanel(nonprofitbookkeeping.ui.RecordServicePanelRegistry.PanelBinding binding)
     {
-        dismissActiveContext();
+        SaveResult dismissResult = dismissActiveContext();
+        if (dismissResult.failed())
+        {
+            this.alternateStatus.setText(navigationSaveMessage(panelTitle(this.activePanelId), dismissResult));
+            return;
+        }
         if (binding.workspacePanelId() != null)
         {
             openPanel(binding.workspacePanelId());

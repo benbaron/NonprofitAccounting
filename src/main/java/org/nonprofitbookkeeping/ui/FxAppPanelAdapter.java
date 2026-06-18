@@ -12,7 +12,7 @@ import javafx.scene.Node;
  *
  * @param <T> concrete JavaFX node type
  */
-public final class FxAppPanelAdapter<T extends Node> implements AppPanel
+public final class FxAppPanelAdapter<T extends Node> implements AppPanel, AppPanel.SaveAware
 {
     private final String title;
     private final Supplier<T> nodeFactory;
@@ -52,10 +52,18 @@ public final class FxAppPanelAdapter<T extends Node> implements AppPanel
     @Override
     public void onSave()
     {
-        if (onSave != null)
+        save();
+    }
+
+    @Override
+    public SaveResult save()
+    {
+        if (onSave == null)
         {
-            onSave.accept(node());
+            return SaveResult.unsupported("Save is not supported for " + title + ".");
         }
+        onSave.accept(node());
+        return SaveResult.saved("Saved " + title + ".");
     }
 
     @Override

@@ -13,7 +13,7 @@ import javafx.scene.layout.VBox;
 /**
  * Represents the AssetsRegisterPanel component in the nonprofit bookkeeping application.
  */
-public class AssetsRegisterPanel implements AppPanel
+public class AssetsRegisterPanel implements AppPanel, AppPanel.SaveAware
 {
 	static final String NO_SERVICE_DATA_MESSAGE =
 		"No service-backed data source is wired for this panel yet.";
@@ -180,4 +180,10 @@ public class AssetsRegisterPanel implements AppPanel
 		
 	}
 	
+
+    @Override
+    public SaveResult save()
+    {
+        return SaveResult.unsupported("Save is not supported because this panel has no persistence workflow yet.");
+    }
 }

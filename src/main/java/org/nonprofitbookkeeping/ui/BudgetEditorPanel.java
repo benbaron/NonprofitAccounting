@@ -17,7 +17,7 @@ import java.sql.SQLException;
 /**
  * Represents the BudgetEditorPanel component in the nonprofit bookkeeping application.
  */
-public class BudgetEditorPanel implements AppPanel
+public class BudgetEditorPanel implements AppPanel, AppPanel.SaveAware
 {
     static final String NO_SERVICE_DATA_MESSAGE = "No service-backed data source is wired for this panel yet.";
 
@@ -125,5 +125,11 @@ public class BudgetEditorPanel implements AppPanel
     public record BudgetRow(String account, String fund, String period, String amount)
     {
         BudgetRow withFund(String value) { return new BudgetRow(account, value, period, amount); }
+    }
+
+    @Override
+    public SaveResult save()
+    {
+        return SaveResult.unsupported("Save is not supported because this panel has no persistence workflow yet.");
     }
 }
