@@ -44,9 +44,12 @@ class AlternateUiCommandCatalog
     private void addDatabaseCompanyCommands(List<CommandDescriptor> commands, AlternateUiCommandActions actions)
     {
         commands.add(command(DATABASE_COMPANY, "Open Database", AppPanelId.DATABASE_ADMIN, actions.openDatabase()));
+        commands.add(command(DATABASE_COMPANY, "Close Database", AppPanelId.DATABASE_ADMIN, actions.openDatabase()));
         commands.add(command(DATABASE_COMPANY, "Import Database", AppPanelId.DATABASE_ADMIN, actions.importDatabase()));
-        commands.add(command(DATABASE_COMPANY, "Export Database", AppPanelId.DATABASE_ADMIN, actions.exportDatabase()));
-        commands.add(command(DATABASE_COMPANY, "Repair Database", AppPanelId.DATABASE_ADMIN, actions.repairDatabase()));
+        commands.add(command(DATABASE_COMPANY, "Export/Backup Database", AppPanelId.DATABASE_ADMIN, actions.exportDatabase()));
+        commands.add(command(DATABASE_COMPANY, "Validate Database", AppPanelId.DATABASE_ADMIN, actions.openDatabase()));
+        commands.add(command(DATABASE_COMPANY, "Repair/Recover H2 Database", AppPanelId.DATABASE_ADMIN, actions.repairDatabase()));
+        commands.add(command(DATABASE_COMPANY, "Migrate Schema", AppPanelId.DATABASE_ADMIN, actions.repairDatabase()));
         commands.add(command(DATABASE_COMPANY, "Create Company", AppPanelId.COMPANY_ADMIN, actions.createCompany()));
         commands.add(command(DATABASE_COMPANY, "Destroy/Delete Company", AppPanelId.COMPANY_ADMIN, actions.destroyCompany()));
         commands.add(command(DATABASE_COMPANY, "Populate Company", AppPanelId.COMPANY_ADMIN, actions.populateCompany()));
@@ -124,7 +127,7 @@ class AlternateUiCommandCatalog
     private boolean requiresDatabase(String label, AppPanelId panelId)
     {
         return panelId == AppPanelId.COMPANY_ADMIN || panelId == AppPanelId.IMPORT_EXPORT
-            || label.equals("Export Database") || label.equals("Repair Database");
+            || label.equals("Close Database") || label.equals("Export/Backup Database");
     }
 
     private boolean requiresCompany(String label, AppPanelId panelId)
@@ -140,8 +143,7 @@ class AlternateUiCommandCatalog
 
     private boolean isNotImplemented(String label)
     {
-        return label.equals("Import Database") || label.equals("Export Database")
-            || label.equals("Create Company") || label.equals("Destroy/Delete Company")
+        return label.equals("Create Company") || label.equals("Destroy/Delete Company")
             || label.equals("Populate Company") || label.equals("Create Sample Company")
             || label.equals("Import Chart of Accounts") || label.equals("Export Chart of Accounts")
             || label.equals("Import SCLX");

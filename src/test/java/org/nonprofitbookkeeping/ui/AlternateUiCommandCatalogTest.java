@@ -19,8 +19,10 @@ class AlternateUiCommandCatalogTest
 
         assertCommand(commands, "Open Database", CommandAvailability.AVAILABLE, "");
         assertCommand(commands, "Open Company", CommandAvailability.DISABLED, "Open a database");
-        assertCommand(commands, "Repair Database", CommandAvailability.DISABLED, "Open a database");
+        assertCommand(commands, "Repair/Recover H2 Database", CommandAvailability.AVAILABLE, "");
+        assertCommand(commands, "Close Database", CommandAvailability.DISABLED, "Open a database");
         assertCommand(commands, "Chart of Accounts", CommandAvailability.DISABLED, "Open a company");
+        assertCommand(commands, "Import Database", CommandAvailability.AVAILABLE, "");
         assertCommand(commands, "Import SCLX", CommandAvailability.NOT_IMPLEMENTED, "not implemented");
         assertTrue(commands.stream().anyMatch(c -> c.category().equals(AlternateUiCommandCatalog.DATABASE_COMPANY)));
         assertTrue(commands.stream().anyMatch(c -> c.category().equals(AlternateUiCommandCatalog.IMPORT_EXPORT)));
@@ -35,7 +37,8 @@ class AlternateUiCommandCatalogTest
 
         assertCommand(commands, "Open Database", CommandAvailability.AVAILABLE, "");
         assertCommand(commands, "Open Company", CommandAvailability.AVAILABLE, "");
-        assertCommand(commands, "Repair Database", CommandAvailability.AVAILABLE, "");
+        assertCommand(commands, "Repair/Recover H2 Database", CommandAvailability.AVAILABLE, "");
+        assertCommand(commands, "Export/Backup Database", CommandAvailability.AVAILABLE, "");
         assertCommand(commands, "Journal", CommandAvailability.DISABLED, "Open a company");
         assertCommand(commands, "Create Company", CommandAvailability.NOT_IMPLEMENTED, "not implemented");
     }
