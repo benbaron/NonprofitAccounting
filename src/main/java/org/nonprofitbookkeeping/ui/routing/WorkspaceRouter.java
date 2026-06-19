@@ -33,7 +33,7 @@ public class WorkspaceRouter
     {
         return switch (id)
         {
-            case SETTINGS, BUDGET_EDITOR, SCHEDULES -> true;
+            case SETTINGS, BUDGET_EDITOR, SCHEDULES, DATABASE_ADMIN, COMPANY_ADMIN, IMPORT_EXPORT -> true;
             default -> false;
         };
     }

@@ -100,6 +100,7 @@ public class MainWindowAlternate extends BorderPane
     private final Label headerTitle = new Label("Dashboard");
     private final Label headerSubtitle = new Label("No company open");
     private final AlternateNavigationModel navigationModel = new AlternateNavigationModel();
+    private final AlternateUiCommandCatalog commandCatalog;
     private final List<Button> iconRailButtons = new ArrayList<>();
     private LegacyPanelAdapter.AdaptedPanel activeAdaptedPanel;
     private AppPanelId activePanelId = AppPanelId.DASHBOARD;
@@ -150,6 +151,7 @@ public class MainWindowAlternate extends BorderPane
         this.contextService = contextService;
         this.sessionContext = contextService.sessionContext();
         this.alternateDashboardPanel = new AlternateDashboardPanel(this.sessionContext, new UiServiceProvider(contextService));
+        this.commandCatalog = new AlternateUiCommandCatalog(this.sessionContext);
         this.sessionContext.companyOpenProperty().addListener((obs, oldValue, newValue) -> {
             refreshIconBarState();
             rebuildNavigationButtons();
@@ -480,62 +482,63 @@ public class MainWindowAlternate extends BorderPane
     }
 
 
+
+    private AlternateUiCommandActions commandActions()
+    {
+        return new AlternateUiCommandActions(
+            this::openDatabaseSelector,
+            notImplementedAction("Import Database"),
+            notImplementedAction("Export Database"),
+            this::openH2RecoveryTool,
+            notImplementedAction("Create Company"),
+            notImplementedAction("Destroy/Delete Company"),
+            notImplementedAction("Populate Company"),
+            notImplementedAction("Create Sample Company"),
+            this::openCompanySelector,
+            notImplementedAction("Import Chart of Accounts"),
+            notImplementedAction("Export Chart of Accounts"),
+            notImplementedAction("Import SCLX"),
+            () -> openPanel(AppPanelId.CHART_OF_ACCOUNTS),
+            () -> openPanel(AppPanelId.LEDGER_REGISTER),
+            () -> openPanel(AppPanelId.INVENTORY),
+            () -> openPanel(AppPanelId.REPORTS_WORKSPACE),
+            this::runNewAction,
+            this::runSaveAction,
+            this::runDeleteAction,
+            this::runCancelAction,
+            this::openSearchPage,
+            this::openReportsScheduleDirect,
+            this::openDonorsDirect,
+            () -> openPanel(AppPanelId.FUNDS),
+            this::openReconcileAccountsDirect,
+            this::openUndepositedFundsDirect,
+            this::openDocumentsDirect,
+            this::openHelpHint);
+    }
+
     private VBox buildCommandCenterPane()
     {
-        VBox fileGroup = new VBox(6,
-            new Label("File"),
-            actionButton("Open Database", this::openDatabaseSelector),
-            actionButton("H2 Recovery Tool", this::openH2RecoveryTool),
-            actionButton("Open Company", this::openCompanySelector));
-
-        VBox runGroup = new VBox(6,
-            new Label("Run"),
-            actionButton("Chart of Accounts", () -> openPanel(AppPanelId.CHART_OF_ACCOUNTS)),
-            actionButton("Journal", () -> openPanel(AppPanelId.LEDGER_REGISTER)),
-            actionButton("Inventory", () -> openPanel(AppPanelId.INVENTORY)),
-            actionButton("Reports Workspace", () -> openPanel(AppPanelId.REPORTS_WORKSPACE)));
-
-        VBox reportActions = new VBox(6,
-            new Label("Reports actions"),
-            actionButton("Schedule", this::openReportsScheduleDirect));
-
-        Button newButton = actionButton("New", this::runNewAction);
-        Button saveButton = actionButton("Save", this::runSaveAction);
-        Button deleteButton = actionButton("Delete", this::runDeleteAction);
-        Button cancelButton = actionButton("Cancel", this::runCancelAction);
-        boolean panelCommandAvailable = hasActivePanelCommandTarget();
-        newButton.setDisable(!panelCommandAvailable);
-        saveButton.setDisable(!panelCommandAvailable);
-        deleteButton.setDisable(!panelCommandAvailable);
-        cancelButton.setDisable(!panelCommandAvailable);
-
-        VBox quickActions = new VBox(6,
-            new Label("Toolbar-style actions"),
-            newButton,
-            saveButton,
-            deleteButton,
-            cancelButton,
-            actionButton("Find", this::openSearchPage),
-            actionButton("Journal", () -> openPanel(AppPanelId.LEDGER_REGISTER)));
-
-        VBox fundraisingGroup = new VBox(6,
-            new Label("Fundraising"),
-            actionButton("Donors", this::openDonorsDirect),
-            actionButton("Funds", () -> openPanel(AppPanelId.FUNDS)));
-
-        VBox bankingGroup = new VBox(6,
-            new Label("Banking"),
-            actionButton("Reconcile Accounts", this::openReconcileAccountsDirect),
-            actionButton("Undeposited Funds", this::openUndepositedFundsDirect),
-            actionButton("Documents & Attachments", this::openDocumentsDirect),
-            actionButton("Account Activity", () -> openPanel(AppPanelId.LEDGER_REGISTER)),
-            actionButton("Transactions", () -> openPanel(AppPanelId.LEDGER_REGISTER)));
-
-        VBox helpGroup = new VBox(6,
-            new Label("Help"),
-            actionButton("Help Center", this::openHelpHint));
-
-        VBox pane = new VBox(10, new Label("Command Center"), new Separator(), fileGroup, new Separator(), runGroup, new Separator(), reportActions, new Separator(), quickActions, new Separator(), fundraisingGroup, new Separator(), bankingGroup, new Separator(), helpGroup);
+        VBox pane = new VBox(10, new Label("Command Center"), new Separator());
+        String currentCategory = null;
+        VBox group = null;
+        for (CommandDescriptor command : this.commandCatalog.commands(commandActions()))
+        {
+            if (!command.category().equals(currentCategory))
+            {
+                if (group != null)
+                {
+                    pane.getChildren().add(group);
+                    pane.getChildren().add(new Separator());
+                }
+                currentCategory = command.category();
+                group = new VBox(6, new Label(currentCategory));
+            }
+            group.getChildren().add(actionButton(command));
+        }
+        if (group != null)
+        {
+            pane.getChildren().add(group);
+        }
         pane.setPadding(new Insets(12));
         pane.setSpacing(10);
         pane.getStyleClass().add("alternate-content-card");
@@ -553,7 +556,7 @@ public class MainWindowAlternate extends BorderPane
     }
 
 
-    private void openReportsScheduleDirect()
+    void openReportsScheduleDirect()
     {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Schedule Report");
@@ -613,12 +616,23 @@ public class MainWindowAlternate extends BorderPane
 
 
 
+
+    Runnable notImplementedAction(String label)
+    {
+        return () -> openInspectorForSelection("Not implemented", label + " is not implemented in the alternate UI yet.");
+    }
+
+    List<CommandDescriptor> commandDescriptorsForTest()
+    {
+        return this.commandCatalog.commands(commandActions());
+    }
+
     String alternateStatusTextForTest()
     {
         return this.alternateStatus.getText();
     }
 
-    private void openReconcileAccountsDirect()
+    void openReconcileAccountsDirect()
     {
         try
         {
@@ -631,7 +645,7 @@ public class MainWindowAlternate extends BorderPane
         }
     }
 
-    private void openUndepositedFundsDirect()
+    void openUndepositedFundsDirect()
     {
         try
         {
@@ -644,7 +658,7 @@ public class MainWindowAlternate extends BorderPane
         }
     }
 
-    private void openDocumentsDirect()
+    void openDocumentsDirect()
     {
         try
         {
@@ -657,14 +671,14 @@ public class MainWindowAlternate extends BorderPane
         }
     }
 
-    private void openHelpHint()
+    void openHelpHint()
     {
         Stage owner = getOwningStage();
         showAlternatePane(new HelpPanelFX(owner));
         openInspectorForSelection("Help", "Help content opened in alternate shell.");
     }
 
-    private void openDonorsDirect()
+    void openDonorsDirect()
     {
         showAlternatePane(new DonorsPanelFX(new DonorService(), null));
         openInspectorForSelection("Fundraising", "Donors panel opened in alternate shell.");
@@ -675,7 +689,7 @@ public class MainWindowAlternate extends BorderPane
         return getScene() != null && getScene().getWindow() instanceof Stage stage ? stage : null;
     }
 
-    private void runNewAction()
+    void runNewAction()
     {
         if (!hasActivePanelCommandTarget())
         {
@@ -686,7 +700,7 @@ public class MainWindowAlternate extends BorderPane
         openInspectorForSelection("Command", "New action sent to active workspace panel: " + this.panelHost.getActiveTitle());
     }
 
-    private void runSaveAction()
+    void runSaveAction()
     {
         if (!hasActivePanelCommandTarget())
         {
@@ -697,7 +711,7 @@ public class MainWindowAlternate extends BorderPane
         openInspectorForSelection("Command", saveMessageFor(this.panelHost.getActiveTitle(), result));
     }
 
-    private void runDeleteAction()
+    void runDeleteAction()
     {
         if (!hasActivePanelCommandTarget())
         {
@@ -708,7 +722,7 @@ public class MainWindowAlternate extends BorderPane
         openInspectorForSelection("Command", "Delete action sent to active workspace panel: " + this.panelHost.getActiveTitle());
     }
 
-    private void runCancelAction()
+    void runCancelAction()
     {
         if (!hasActivePanelCommandTarget())
         {
@@ -748,9 +762,29 @@ public class MainWindowAlternate extends BorderPane
 
     private Button actionButton(String label, Runnable action)
     {
-        Button button = new Button(label);
+        return actionButton(new CommandDescriptor(label, "Ad hoc", action, CommandAvailability.AVAILABLE, "", null));
+    }
+
+    private Button actionButton(CommandDescriptor command)
+    {
+        Button button = new Button(command.label());
         button.setMaxWidth(Double.MAX_VALUE);
-        button.setOnAction(e -> action.run());
+        button.setDisable(!command.executable());
+        if (!command.disabledReason().isBlank())
+        {
+            button.setTooltip(new Tooltip(command.disabledReason()));
+            button.setAccessibleHelp(command.disabledReason());
+        }
+        button.setOnAction(e -> {
+            if (command.executable())
+            {
+                command.action().run();
+            }
+            else
+            {
+                openInspectorForSelection(command.category(), command.disabledReason());
+            }
+        });
         return button;
     }
 
@@ -759,7 +793,7 @@ public class MainWindowAlternate extends BorderPane
         showAlternatePane(buildProfilePane());
     }
 
-    private void openSearchPage()
+    void openSearchPage()
     {
         showAlternatePane(buildSearchPane());
     }
@@ -769,12 +803,12 @@ public class MainWindowAlternate extends BorderPane
         showAlternatePane(buildCommandCenterPane());
     }
 
-    private void openDatabaseSelector()
+    void openDatabaseSelector()
     {
         showAlternatePane(buildDatabaseSelectorPane());
     }
 
-    private void openH2RecoveryTool()
+    void openH2RecoveryTool()
     {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Select Corrupted H2 Database to Recover");
@@ -803,7 +837,7 @@ public class MainWindowAlternate extends BorderPane
         }
     }
 
-    private void openCompanySelector()
+    void openCompanySelector()
     {
         showAlternatePane(buildCompanySelectorPane());
     }
@@ -838,7 +872,7 @@ public class MainWindowAlternate extends BorderPane
      *
      * @param id the id
      */
-    private void openPanel(AppPanelId id)
+    void openPanel(AppPanelId id)
     {
         if (id == AppPanelId.REPORT_LIBRARY)
         {
@@ -886,6 +920,18 @@ public class MainWindowAlternate extends BorderPane
         else if (id == AppPanelId.SCHEDULES)
         {
             buildAlternateSchedulesPane();
+        }
+        else if (id == AppPanelId.DATABASE_ADMIN)
+        {
+            this.alternateContentPane.getChildren().setAll(buildDatabaseSelectorPane());
+        }
+        else if (id == AppPanelId.COMPANY_ADMIN)
+        {
+            this.alternateContentPane.getChildren().setAll(buildCompanySelectorPane());
+        }
+        else if (id == AppPanelId.IMPORT_EXPORT)
+        {
+            this.alternateContentPane.getChildren().setAll(new Label("Import/export workspace is not implemented in the alternate UI yet."));
         }
         else if (alternateCustomPane)
         {
@@ -1043,6 +1089,9 @@ public class MainWindowAlternate extends BorderPane
             case LEDGER_REGISTER -> "Journal";
             case INVENTORY -> "Inventory";
             case FUNDS -> "Funds";
+            case DATABASE_ADMIN -> "Database Administration";
+            case COMPANY_ADMIN -> "Company Administration";
+            case IMPORT_EXPORT -> "Import/Export";
             case REPORTS_WORKSPACE -> "Reports Library";
             case SCHEDULES -> "Schedules";
             case BUDGET_EDITOR -> "Budget";
