@@ -81,7 +81,7 @@ public class MainWindowAlternate extends BorderPane
     private final NavigationPane nav =
         new NavigationPane(this::openPanel, this::openInspectorForSelection, this::openRecordServicePanel);
     private final Label alternateStatus = new Label("Select an item to see context details.");
-    private final VBox dashboardCanvas = new VBox();
+    private final AlternateDashboardPanel alternateDashboardPanel;
     private final StackPane workspaceSurface = new StackPane();
     private final VBox alternateSettingsPane = new VBox();
     private final StackPane alternateContentPane = new StackPane();
@@ -149,6 +149,7 @@ public class MainWindowAlternate extends BorderPane
         this.bankingPanelFactory = bankingPanelFactory;
         this.contextService = contextService;
         this.sessionContext = contextService.sessionContext();
+        this.alternateDashboardPanel = new AlternateDashboardPanel(this.sessionContext, new UiServiceProvider(contextService));
         this.sessionContext.companyOpenProperty().addListener((obs, oldValue, newValue) -> {
             refreshIconBarState();
             rebuildNavigationButtons();
@@ -213,9 +214,6 @@ public class MainWindowAlternate extends BorderPane
     {
         VBox leftNav = buildLeftNavigation();
 
-        this.dashboardCanvas.getChildren().setAll(buildDashboardCards());
-        this.dashboardCanvas.setSpacing(12);
-
         this.panelHost.setVisible(false);
         this.panelHost.setManaged(false);
 
@@ -223,8 +221,8 @@ public class MainWindowAlternate extends BorderPane
         this.alternateSettingsPane.setManaged(false);
         this.alternateContentPane.setVisible(false);
         this.alternateContentPane.setManaged(false);
-        this.workspaceSurface.getChildren().setAll(this.dashboardCanvas, this.alternateSettingsPane, this.alternateContentPane, this.panelHost);
-        StackPane.setMargin(this.dashboardCanvas, new Insets(8));
+        this.workspaceSurface.getChildren().setAll(this.alternateDashboardPanel.root(), this.alternateSettingsPane, this.alternateContentPane, this.panelHost);
+        StackPane.setMargin(this.alternateDashboardPanel.root(), new Insets(8));
         StackPane.setMargin(this.panelHost, new Insets(8));
         HBox.setHgrow(this.workspaceSurface, Priority.ALWAYS);
         this.workspaceSurface.getStyleClass().add("alternate-workspace-surface");
@@ -266,51 +264,6 @@ public class MainWindowAlternate extends BorderPane
         button.setMaxWidth(Double.MAX_VALUE);
         button.setOnAction(e -> action.run());
         return button;
-    }
-
-    private Node buildDashboardCards()
-    {
-        GridPane grid = new GridPane();
-        grid.setHgap(12);
-        grid.setVgap(12);
-        grid.add(buildCard("Receivables", "No data", NO_SERVICE_DATA_MESSAGE), 0, 0);
-        grid.add(buildCard("Payables", "No data", NO_SERVICE_DATA_MESSAGE), 1, 0);
-        grid.add(buildCard("Profit & Loss", "No data", NO_SERVICE_DATA_MESSAGE), 2, 0);
-        grid.add(buildChartCard(), 0, 1, 2, 1);
-        grid.add(buildBalancesCard(), 2, 1);
-        return new ScrollPane(grid);
-    }
-
-    private VBox buildCard(String title, String value, String delta)
-    {
-        Label t = new Label(title);
-        Label v = new Label(value);
-        v.getStyleClass().add("alternate-dashboard-card-value");
-        Label d = new Label(delta);
-        d.getStyleClass().add("alternate-dashboard-card-status");
-        VBox box = new VBox(8, t, v, d);
-        box.setPadding(new Insets(12));
-        box.getStyleClass().add("alternate-dashboard-card");
-        return box;
-    }
-
-    private VBox buildChartCard()
-    {
-        VBox box = new VBox(8, new Label("Cash Flow"),
-            new Label(NO_SERVICE_DATA_MESSAGE));
-        box.setPadding(new Insets(12));
-        box.getStyleClass().add("alternate-dashboard-card");
-        return box;
-    }
-
-    private VBox buildBalancesCard()
-    {
-        VBox list = new VBox(6,
-            new Label(NO_SERVICE_DATA_MESSAGE));
-        VBox box = new VBox(8, new Label("Account Balances"), new Separator(), list);
-        box.setPadding(new Insets(12));
-        box.getStyleClass().add("alternate-dashboard-card");
-        return box;
     }
 
     private VBox buildAlternateSettingsPane()
@@ -858,8 +811,8 @@ public class MainWindowAlternate extends BorderPane
 
     private void showAlternatePane(Node content)
     {
-        this.dashboardCanvas.setVisible(false);
-        this.dashboardCanvas.setManaged(false);
+        this.alternateDashboardPanel.root().setVisible(false);
+        this.alternateDashboardPanel.root().setManaged(false);
         this.alternateSettingsPane.setVisible(false);
         this.alternateSettingsPane.setManaged(false);
         this.panelHost.setVisible(false);
@@ -909,8 +862,12 @@ public class MainWindowAlternate extends BorderPane
         boolean alternateCustomPane = decision.isAlternateCustomPane();
         boolean panelHostBackedPanel = decision.isPanelHost();
 
-        this.dashboardCanvas.setVisible(dashboard);
-        this.dashboardCanvas.setManaged(dashboard);
+        this.alternateDashboardPanel.root().setVisible(dashboard);
+        this.alternateDashboardPanel.root().setManaged(dashboard);
+        if (dashboard)
+        {
+            this.alternateDashboardPanel.refresh();
+        }
         this.alternateSettingsPane.setVisible(id == AppPanelId.SETTINGS);
         this.alternateSettingsPane.setManaged(id == AppPanelId.SETTINGS);
         this.alternateContentPane.setVisible(alternateCustomPane && id != AppPanelId.SETTINGS);
