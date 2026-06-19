@@ -519,11 +519,12 @@ public class MainWindowAlternate extends BorderPane
 
     private AlternateUiCommandActions commandActions()
     {
+        Runnable openDatabaseAdministration = () -> openPanel(AppPanelId.DATABASE_ADMIN);
         return new AlternateUiCommandActions(
-            this::openDatabaseSelector,
-            notImplementedAction("Import Database"),
-            notImplementedAction("Export Database"),
-            this::openH2RecoveryTool,
+            openDatabaseAdministration,
+            openDatabaseAdministration,
+            openDatabaseAdministration,
+            openDatabaseAdministration,
             notImplementedAction("Create Company"),
             notImplementedAction("Destroy/Delete Company"),
             notImplementedAction("Populate Company"),
@@ -971,10 +972,6 @@ public class MainWindowAlternate extends BorderPane
         else if (id == AppPanelId.SCHEDULES)
         {
             buildAlternateSchedulesPane();
-        }
-        else if (id == AppPanelId.DATABASE_ADMIN)
-        {
-            this.alternateContentPane.getChildren().setAll(buildDatabaseSelectorPane());
         }
         else if (id == AppPanelId.COMPANY_ADMIN)
         {
