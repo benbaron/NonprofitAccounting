@@ -10,6 +10,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
@@ -101,6 +102,7 @@ public class MainWindowAlternate extends BorderPane
     private final Label headerSubtitle = new Label("No company open");
     private final AlternateNavigationModel navigationModel = new AlternateNavigationModel();
     private final AlternateUiCommandCatalog commandCatalog;
+    private final UiServiceProvider uiServices;
     private final List<Button> iconRailButtons = new ArrayList<>();
     private LegacyPanelAdapter.AdaptedPanel activeAdaptedPanel;
     private AppPanelId activePanelId = AppPanelId.DASHBOARD;
@@ -150,7 +152,8 @@ public class MainWindowAlternate extends BorderPane
         this.bankingPanelFactory = bankingPanelFactory;
         this.contextService = contextService;
         this.sessionContext = contextService.sessionContext();
-        this.alternateDashboardPanel = new AlternateDashboardPanel(this.sessionContext, new UiServiceProvider(contextService));
+        this.uiServices = new UiServiceProvider(contextService);
+        this.alternateDashboardPanel = new AlternateDashboardPanel(this.sessionContext, this.uiServices);
         this.commandCatalog = new AlternateUiCommandCatalog(this.sessionContext);
         this.sessionContext.companyOpenProperty().addListener((obs, oldValue, newValue) -> {
             refreshIconBarState();
@@ -465,16 +468,47 @@ public class MainWindowAlternate extends BorderPane
     private VBox buildSearchPane()
     {
         TextField query = new TextField();
-        query.setPromptText("Search accounts, transactions, reports...");
+        query.setPromptText("Search accounts, transactions, funds, donors, reports, companies...");
         Button search = new Button("Search");
+        Button openSelected = new Button("Open Selected Result");
         Label status = new Label("Enter a query to search.");
-        search.setOnAction(e -> status.setText(executeSearchQuery(query.getText())));
+        ListView<GlobalSearchResult> results = new ListView<>();
+        results.setPlaceholder(new Label("No search results."));
+        results.setCellFactory(list -> new ListCell<>()
+        {
+            @Override
+            protected void updateItem(GlobalSearchResult item, boolean empty)
+            {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.type() + " • " + item.title()
+                    + (item.subtitle().isBlank() ? "" : "\n" + item.subtitle()));
+            }
+        });
+        Runnable execute = () -> executeSearchQuery(query.getText(), results, status);
+        search.setOnAction(e -> execute.run());
+        openSelected.setOnAction(e -> openSearchResult(results.getSelectionModel().getSelectedItem()));
+        query.setOnAction(e -> execute.run());
+        results.setOnMouseClicked(e -> {
+            if (e.getClickCount() >= 2)
+            {
+                openSearchResult(results.getSelectionModel().getSelectedItem());
+            }
+        });
+        results.setOnKeyPressed(e -> {
+            if (e.getCode() == javafx.scene.input.KeyCode.ENTER)
+            {
+                openSearchResult(results.getSelectionModel().getSelectedItem());
+            }
+        });
         this.searchPane.getChildren().setAll(
             new Label("Search"),
             new Separator(),
             query,
             search,
-            status);
+            openSelected,
+            status,
+            results);
+        VBox.setVgrow(results, Priority.ALWAYS);
         this.searchPane.setPadding(new Insets(12));
         this.searchPane.setSpacing(10);
         this.searchPane.getStyleClass().add("alternate-content-card");
@@ -856,15 +890,32 @@ public class MainWindowAlternate extends BorderPane
         this.alternateContentPane.getChildren().setAll(content);
     }
 
-    private String executeSearchQuery(String value)
+    private void executeSearchQuery(String value, ListView<GlobalSearchResult> results, Label status)
     {
+        results.getItems().clear();
         if (value == null || value.isBlank())
         {
-            return "Enter a query to search.";
+            status.setText("Enter a query to search.");
+            return;
         }
-        String query = value.trim();
-        openInspectorForSelection("Search", "Query staged for shared command surface:\n" + query);
-        return "Query staged for shared command surface: " + query;
+        List<GlobalSearchResult> hits = this.uiServices.globalSearch().search(value);
+        results.getItems().setAll(hits);
+        String message = hits.isEmpty() ? "No results for: " + value.trim() : hits.size() + " result(s) for: " + value.trim();
+        status.setText(message);
+        openInspectorForSelection("Search", message);
+    }
+
+    private void openSearchResult(GlobalSearchResult result)
+    {
+        if (result == null)
+        {
+            return;
+        }
+        if (result.hasRoute())
+        {
+            openPanel(result.targetPanelId());
+        }
+        openInspectorForSelection(result.type() + ": " + result.title(), result.targetDescription());
     }
 
     /**

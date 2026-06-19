@@ -30,6 +30,7 @@ public class UiServiceProvider implements AutoCloseable
     private final AlternateDataContextService companyAdministration;
     private final DatabaseAdministrationService databaseAdministration;
     private final ImportExportServices importExportServices;
+    private final GlobalSearchService globalSearchService;
 
     public UiServiceProvider(UiSessionContext sessionContext)
     {
@@ -47,6 +48,7 @@ public class UiServiceProvider implements AutoCloseable
         this.companyAdministration = companyAdministration;
         this.databaseAdministration = new DatabaseAdministrationService(sessionContext, companyAdministration);
         this.importExportServices = new ImportExportServices();
+        this.globalSearchService = new GlobalSearchService(this);
         this.sessionContext.activeDatabaseBasePathProperty().addListener((obs, oldPath, newPath) -> invalidateServices());
     }
 
@@ -97,6 +99,11 @@ public class UiServiceProvider implements AutoCloseable
     public ImportExportServices importExport()
     {
         return importExportServices;
+    }
+
+    public GlobalSearchService globalSearch()
+    {
+        return globalSearchService;
     }
 
     boolean hasDatabaseServicesForCurrentContext()
