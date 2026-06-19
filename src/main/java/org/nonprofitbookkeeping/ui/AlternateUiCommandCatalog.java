@@ -143,9 +143,7 @@ class AlternateUiCommandCatalog
 
     private boolean isNotImplemented(String label)
     {
-        return label.equals("Create Company") || label.equals("Destroy/Delete Company")
-            || label.equals("Populate Company") || label.equals("Create Sample Company")
-            || label.equals("Import Chart of Accounts") || label.equals("Export Chart of Accounts")
+        return label.equals("Import Chart of Accounts") || label.equals("Export Chart of Accounts")
             || label.equals("Import SCLX");
     }
 }
