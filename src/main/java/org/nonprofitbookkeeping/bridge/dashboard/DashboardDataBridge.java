@@ -25,7 +25,13 @@ public class DashboardDataBridge
 
     public DashboardSnapshot load()
     {
-        List<FundBalanceRow> rows = services.fundBalance().balancesAsOf(LocalDate.now());
+        return load(LocalDate.now());
+    }
+
+    public DashboardSnapshot load(LocalDate asOf)
+    {
+        LocalDate effectiveAsOf = asOf == null ? LocalDate.now() : asOf;
+        List<FundBalanceRow> rows = services.fundBalance().balancesAsOf(effectiveAsOf);
         int accountCount = services.accountLookup().listActivePostingAccounts().size();
         int fundCount = services.fundLookup().listActiveFunds().size();
         return new DashboardSnapshot(rows, accountCount, fundCount);

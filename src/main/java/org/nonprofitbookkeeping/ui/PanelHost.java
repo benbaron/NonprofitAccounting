@@ -4,7 +4,6 @@
 package org.nonprofitbookkeeping.ui;
 
 import javafx.scene.layout.BorderPane;
-import org.nonprofitbookkeeping.ui.panels.DashboardPanelFX;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -155,9 +154,7 @@ public class PanelHost extends BorderPane
         {
         return switch (id)
         {
-            case DASHBOARD -> new FxAppPanelAdapter<>("Dashboard", DashboardPanelFX::new,
-                DashboardPanelFX::reloadData,
-                DashboardPanelFX::reloadData);
+            case DASHBOARD -> new AlternateDashboardPanel(UiServiceRegistry.provider().sessionContext(), UiServiceRegistry.provider());
 
             case LEDGER_REGISTER -> new LedgerRegisterPanel();
 
