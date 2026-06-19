@@ -74,8 +74,8 @@ public class AlternateDatabaseAdminPanel implements AppPanel
                 service.validateDatabase(path(source))),
             operationRow("Repair / Recover H2 Database", "Source database", "", true, "Repair", (source, target, backup) ->
                 service.repairDatabase(path(source), backup, true)),
-            operationRow("Migrate Schema", "Source database", "Optional SQL result path", false, "Migrate", (source, target, backup) ->
-                service.migrateSchema(path(source), blankPath(target))),
+            operationRow("Migrate Schema", "Source database", "Optional SQL result path", true, "Migrate", (source, target, backup) ->
+                service.migrateSchema(path(source), blankPath(target), backup)),
             new HBox(8, progress), status);
     }
 

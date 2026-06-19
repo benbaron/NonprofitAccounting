@@ -31,7 +31,12 @@ public class PanelHost extends BorderPane
 
     public PanelHost()
     {
-        this(new DefaultPanelFactory());
+        this(new DefaultPanelFactory(UiServiceRegistry.provider()));
+    }
+
+    public PanelHost(UiServiceProvider services)
+    {
+        this(new DefaultPanelFactory(services));
     }
 
     PanelHost(PanelFactory panelFactory)
@@ -150,11 +155,18 @@ public class PanelHost extends BorderPane
 
     private static class DefaultPanelFactory implements PanelFactory
     {
+        private final UiServiceProvider services;
+
+        DefaultPanelFactory(UiServiceProvider services)
+        {
+            this.services = java.util.Objects.requireNonNull(services, "services");
+        }
+
         public AppPanel create(AppPanelId id)
         {
         return switch (id)
         {
-            case DASHBOARD -> new AlternateDashboardPanel(UiServiceRegistry.provider().sessionContext(), UiServiceRegistry.provider());
+            case DASHBOARD -> new AlternateDashboardPanel(services.sessionContext(), services);
 
             case LEDGER_REGISTER -> new LedgerRegisterPanel();
 

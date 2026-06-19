@@ -3,6 +3,8 @@ package org.nonprofitbookkeeping.ui;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import nonprofitbookkeeping.core.Database;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,6 +34,29 @@ class AlternateDatabaseAdminServiceTest
         Files.writeString(txt, "not a database");
 
         assertThrows(IllegalArgumentException.class, () -> service(new UiSessionContext()).validateDatabase(txt));
+    }
+
+    @Test
+    void dbExtensionIsRejectedBecauseH2OpensMvDbFiles() throws Exception
+    {
+        Path db = tempDir.resolve("backup.db");
+        Files.writeString(db, "not an mv.db database");
+
+        assertThrows(IllegalArgumentException.class, () -> service(new UiSessionContext()).validateDatabase(db));
+    }
+
+    @Test
+    void closeDatabaseClearsLegacyDatabaseSingleton()
+    {
+        UiSessionContext context = new UiSessionContext();
+        Path base = tempDir.resolve("legacy-open");
+        Database.init(base);
+        context.openDatabase(base);
+
+        new UiServiceProvider(context).databaseAdministration().closeDatabase();
+
+        assertFalse(Database.isInitialized());
+        assertFalse(context.isDatabaseOpen());
     }
 
     @Test

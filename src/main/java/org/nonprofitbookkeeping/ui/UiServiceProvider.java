@@ -3,6 +3,9 @@ package org.nonprofitbookkeeping.ui;
 import java.nio.file.Path;
 import java.util.Objects;
 
+import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.model.CurrentCompany;
+
 import org.nonprofitbookkeeping.bridge.dashboard.DashboardDataBridge;
 import org.nonprofitbookkeeping.persistence.Jpa;
 import org.nonprofitbookkeeping.service.AccountLookupService;
@@ -180,6 +183,8 @@ public class UiServiceProvider implements AutoCloseable
 
         public void closeDatabase()
         {
+            CurrentCompany.close();
+            Database.close();
             if (contextService != null)
             {
                 contextService.setActiveDatabaseBasePath(null);
