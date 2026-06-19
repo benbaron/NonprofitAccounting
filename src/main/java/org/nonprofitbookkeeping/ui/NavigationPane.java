@@ -78,6 +78,13 @@ public class NavigationPane extends VBox
                 addRecordService(categoryNode, binding);
             });
 
+        TreeItem<NavItem> admin = group(root, "Database & Company");
+        add(admin, AppPanelId.DATABASE_ADMIN, "Database Administration");
+        add(admin, AppPanelId.COMPANY_ADMIN, "Company Administration");
+
+        TreeItem<NavItem> importExport = group(root, "Import/Export");
+        add(importExport, AppPanelId.IMPORT_EXPORT, "Import/Export");
+
         TreeItem<NavItem> sys = group(root, "System");
         add(sys, AppPanelId.SETTINGS, "Settings");
 

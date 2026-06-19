@@ -25,5 +25,9 @@ public enum AppPanelId
 
     CHART_OF_ACCOUNTS,
     FUNDS,
+
+    DATABASE_ADMIN,
+    COMPANY_ADMIN,
+    IMPORT_EXPORT,
     SETTINGS
 }
