@@ -184,9 +184,8 @@ public class PanelHost extends BorderPane
             case CHART_OF_ACCOUNTS -> new ChartOfAccountsPanel();
             case FUNDS -> new FundsPanel();
 
-            case DATABASE_ADMIN -> new AlternateDatabaseAdminPanel(services);
-            case COMPANY_ADMIN -> new PlaceholderAppPanel("Company Administration",
-                "Company administration workspace is not implemented in PanelHost yet.");
+            case DATABASE_ADMIN -> new AlternateDatabaseAdminPanel(UiServiceRegistry.provider());
+            case COMPANY_ADMIN -> new AlternateCompanyAdminPanel(UiServiceRegistry.provider());
             case IMPORT_EXPORT -> new PlaceholderAppPanel("Import/Export",
                 "Import/export workspace is not implemented in PanelHost yet.");
             case SETTINGS -> new SettingsPanel();
