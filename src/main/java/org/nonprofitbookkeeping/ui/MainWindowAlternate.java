@@ -78,7 +78,7 @@ public class MainWindowAlternate extends BorderPane
         "Warm", Color.web("#f7f2ee"),
         "Cool", Color.web("#edf5f9"));
 
-    private final PanelHost panelHost = new PanelHost();
+    private final PanelHost panelHost;
     private final NavigationPane nav =
         new NavigationPane(this::openPanel, this::openInspectorForSelection, this::openRecordServicePanel);
     private final Label alternateStatus = new Label("Select an item to see context details.");
@@ -153,6 +153,7 @@ public class MainWindowAlternate extends BorderPane
         this.contextService = contextService;
         this.sessionContext = contextService.sessionContext();
         this.uiServices = new UiServiceProvider(contextService);
+        this.panelHost = new PanelHost(this.uiServices);
         this.alternateDashboardPanel = new AlternateDashboardPanel(this.sessionContext, this.uiServices);
         this.commandCatalog = new AlternateUiCommandCatalog(this.sessionContext);
         this.sessionContext.companyOpenProperty().addListener((obs, oldValue, newValue) -> {

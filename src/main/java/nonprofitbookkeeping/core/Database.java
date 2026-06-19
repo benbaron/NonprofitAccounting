@@ -52,6 +52,14 @@ public final class Database
 	}
 	
 	/**
+	 * Clears the active database singleton.
+	 */
+	public static synchronized void close()
+	{
+		INSTANCE = null;
+	}
+
+	/**
 	 * Checks if is initialized.
 	 *
 	 * @return true, if is initialized

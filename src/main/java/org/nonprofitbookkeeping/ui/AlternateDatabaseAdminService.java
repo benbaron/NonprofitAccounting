@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -51,23 +50,40 @@ public class AlternateDatabaseAdminService
             "Imported database to " + normalizedTargetFile.toAbsolutePath(), openResult, List.of());
     }
 
-    public AdminResult exportDatabase(Path sourcePath, Path targetPath, boolean overwrite) throws IOException
+    public AdminResult exportDatabase(Path sourcePath, Path targetPath, boolean overwrite) throws Exception
     {
         Path effectiveSource = sourcePath != null ? sourcePath : activeDatabaseFile();
         validateSupportedExistingDatabase(effectiveSource);
         validateTarget(targetPath, overwrite);
+        Path sourceBase = normalizeBase(effectiveSource);
         Path normalizedTargetFile = normalizeFile(targetPath);
         Files.createDirectories(parentOrCurrent(normalizedTargetFile));
-        if (overwrite)
+        boolean activeSource = isActiveDatabase(sourceBase);
+        DatabaseOpenService.OpenResult reopened = null;
+        if (activeSource)
         {
-            Files.copy(normalizeFile(effectiveSource), normalizedTargetFile, StandardCopyOption.REPLACE_EXISTING);
+            closeDatabase();
         }
-        else
+        try
         {
-            Files.copy(normalizeFile(effectiveSource), normalizedTargetFile);
+            if (overwrite)
+            {
+                Files.copy(normalizeFile(effectiveSource), normalizedTargetFile, StandardCopyOption.REPLACE_EXISTING);
+            }
+            else
+            {
+                Files.copy(normalizeFile(effectiveSource), normalizedTargetFile);
+            }
+        }
+        finally
+        {
+            if (activeSource)
+            {
+                reopened = databaseAdministrationService.openDatabase(sourceBase);
+            }
         }
         return new AdminResult(normalizeFile(effectiveSource), normalizedTargetFile, null, normalizedTargetFile,
-            "Exported database backup to " + normalizedTargetFile.toAbsolutePath(), null, List.of());
+            "Exported database backup to " + normalizedTargetFile.toAbsolutePath(), reopened, List.of());
     }
 
     public AdminResult validateDatabase(Path databasePath) throws IOException
@@ -101,18 +117,40 @@ public class AlternateDatabaseAdminService
             repairResult.backupFiles());
     }
 
-    public AdminResult migrateSchema(Path databasePath, Path outputScript) throws SQLException, IOException
+    public AdminResult migrateSchema(Path databasePath, Path outputScript, boolean backupConfirmed) throws Exception
     {
         validateSupportedExistingDatabase(databasePath);
         Path basePath = normalizeBase(databasePath);
-        if (isActiveDatabase(basePath))
+        Path activeBase = sessionContext.activeDatabaseBasePath();
+        boolean migratingActive = isActiveDatabase(basePath);
+        if (migratingActive && !backupConfirmed)
+        {
+            throw new IllegalStateException("Migration of the active database requires explicit backup confirmation before in-place schema changes.");
+        }
+        if (migratingActive)
         {
             closeDatabase();
         }
-        H2SchemaMigrator.RepairResult repairResult = H2SchemaMigrator.migrateWithRepairInfo(basePath, outputScript);
+        H2SchemaMigrator.RepairResult repairResult;
+        try
+        {
+            repairResult = H2SchemaMigrator.migrateWithRepairInfo(basePath, outputScript);
+        }
+        finally
+        {
+            if (activeBase != null && !migratingActive)
+            {
+                DatabaseOpenService.openDatabase(activeBase);
+            }
+        }
+        DatabaseOpenService.OpenResult openResult = null;
+        if (migratingActive)
+        {
+            openResult = databaseAdministrationService.openDatabase(basePath);
+        }
         List<Path> backups = repairResult == null ? List.of() : repairResult.backupFiles();
         return new AdminResult(normalizeFile(databasePath), outputScript, backups.isEmpty() ? null : backups.get(0),
-            outputScript, "Schema migration completed for " + basePath.toAbsolutePath(), null, backups);
+            outputScript, "Schema migration completed for " + basePath.toAbsolutePath(), openResult, backups);
     }
 
     H2SchemaMigrator.RepairResult repairCorruptedDatabase(Path basePath) throws Exception
@@ -172,8 +210,7 @@ public class AlternateDatabaseAdminService
     static boolean isSupportedDatabasePath(Path path)
     {
         String lower = path.getFileName().toString().toLowerCase(Locale.ROOT);
-        return lower.endsWith(".mv.db") || lower.endsWith(".h2.db") || lower.endsWith(".db")
-            || !lower.contains(".");
+        return lower.endsWith(".mv.db") || lower.endsWith(".h2.db") || !lower.contains(".");
     }
 
     static Path normalizeBase(Path path)
@@ -182,7 +219,6 @@ public class AlternateDatabaseAdminService
         String lower = raw.toLowerCase(Locale.ROOT);
         if (lower.endsWith(".mv.db")) return Path.of(raw.substring(0, raw.length() - ".mv.db".length()));
         if (lower.endsWith(".h2.db")) return Path.of(raw.substring(0, raw.length() - ".h2.db".length()));
-        if (lower.endsWith(".db")) return Path.of(raw.substring(0, raw.length() - ".db".length()));
         return path;
     }
 
@@ -190,7 +226,7 @@ public class AlternateDatabaseAdminService
     {
         String raw = path.toString();
         String lower = raw.toLowerCase(Locale.ROOT);
-        if (lower.endsWith(".mv.db") || lower.endsWith(".h2.db") || lower.endsWith(".db")) return path;
+        if (lower.endsWith(".mv.db") || lower.endsWith(".h2.db")) return path;
         return path.resolveSibling(path.getFileName() + ".mv.db");
     }
 
