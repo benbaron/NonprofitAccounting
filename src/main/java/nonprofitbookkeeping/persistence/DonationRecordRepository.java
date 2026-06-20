@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +23,10 @@ public class DonationRecordRepository
 		String sql = """
 			MERGE INTO donation_record(
 			  donation_id, donor_external_id, donation_date, amount, memo,
-			  cash_account_number, revenue_account_number, fund_number, journal_txn_id, updated_at
+			  cash_account_number, revenue_account_number, fund_number, journal_txn_id,
+			  receipt_required, receipt_sent_at, updated_at
 			) KEY(donation_id)
-			VALUES(?,?,?,?,?,?,?,?,?, CURRENT_TIMESTAMP)
+			VALUES(?,?,?,?,?,?,?,?,?,?,?, CURRENT_TIMESTAMP)
 		""";
 		try (Connection c = Database.get().getConnection();
 			 PreparedStatement ps = c.prepareStatement(sql))
@@ -47,6 +49,9 @@ public class DonationRecordRepository
 			{
 				ps.setInt(++i, row.getJournalTxnId());
 			}
+			ps.setBoolean(++i, row.isReceiptRequired());
+			ps.setTimestamp(++i, row.getReceiptSentAt() == null ? null :
+				Timestamp.valueOf(row.getReceiptSentAt()));
 			ps.executeUpdate();
 		}
 	}
@@ -139,6 +144,10 @@ public class DonationRecordRepository
 		row.setFundNumber(rs.getString("fund_number"));
 		int txnId = rs.getInt("journal_txn_id");
 		row.setJournalTxnId(rs.wasNull() ? null : txnId);
+		row.setReceiptRequired(rs.getBoolean("receipt_required"));
+		Timestamp receiptSentAt = rs.getTimestamp("receipt_sent_at");
+		row.setReceiptSentAt(receiptSentAt == null ? null :
+			receiptSentAt.toLocalDateTime());
 		return row;
 	}
 }

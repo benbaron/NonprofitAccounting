@@ -2,6 +2,7 @@ package nonprofitbookkeeping.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * Donation workflow record linked to posted journal transaction.
@@ -17,6 +18,8 @@ public class DonationRecord
 	private String revenueAccountNumber;
 	private String fundNumber;
 	private Integer journalTxnId;
+	private boolean receiptRequired = true;
+	private LocalDateTime receiptSentAt;
 
 	public String getDonationId(){ return this.donationId; }
 	public void setDonationId(String donationId){ this.donationId = donationId; }
@@ -36,4 +39,8 @@ public class DonationRecord
 	public void setFundNumber(String fundNumber){ this.fundNumber = fundNumber; }
 	public Integer getJournalTxnId(){ return this.journalTxnId; }
 	public void setJournalTxnId(Integer journalTxnId){ this.journalTxnId = journalTxnId; }
+	public boolean isReceiptRequired(){ return this.receiptRequired; }
+	public void setReceiptRequired(boolean receiptRequired){ this.receiptRequired = receiptRequired; }
+	public LocalDateTime getReceiptSentAt(){ return this.receiptSentAt; }
+	public void setReceiptSentAt(LocalDateTime receiptSentAt){ this.receiptSentAt = receiptSentAt; }
 }
