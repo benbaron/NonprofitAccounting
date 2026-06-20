@@ -523,6 +523,7 @@ public class MainWindowAlternate extends BorderPane
             () -> openPanel(AppPanelId.IMPORT_EXPORT),
             () -> openPanel(AppPanelId.IMPORT_EXPORT),
             () -> openPanel(AppPanelId.IMPORT_EXPORT),
+            () -> openPanel(AppPanelId.MONTHLY_CLOSE),
             () -> openPanel(AppPanelId.CHART_OF_ACCOUNTS),
             () -> openPanel(AppPanelId.LEDGER_REGISTER),
             () -> openPanel(AppPanelId.INVENTORY),

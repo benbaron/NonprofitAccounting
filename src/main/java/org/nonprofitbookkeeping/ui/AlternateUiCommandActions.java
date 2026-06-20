@@ -13,6 +13,7 @@ record AlternateUiCommandActions(Runnable openDatabase,
     Runnable importChartOfAccounts,
     Runnable exportChartOfAccounts,
     Runnable importSclx,
+    Runnable openMonthlyClose,
     Runnable openChartOfAccounts,
     Runnable openJournal,
     Runnable openInventory,
@@ -34,6 +35,7 @@ record AlternateUiCommandActions(Runnable openDatabase,
     {
         Runnable noop = () -> { };
         return new AlternateUiCommandActions(noop, noop, noop, noop, noop, noop, noop, noop, noop, noop, noop,
-            noop, noop, noop, noop, noop, noop, noop, noop, noop, noop, noop, noop, noop, noop, noop, noop, noop);
+            noop, noop, noop, noop, noop, noop, noop, noop, noop, noop, noop, noop, noop, noop, noop, noop,
+            noop, noop);
     }
 }

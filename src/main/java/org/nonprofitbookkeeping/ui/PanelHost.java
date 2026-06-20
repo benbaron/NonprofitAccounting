@@ -190,6 +190,7 @@ public class PanelHost extends BorderPane
             case DATABASE_ADMIN -> new AlternateDatabaseAdminPanel(UiServiceRegistry.provider());
             case COMPANY_ADMIN -> new AlternateCompanyAdminPanel(UiServiceRegistry.provider());
             case IMPORT_EXPORT -> new AlternateImportExportPanel();
+            case MONTHLY_CLOSE -> new MonthlyCloseChecklistPanel(services);
             case SETTINGS -> new SettingsPanel(services);
         };
         }
