@@ -36,5 +36,6 @@ class WorkspaceRouterTest
         assertTrue(router.decide(AppPanelId.DEPRECIATION_RUNS).isPanelHost());
         assertTrue(router.decide(AppPanelId.FUNDS).isPanelHost());
         assertTrue(router.decide(AppPanelId.DATABASE_ADMIN).isPanelHost());
+        assertTrue(router.decide(AppPanelId.IMPORT_EXPORT).isPanelHost());
     }
 }

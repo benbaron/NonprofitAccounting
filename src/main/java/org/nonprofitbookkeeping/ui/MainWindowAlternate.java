@@ -531,9 +531,9 @@ public class MainWindowAlternate extends BorderPane
             notImplementedAction("Populate Company"),
             notImplementedAction("Create Sample Company"),
             this::openCompanySelector,
-            notImplementedAction("Import Chart of Accounts"),
-            notImplementedAction("Export Chart of Accounts"),
-            notImplementedAction("Import SCLX"),
+            () -> openPanel(AppPanelId.IMPORT_EXPORT),
+            () -> openPanel(AppPanelId.IMPORT_EXPORT),
+            () -> openPanel(AppPanelId.IMPORT_EXPORT),
             () -> openPanel(AppPanelId.CHART_OF_ACCOUNTS),
             () -> openPanel(AppPanelId.LEDGER_REGISTER),
             () -> openPanel(AppPanelId.INVENTORY),
@@ -977,10 +977,6 @@ public class MainWindowAlternate extends BorderPane
         else if (id == AppPanelId.COMPANY_ADMIN)
         {
             this.alternateContentPane.getChildren().setAll(buildCompanySelectorPane());
-        }
-        else if (id == AppPanelId.IMPORT_EXPORT)
-        {
-            this.alternateContentPane.getChildren().setAll(new Label("Import/export workspace is not implemented in the alternate UI yet."));
         }
         else if (alternateCustomPane)
         {

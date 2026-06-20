@@ -143,7 +143,6 @@ class AlternateUiCommandCatalog
 
     private boolean isNotImplemented(String label)
     {
-        return label.equals("Import Chart of Accounts") || label.equals("Export Chart of Accounts")
-            || label.equals("Import SCLX");
+        return false;
     }
 }
