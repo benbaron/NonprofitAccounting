@@ -24,9 +24,9 @@ class WorkspaceRouterTest
     }
 
     @Test
-    void settingsAndReportsRemainAlternateCustomPanes()
+    void settingsUsesPanelHostAndBudgetSchedulesRemainAlternateCustomPanes()
     {
-        assertTrue(router.decide(AppPanelId.SETTINGS).isAlternateCustomPane());
+        assertTrue(router.decide(AppPanelId.SETTINGS).isPanelHost());
         assertTrue(router.decide(AppPanelId.BUDGET_EDITOR).isAlternateCustomPane());
         assertTrue(router.decide(AppPanelId.SCHEDULES).isAlternateCustomPane());
         assertTrue(router.decide(AppPanelId.REPORTS_WORKSPACE).isPanelHost());
