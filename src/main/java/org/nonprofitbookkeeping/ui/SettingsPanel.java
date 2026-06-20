@@ -165,7 +165,7 @@ public class SettingsPanel implements AppPanel, AppPanel.SaveAware
     private Tab companyTab()
     {
         fiscalYearStart.setPromptText("MM-DD");
-        currency.getItems().setAll("USD", "CAD", "EUR", "GBP", Currency.getInstance(Locale.getDefault()).getCurrencyCode());
+        currency.getItems().setAll("USD", "CAD", "EUR", "GBP", defaultLocaleCurrencyCode());
         currencyFormat.setPromptText("$#,##0.00");
         GridPane grid = grid();
         add(grid, 0, "Organization profile", organizationName);
@@ -181,6 +181,16 @@ public class SettingsPanel implements AppPanel, AppPanel.SaveAware
     {
         defaultReportPeriod.getItems().setAll(ReportPeriodPreset.values());
         return tab("Reports", new VBox(8, new Label("Report defaults"), defaultReportPeriod, yearToDate, fullYear, lastMonth));
+    }
+
+    private String defaultLocaleCurrencyCode()
+    {
+        Locale locale = Locale.getDefault();
+        if (locale == null || locale.getCountry() == null || locale.getCountry().isBlank())
+        {
+            return "USD";
+        }
+        return Currency.getInstance(locale).getCurrencyCode();
     }
 
     private void reload()

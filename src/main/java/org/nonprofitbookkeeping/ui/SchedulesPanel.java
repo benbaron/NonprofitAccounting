@@ -33,10 +33,19 @@ public class SchedulesPanel implements AppPanel
 
     private final Map<String, Tab> tabIndex = new LinkedHashMap<>();
 
-    private final ScheduleEligibilityService eligibility = UiServiceRegistry.schedules();
+    private final UiServiceProvider services;
+    private final ScheduleEligibilityService eligibility;
 
     public SchedulesPanel()
     {
+        this(UiServiceRegistry.provider());
+    }
+
+    SchedulesPanel(UiServiceProvider services)
+    {
+        this.services = services;
+        this.eligibility = services.sessionContext().isDatabaseOpen() ? services.scheduleEligibility() : null;
+
         Label title = new Label("Schedules / Outstanding Details");
         title.getStyleClass().add("h1");
 
@@ -111,6 +120,12 @@ public class SchedulesPanel implements AppPanel
 
     private void loadAccounts()
     {
+        if (!services.sessionContext().isDatabaseOpen())
+        {
+            showNoAccountsMessage("Open a database to load schedule account eligibility.");
+            return;
+        }
+
         status.setText("Loading accounts...");
 
         UiAsync.run("schedule-accounts-load",
@@ -130,7 +145,7 @@ public class SchedulesPanel implements AppPanel
 
     private List<Account> loadDbAccounts()
     {
-        AccountLookupService lookup = UiServiceRegistry.accountLookup();
+        AccountLookupService lookup = services.accountLookup();
         return lookup.listActivePostingAccounts();
     }
 
@@ -146,7 +161,7 @@ public class SchedulesPanel implements AppPanel
         for (Tab t : tabs.getTabs()) t.setDisable(true);
         if (account == null) return;
 
-        Set<String> allowed = eligibility.allowedScheduleKindCodes(account);
+        Set<String> allowed = eligibility == null ? Set.of() : eligibility.allowedScheduleKindCodes(account);
         for (String code : allowed)
         {
             Tab t = tabIndex.get(code);
