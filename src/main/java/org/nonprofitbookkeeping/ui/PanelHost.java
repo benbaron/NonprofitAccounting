@@ -169,6 +169,7 @@ public class PanelHost extends BorderPane
             case DASHBOARD -> new AlternateDashboardPanel(services.sessionContext(), services);
 
             case LEDGER_REGISTER -> new LedgerRegisterPanel();
+            case EVENT_ACCOUNTING -> new EventAccountingPanel();
 
             case SCHEDULES -> new SchedulesPanel();
             case INVENTORY -> new AssetsRegisterPanel("Inventory");
