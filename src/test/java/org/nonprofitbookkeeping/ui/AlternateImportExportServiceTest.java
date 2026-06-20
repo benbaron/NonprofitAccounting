@@ -2,6 +2,10 @@ package org.nonprofitbookkeeping.ui;
 
 import nonprofitbookkeeping.importer.sclx.SclxImportResult;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -9,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AlternateImportExportServiceTest
 {
+    @TempDir Path tempDir;
     @Test
     void sclxSummaryMapsExistingSclxCountsIntoStandardImportCounts()
     {
@@ -35,5 +40,18 @@ class AlternateImportExportServiceTest
         assertTrue(result.hasBlockingErrors());
         assertEquals(1, result.errorCount());
         assertTrue(result.describeCounts().contains("Errors: 1"));
+    }
+
+    @Test
+    void chartOfAccountsImportValidationBlocksUnsupportedOrMissingFiles() throws Exception
+    {
+        AlternateImportExportService service = new AlternateImportExportService();
+
+        assertTrue(service.validateChartOfAccountsImport(tempDir.resolve("accounts.exe")).hasBlockingErrors());
+        assertTrue(service.validateChartOfAccountsImport(tempDir.resolve("missing.csv")).hasBlockingErrors());
+        Path csv = tempDir.resolve("accounts.csv");
+        Files.writeString(csv, "account,description\n1000,Cash\n");
+
+        assertFalse(service.validateChartOfAccountsImport(csv).hasBlockingErrors());
     }
 }
