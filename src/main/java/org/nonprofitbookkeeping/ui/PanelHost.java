@@ -183,6 +183,7 @@ public class PanelHost extends BorderPane
 
             case CHART_OF_ACCOUNTS -> new ChartOfAccountsPanel();
             case FUNDS -> new FundsPanel();
+            case DONORS -> new DonorManagementPanel();
 
             case DATABASE_ADMIN -> new AlternateDatabaseAdminPanel(UiServiceRegistry.provider());
             case COMPANY_ADMIN -> new AlternateCompanyAdminPanel(UiServiceRegistry.provider());

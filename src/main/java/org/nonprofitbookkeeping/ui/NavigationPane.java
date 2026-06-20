@@ -66,6 +66,7 @@ public class NavigationPane extends VBox
         TreeItem<NavItem> ref = group(root, "Reference");
         add(ref, AppPanelId.CHART_OF_ACCOUNTS, "Chart of Accounts");
         add(ref, AppPanelId.FUNDS, "Funds");
+        add(ref, AppPanelId.DONORS, "Donors");
 
         TreeItem<NavItem> registry = group(root, "Record Services");
         Map<String, TreeItem<NavItem>> registryCategories = new LinkedHashMap<>();
