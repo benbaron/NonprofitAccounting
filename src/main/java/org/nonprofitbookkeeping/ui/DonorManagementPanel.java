@@ -18,22 +18,27 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import nonprofitbookkeeping.model.DonationRecord;
 import nonprofitbookkeeping.model.DonorContact;
-import nonprofitbookkeeping.persistence.DonationRecordRepository;
 import nonprofitbookkeeping.service.DonorService;
+import nonprofitbookkeeping.service.DonorReceiptWorkflowService;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.Year;
 import java.util.List;
 
 /** Native alternate UI donor workspace. */
 public class DonorManagementPanel implements AppPanel, AppPanel.SaveAware
 {
     private final DonorService donorService;
-    private final DonationRecordRepository donationRepository;
+    private final DonorReceiptWorkflowService receiptWorkflowService;
     private final AlternatePanelScaffold scaffold = new AlternatePanelScaffold("Donors");
     private final ObservableList<DonorContact> donors = FXCollections.observableArrayList();
     private final ObservableList<DonationRecord> donations = FXCollections.observableArrayList();
+    private final ObservableList<AnnualTotalRow> annualTotals = FXCollections.observableArrayList();
     private final TableView<DonorContact> donorTable = new TableView<>();
     private final TableView<DonationRecord> donationTable = new TableView<>();
+    private final TableView<AnnualTotalRow> annualTotalTable = new TableView<>();
     private final TextField idField = new TextField();
     private final TextField nameField = new TextField();
     private final TextField emailField = new TextField();
@@ -42,13 +47,14 @@ public class DonorManagementPanel implements AppPanel, AppPanel.SaveAware
 
     public DonorManagementPanel()
     {
-        this(new DonorService(), new DonationRecordRepository());
+        this(new DonorService(), new DonorReceiptWorkflowService());
     }
 
-    DonorManagementPanel(DonorService donorService, DonationRecordRepository donationRepository)
+    DonorManagementPanel(DonorService donorService,
+        DonorReceiptWorkflowService receiptWorkflowService)
     {
         this.donorService = donorService;
-        this.donationRepository = donationRepository;
+        this.receiptWorkflowService = receiptWorkflowService;
         buildUi();
         refreshDonors();
     }
@@ -138,8 +144,17 @@ public class DonorManagementPanel implements AppPanel, AppPanel.SaveAware
         memo.setCellValueFactory(new PropertyValueFactory<>("memo"));
         TableColumn<DonationRecord, String> txn = new TableColumn<>("Journal Txn");
         txn.setCellValueFactory(row -> new SimpleStringProperty(row.getValue().getJournalTxnId() == null ? "" : row.getValue().getJournalTxnId().toString()));
-        donationTable.getColumns().setAll(date, amount, memo, txn);
+        TableColumn<DonationRecord, String> receipt = new TableColumn<>("Receipt Status");
+        receipt.setCellValueFactory(row -> new SimpleStringProperty(receiptStatus(row.getValue())));
+        donationTable.getColumns().setAll(date, amount, memo, txn, receipt);
         donationTable.setItems(donations);
+
+        TableColumn<AnnualTotalRow, String> year = new TableColumn<>("Year");
+        year.setCellValueFactory(row -> new SimpleStringProperty(row.getValue().year()));
+        TableColumn<AnnualTotalRow, String> total = new TableColumn<>("Annual Total");
+        total.setCellValueFactory(row -> new SimpleStringProperty(row.getValue().total()));
+        annualTotalTable.getColumns().setAll(year, total);
+        annualTotalTable.setItems(annualTotals);
     }
 
     private Node editorAndHistory()
@@ -154,7 +169,15 @@ public class DonorManagementPanel implements AppPanel, AppPanel.SaveAware
         form.addRow(1, new Label("Name"), nameField);
         form.addRow(2, new Label("Email"), emailField);
         form.addRow(3, new Label("Phone"), phoneField);
-        VBox box = new VBox(10, form, new Label("Donation History"), donationTable);
+        Button receiptRequired = new Button("Receipt Required");
+        receiptRequired.setOnAction(e -> updateSelectedDonationReceiptRequired(true));
+        Button receiptNotRequired = new Button("No Receipt Required");
+        receiptNotRequired.setOnAction(e -> updateSelectedDonationReceiptRequired(false));
+        Button receiptSent = new Button("Mark Receipt Sent");
+        receiptSent.setOnAction(e -> markSelectedDonationReceiptSent());
+        HBox receiptActions = new HBox(8, receiptRequired, receiptNotRequired, receiptSent);
+        VBox box = new VBox(10, form, new Label("Donation History"), donationTable,
+            receiptActions, new Label("Annual Totals"), annualTotalTable);
         VBox.setVgrow(donationTable, Priority.ALWAYS);
         return box;
     }
@@ -170,6 +193,7 @@ public class DonorManagementPanel implements AppPanel, AppPanel.SaveAware
             if (donors.isEmpty())
             {
                 donations.clear();
+                annualTotals.clear();
             }
         }
         catch (Exception ex)
@@ -197,11 +221,17 @@ public class DonorManagementPanel implements AppPanel, AppPanel.SaveAware
     {
         try
         {
-            donations.setAll(donationRepository.listByDonorExternalId(donorId));
+            DonorReceiptWorkflowService.DonorDetail detail =
+                receiptWorkflowService.detailForDonor(donorId);
+            donations.setAll(detail.donationHistory());
+            annualTotals.setAll(detail.annualTotals().entrySet().stream()
+                .map(e -> new AnnualTotalRow(e.getKey(), e.getValue()))
+                .toList());
         }
         catch (SQLException ex)
         {
             donations.clear();
+            annualTotals.clear();
             scaffold.setStatus("Unable to load donation history: " + ex.getMessage());
         }
     }
@@ -257,6 +287,73 @@ public class DonorManagementPanel implements AppPanel, AppPanel.SaveAware
         emailField.clear();
         phoneField.clear();
         donations.clear();
+        annualTotals.clear();
+    }
+
+    private void updateSelectedDonationReceiptRequired(boolean required)
+    {
+        DonationRecord selected = donationTable.getSelectionModel().getSelectedItem();
+        if (selected == null)
+        {
+            scaffold.setStatus("Select a donation before changing receipt status.");
+            return;
+        }
+        try
+        {
+            receiptWorkflowService.updateReceiptRequired(selected.getDonationId(), required);
+            refreshDonationHistory(selected.getDonorExternalId());
+            scaffold.setStatus(required ? "Receipt required." : "Receipt not required.");
+        }
+        catch (SQLException ex)
+        {
+            scaffold.setStatus("Unable to update receipt status: " + ex.getMessage());
+        }
+    }
+
+    private void markSelectedDonationReceiptSent()
+    {
+        DonationRecord selected = donationTable.getSelectionModel().getSelectedItem();
+        if (selected == null)
+        {
+            scaffold.setStatus("Select a donation before marking a receipt sent.");
+            return;
+        }
+        try
+        {
+            receiptWorkflowService.markReceiptSent(selected.getDonationId(), LocalDateTime.now());
+            refreshDonationHistory(selected.getDonorExternalId());
+            scaffold.setStatus("Receipt marked sent.");
+        }
+        catch (SQLException ex)
+        {
+            scaffold.setStatus("Unable to update receipt status: " + ex.getMessage());
+        }
+    }
+
+    private static String receiptStatus(DonationRecord donation)
+    {
+        if (!donation.isReceiptRequired())
+        {
+            return "Not required";
+        }
+        if (donation.getReceiptSentAt() != null)
+        {
+            return "Sent " + donation.getReceiptSentAt().toLocalDate();
+        }
+        return "Required";
+    }
+
+    private record AnnualTotalRow(Year yearValue, BigDecimal totalValue)
+    {
+        public String year()
+        {
+            return yearValue == null ? "" : yearValue.toString();
+        }
+
+        public String total()
+        {
+            return totalValue == null ? "" : totalValue.toPlainString();
+        }
     }
 
     private static String text(TextField field)
