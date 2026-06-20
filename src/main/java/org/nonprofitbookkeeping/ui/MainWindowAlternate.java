@@ -35,8 +35,6 @@ import javafx.stage.Stage;
 
 import nonprofitbookkeeping.tools.H2SchemaMigrator;
 import nonprofitbookkeeping.ui.panels.HelpPanelFX;
-import nonprofitbookkeeping.ui.panels.LedgerReconcilePanelFX;
-import nonprofitbookkeeping.service.ReconciliationService;
 import nonprofitbookkeeping.service.UndepositedFundsService;
 import nonprofitbookkeeping.service.DocumentStorageService;
 import nonprofitbookkeeping.ui.panels.UndepositedFundsPanelFX;
@@ -110,8 +108,6 @@ public class MainWindowAlternate extends BorderPane
 
     interface BankingPanelFactory
     {
-        Node createReconcilePanel();
-
         Node createUndepositedFundsPanel();
 
         Node createDocumentsPanel();
@@ -119,11 +115,6 @@ public class MainWindowAlternate extends BorderPane
 
     static class DefaultBankingPanelFactory implements BankingPanelFactory
     {
-        public Node createReconcilePanel()
-        {
-            return new LedgerReconcilePanelFX(new ReconciliationService());
-        }
-
         public Node createUndepositedFundsPanel()
         {
             return new UndepositedFundsPanelFX(new UndepositedFundsService());
@@ -544,7 +535,7 @@ public class MainWindowAlternate extends BorderPane
             this::openReportsScheduleDirect,
             this::openDonorsDirect,
             () -> openPanel(AppPanelId.FUNDS),
-            this::openReconcileAccountsDirect,
+            () -> openPanel(AppPanelId.RECONCILIATION),
             this::openUndepositedFundsDirect,
             this::openDocumentsDirect,
             this::openHelpHint);
@@ -668,15 +659,8 @@ public class MainWindowAlternate extends BorderPane
 
     void openReconcileAccountsDirect()
     {
-        try
-        {
-            showAlternatePane(this.bankingPanelFactory.createReconcilePanel());
-            openInspectorForSelection("Banking", "Reconcile Accounts opened in alternate shell.");
-        }
-        catch (Exception ex)
-        {
-            openInspectorForSelection("Banking", "Reconcile Accounts failed: " + ex.getMessage());
-        }
+        openPanel(AppPanelId.RECONCILIATION);
+        openInspectorForSelection("Banking", "Native reconciliation workspace opened in alternate shell.");
     }
 
     void openUndepositedFundsDirect()
@@ -1136,6 +1120,7 @@ public class MainWindowAlternate extends BorderPane
             case DATABASE_ADMIN -> "Database Administration";
             case COMPANY_ADMIN -> "Company Administration";
             case IMPORT_EXPORT -> "Import/Export";
+            case RECONCILIATION -> "Reconciliation";
             case REPORTS_WORKSPACE -> "Reports Library";
             case SCHEDULES -> "Schedules";
             case BUDGET_EDITOR -> "Budget";

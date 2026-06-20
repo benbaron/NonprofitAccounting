@@ -113,11 +113,6 @@ class MainWindowAlternateCommandCenterTest
             {
                 MainWindowAlternate.BankingPanelFactory failingFactory = new MainWindowAlternate.BankingPanelFactory()
                 {
-                    public Node createReconcilePanel()
-                    {
-                        throw new IllegalStateException("reconcile exploded");
-                    }
-
                     public Node createUndepositedFundsPanel()
                     {
                         throw new IllegalStateException("undeposited exploded");
@@ -131,7 +126,7 @@ class MainWindowAlternateCommandCenterTest
 
                 MainWindowAlternate window = new MainWindowAlternate(failingFactory);
                 window.testOpenReconcileAccountsDirect();
-                assertTrue(window.testAlternateStatusText().contains("Reconcile Accounts failed: reconcile exploded"));
+                assertTrue(window.testAlternateStatusText().contains("Native reconciliation workspace opened"));
 
                 window.testOpenUndepositedFundsDirect();
                 assertTrue(window.testAlternateStatusText().contains("Undeposited Funds failed: undeposited exploded"));
@@ -152,7 +147,7 @@ class MainWindowAlternateCommandCenterTest
         assertTrue(latch.await(20, TimeUnit.SECONDS));
         if (error[0] != null)
         {
-            throw new AssertionError("MainWindowAlternate banking failure feedback test failed", error[0]);
+            throw new AssertionError("MainWindowAlternate banking feedback test failed", error[0]);
         }
     }
 

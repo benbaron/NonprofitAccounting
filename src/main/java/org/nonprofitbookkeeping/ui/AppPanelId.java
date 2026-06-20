@@ -27,6 +27,7 @@ public enum AppPanelId
     FUNDS,
     DONORS,
 
+    RECONCILIATION,
     DATABASE_ADMIN,
     COMPANY_ADMIN,
     IMPORT_EXPORT,
