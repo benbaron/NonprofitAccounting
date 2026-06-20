@@ -153,7 +153,7 @@ public class PanelHost extends BorderPane
         boolean canNavigateAway();
     }
 
-    private static class DefaultPanelFactory implements PanelFactory
+    static class DefaultPanelFactory implements PanelFactory
     {
         private final UiServiceProvider services;
 
@@ -169,9 +169,9 @@ public class PanelHost extends BorderPane
             case DASHBOARD -> new AlternateDashboardPanel(services.sessionContext(), services);
 
             case LEDGER_REGISTER -> new LedgerRegisterPanel();
-            case EVENT_ACCOUNTING -> new EventAccountingPanel();
+            case EVENT_ACCOUNTING -> new EventAccountingPanel(services);
 
-            case SCHEDULES -> new SchedulesPanel();
+            case SCHEDULES -> new SchedulesPanel(services);
             case INVENTORY -> new AssetsRegisterPanel("Inventory");
 
             case BUDGET_EDITOR -> new BudgetEditorPanel();
@@ -187,8 +187,8 @@ public class PanelHost extends BorderPane
             case DONORS -> new DonorManagementPanel();
             case RECONCILIATION -> new AlternateReconciliationPanel();
 
-            case DATABASE_ADMIN -> new AlternateDatabaseAdminPanel(UiServiceRegistry.provider());
-            case COMPANY_ADMIN -> new AlternateCompanyAdminPanel(UiServiceRegistry.provider());
+            case DATABASE_ADMIN -> new AlternateDatabaseAdminPanel(services);
+            case COMPANY_ADMIN -> new AlternateCompanyAdminPanel(services);
             case IMPORT_EXPORT -> new AlternateImportExportPanel();
             case MONTHLY_CLOSE -> new MonthlyCloseChecklistPanel(services);
             case SETTINGS -> new SettingsPanel(services);

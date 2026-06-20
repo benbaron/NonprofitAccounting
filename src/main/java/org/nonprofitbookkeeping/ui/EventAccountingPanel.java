@@ -24,6 +24,7 @@ public class EventAccountingPanel implements AppPanel
 {
     private final AlternatePanelScaffold root = new AlternatePanelScaffold("Event Accounting");
     private final EventAccountingService service;
+    private final UiSessionContext sessionContext;
     private final TableView<EventAccountingWorkspace> events = new TableView<>();
     private final TableView<EventTransactionRow> transactions = new TableView<>();
     private final TableView<EventTransactionRow> deposits = new TableView<>();
@@ -37,12 +38,23 @@ public class EventAccountingPanel implements AppPanel
 
     public EventAccountingPanel()
     {
-        this(new EventAccountingService());
+        this(new EventAccountingService(), null);
+    }
+
+    EventAccountingPanel(UiServiceProvider services)
+    {
+        this(services.sessionContext().isDatabaseOpen() ? new EventAccountingService() : null, services.sessionContext());
     }
 
     EventAccountingPanel(EventAccountingService service)
     {
+        this(service, null);
+    }
+
+    private EventAccountingPanel(EventAccountingService service, UiSessionContext sessionContext)
+    {
         this.service = service;
+        this.sessionContext = sessionContext;
         root.setSubtitle("Review event/activity income, expenses, linked journal transactions, deposits/refunds, and closeout readiness from posted service data.");
         root.setWarningBanner("Read-only workspace: accounting postings are created only through posting services, not in this UI panel.");
         root.setSecondaryActions(List.of(refreshButton()));
@@ -111,8 +123,22 @@ public class EventAccountingPanel implements AppPanel
 
     private void load()
     {
+        if (sessionContext != null && !sessionContext.isDatabaseOpen())
+        {
+            root.showEmpty("Open a database to load service-backed event/activity accounting workspaces.");
+            status.setText("No database open.");
+            show(null);
+            return;
+        }
         try
         {
+            if (service == null)
+            {
+                root.showEmpty("Open a database to load service-backed event/activity accounting workspaces.");
+                status.setText("No database open.");
+                show(null);
+                return;
+            }
             List<EventAccountingWorkspace> rows = service.listWorkspaces();
             events.setItems(FXCollections.observableArrayList(rows));
             if (rows.isEmpty())
