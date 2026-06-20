@@ -171,7 +171,7 @@ public class PanelHost extends BorderPane
             case LEDGER_REGISTER -> new LedgerRegisterPanel();
 
             case SCHEDULES -> new SchedulesPanel();
-            case INVENTORY -> new InventoryPanel();
+            case INVENTORY -> new AssetsRegisterPanel("Inventory");
 
             case BUDGET_EDITOR -> new BudgetEditorPanel();
             case BUDGET_VS_ACTUAL -> new BudgetVsActualPanel();
