@@ -23,7 +23,7 @@ public final class PanelAdaptationPlan
     private static final Map<AppPanelId, Strategy> STRATEGIES = Map.ofEntries(
         Map.entry(AppPanelId.CHART_OF_ACCOUNTS, Strategy.ADAPT_LEGACY),
         Map.entry(AppPanelId.LEDGER_REGISTER, Strategy.ADAPT_LEGACY),
-        Map.entry(AppPanelId.REPORTS_WORKSPACE, Strategy.ADAPT_LEGACY),
+        Map.entry(AppPanelId.REPORTS_WORKSPACE, Strategy.BUILD_NATIVE),
         Map.entry(AppPanelId.FUNDS, Strategy.ADAPT_LEGACY),
         Map.entry(AppPanelId.INVENTORY, Strategy.ADAPT_LEGACY),
         Map.entry(AppPanelId.ASSETS_REGISTER, Strategy.ADAPT_LEGACY),
