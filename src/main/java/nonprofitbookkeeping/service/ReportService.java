@@ -6,6 +6,8 @@ import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.report.template.RenderedSemanticReport;
 import nonprofitbookkeeping.report.template.WorkbookSemanticReportService;
 import nonprofitbookkeeping.reports.ReportMetadata;
+import nonprofitbookkeeping.model.reports.ReportGenerationRequest;
+import nonprofitbookkeeping.model.reports.ReportFormat;
 
 import java.io.File;
 import java.io.IOException;
@@ -92,6 +94,31 @@ public class ReportService
 		Files.writeString(out.toPath(), payload, StandardCharsets.UTF_8);
 		LOGGER.info("Semantic report generated: {}", out.getAbsolutePath());
 		return out;
+	}
+
+	/**
+	 * Generates a report from the alternate workspace request model. The current
+	 * semantic renderer accepts date range and output format directly; additional
+	 * selected parameters remain on the request so future domain-backed renderers
+	 * can consume them without changing the UI contract.
+	 *
+	 * @param request selected report and parameters
+	 * @return generated file
+	 * @throws IOException if the report cannot be written
+	 */
+	public File generateReport(ReportGenerationRequest request) throws IOException
+	{
+		if (request == null)
+		{
+			throw new IllegalArgumentException("request is required.");
+		}
+		ReportFormat format = request.format() == null ? ReportFormat.TEXT : request.format();
+		if (!format.supported())
+		{
+			throw new IllegalArgumentException(format.explanation());
+		}
+		return generateSemanticReport(request.templateId(), request.startDate(),
+			request.endDate(), format.extension());
 	}
 
 	/**
