@@ -86,6 +86,7 @@ public class NavigationPane extends VBox
 
         TreeItem<NavItem> importExport = group(root, "Import/Export");
         add(importExport, AppPanelId.IMPORT_EXPORT, "Import/Export");
+        add(importExport, AppPanelId.MONTHLY_CLOSE, "Monthly Close Checklist");
 
         TreeItem<NavItem> sys = group(root, "System");
         add(sys, AppPanelId.SETTINGS, "Settings");
