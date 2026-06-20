@@ -33,7 +33,7 @@ public class WorkspaceRouter
     {
         return switch (id)
         {
-            case SETTINGS, BUDGET_EDITOR, SCHEDULES -> true;
+            case BUDGET_EDITOR, SCHEDULES -> true;
             default -> false;
         };
     }
@@ -43,7 +43,7 @@ public class WorkspaceRouter
         return switch (id)
         {
             case CHART_OF_ACCOUNTS, LEDGER_REGISTER, REPORTS_WORKSPACE, FUNDS, INVENTORY,
-                ASSETS_REGISTER, BUDGET_VS_ACTUAL, DEPRECIATION_RUNS, REPORT_LIBRARY, DATABASE_ADMIN, COMPANY_ADMIN, IMPORT_EXPORT -> true;
+                ASSETS_REGISTER, BUDGET_VS_ACTUAL, DEPRECIATION_RUNS, REPORT_LIBRARY, DATABASE_ADMIN, COMPANY_ADMIN, IMPORT_EXPORT, SETTINGS -> true;
             default -> false;
         };
     }
