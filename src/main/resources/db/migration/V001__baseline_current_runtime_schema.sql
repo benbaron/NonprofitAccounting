@@ -108,7 +108,8 @@ CREATE TABLE IF NOT EXISTS donor(
   external_id VARCHAR(64) UNIQUE,
   name VARCHAR(255),
   email VARCHAR(255),
-  phone VARCHAR(64)
+  phone VARCHAR(64),
+  is_active BOOLEAN DEFAULT TRUE NOT NULL
 );
 CREATE UNIQUE INDEX IF NOT EXISTS donor_external_id_idx ON donor(external_id);
 

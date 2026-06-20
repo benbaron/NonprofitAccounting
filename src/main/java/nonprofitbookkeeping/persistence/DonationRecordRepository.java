@@ -105,6 +105,26 @@ public class DonationRecordRepository
 		return rows;
 	}
 
+	public List<DonationRecord> listByDonorExternalId(String donorExternalId)
+		throws SQLException
+	{
+		List<DonationRecord> rows = new ArrayList<>();
+		String sql = "SELECT * FROM donation_record WHERE donor_external_id = ? ORDER BY donation_date DESC, donation_id";
+		try (Connection c = Database.get().getConnection();
+			 PreparedStatement ps = c.prepareStatement(sql))
+		{
+			ps.setString(1, donorExternalId);
+			try (ResultSet rs = ps.executeQuery())
+			{
+				while (rs.next())
+				{
+					rows.add(mapRow(rs));
+				}
+			}
+		}
+		return rows;
+	}
+
 	private static DonationRecord mapRow(ResultSet rs) throws SQLException
 	{
 		DonationRecord row = new DonationRecord();

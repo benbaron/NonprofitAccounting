@@ -27,25 +27,25 @@ public class DonorRepository
 	
 	/** The Constant UPSERT_SQL. */
 	private static final String UPSERT_SQL =
-		"MERGE INTO donor(external_id, name, email, phone) KEY(external_id) VALUES (?,?,?,?)";
+		"MERGE INTO donor(external_id, name, email, phone, is_active) KEY(external_id) VALUES (?,?,?,?,TRUE)";
 	
 	/** The Constant LIST_SQL. */
 	private static final String LIST_SQL =
-		"SELECT external_id, name, email, phone FROM donor ORDER BY name, external_id";
+		"SELECT external_id, name, email, phone FROM donor WHERE is_active = TRUE ORDER BY name, external_id";
 	
 	/** The Constant DELETE_SQL. */
 	private static final String DELETE_SQL =
-		"DELETE FROM donor WHERE external_id = ?";
+		"UPDATE donor SET is_active = FALSE WHERE external_id = ?";
 	
 	/** The Constant FIND_SQL. */
 	private static final String FIND_SQL =
-		"SELECT external_id, name, email, phone FROM donor WHERE external_id = ?";
+		"SELECT external_id, name, email, phone FROM donor WHERE external_id = ? AND is_active = TRUE";
 
 	private static final String FIND_NAME_SQL =
 		"SELECT name FROM donor WHERE external_id = ?";
 	
-	/** The Constant DELETE_ALL_SQL. */
-	private static final String DELETE_ALL_SQL = "DELETE FROM donor";
+	/** The Constant DEACTIVATE_ALL_SQL. */
+	private static final String DEACTIVATE_ALL_SQL = "UPDATE donor SET is_active = FALSE";
 	
 	/**
 	 * Inserts or updates the supplied donor.
@@ -75,7 +75,7 @@ public class DonorRepository
 	}
 	
 	/**
-	 * Deletes the donor identified by {@code externalId}.
+	 * Deactivates the donor identified by {@code externalId}.
 	 *
 	 * @param externalId the external id
 	 * @return {@code true} when a row was removed
@@ -89,12 +89,12 @@ public class DonorRepository
 		{
 			String donorName = findNameByExternalId(c, externalId);
 			ps.setString(1, externalId);
-			boolean deleted = ps.executeUpdate() > 0;
-			if (deleted)
+			boolean deactivated = ps.executeUpdate() > 0;
+			if (deactivated)
 			{
 				CounterpartySyncAdapter.deleteDonor(c, donorName);
 			}
-			return deleted;
+			return deactivated;
 		}
 		
 	}
@@ -158,7 +158,7 @@ public class DonorRepository
 	}
 	
 	/**
-	 * Replaces the stored donors with the supplied collection. Existing rows are removed first.
+	 * Replaces active donors with the supplied collection. Existing rows are deactivated so donation history keeps donor_external_id links.
 	 *
 	 * @param donors the donors
 	 * @throws SQLException the SQL exception
@@ -172,7 +172,7 @@ public class DonorRepository
 			try
 			{
 				try (PreparedStatement deleteAll =
-					c.prepareStatement(DELETE_ALL_SQL))
+					c.prepareStatement(DEACTIVATE_ALL_SQL))
 				{
 					deleteAll.executeUpdate();
 				}

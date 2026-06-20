@@ -25,6 +25,7 @@ public enum AppPanelId
 
     CHART_OF_ACCOUNTS,
     FUNDS,
+    DONORS,
 
     DATABASE_ADMIN,
     COMPANY_ADMIN,

@@ -41,9 +41,7 @@ import nonprofitbookkeeping.service.UndepositedFundsService;
 import nonprofitbookkeeping.service.DocumentStorageService;
 import nonprofitbookkeeping.ui.panels.UndepositedFundsPanelFX;
 import nonprofitbookkeeping.ui.panels.DocumentsPanelFX;
-import nonprofitbookkeeping.ui.panels.DonorsPanelFX;
 import nonprofitbookkeeping.ui.panels.JournalEntryWorkspaceFX;
-import nonprofitbookkeeping.service.DonorService;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -716,8 +714,8 @@ public class MainWindowAlternate extends BorderPane
 
     void openDonorsDirect()
     {
-        showAlternatePane(new DonorsPanelFX(new DonorService(), null));
-        openInspectorForSelection("Fundraising", "Donors panel opened in alternate shell.");
+        openPanel(AppPanelId.DONORS);
+        openInspectorForSelection("Fundraising", "Native donors workspace opened in alternate shell.");
     }
 
     private Stage getOwningStage()
@@ -1134,6 +1132,7 @@ public class MainWindowAlternate extends BorderPane
             case LEDGER_REGISTER -> "Journal";
             case INVENTORY -> "Inventory";
             case FUNDS -> "Funds";
+            case DONORS -> "Donors";
             case DATABASE_ADMIN -> "Database Administration";
             case COMPANY_ADMIN -> "Company Administration";
             case IMPORT_EXPORT -> "Import/Export";
