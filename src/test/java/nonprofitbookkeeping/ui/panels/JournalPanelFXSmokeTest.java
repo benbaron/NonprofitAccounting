@@ -11,7 +11,10 @@ import org.junit.jupiter.api.Test;
 
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.GridPane;
 
 class JournalPanelFXSmokeTest
 {
@@ -22,7 +25,7 @@ class JournalPanelFXSmokeTest
     }
 
     @Test
-    void journalPanelBuildsExpectedTransactionColumns() throws Exception
+    void journalPanelBuildsTransactionBlockColumn() throws Exception
     {
         CountDownLatch latch = new CountDownLatch(1);
         Throwable[] error = new Throwable[1];
@@ -31,12 +34,17 @@ class JournalPanelFXSmokeTest
             try
             {
                 JournalPanelFX panel = new JournalPanelFX();
-                TableView<?> table = assertInstanceOf(TableView.class, panel.getCenter());
-                assertEquals(11, table.getColumns().size());
+                TableView<?> table =
+                    assertInstanceOf(TableView.class, panel.getCenter());
+                assertEquals(1, table.getColumns().size());
+                TableColumn<?, ?> blockColumn = table.getColumns().get(0);
+                assertInstanceOf(GridPane.class, blockColumn.getGraphic());
+                assertEquals(SelectionMode.MULTIPLE,
+                    table.getSelectionModel().getSelectionMode());
             }
-            catch (Throwable t)
+            catch (Throwable throwable)
             {
-                error[0] = t;
+                error[0] = throwable;
             }
             finally
             {
