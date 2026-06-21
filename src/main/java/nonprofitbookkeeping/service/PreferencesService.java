@@ -26,6 +26,9 @@ public class PreferencesService
 	private static final String THEME_KEY = "uiTheme";
 	/** Key for storing pending-row text color mode. */
 	private static final String PENDING_ROW_TEXT_COLOR_KEY = "pendingRowTextColor";
+	/** Key controlling whether journal lines retain stored order. */
+	private static final String JOURNAL_STORED_LINE_ORDER_KEY =
+		"journalPreserveStoredLineOrder";
 	
 	/** The {@link Properties} object used to store and manage preferences. */
 	private static final Properties props = new Properties();
@@ -45,10 +48,7 @@ public class PreferencesService
 		
 		try
 		{
-			Files.createDirectories(configPath.getParent()); // Ensure
-																// .nonprofitbookkeeping
-																// directory
-																// exists
+			Files.createDirectories(configPath.getParent());
 			
 			if (Files.exists(configPath))
 			{
@@ -63,8 +63,6 @@ public class PreferencesService
 		}
 		catch (IOException e)
 		{
-			// Consider logging this more formally or handling it based on
-			// application requirements
 			e.printStackTrace();
 		}
 		
@@ -72,8 +70,6 @@ public class PreferencesService
 	
 	/**
 	 * Gets the default directory where company files are stored.
-	 * If no default directory preference is set, it defaults to a "NonprofitBookkeeping"
-	 * subdirectory within the user's home directory.
 	 *
 	 * @return The default company directory path as a String.
 	 */
@@ -85,12 +81,7 @@ public class PreferencesService
 		
 	}
 	
-	/**
-	 * Sets the default directory for company files and saves this preference.
-	 *
-	 * @param path The directory path to set as the default. If null, the behavior
-	 *             of {@link Properties#setProperty(String, String)} for null values will apply (may throw NPE).
-	 */
+	/** Sets the default directory for company files. */
 	public static void setDefaultCompanyDir(String path)
 	{
 		props.setProperty(DEFAULT_DIR_KEY, path);
@@ -98,24 +89,14 @@ public class PreferencesService
 		
 	}
 	
-	/**
-	 * Gets the path of the last used company file.
-	 * If no last used file preference is set, it defaults to an empty string.
-	 *
-	 * @return The path of the last used company file as a String, or an empty string if not set.
-	 */
+	/** Gets the path of the last used company file. */
 	public static String getLastUsedCompanyFile()
 	{
 		return props.getProperty(LAST_FILE_KEY, "");
 		
 	}
 	
-	/**
-	 * Sets the path of the last used company file and saves this preference.
-	 *
-	 * @param filePath The file path to set as the last used. If null, the behavior
-	 *                 of {@link Properties#setProperty(String, String)} for null values will apply (may throw NPE).
-	 */
+	/** Sets the path of the last used company file. */
 	public static void setLastUsedCompanyFile(String filePath)
 	{
 		
@@ -132,11 +113,7 @@ public class PreferencesService
 		
 	}
 	
-	/**
-	 * Returns the identifier of the last company that was opened, if available.
-	 *
-	 * @return the last used company id
-	 */
+	/** Returns the identifier of the last company that was opened. */
 	public static Long getLastUsedCompanyId()
 	{
 		String value = props.getProperty(LAST_COMPANY_ID_KEY);
@@ -157,11 +134,7 @@ public class PreferencesService
 		
 	}
 	
-	/**
-	 * Stores the identifier of the most recently opened company.
-	 *
-	 * @param companyId the new last used company id
-	 */
+	/** Stores the identifier of the most recently opened company. */
 	public static void setLastUsedCompanyId(Long companyId)
 	{
 		
@@ -178,21 +151,13 @@ public class PreferencesService
 		
 	}
 
-	/**
-	 * Gets the persisted general UI theme preference.
-	 *
-	 * @return theme preference ("Light", "Dark", or "System")
-	 */
+	/** Gets the persisted general UI theme preference. */
 	public static String getThemePreference()
 	{
 		return props.getProperty(THEME_KEY, "System");
 	}
 
-	/**
-	 * Sets the persisted general UI theme preference.
-	 *
-	 * @param theme theme preference ("Light", "Dark", or "System")
-	 */
+	/** Sets the persisted general UI theme preference. */
 	public static void setThemePreference(String theme)
 	{
 		if (theme == null || theme.isBlank())
@@ -206,21 +171,13 @@ public class PreferencesService
 		save();
 	}
 
-	/**
-	 * Gets the preference controlling pending-row text color behavior.
-	 *
-	 * @return preference value ("Black" or "System")
-	 */
+	/** Gets the preference controlling pending-row text color behavior. */
 	public static String getPendingRowTextColorPreference()
 	{
 		return props.getProperty(PENDING_ROW_TEXT_COLOR_KEY, "Black");
 	}
 
-	/**
-	 * Sets the preference controlling pending-row text color behavior.
-	 *
-	 * @param value preference value ("Black" or "System")
-	 */
+	/** Sets the preference controlling pending-row text color behavior. */
 	public static void setPendingRowTextColorPreference(String value)
 	{
 		if (value == null || value.isBlank())
@@ -233,11 +190,30 @@ public class PreferencesService
 		}
 		save();
 	}
-	
+
 	/**
-	 * Saves the current state of the {@link #props} object to the preferences file defined by {@link #configPath}.
-	 * If an {@link IOException} occurs during saving, it is printed to the error stream.
+	 * Returns whether the journal display should preserve each transaction's
+	 * stored debit/credit line order. This defaults to {@code true}.
 	 */
+	public static boolean isJournalStoredLineOrderPreserved()
+	{
+		return Boolean.parseBoolean(
+			props.getProperty(JOURNAL_STORED_LINE_ORDER_KEY, "true"));
+	}
+
+	/**
+	 * Sets whether the journal display preserves stored line order. When false,
+	 * debit lines are displayed before credit lines while order within each
+	 * group remains stable.
+	 */
+	public static void setJournalStoredLineOrderPreserved(boolean preserved)
+	{
+		props.setProperty(JOURNAL_STORED_LINE_ORDER_KEY,
+			Boolean.toString(preserved));
+		save();
+	}
+	
+	/** Saves the current preferences to disk. */
 	private static void save()
 	{
 		
@@ -247,8 +223,6 @@ public class PreferencesService
 		}
 		catch (IOException e)
 		{
-			// Consider logging this more formally or handling it based on
-			// application requirements
 			e.printStackTrace();
 		}
 		
@@ -263,11 +237,7 @@ public class PreferencesService
 	
 	}
 	
-	/**
-	 * Gets the single instance of PreferencesService.
-	 *
-	 * @return single instance of PreferencesService
-	 */
+	/** Gets the single instance of PreferencesService. */
 	public static PreferencesService getInstance()
 	{
 		return INSTANCE;
