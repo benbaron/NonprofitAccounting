@@ -1,5 +1,6 @@
 package nonprofitbookkeeping.ui;
 
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -35,9 +36,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-/**
- * Ledger register panel backed by persisted journal transactions.
- */
+/** Ledger register panel backed by persisted journal transactions. */
 public class LedgerRegisterPanel implements AppPanel
 {
     private static final int SUBRECORD_PREVIEW_MAX = 80;
@@ -99,7 +98,20 @@ public class LedgerRegisterPanel implements AppPanel
 
         DateRangeContext.selectedProperty().addListener(
             (obs, oldRange, newRange) -> applyDateRangeFilter(newRange));
+        LedgerNavigationContext.requestedTransactionIdProperty().addListener(
+            (obs, oldId, newId) -> {
+                if (newId != null)
+                {
+                    Platform.runLater(() -> handleNavigationRequest(newId));
+                }
+            });
+
         loadLiveData();
+        Integer pending = LedgerNavigationContext.getRequestedTransactionId();
+        if (pending != null)
+        {
+            Platform.runLater(() -> handleNavigationRequest(pending));
+        }
     }
 
     private void buildTable()
@@ -188,7 +200,7 @@ public class LedgerRegisterPanel implements AppPanel
     /**
      * Shows and selects the first ledger row belonging to the requested
      * transaction. If the shared date range hides the transaction, the range
-     * is reset to All Dates so the hyperlink can always navigate to its target.
+     * is reset to All Dates so the hyperlink always reaches its target.
      *
      * @param transactionId transaction identifier to locate
      * @return {@code true} when a row was selected
@@ -218,6 +230,14 @@ public class LedgerRegisterPanel implements AppPanel
         this.txnTable.requestFocus();
         this.status.setText("Selected transaction " + transactionId + ".");
         return true;
+    }
+
+    private void handleNavigationRequest(int transactionId)
+    {
+        if (selectTransactionById(transactionId))
+        {
+            LedgerNavigationContext.clearRequest(transactionId);
+        }
     }
 
     private int findVisibleTransactionRow(int transactionId)
