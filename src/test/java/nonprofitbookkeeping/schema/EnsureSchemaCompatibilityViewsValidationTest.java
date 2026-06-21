@@ -44,7 +44,7 @@ class EnsureSchemaCompatibilityViewsValidationTest
     @Test
     void ensureSchemaDoesNotChangeFlywayOwnedReadModelTablesOrCompatibilityViews() throws Exception
     {
-        Database.init(tempDir.resolve("compatibility-view-validation"));
+        Database.init(this.tempDir.resolve("compatibility-view-validation"));
         Database database = Database.get();
 
         migrateWithFlyway(database);

@@ -21,7 +21,7 @@ class FlywayMigrationRunnerRepairTest
     @Test
     void migrateRepairsFailedMigrationHistoryAndContinues() throws Exception
     {
-        Database.init(tempDir.resolve("failed-flyway-history-repair"));
+        Database.init(this.tempDir.resolve("failed-flyway-history-repair"));
         Database database = Database.get();
 
         migrateWithFlyway(database, "5");

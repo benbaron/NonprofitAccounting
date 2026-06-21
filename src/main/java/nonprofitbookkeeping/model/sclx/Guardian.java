@@ -40,7 +40,7 @@ public class Guardian {
 
     @JsonProperty("legalName")
     public String getLegalName() {
-        return legalName;
+        return this.legalName;
     }
 
     @JsonProperty("legalName")
@@ -50,7 +50,7 @@ public class Guardian {
 
     @JsonProperty("email")
     public String getEmail() {
-        return email;
+        return this.email;
     }
 
     @JsonProperty("email")
@@ -60,7 +60,7 @@ public class Guardian {
 
     @JsonProperty("phone")
     public String getPhone() {
-        return phone;
+        return this.phone;
     }
 
     @JsonProperty("phone")

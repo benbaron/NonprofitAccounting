@@ -25,16 +25,16 @@ public class SupplyRecordService
 
     public void save(SupplyRecord record) throws SQLException
     {
-        repository.upsert(record);
+        this.repository.upsert(record);
     }
 
     public List<SupplyRecord> listAll() throws SQLException
     {
-        return repository.listAll();
+        return this.repository.listAll();
     }
 
     public int delete(String supplyId) throws SQLException
     {
-        return repository.deleteById(supplyId);
+        return this.repository.deleteById(supplyId);
     }
 }

@@ -20,7 +20,7 @@ class FundTransferPostingServiceTest {
 
     @Test
     void createAndAmendTransfer_usesFacadeAndLifecycle() throws Exception {
-        Database.init(tempDir.resolve("fund-transfer"));
+        Database.init(this.tempDir.resolve("fund-transfer"));
         FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
         seed();
@@ -43,7 +43,7 @@ class FundTransferPostingServiceTest {
 
     @Test
     void postTransfer_invalidFundPair_throws() throws Exception {
-        Database.init(tempDir.resolve("fund-transfer-invalid"));
+        Database.init(this.tempDir.resolve("fund-transfer-invalid"));
         FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
         seed();

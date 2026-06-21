@@ -51,13 +51,13 @@ class AlternateRecentsStoreTest
         @Override
         public String get(String key, String defaultValue)
         {
-            return backing.getOrDefault(key, defaultValue);
+            return this.backing.getOrDefault(key, defaultValue);
         }
 
         @Override
         public void put(String key, String value)
         {
-            backing.put(key, value);
+            this.backing.put(key, value);
         }
     }
 }

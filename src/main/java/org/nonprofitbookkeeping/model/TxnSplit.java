@@ -1,7 +1,6 @@
 package org.nonprofitbookkeeping.model;
 
 import jakarta.persistence.*;
-import java.time.*;
 import java.math.*;
 
 
@@ -57,21 +56,21 @@ public class TxnSplit
     @Column(name = "amount_signed", nullable = false, precision = 19, scale = 4)
     private BigDecimal amountSigned;
 
-    public Long getId() { return id; }
-    public Txn getTxn() { return txn; }
+    public Long getId() { return this.id; }
+    public Txn getTxn() { return this.txn; }
     public void setTxn(Txn txn) { this.txn = txn; }
-    public Account getAccount() { return account; }
+    public Account getAccount() { return this.account; }
     public void setAccount(Account account) { this.account = account; }
-    public Fund getFund() { return fund; }
+    public Fund getFund() { return this.fund; }
     public void setFund(Fund fund) { this.fund = fund; }
-    public Activity getActivity() { return activity; }
+    public Activity getActivity() { return this.activity; }
     public void setActivity(Activity activity) { this.activity = activity; }
-    public Merchant getMerchant() { return merchant; }
+    public Merchant getMerchant() { return this.merchant; }
     public void setMerchant(Merchant merchant) { this.merchant = merchant; }
-    public boolean isNmr() { return nmr; }
+    public boolean isNmr() { return this.nmr; }
     public void setNmr(boolean nmr) { this.nmr = nmr; }
-    public String getNotes() { return notes; }
+    public String getNotes() { return this.notes; }
     public void setNotes(String notes) { this.notes = notes; }
-    public BigDecimal getAmountSigned() { return amountSigned; }
+    public BigDecimal getAmountSigned() { return this.amountSigned; }
     public void setAmountSigned(BigDecimal amountSigned) { this.amountSigned = amountSigned; }
 }

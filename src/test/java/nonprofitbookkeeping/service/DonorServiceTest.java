@@ -98,7 +98,7 @@ class DonorServiceTest
 
     private void openDatabase() throws Exception
     {
-        Database.init(tempDir.resolve("donors"));
+        Database.init(this.tempDir.resolve("donors"));
         Database.get().ensureSchema();
     }
 }

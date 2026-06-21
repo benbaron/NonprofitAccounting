@@ -83,11 +83,11 @@ public class Jpa
 
     public EntityManager em()
     {
-        return emf.createEntityManager();
+        return this.emf.createEntityManager();
     }
 
     public void close()
     {
-        emf.close();
+        this.emf.close();
     }
 }

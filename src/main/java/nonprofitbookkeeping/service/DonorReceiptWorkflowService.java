@@ -42,16 +42,16 @@ public class DonorReceiptWorkflowService
 
     public DonorDetail detailForDonor(String donorExternalId) throws SQLException
     {
-        Optional<DonorContact> donor = donorRepository.findByExternalId(donorExternalId);
+        Optional<DonorContact> donor = this.donorRepository.findByExternalId(donorExternalId);
         List<DonationRecord> donations = postedDonations(
-            donationRepository.listByDonorExternalId(donorExternalId));
+            this.donationRepository.listByDonorExternalId(donorExternalId));
         return new DonorDetail(donorExternalId, donor.orElse(null), donations,
             annualTotals(donations));
     }
 
     public List<DonationRecord> donationsNeedingReceipts() throws SQLException
     {
-        return postedDonations(donationRepository.listAll()).stream()
+        return postedDonations(this.donationRepository.listAll()).stream()
             .filter(d -> d.isReceiptRequired() && d.getReceiptSentAt() == null)
             .toList();
     }
@@ -59,25 +59,25 @@ public class DonorReceiptWorkflowService
     public DonationRecord updateReceiptRequired(String donationId, boolean required)
         throws SQLException
     {
-        DonationRecord donation = donationRepository.findByDonationId(donationId)
+        DonationRecord donation = this.donationRepository.findByDonationId(donationId)
             .orElseThrow(() -> new IllegalArgumentException("Unknown donation: " + donationId));
         donation.setReceiptRequired(required);
         if (!required)
         {
             donation.setReceiptSentAt(null);
         }
-        donationRepository.upsert(donation);
+        this.donationRepository.upsert(donation);
         return donation;
     }
 
     public DonationRecord markReceiptSent(String donationId, LocalDateTime sentAt)
         throws SQLException
     {
-        DonationRecord donation = donationRepository.findByDonationId(donationId)
+        DonationRecord donation = this.donationRepository.findByDonationId(donationId)
             .orElseThrow(() -> new IllegalArgumentException("Unknown donation: " + donationId));
         donation.setReceiptRequired(true);
         donation.setReceiptSentAt(sentAt == null ? LocalDateTime.now() : sentAt);
-        donationRepository.upsert(donation);
+        this.donationRepository.upsert(donation);
         return donation;
     }
 
@@ -99,7 +99,7 @@ public class DonorReceiptWorkflowService
         throws SQLException
     {
         return donation.getJournalTxnId() != null &&
-            journalRepository.findTransactionById(donation.getJournalTxnId()).isPresent();
+            this.journalRepository.findTransactionById(donation.getJournalTxnId()).isPresent();
     }
 
     private static Map<Year, BigDecimal> annualTotals(List<DonationRecord> donations)

@@ -43,14 +43,14 @@ public class JournalLine
         this.credit = credit;
     }
 
-    public LocalDate getDate() { return date; }
-    public Long getTxnId() { return txnId; }
-    public String getMemo() { return memo; }
-    public String getPayee() { return payee; }
-    public String getAccountCode() { return accountCode; }
-    public String getAccountName() { return accountName; }
-    public String getFundCode() { return fundCode; }
-    public String getFundName() { return fundName; }
-    public BigDecimal getDebit() { return debit; }
-    public BigDecimal getCredit() { return credit; }
+    public LocalDate getDate() { return this.date; }
+    public Long getTxnId() { return this.txnId; }
+    public String getMemo() { return this.memo; }
+    public String getPayee() { return this.payee; }
+    public String getAccountCode() { return this.accountCode; }
+    public String getAccountName() { return this.accountName; }
+    public String getFundCode() { return this.fundCode; }
+    public String getFundName() { return this.fundName; }
+    public BigDecimal getDebit() { return this.debit; }
+    public BigDecimal getCredit() { return this.credit; }
 }

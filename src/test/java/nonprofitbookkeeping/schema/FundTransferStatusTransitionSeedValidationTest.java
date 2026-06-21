@@ -25,7 +25,7 @@ class FundTransferStatusTransitionSeedValidationTest
     @Test
     void flywaySeedsFundTransferStatusTransitions() throws Exception
     {
-        String url = h2Url(tempDir.resolve("fund-transfer-status-transition-seed"));
+        String url = h2Url(this.tempDir.resolve("fund-transfer-status-transition-seed"));
 
         Flyway.configure()
             .dataSource(url, "sa", "")

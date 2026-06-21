@@ -24,7 +24,6 @@ import nonprofitbookkeeping.service.AssetRecordService.AssetRegisterSaveRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -268,37 +267,37 @@ public class AssetsRegisterPanel implements AppPanel, AppPanel.SaveAware
 
         AssetRegisterSaveRequest toRequest(int rowNumber)
         {
-            return new AssetRegisterSaveRequest(trim(assetId.get()), parseDate(dateAcquired.get(), rowNumber), trim(description.get()),
-                parseInteger(itemCount.get(), rowNumber), AssetRecordService.parseMoneyInput(cost.get(), "Row " + rowNumber + " cost"),
-                AssetRecordService.parseMoneyInput(accumulatedDepreciation.get(), "Row " + rowNumber + " accumulated depreciation"),
-                itemType.get(), trim(depreciationMethod.get()), parseInteger(usefulLifeMonths.get(), rowNumber));
+            return new AssetRegisterSaveRequest(trim(this.assetId.get()), parseDate(this.dateAcquired.get(), rowNumber), trim(this.description.get()),
+                parseInteger(this.itemCount.get(), rowNumber), AssetRecordService.parseMoneyInput(this.cost.get(), "Row " + rowNumber + " cost"),
+                AssetRecordService.parseMoneyInput(this.accumulatedDepreciation.get(), "Row " + rowNumber + " accumulated depreciation"),
+                this.itemType.get(), trim(this.depreciationMethod.get()), parseInteger(this.usefulLifeMonths.get(), rowNumber));
         }
 
         private static LocalDate parseDate(String raw, int rowNumber) { return raw == null || raw.isBlank() ? null : LocalDate.parse(raw.trim()); }
         private static Integer parseInteger(String raw, int rowNumber) { return raw == null || raw.isBlank() ? null : Integer.parseInt(raw.trim()); }
         private static String trim(String raw) { return raw == null || raw.isBlank() ? null : raw.trim(); }
 
-        public String getAssetId() { return assetId.get(); }
-        public SimpleStringProperty assetIdProperty() { return assetId; }
-        public SimpleStringProperty dateAcquiredProperty() { return dateAcquired; }
-        public SimpleStringProperty descriptionProperty() { return description; }
-        public SimpleStringProperty itemCountProperty() { return itemCount; }
-        public SimpleStringProperty costProperty() { return cost; }
-        public SimpleStringProperty accumulatedDepreciationProperty() { return accumulatedDepreciation; }
-        public SimpleStringProperty depreciationMethodProperty() { return depreciationMethod; }
-        public SimpleStringProperty usefulLifeMonthsProperty() { return usefulLifeMonths; }
-        public SimpleObjectProperty<AssetItemType> itemTypeProperty() { return itemType; }
-        public SimpleStringProperty assetStateProperty() { return assetState; }
-        public SimpleStringProperty netBookValueProperty() { return netBookValue; }
-        public SimpleStringProperty depreciationRunLinksProperty() { return depreciationRunLinks; }
-        public void setAssetId(String v) { assetId.set(v == null ? "" : v); }
-        public void setDateAcquired(String v) { dateAcquired.set(v == null ? "" : v); }
-        public void setDescription(String v) { description.set(v == null ? "" : v); }
-        public void setItemCount(String v) { itemCount.set(v == null ? "" : v); }
-        public void setCost(String v) { cost.set(v == null ? "" : v); }
-        public void setAccumulatedDepreciation(String v) { accumulatedDepreciation.set(v == null ? "" : v); }
-        public void setDepreciationMethod(String v) { depreciationMethod.set(v == null || v.isBlank() ? AssetRecordService.STRAIGHT_LINE : v); }
-        public void setUsefulLifeMonths(String v) { usefulLifeMonths.set(v == null ? "" : v); }
-        public void setItemType(AssetItemType v) { itemType.set(v); }
+        public String getAssetId() { return this.assetId.get(); }
+        public SimpleStringProperty assetIdProperty() { return this.assetId; }
+        public SimpleStringProperty dateAcquiredProperty() { return this.dateAcquired; }
+        public SimpleStringProperty descriptionProperty() { return this.description; }
+        public SimpleStringProperty itemCountProperty() { return this.itemCount; }
+        public SimpleStringProperty costProperty() { return this.cost; }
+        public SimpleStringProperty accumulatedDepreciationProperty() { return this.accumulatedDepreciation; }
+        public SimpleStringProperty depreciationMethodProperty() { return this.depreciationMethod; }
+        public SimpleStringProperty usefulLifeMonthsProperty() { return this.usefulLifeMonths; }
+        public SimpleObjectProperty<AssetItemType> itemTypeProperty() { return this.itemType; }
+        public SimpleStringProperty assetStateProperty() { return this.assetState; }
+        public SimpleStringProperty netBookValueProperty() { return this.netBookValue; }
+        public SimpleStringProperty depreciationRunLinksProperty() { return this.depreciationRunLinks; }
+        public void setAssetId(String v) { this.assetId.set(v == null ? "" : v); }
+        public void setDateAcquired(String v) { this.dateAcquired.set(v == null ? "" : v); }
+        public void setDescription(String v) { this.description.set(v == null ? "" : v); }
+        public void setItemCount(String v) { this.itemCount.set(v == null ? "" : v); }
+        public void setCost(String v) { this.cost.set(v == null ? "" : v); }
+        public void setAccumulatedDepreciation(String v) { this.accumulatedDepreciation.set(v == null ? "" : v); }
+        public void setDepreciationMethod(String v) { this.depreciationMethod.set(v == null || v.isBlank() ? AssetRecordService.STRAIGHT_LINE : v); }
+        public void setUsefulLifeMonths(String v) { this.usefulLifeMonths.set(v == null ? "" : v); }
+        public void setItemType(AssetItemType v) { this.itemType.set(v); }
     }
 }

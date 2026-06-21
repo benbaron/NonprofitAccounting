@@ -40,7 +40,7 @@ class DatabaseEndToEndLifecycleValidationTest
     @Test
     void flywayEnsureSchemaPostingBackfillViewsAndReadModelsWorkEndToEnd() throws Exception
     {
-        Database.init(tempDir.resolve("database-end-to-end-lifecycle"));
+        Database.init(this.tempDir.resolve("database-end-to-end-lifecycle"));
         FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
 

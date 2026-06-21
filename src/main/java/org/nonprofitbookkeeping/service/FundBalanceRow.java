@@ -19,7 +19,7 @@ public class FundBalanceRow
         this.balance = balance;
     }
 
-    public String getFundCode() { return fundCode; }
-    public String getFundName() { return fundName; }
-    public BigDecimal getBalance() { return balance; }
+    public String getFundCode() { return this.fundCode; }
+    public String getFundName() { return this.fundName; }
+    public BigDecimal getBalance() { return this.balance; }
 }

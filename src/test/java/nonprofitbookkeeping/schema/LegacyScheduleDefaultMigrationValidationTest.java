@@ -22,7 +22,7 @@ class LegacyScheduleDefaultMigrationValidationTest
     @Test
     void v006AddsMissingIsRequiredColumnForLegacyScheduleDefaults() throws Exception
     {
-        Database.init(tempDir.resolve("legacy-schedule-default-missing-required"));
+        Database.init(this.tempDir.resolve("legacy-schedule-default-missing-required"));
         Database database = Database.get();
         createLegacyScheduleDefaultTableWithoutRequiredColumn(database);
 

@@ -32,7 +32,7 @@ class SclxImportExportRoundTripTest
     @BeforeEach
     void setUp() throws SQLException
     {
-        TestDatabase.reset(tempDir);
+        TestDatabase.reset(this.tempDir);
     }
 
     @Test
@@ -112,7 +112,7 @@ class SclxImportExportRoundTripTest
 
     private Path writeSclx(String rawJson) throws Exception
     {
-        Path file = tempDir.resolve("source.sclx.json");
+        Path file = this.tempDir.resolve("source.sclx.json");
         Files.writeString(file, rawJson);
         return file;
     }

@@ -18,7 +18,6 @@ import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 import javafx.scene.Node; // For iterating over toolbar items
-import nonprofitbookkeeping.ui.UiSpacing;
 
 
 /**

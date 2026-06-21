@@ -60,7 +60,7 @@ public class AlternateDataContextService
     public void openDatabase(Path selectedPath) throws Exception
     {
         Path basePath = normalizeH2Base(selectedPath);
-        databaseContextSwitcher.openDatabase(basePath);
+        this.databaseContextSwitcher.openDatabase(basePath);
         transitionDatabaseContext(basePath);
     }
 
@@ -83,15 +83,15 @@ public class AlternateDataContextService
 
     public void clearActiveCompanyContext()
     {
-        activeCompanyId = null;
-        activeCompanyLabel = null;
-        sessionContext.clearCompany();
+        this.activeCompanyId = null;
+        this.activeCompanyLabel = null;
+        this.sessionContext.clearCompany();
         PreferencesService.setLastUsedCompanyId(null);
     }
 
     public UiSessionContext sessionContext()
     {
-        return sessionContext;
+        return this.sessionContext;
     }
 
     public Path activeDatabaseBasePath()
@@ -101,27 +101,27 @@ public class AlternateDataContextService
 
     public Long activeCompanyId()
     {
-        return activeCompanyId;
+        return this.activeCompanyId;
     }
 
     public String activeCompanyLabel()
     {
-        return activeCompanyLabel;
+        return this.activeCompanyLabel;
     }
 
     public boolean isDatabaseOpen()
     {
-        return sessionContext.isDatabaseOpen();
+        return this.sessionContext.isDatabaseOpen();
     }
 
     public boolean isCompanyOpen()
     {
-        return sessionContext.isCompanyOpen();
+        return this.sessionContext.isCompanyOpen();
     }
 
     public String activeCompanyDisplayLabel()
     {
-        return sessionContext.activeCompanyDisplayLabel();
+        return this.sessionContext.activeCompanyDisplayLabel();
     }
 
     public List<CompanyRecord> listCompanies() throws SQLException
@@ -130,7 +130,7 @@ public class AlternateDataContextService
         {
             return List.of();
         }
-        return companyRepository.listCompanies();
+        return this.companyRepository.listCompanies();
     }
 
     public void openCompany(long companyId, String companyLabel) throws IOException
@@ -141,12 +141,12 @@ public class AlternateDataContextService
 
     public List<String> recentDatabasePaths()
     {
-        return recentsStore.recentDatabasePaths();
+        return this.recentsStore.recentDatabasePaths();
     }
 
     public List<RecentCompanyChoice> recentCompanies()
     {
-        return recentsStore.recentCompanies(activeDatabaseBasePath);
+        return this.recentsStore.recentCompanies(this.activeDatabaseBasePath);
     }
 
     Path normalizeH2Base(Path filePath)
@@ -163,16 +163,16 @@ public class AlternateDataContextService
     {
         setActiveDatabaseBasePath(basePath);
         clearActiveCompanyContext();
-        recentsStore.rememberDatabase(basePath);
+        this.recentsStore.rememberDatabase(basePath);
     }
 
     private void transitionCompanyContext(long companyId, String companyLabel)
     {
-        activeCompanyId = companyId;
-        activeCompanyLabel = companyLabel;
-        sessionContext.openCompany(companyId, companyLabel);
+        this.activeCompanyId = companyId;
+        this.activeCompanyLabel = companyLabel;
+        this.sessionContext.openCompany(companyId, companyLabel);
         PreferencesService.setLastUsedCompanyId(companyId);
-        recentsStore.rememberCompany(activeDatabaseBasePath, companyId, companyLabel);
+        this.recentsStore.rememberCompany(this.activeDatabaseBasePath, companyId, companyLabel);
     }
 
     interface PreferencesStore
@@ -193,13 +193,13 @@ public class AlternateDataContextService
         @Override
         public String get(String key, String defaultValue)
         {
-            return prefs.get(key, defaultValue);
+            return this.prefs.get(key, defaultValue);
         }
 
         @Override
         public void put(String key, String value)
         {
-            prefs.put(key, value);
+            this.prefs.put(key, value);
         }
     }
 

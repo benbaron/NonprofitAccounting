@@ -38,7 +38,7 @@ class EnsureSchemaAssetGrantCompatibilityValidationTest
     @Test
     void ensureSchemaDoesNotChangeFlywayOwnedAssetDepreciationAndGrantArtifacts() throws Exception
     {
-        Database.init(tempDir.resolve("asset-grant-compatibility"));
+        Database.init(this.tempDir.resolve("asset-grant-compatibility"));
         Database database = Database.get();
 
         migrateWithFlyway(database);
@@ -174,22 +174,22 @@ class EnsureSchemaAssetGrantCompatibilityValidationTest
         @Override
         public int compareTo(ForeignKeyDefinition other)
         {
-            int byName = name.compareTo(other.name);
+            int byName = this.name.compareTo(other.name);
             if (byName != 0)
             {
                 return byName;
             }
-            int byColumn = column.compareTo(other.column);
+            int byColumn = this.column.compareTo(other.column);
             if (byColumn != 0)
             {
                 return byColumn;
             }
-            int byReferencedTable = referencedTable.compareTo(other.referencedTable);
+            int byReferencedTable = this.referencedTable.compareTo(other.referencedTable);
             if (byReferencedTable != 0)
             {
                 return byReferencedTable;
             }
-            return referencedColumn.compareTo(other.referencedColumn);
+            return this.referencedColumn.compareTo(other.referencedColumn);
         }
     }
 }

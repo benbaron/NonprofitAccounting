@@ -50,33 +50,33 @@ class ChartOfAccountsPanelMigrationEquivalenceTest
 
         void mutate(String token)
         {
-            contextToken = token;
-            dirty = true;
+            this.contextToken = token;
+            this.dirty = true;
         }
 
         @Override
         public String title()
         {
-            return title;
+            return this.title;
         }
 
         @Override
         public javafx.scene.Node root()
         {
-            return rootNode;
+            return this.rootNode;
         }
 
         @Override
         public void onSave()
         {
-            saveCalls++;
-            dirty = false;
+            this.saveCalls++;
+            this.dirty = false;
         }
 
         @Override
         public boolean isDirty()
         {
-            return dirty;
+            return this.dirty;
         }
     }
 }

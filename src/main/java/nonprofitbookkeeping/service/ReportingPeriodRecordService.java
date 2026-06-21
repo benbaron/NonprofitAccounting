@@ -25,16 +25,16 @@ public class ReportingPeriodRecordService
 
     public void save(ReportingPeriodRecord record) throws SQLException
     {
-        repository.upsert(record);
+        this.repository.upsert(record);
     }
 
     public List<ReportingPeriodRecord> listAll() throws SQLException
     {
-        return repository.listAll();
+        return this.repository.listAll();
     }
 
     public int delete(ReportingPeriodRecord record) throws SQLException
     {
-        return repository.delete(record);
+        return this.repository.delete(record);
     }
 }

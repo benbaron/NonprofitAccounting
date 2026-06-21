@@ -23,7 +23,7 @@ class LegacyTxnMapBackfillBehaviorValidationTest
     @Test
     void ensureSchemaBackfillsLegacyTxnMapRowsAfterIdempotentTransactionMirroring() throws Exception
     {
-        Database.init(tempDir.resolve("legacy-txn-map-backfill-behavior"));
+        Database.init(this.tempDir.resolve("legacy-txn-map-backfill-behavior"));
         Database database = Database.get();
 
         migrateWithFlyway(database);

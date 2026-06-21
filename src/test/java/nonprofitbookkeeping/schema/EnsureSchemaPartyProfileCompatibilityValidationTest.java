@@ -34,7 +34,7 @@ class EnsureSchemaPartyProfileCompatibilityValidationTest
     @Test
     void ensureSchemaDoesNotChangeFlywayOwnedPartyProfileColumnsOrIndexes() throws Exception
     {
-        Database.init(tempDir.resolve("party-profile-compatibility"));
+        Database.init(this.tempDir.resolve("party-profile-compatibility"));
         Database database = Database.get();
 
         migrateWithFlyway(database);

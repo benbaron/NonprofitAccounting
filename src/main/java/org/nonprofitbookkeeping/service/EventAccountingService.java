@@ -37,7 +37,7 @@ public class EventAccountingService
 
     public List<EventAccountingWorkspace> listWorkspaces()
     {
-        try (EntityManager em = jpa.em())
+        try (EntityManager em = this.jpa.em())
         {
             TypedQuery<Object[]> q = em.createQuery(
                 "select a.id, a.code, a.name, a.active " +
@@ -55,7 +55,7 @@ public class EventAccountingService
 
     public EventAccountingWorkspace getWorkspace(long activityId)
     {
-        try (EntityManager em = jpa.em())
+        try (EntityManager em = this.jpa.em())
         {
             Object[] row = em.createQuery(
                 "select a.id, a.code, a.name, a.active from Activity a where a.id = :id", Object[].class)
@@ -77,7 +77,7 @@ public class EventAccountingService
 
     private List<EventTransactionRow> transactionsFor(Long activityId)
     {
-        try (EntityManager em = jpa.em())
+        try (EntityManager em = this.jpa.em())
         {
             TypedQuery<Object[]> q = em.createQuery(
                 "select t.id, t.txnDate, coalesce(p.displayName, ''), coalesce(t.memo, ''), " +

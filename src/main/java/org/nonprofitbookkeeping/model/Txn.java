@@ -2,7 +2,6 @@ package org.nonprofitbookkeeping.model;
 
 import jakarta.persistence.*;
 import java.time.*;
-import java.math.*;
 
 
 @Entity
@@ -44,16 +43,16 @@ public class Txn
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt = Instant.now();
 
-    public Long getId() { return id; }
-    public LocalDate getTxnDate() { return txnDate; }
+    public Long getId() { return this.id; }
+    public LocalDate getTxnDate() { return this.txnDate; }
     public void setTxnDate(LocalDate txnDate) { this.txnDate = txnDate; }
-    public Counterparty getPayee() { return payee; }
+    public Counterparty getPayee() { return this.payee; }
     public void setPayee(Counterparty payee) { this.payee = payee; }
-    public String getMemo() { return memo; }
+    public String getMemo() { return this.memo; }
     public void setMemo(String memo) { this.memo = memo; }
-    public Account getBankAccount() { return bankAccount; }
+    public Account getBankAccount() { return this.bankAccount; }
     public void setBankAccount(Account bankAccount) { this.bankAccount = bankAccount; }
-    public Instant getCreatedAt() { return createdAt; }
-    public Instant getUpdatedAt() { return updatedAt; }
+    public Instant getCreatedAt() { return this.createdAt; }
+    public Instant getUpdatedAt() { return this.updatedAt; }
     public void touchUpdatedAt() { this.updatedAt = Instant.now(); }
 }

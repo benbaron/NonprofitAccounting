@@ -21,11 +21,11 @@ public class AccountSubtypeScheduleDefault
     @JoinColumn(name = "schedule_kind_id", nullable = false)
     private ScheduleKind scheduleKind;
 
-    public Long getId() { return id; }
+    public Long getId() { return this.id; }
 
-    public String getSubtype() { return subtype; }
+    public String getSubtype() { return this.subtype; }
     public void setSubtype(String subtype) { this.subtype = subtype; }
 
-    public ScheduleKind getScheduleKind() { return scheduleKind; }
+    public ScheduleKind getScheduleKind() { return this.scheduleKind; }
     public void setScheduleKind(ScheduleKind scheduleKind) { this.scheduleKind = scheduleKind; }
 }

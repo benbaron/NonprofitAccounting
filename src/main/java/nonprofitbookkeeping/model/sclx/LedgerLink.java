@@ -55,7 +55,7 @@ public class LedgerLink {
      */
     @JsonProperty("transactionId")
     public String getTransactionId() {
-        return transactionId;
+        return this.transactionId;
     }
 
     /**
@@ -75,7 +75,7 @@ public class LedgerLink {
      */
     @JsonProperty("lineId")
     public String getLineId() {
-        return lineId;
+        return this.lineId;
     }
 
     /**

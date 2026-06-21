@@ -36,7 +36,7 @@ class UiServiceProviderTest
         UiSessionContext context = new UiSessionContext();
         try (UiServiceProvider provider = new UiServiceProvider(context))
         {
-            Path dbBase = tempDir.resolve("provider-open");
+            Path dbBase = this.tempDir.resolve("provider-open");
             provider.databaseAdministration().openDatabase(dbBase);
 
             assertFalse(provider.hasDatabaseServicesForCurrentContext(),
@@ -57,7 +57,7 @@ class UiServiceProviderTest
         UiSessionContext context = contextService.sessionContext();
         try (UiServiceProvider provider = new UiServiceProvider(contextService))
         {
-            provider.databaseAdministration().openDatabase(tempDir.resolve("provider-company"));
+            provider.databaseAdministration().openDatabase(this.tempDir.resolve("provider-company"));
             context.openCompany(7L, "Company Seven");
 
             assertTrue(context.isCompanyOpen());
@@ -72,11 +72,11 @@ class UiServiceProviderTest
         UiSessionContext context = new UiSessionContext();
         try (UiServiceProvider provider = new UiServiceProvider(context))
         {
-            provider.databaseAdministration().openDatabase(tempDir.resolve("provider-first"));
+            provider.databaseAdministration().openDatabase(this.tempDir.resolve("provider-first"));
             AccountLookupService first = provider.accountLookup();
             assertTrue(provider.hasDatabaseServicesForCurrentContext());
 
-            provider.databaseAdministration().openDatabase(tempDir.resolve("provider-second"));
+            provider.databaseAdministration().openDatabase(this.tempDir.resolve("provider-second"));
 
             assertFalse(provider.hasDatabaseServicesForCurrentContext(),
                 "database path changes should invalidate existing services before next use");

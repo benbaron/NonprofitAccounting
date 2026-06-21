@@ -37,7 +37,7 @@ public final class BankingItemRecordMapper {
             JacksonJsonNodeSupport.text(node, "status"),
             JacksonJsonNodeSupport.text(node, "importId"),
             ofx(ofxNode),
-            JacksonJsonNodeSupport.objectMap(node, "extensions", objectMapper),
+            JacksonJsonNodeSupport.objectMap(node, "extensions", this.objectMapper),
             node == null ? null : node.toString()
         );
     }
@@ -62,7 +62,7 @@ public final class BankingItemRecordMapper {
             JacksonJsonNodeSupport.text(node, "serverTransactionId"),
             JacksonJsonNodeSupport.text(node, "correctFitId"),
             JacksonJsonNodeSupport.text(node, "correctAction"),
-            JacksonJsonNodeSupport.objectMap(node, "extensions", objectMapper)
+            JacksonJsonNodeSupport.objectMap(node, "extensions", this.objectMapper)
         );
     }
 }

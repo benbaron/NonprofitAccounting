@@ -26,12 +26,12 @@ public class AlternateDatabaseAdminService
     public DatabaseOpenService.OpenResult openDatabase(Path databasePath) throws Exception
     {
         validateSupportedExistingDatabase(databasePath);
-        return databaseAdministrationService.openDatabase(normalizeBase(databasePath));
+        return this.databaseAdministrationService.openDatabase(normalizeBase(databasePath));
     }
 
     public void closeDatabase()
     {
-        databaseAdministrationService.closeDatabase();
+        this.databaseAdministrationService.closeDatabase();
     }
 
     public AdminResult importDatabase(Path sourcePath, Path targetPath, boolean openAfterImport) throws Exception
@@ -44,7 +44,7 @@ public class AlternateDatabaseAdminService
         DatabaseOpenService.OpenResult openResult = null;
         if (openAfterImport)
         {
-            openResult = databaseAdministrationService.openDatabase(normalizeBase(normalizedTargetFile));
+            openResult = this.databaseAdministrationService.openDatabase(normalizeBase(normalizedTargetFile));
         }
         return new AdminResult(normalizeFile(sourcePath), normalizedTargetFile, null, normalizedTargetFile,
             "Imported database to " + normalizedTargetFile.toAbsolutePath(), openResult, List.of());
@@ -79,7 +79,7 @@ public class AlternateDatabaseAdminService
         {
             if (activeSource)
             {
-                reopened = databaseAdministrationService.openDatabase(sourceBase);
+                reopened = this.databaseAdministrationService.openDatabase(sourceBase);
             }
         }
         return new AdminResult(normalizeFile(effectiveSource), normalizedTargetFile, null, normalizedTargetFile,
@@ -109,7 +109,7 @@ public class AlternateDatabaseAdminService
         DatabaseOpenService.OpenResult openResult = null;
         if (openAfterRepair)
         {
-            openResult = databaseAdministrationService.openDatabase(basePath);
+            openResult = this.databaseAdministrationService.openDatabase(basePath);
         }
         return new AdminResult(normalizeFile(databasePath), null,
             repairResult.backupFiles().isEmpty() ? null : repairResult.backupFiles().get(0),
@@ -121,7 +121,7 @@ public class AlternateDatabaseAdminService
     {
         validateSupportedExistingDatabase(databasePath);
         Path basePath = normalizeBase(databasePath);
-        Path activeBase = sessionContext.activeDatabaseBasePath();
+        Path activeBase = this.sessionContext.activeDatabaseBasePath();
         boolean migratingActive = isActiveDatabase(basePath);
         if (migratingActive && !backupConfirmed)
         {
@@ -146,7 +146,7 @@ public class AlternateDatabaseAdminService
         DatabaseOpenService.OpenResult openResult = null;
         if (migratingActive)
         {
-            openResult = databaseAdministrationService.openDatabase(basePath);
+            openResult = this.databaseAdministrationService.openDatabase(basePath);
         }
         List<Path> backups = repairResult == null ? List.of() : repairResult.backupFiles();
         return new AdminResult(normalizeFile(databasePath), outputScript, backups.isEmpty() ? null : backups.get(0),
@@ -193,7 +193,7 @@ public class AlternateDatabaseAdminService
 
     private Path activeDatabaseFile()
     {
-        Path base = sessionContext.activeDatabaseBasePath();
+        Path base = this.sessionContext.activeDatabaseBasePath();
         if (base == null)
         {
             throw new IllegalStateException("Open a database before exporting the active database.");
@@ -203,7 +203,7 @@ public class AlternateDatabaseAdminService
 
     private boolean isActiveDatabase(Path basePath)
     {
-        Path activeBase = sessionContext.activeDatabaseBasePath();
+        Path activeBase = this.sessionContext.activeDatabaseBasePath();
         return activeBase != null && activeBase.toAbsolutePath().normalize().equals(basePath.toAbsolutePath().normalize());
     }
 

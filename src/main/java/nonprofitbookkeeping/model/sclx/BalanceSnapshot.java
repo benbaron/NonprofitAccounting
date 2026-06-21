@@ -55,7 +55,7 @@ public class BalanceSnapshot {
      */
     @JsonProperty("amount")
     public String getAmount() {
-        return amount;
+        return this.amount;
     }
 
     /**
@@ -75,7 +75,7 @@ public class BalanceSnapshot {
      */
     @JsonProperty("asOf")
     public Date getAsOf() {
-        return asOf;
+        return this.asOf;
     }
 
     /**

@@ -93,7 +93,7 @@ class DonorReceiptWorkflowServiceTest
 
     private void openDatabase() throws Exception
     {
-        Database.init(tempDir.resolve("donor-receipts"));
+        Database.init(this.tempDir.resolve("donor-receipts"));
         Database.get().ensureSchema();
     }
 

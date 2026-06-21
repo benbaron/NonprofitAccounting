@@ -56,7 +56,7 @@ public class Address {
 
     @JsonProperty("address1")
     public String getAddress1() {
-        return address1;
+        return this.address1;
     }
 
     @JsonProperty("address1")
@@ -66,7 +66,7 @@ public class Address {
 
     @JsonProperty("address2")
     public String getAddress2() {
-        return address2;
+        return this.address2;
     }
 
     @JsonProperty("address2")
@@ -76,7 +76,7 @@ public class Address {
 
     @JsonProperty("city")
     public String getCity() {
-        return city;
+        return this.city;
     }
 
     @JsonProperty("city")
@@ -86,7 +86,7 @@ public class Address {
 
     @JsonProperty("stateProvince")
     public String getStateProvince() {
-        return stateProvince;
+        return this.stateProvince;
     }
 
     @JsonProperty("stateProvince")
@@ -96,7 +96,7 @@ public class Address {
 
     @JsonProperty("postalCode")
     public String getPostalCode() {
-        return postalCode;
+        return this.postalCode;
     }
 
     @JsonProperty("postalCode")
@@ -106,7 +106,7 @@ public class Address {
 
     @JsonProperty("country")
     public String getCountry() {
-        return country;
+        return this.country;
     }
 
     @JsonProperty("country")
@@ -116,7 +116,7 @@ public class Address {
 
     @JsonProperty("extensions")
     public Extensions getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     @JsonProperty("extensions")

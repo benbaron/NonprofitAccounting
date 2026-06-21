@@ -44,13 +44,13 @@ public class SemanticReportPreviewPanelFX extends BorderPane
 			@Override
 			public String toString(String key)
 			{
-				return key == null ? "" : displayNames.getOrDefault(key, key);
+				return key == null ? "" : SemanticReportPreviewPanelFX.this.displayNames.getOrDefault(key, key);
 			}
 
 			@Override
 			public String fromString(String string)
 			{
-				return displayNames.entrySet().stream()
+				return SemanticReportPreviewPanelFX.this.displayNames.entrySet().stream()
 					.filter(e -> e.getValue().equals(string))
 					.map(Map.Entry::getKey)
 					.findFirst()

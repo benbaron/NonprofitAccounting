@@ -102,7 +102,7 @@ public class Budget {
      */
     @JsonProperty("budgetId")
     public String getBudgetId() {
-        return budgetId;
+        return this.budgetId;
     }
 
     /**
@@ -122,7 +122,7 @@ public class Budget {
      */
     @JsonProperty("name")
     public String getName() {
-        return name;
+        return this.name;
     }
 
     /**
@@ -142,7 +142,7 @@ public class Budget {
      */
     @JsonProperty("fiscalYear")
     public Integer getFiscalYear() {
-        return fiscalYear;
+        return this.fiscalYear;
     }
 
     /**
@@ -162,7 +162,7 @@ public class Budget {
      */
     @JsonProperty("fundId")
     public String getFundId() {
-        return fundId;
+        return this.fundId;
     }
 
     /**
@@ -182,7 +182,7 @@ public class Budget {
      */
     @JsonProperty("active")
     public Boolean getActive() {
-        return active;
+        return this.active;
     }
 
     /**
@@ -197,7 +197,7 @@ public class Budget {
 
     @JsonProperty("description")
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     @JsonProperty("description")
@@ -207,7 +207,7 @@ public class Budget {
 
     @JsonProperty("lines")
     public List<BudgetLine> getLines() {
-        return lines;
+        return this.lines;
     }
 
     @JsonProperty("lines")
@@ -217,7 +217,7 @@ public class Budget {
 
     @JsonProperty("extensions")
     public Extensions getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     @JsonProperty("extensions")

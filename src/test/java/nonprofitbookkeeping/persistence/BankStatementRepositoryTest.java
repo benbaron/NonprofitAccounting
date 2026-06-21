@@ -25,7 +25,7 @@ class BankStatementRepositoryTest
 	@Test
 	void upsertAndFind_roundTripsNewReconciliationFields() throws Exception
 	{
-		Path dbPath = tempDir.resolve("bank-statement-repo");
+		Path dbPath = this.tempDir.resolve("bank-statement-repo");
 		Database.init(dbPath);
 		FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
 		Database.get().ensureSchema();

@@ -25,16 +25,16 @@ public class FundRecordService
 
     public void save(FundRecord record) throws SQLException
     {
-        repository.upsert(record);
+        this.repository.upsert(record);
     }
 
     public List<FundRecord> listAll() throws SQLException
     {
-        return repository.listAll();
+        return this.repository.listAll();
     }
 
     public int delete(String fundId) throws SQLException
     {
-        return repository.deleteById(fundId);
+        return this.repository.deleteById(fundId);
     }
 }

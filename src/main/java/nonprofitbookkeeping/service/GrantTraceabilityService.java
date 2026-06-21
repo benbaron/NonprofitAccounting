@@ -28,7 +28,7 @@ public class GrantTraceabilityService
 	{
 		try
 		{
-			return repository.listTraceabilityRows();
+			return this.repository.listTraceabilityRows();
 		}
 		catch (Exception ex)
 		{
@@ -40,7 +40,7 @@ public class GrantTraceabilityService
 	{
 		try
 		{
-			return repository.listComplianceAlerts(asOf);
+			return this.repository.listComplianceAlerts(asOf);
 		}
 		catch (Exception ex)
 		{

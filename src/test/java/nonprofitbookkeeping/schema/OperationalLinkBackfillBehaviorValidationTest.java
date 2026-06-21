@@ -23,7 +23,7 @@ class OperationalLinkBackfillBehaviorValidationTest
     @Test
     void flywayBackfillsOperationalLinksAndQueuesUnmatchedRecordsBeforeEnsureSchema() throws Exception
     {
-        Database.init(tempDir.resolve("operational-link-backfill-behavior"));
+        Database.init(this.tempDir.resolve("operational-link-backfill-behavior"));
         Database database = Database.get();
 
         migrateWithFlyway(database, "17");

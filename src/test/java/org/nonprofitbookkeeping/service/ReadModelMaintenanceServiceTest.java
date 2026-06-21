@@ -20,7 +20,7 @@ class ReadModelMaintenanceServiceTest {
 
     @Test
     void rebuildAndDriftDetection_workFromCanonical() throws Exception {
-        Database.init(tempDir.resolve("rm-maint"));
+        Database.init(this.tempDir.resolve("rm-maint"));
         FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
         seedCanonical();

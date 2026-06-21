@@ -46,7 +46,7 @@ public class AlternateImportExportPanel implements AppPanel
     @Override
     public Node root()
     {
-        return root;
+        return this.root;
     }
 
     private void build()
@@ -56,13 +56,13 @@ public class AlternateImportExportPanel implements AppPanel
         Label subtitle = new Label("Company-level import/export is separated from database-level import/export and backup operations.");
         subtitle.setWrapText(true);
         subtitle.getStyleClass().add("alternate-panel-subtitle");
-        status.setEditable(false);
-        status.setPrefRowCount(8);
-        VBox.setVgrow(status, Priority.ALWAYS);
-        root.setPadding(new Insets(12));
-        root.getStyleClass().add("alternate-content-card");
-        root.getChildren().setAll(title, subtitle,
-            databaseSection(), coaSection(), sclxSection(), supportedFormatsSection(), new Separator(), new Label("Result"), status);
+        this.status.setEditable(false);
+        this.status.setPrefRowCount(8);
+        VBox.setVgrow(this.status, Priority.ALWAYS);
+        this.root.setPadding(new Insets(12));
+        this.root.getStyleClass().add("alternate-content-card");
+        this.root.getChildren().setAll(title, subtitle,
+            databaseSection(), coaSection(), sclxSection(), supportedFormatsSection(), new Separator(), new Label("Result"), this.status);
     }
 
     private GridPane databaseSection()
@@ -72,7 +72,7 @@ public class AlternateImportExportPanel implements AppPanel
         addReadOnlyRow(grid, 2, "Import modes", "Create/import into a new database/company; validate database before opening where supported.");
         addReadOnlyRow(grid, 3, "Export modes", "Full database export/backup; active database backup with explicit source and target paths.");
         Button open = new Button("Open Database Administration");
-        open.setOnAction(e -> status.setText("Open the Database Administration workspace for database-level import/export and backup."));
+        open.setOnAction(e -> this.status.setText("Open the Database Administration workspace for database-level import/export and backup."));
         grid.add(open, 1, 4);
         return grid;
     }
@@ -123,12 +123,12 @@ public class AlternateImportExportPanel implements AppPanel
     {
         if (file == null || file.isBlank())
         {
-            showResult(service.blockingError("Select an SCLX file before import."));
+            showResult(this.service.blockingError("Select an SCLX file before import."));
             return;
         }
         if (mode != null && mode.startsWith("Commit") && (!Database.isInitialized() || !CurrentCompany.isOpen()))
         {
-            showResult(service.blockingError("Open a database and active company before committing an SCLX import."));
+            showResult(this.service.blockingError("Open a database and active company before committing an SCLX import."));
             return;
         }
         if (mode != null && (mode.startsWith("Preview") || mode.startsWith("Validate") || mode.startsWith("Create")))
@@ -141,11 +141,11 @@ public class AlternateImportExportPanel implements AppPanel
             blankToNull(cashAccount), null, AccountImportMode.AS_IS, Map.of());
         try
         {
-            showResult(service.importSclx(Path.of(file.trim()), options));
+            showResult(this.service.importSclx(Path.of(file.trim()), options));
         }
         catch (RuntimeException ex)
         {
-            showResult(service.blockingError(ex.getMessage()));
+            showResult(this.service.blockingError(ex.getMessage()));
         }
     }
 
@@ -154,7 +154,7 @@ public class AlternateImportExportPanel implements AppPanel
         String details = result.describeCounts();
         if (result.hasBlockingErrors()) details += "\nBlocking errors:\n- " + String.join("\n- ", result.errors());
         if (!result.warnings().isEmpty()) details += "\nWarnings:\n- " + String.join("\n- ", result.warnings());
-        status.setText(details);
+        this.status.setText(details);
     }
 
     private GridPane section(String headingText, String description)

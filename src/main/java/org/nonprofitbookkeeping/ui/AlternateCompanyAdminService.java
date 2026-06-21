@@ -54,7 +54,7 @@ public class AlternateCompanyAdminService
     public List<CompanyRecord> listCompanies() throws SQLException
     {
         requireDatabase();
-        return repository.listCompanies();
+        return this.repository.listCompanies();
     }
 
     public long createCompany(CreateCompanyRequest request) throws SQLException, IOException
@@ -64,23 +64,23 @@ public class AlternateCompanyAdminService
         ensureUniqueName(request.organizationName(), null);
         Company company = new Company();
         company.setCompanyProfileModel(profileFor(request, false));
-        long id = repository.save(null, company);
+        long id = this.repository.save(null, company);
         openCompany(id);
-        sessionContext.updateCompanyMetadata(new UiSessionContext.CompanyMetadata(false, false, true));
+        this.sessionContext.updateCompanyMetadata(new UiSessionContext.CompanyMetadata(false, false, true));
         return id;
     }
 
     public void openCompany(long companyId) throws IOException, SQLException
     {
-        Company company = repository.load(companyId);
+        Company company = this.repository.load(companyId);
         String label = companyName(company, "Company " + companyId);
-        contextService.openCompany(companyId, label);
+        this.contextService.openCompany(companyId, label);
     }
 
     public void closeActiveCompany()
     {
         CurrentCompany.close();
-        contextService.clearActiveCompanyContext();
+        this.contextService.clearActiveCompanyContext();
     }
 
     public void deleteCompany(long companyId, String typedCompanyName, boolean backupAcknowledged) throws SQLException, IOException
@@ -90,23 +90,23 @@ public class AlternateCompanyAdminService
         {
             throw new IllegalArgumentException(BACKUP_GUIDANCE);
         }
-        Company company = repository.load(companyId);
+        Company company = this.repository.load(companyId);
         String expectedName = companyName(company, "Company " + companyId);
         if (!expectedName.equals(typedCompanyName))
         {
             throw new IllegalArgumentException("Type the exact company name to confirm deletion: " + expectedName);
         }
-        if (Objects.equals(sessionContext.activeCompanyId(), companyId))
+        if (Objects.equals(this.sessionContext.activeCompanyId(), companyId))
         {
             throw new IllegalStateException("Close or switch away from the active company before deleting it.");
         }
-        repository.delete(companyId);
+        this.repository.delete(companyId);
     }
 
     public PopulateResult populateCompany(long companyId) throws SQLException, IOException
     {
         requireDatabase();
-        Company company = repository.load(companyId);
+        Company company = this.repository.load(companyId);
         if (isPopulated(company))
         {
             return new PopulateResult(companyId, false, "Company already has a chart of accounts or transactions; no starter data was added.");
@@ -123,11 +123,11 @@ public class AlternateCompanyAdminService
         {
             profile.setChartOfAccountsType("Starter Nonprofit");
         }
-        repository.save(companyId, company);
-        if (Objects.equals(sessionContext.activeCompanyId(), companyId))
+        this.repository.save(companyId, company);
+        if (Objects.equals(this.sessionContext.activeCompanyId(), companyId))
         {
             openCompany(companyId);
-            sessionContext.updateCompanyMetadata(new UiSessionContext.CompanyMetadata(false, true, false));
+            this.sessionContext.updateCompanyMetadata(new UiSessionContext.CompanyMetadata(false, true, false));
         }
         return new PopulateResult(companyId, true, "Starter chart/settings added once; running populate again will not duplicate them.");
     }
@@ -144,9 +144,9 @@ public class AlternateCompanyAdminService
             .addAccount("4000", "Sample Contributions", AccountSide.CREDIT)
             .addAccount("5000", "Sample Outreach Expense", AccountSide.DEBIT)
             .build());
-        long id = repository.save(null, company);
+        long id = this.repository.save(null, company);
         openCompany(id);
-        sessionContext.updateCompanyMetadata(new UiSessionContext.CompanyMetadata(true, true, true));
+        this.sessionContext.updateCompanyMetadata(new UiSessionContext.CompanyMetadata(true, true, true));
         return id;
     }
 
@@ -170,7 +170,7 @@ public class AlternateCompanyAdminService
     private void ensureUniqueName(String name, Long ignoringId) throws SQLException
     {
         String normalized = name.trim().toLowerCase(Locale.ROOT);
-        for (CompanyRecord record : repository.listCompanies())
+        for (CompanyRecord record : this.repository.listCompanies())
         {
             if (!Objects.equals(record.id(), ignoringId) && record.name() != null && record.name().trim().toLowerCase(Locale.ROOT).equals(normalized))
             {
@@ -181,7 +181,7 @@ public class AlternateCompanyAdminService
 
     private void requireDatabase()
     {
-        if (!Database.isInitialized() || !sessionContext.isDatabaseOpen()) throw new IllegalStateException("Open a database before managing companies.");
+        if (!Database.isInitialized() || !this.sessionContext.isDatabaseOpen()) throw new IllegalStateException("Open a database before managing companies.");
     }
 
     private static CompanyProfileModel profileFor(CreateCompanyRequest request, boolean sample)

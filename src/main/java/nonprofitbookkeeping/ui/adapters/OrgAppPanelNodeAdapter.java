@@ -23,26 +23,26 @@ public class OrgAppPanelNodeAdapter extends BorderPane
 
     public AppPanel getAppPanel()
     {
-        return appPanel;
+        return this.appPanel;
     }
 
     public void onSave()
     {
-        appPanel.onSave();
+        this.appPanel.onSave();
     }
 
     public void onNew()
     {
-        appPanel.onNew();
+        this.appPanel.onNew();
     }
 
     public void onCopy()
     {
-        appPanel.onCopy();
+        this.appPanel.onCopy();
     }
 
     public void onPaste()
     {
-        appPanel.onPaste();
+        this.appPanel.onPaste();
     }
 }

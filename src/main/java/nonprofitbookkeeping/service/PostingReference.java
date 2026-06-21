@@ -12,11 +12,11 @@ public record PostingReference(int journalTxnId, String canonicalRef)
 {
     public Long canonicalTxnId()
     {
-        if (canonicalRef == null || !canonicalRef.startsWith("txn:"))
+        if (this.canonicalRef == null || !this.canonicalRef.startsWith("txn:"))
         {
             return null;
         }
-        String value = canonicalRef.substring("txn:".length()).trim();
+        String value = this.canonicalRef.substring("txn:".length()).trim();
         if (value.isEmpty())
         {
             return null;

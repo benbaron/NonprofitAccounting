@@ -21,7 +21,7 @@ class RecordSchemaServiceTest
     @BeforeEach
     void setUp() throws SQLException
     {
-        Database.init(tempDir.resolve("record-schema-db"));
+        Database.init(this.tempDir.resolve("record-schema-db"));
         FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
         new DocumentRecordRepository().listAll();

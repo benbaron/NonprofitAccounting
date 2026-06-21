@@ -17,6 +17,6 @@ public enum ValidationSeverity
 
     public boolean isBlocking()
     {
-        return blocking;
+        return this.blocking;
     }
 }

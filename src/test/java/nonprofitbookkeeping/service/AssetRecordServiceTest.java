@@ -67,7 +67,7 @@ class AssetRecordServiceTest
 
     private void initDb() throws Exception
     {
-        Database.init(tempDir.resolve("asset-record-service"));
+        Database.init(this.tempDir.resolve("asset-record-service"));
         FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
     }

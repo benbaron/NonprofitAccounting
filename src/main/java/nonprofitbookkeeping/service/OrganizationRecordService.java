@@ -25,16 +25,16 @@ public class OrganizationRecordService
 
     public void save(OrganizationRecord record) throws SQLException
     {
-        repository.upsert(record);
+        this.repository.upsert(record);
     }
 
     public List<OrganizationRecord> listAll() throws SQLException
     {
-        return repository.listAll();
+        return this.repository.listAll();
     }
 
     public int delete(String organizationId) throws SQLException
     {
-        return repository.deleteById(organizationId);
+        return this.repository.deleteById(organizationId);
     }
 }

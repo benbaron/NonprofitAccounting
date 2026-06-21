@@ -20,7 +20,7 @@ public enum AssetItemType
 
     public String displayName()
     {
-        return displayName;
+        return this.displayName;
     }
 
     public static AssetItemType fromStorageValue(String value)

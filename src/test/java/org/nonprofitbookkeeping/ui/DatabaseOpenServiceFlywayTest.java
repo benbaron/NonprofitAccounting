@@ -21,7 +21,7 @@ class DatabaseOpenServiceFlywayTest
     @Test
     void openDatabaseRunsFlywayAndCompatibilitySchema() throws Exception
     {
-        Path dbBase = tempDir.resolve("shared-open-flyway");
+        Path dbBase = this.tempDir.resolve("shared-open-flyway");
 
         DatabaseOpenService.OpenResult result = DatabaseOpenService.openDatabase(dbBase);
 

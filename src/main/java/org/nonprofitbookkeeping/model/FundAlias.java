@@ -1,8 +1,6 @@
 package org.nonprofitbookkeeping.model;
 
 import jakarta.persistence.*;
-import java.time.*;
-import java.math.*;
 
 
 @Entity
@@ -33,13 +31,13 @@ public class FundAlias
     @Column(name = "is_active", nullable = false)
     private boolean active = true;
 
-    public Long getId() { return id; }
-    public Fund getFund() { return fund; }
+    public Long getId() { return this.id; }
+    public Fund getFund() { return this.fund; }
     public void setFund(Fund fund) { this.fund = fund; }
-    public String getAliasText() { return aliasText; }
+    public String getAliasText() { return this.aliasText; }
     public void setAliasText(String aliasText) { this.aliasText = aliasText; }
-    public String getSource() { return source; }
+    public String getSource() { return this.source; }
     public void setSource(String source) { this.source = source; }
-    public boolean isActive() { return active; }
+    public boolean isActive() { return this.active; }
     public void setActive(boolean active) { this.active = active; }
 }

@@ -74,7 +74,7 @@ public class ReportingPeriod {
      */
     @JsonProperty("startDate")
     public String getStartDate() {
-        return startDate;
+        return this.startDate;
     }
 
     /**
@@ -94,7 +94,7 @@ public class ReportingPeriod {
      */
     @JsonProperty("endDate")
     public String getEndDate() {
-        return endDate;
+        return this.endDate;
     }
 
     /**
@@ -109,7 +109,7 @@ public class ReportingPeriod {
 
     @JsonProperty("label")
     public String getLabel() {
-        return label;
+        return this.label;
     }
 
     @JsonProperty("label")
@@ -119,7 +119,7 @@ public class ReportingPeriod {
 
     @JsonProperty("fiscalYear")
     public Integer getFiscalYear() {
-        return fiscalYear;
+        return this.fiscalYear;
     }
 
     @JsonProperty("fiscalYear")
@@ -129,7 +129,7 @@ public class ReportingPeriod {
 
     @JsonProperty("periodType")
     public ReportingPeriod.PeriodType getPeriodType() {
-        return periodType;
+        return this.periodType;
     }
 
     @JsonProperty("periodType")
@@ -139,7 +139,7 @@ public class ReportingPeriod {
 
     @JsonProperty("extensions")
     public Extensions getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     @JsonProperty("extensions")

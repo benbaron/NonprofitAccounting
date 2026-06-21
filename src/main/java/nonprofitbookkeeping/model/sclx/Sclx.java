@@ -223,7 +223,7 @@ public class Sclx {
      */
     @JsonProperty("format")
     public String getFormat() {
-        return format;
+        return this.format;
     }
 
     /**
@@ -243,7 +243,7 @@ public class Sclx {
      */
     @JsonProperty("version")
     public String getVersion() {
-        return version;
+        return this.version;
     }
 
     /**
@@ -263,7 +263,7 @@ public class Sclx {
      */
     @JsonProperty("exportedAt")
     public Date getExportedAt() {
-        return exportedAt;
+        return this.exportedAt;
     }
 
     /**
@@ -278,7 +278,7 @@ public class Sclx {
 
     @JsonProperty("features")
     public Set<String> getFeatures() {
-        return features;
+        return this.features;
     }
 
     @JsonProperty("features")
@@ -288,7 +288,7 @@ public class Sclx {
 
     @JsonProperty("compatibility")
     public Compatibility getCompatibility() {
-        return compatibility;
+        return this.compatibility;
     }
 
     @JsonProperty("compatibility")
@@ -303,7 +303,7 @@ public class Sclx {
      */
     @JsonProperty("organization")
     public Organization getOrganization() {
-        return organization;
+        return this.organization;
     }
 
     /**
@@ -323,7 +323,7 @@ public class Sclx {
      */
     @JsonProperty("reportingPeriod")
     public ReportingPeriod getReportingPeriod() {
-        return reportingPeriod;
+        return this.reportingPeriod;
     }
 
     /**
@@ -343,7 +343,7 @@ public class Sclx {
      */
     @JsonProperty("chartOfAccounts")
     public List<Account> getChartOfAccounts() {
-        return chartOfAccounts;
+        return this.chartOfAccounts;
     }
 
     /**
@@ -363,7 +363,7 @@ public class Sclx {
      */
     @JsonProperty("funds")
     public List<Fund> getFunds() {
-        return funds;
+        return this.funds;
     }
 
     /**
@@ -383,7 +383,7 @@ public class Sclx {
      */
     @JsonProperty("budgets")
     public List<Budget> getBudgets() {
-        return budgets;
+        return this.budgets;
     }
 
     /**
@@ -403,7 +403,7 @@ public class Sclx {
      */
     @JsonProperty("people")
     public List<Person> getPeople() {
-        return people;
+        return this.people;
     }
 
     /**
@@ -418,7 +418,7 @@ public class Sclx {
 
     @JsonProperty("bankAccounts")
     public List<BankAccount> getBankAccounts() {
-        return bankAccounts;
+        return this.bankAccounts;
     }
 
     @JsonProperty("bankAccounts")
@@ -428,7 +428,7 @@ public class Sclx {
 
     @JsonProperty("officeAssignments")
     public List<OfficeAssignment> getOfficeAssignments() {
-        return officeAssignments;
+        return this.officeAssignments;
     }
 
     @JsonProperty("officeAssignments")
@@ -438,7 +438,7 @@ public class Sclx {
 
     @JsonProperty("committeeMemberships")
     public List<CommitteeMembership> getCommitteeMemberships() {
-        return committeeMemberships;
+        return this.committeeMemberships;
     }
 
     @JsonProperty("committeeMemberships")
@@ -453,7 +453,7 @@ public class Sclx {
      */
     @JsonProperty("events")
     public List<Event> getEvents() {
-        return events;
+        return this.events;
     }
 
     /**
@@ -473,7 +473,7 @@ public class Sclx {
      */
     @JsonProperty("documents")
     public List<Document> getDocuments() {
-        return documents;
+        return this.documents;
     }
 
     /**
@@ -493,7 +493,7 @@ public class Sclx {
      */
     @JsonProperty("transactions")
     public List<Transaction> getTransactions() {
-        return transactions;
+        return this.transactions;
     }
 
     /**
@@ -508,7 +508,7 @@ public class Sclx {
 
     @JsonProperty("bankingItems")
     public List<BankingItem> getBankingItems() {
-        return bankingItems;
+        return this.bankingItems;
     }
 
     @JsonProperty("bankingItems")
@@ -518,7 +518,7 @@ public class Sclx {
 
     @JsonProperty("outstandingItems")
     public List<OutstandingItem> getOutstandingItems() {
-        return outstandingItems;
+        return this.outstandingItems;
     }
 
     @JsonProperty("outstandingItems")
@@ -528,7 +528,7 @@ public class Sclx {
 
     @JsonProperty("otherAssetItems")
     public List<OtherAssetItem> getOtherAssetItems() {
-        return otherAssetItems;
+        return this.otherAssetItems;
     }
 
     @JsonProperty("otherAssetItems")
@@ -538,7 +538,7 @@ public class Sclx {
 
     @JsonProperty("supplementalItems")
     public List<SupplementalItem> getSupplementalItems() {
-        return supplementalItems;
+        return this.supplementalItems;
     }
 
     @JsonProperty("supplementalItems")
@@ -548,7 +548,7 @@ public class Sclx {
 
     @JsonProperty("assets")
     public List<Asset> getAssets() {
-        return assets;
+        return this.assets;
     }
 
     @JsonProperty("assets")
@@ -558,7 +558,7 @@ public class Sclx {
 
     @JsonProperty("supplies")
     public List<Supply> getSupplies() {
-        return supplies;
+        return this.supplies;
     }
 
     @JsonProperty("supplies")
@@ -568,7 +568,7 @@ public class Sclx {
 
     @JsonProperty("bankStatementImports")
     public List<BankStatementImport> getBankStatementImports() {
-        return bankStatementImports;
+        return this.bankStatementImports;
     }
 
     @JsonProperty("bankStatementImports")
@@ -578,7 +578,7 @@ public class Sclx {
 
     @JsonProperty("extensions")
     public Extensions getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     @JsonProperty("extensions")

@@ -19,6 +19,6 @@ public class ReportLibraryPanel implements AppPanel
     @Override
     public Node root()
     {
-        return content;
+        return this.content;
     }
 }

@@ -83,7 +83,7 @@ class FundTransferLifecycleServiceTest
 
     private void initDb() throws Exception
     {
-        Path dbPath = tempDir.resolve("fund-transfer-lifecycle");
+        Path dbPath = this.tempDir.resolve("fund-transfer-lifecycle");
         Database.init(dbPath);
         FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();

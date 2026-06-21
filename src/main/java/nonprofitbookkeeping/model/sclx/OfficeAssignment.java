@@ -102,7 +102,7 @@ public class OfficeAssignment {
      */
     @JsonProperty("officeAssignmentId")
     public String getOfficeAssignmentId() {
-        return officeAssignmentId;
+        return this.officeAssignmentId;
     }
 
     /**
@@ -122,7 +122,7 @@ public class OfficeAssignment {
      */
     @JsonProperty("personId")
     public String getPersonId() {
-        return personId;
+        return this.personId;
     }
 
     /**
@@ -137,7 +137,7 @@ public class OfficeAssignment {
 
     @JsonProperty("organizationId")
     public String getOrganizationId() {
-        return organizationId;
+        return this.organizationId;
     }
 
     @JsonProperty("organizationId")
@@ -152,7 +152,7 @@ public class OfficeAssignment {
      */
     @JsonProperty("roleTitle")
     public String getRoleTitle() {
-        return roleTitle;
+        return this.roleTitle;
     }
 
     /**
@@ -167,7 +167,7 @@ public class OfficeAssignment {
 
     @JsonProperty("membershipNumber")
     public String getMembershipNumber() {
-        return membershipNumber;
+        return this.membershipNumber;
     }
 
     @JsonProperty("membershipNumber")
@@ -177,7 +177,7 @@ public class OfficeAssignment {
 
     @JsonProperty("membershipExpiry")
     public String getMembershipExpiry() {
-        return membershipExpiry;
+        return this.membershipExpiry;
     }
 
     @JsonProperty("membershipExpiry")
@@ -187,7 +187,7 @@ public class OfficeAssignment {
 
     @JsonProperty("startDate")
     public String getStartDate() {
-        return startDate;
+        return this.startDate;
     }
 
     @JsonProperty("startDate")
@@ -197,7 +197,7 @@ public class OfficeAssignment {
 
     @JsonProperty("endDate")
     public String getEndDate() {
-        return endDate;
+        return this.endDate;
     }
 
     @JsonProperty("endDate")
@@ -212,7 +212,7 @@ public class OfficeAssignment {
      */
     @JsonProperty("active")
     public Boolean getActive() {
-        return active;
+        return this.active;
     }
 
     /**
@@ -227,7 +227,7 @@ public class OfficeAssignment {
 
     @JsonProperty("extensions")
     public Extensions getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     @JsonProperty("extensions")

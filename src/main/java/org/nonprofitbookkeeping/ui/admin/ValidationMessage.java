@@ -35,7 +35,7 @@ public record ValidationMessage(ValidationSeverity severity, String code, String
 
     public boolean isBlocking()
     {
-        return severity.isBlocking();
+        return this.severity.isBlocking();
     }
 
     static String requireText(String value, String name)

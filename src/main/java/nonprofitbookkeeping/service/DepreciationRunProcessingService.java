@@ -266,7 +266,7 @@ public final class DepreciationRunProcessingService
                     {
                         throw new IllegalStateException("Invalid depreciation period for record " + recordId);
                     }
-                    PostingReference ref = postingFacade.post(
+                    PostingReference ref = this.postingFacade.post(
                         DepreciationPostingFactory.build(recordId, amount, periodEnd));
                     try (PreparedStatement up = c.prepareStatement("""
                         UPDATE depreciation_record
@@ -308,7 +308,7 @@ public final class DepreciationRunProcessingService
                     {
                         continue;
                     }
-                    PostingReference ref = postingFacade.reverse(postedTxn,
+                    PostingReference ref = this.postingFacade.reverse(postedTxn,
                         reason == null ? "Depreciation run reversal " + runId : reason);
                     try (PreparedStatement up = c.prepareStatement("""
                         UPDATE depreciation_record

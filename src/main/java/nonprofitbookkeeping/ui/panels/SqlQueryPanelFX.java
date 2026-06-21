@@ -493,7 +493,7 @@ public class SqlQueryPanelFX extends BorderPane
 			if (needsValue)
 			{
 				sql.append(" ?");
-				paramType = columnTypes.getOrDefault(field, Types.VARCHAR);
+				paramType = this.columnTypes.getOrDefault(field, Types.VARCHAR);
 			}
 			
 		}

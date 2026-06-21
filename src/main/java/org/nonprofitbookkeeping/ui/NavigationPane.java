@@ -91,10 +91,10 @@ public class NavigationPane extends VBox
         TreeItem<NavItem> sys = group(root, "System");
         add(sys, AppPanelId.SETTINGS, "Settings");
 
-        tree = new TreeView<>(root);
-        tree.setShowRoot(false);
+        this.tree = new TreeView<>(root);
+        this.tree.setShowRoot(false);
 
-        tree.setCellFactory(tv -> new TreeCell<>()
+        this.tree.setCellFactory(tv -> new TreeCell<>()
         {
             @Override
             protected void updateItem(NavItem item, boolean empty)
@@ -104,9 +104,9 @@ public class NavigationPane extends VBox
             }
         });
 
-        tree.setOnMouseClicked(e ->
+        this.tree.setOnMouseClicked(e ->
         {
-            TreeItem<NavItem> sel = tree.getSelectionModel().getSelectedItem();
+            TreeItem<NavItem> sel = this.tree.getSelectionModel().getSelectedItem();
             if (sel == null || sel.getValue() == null) return;
 
             if (e.getClickCount() == 2)
@@ -124,20 +124,20 @@ public class NavigationPane extends VBox
 
             if (e.getButton() == javafx.scene.input.MouseButton.SECONDARY)
             {
-                tree.getSelectionModel().select(sel);
+                this.tree.getSelectionModel().select(sel);
                 NavItem v = sel.getValue();
                 openInspector.accept("Details: " + v.label(),
                     "Detail inspector placeholder for: " + v.label() + "\n\n(Details-first; journal is a drill-down.)");
             }
         });
 
-        getChildren().add(tree);
+        getChildren().add(this.tree);
     }
 
     public void highlight(AppPanelId id)
     {
-        TreeItem<NavItem> ti = index.get(id);
-        if (ti != null) tree.getSelectionModel().select(ti);
+        TreeItem<NavItem> ti = this.index.get(id);
+        if (ti != null) this.tree.getSelectionModel().select(ti);
     }
 
     private TreeItem<NavItem> group(TreeItem<NavItem> parent, String label)
@@ -152,14 +152,14 @@ public class NavigationPane extends VBox
     {
         TreeItem<NavItem> ti = new TreeItem<>(new NavItem(id, label, null, false));
         parent.getChildren().add(ti);
-        index.put(id, ti);
+        this.index.put(id, ti);
     }
 
     private void addRecordService(TreeItem<NavItem> parent, RecordServicePanelRegistry.PanelBinding binding)
     {
         String suffix = binding.proposedPanel() ? " (Proposed)" : " (Workspace)";
         String label = binding.displayName() + suffix;
-        TreeItem<NavItem> ti = new TreeItem<>(new NavItem(null, label, () -> openRecordServicePanel.accept(binding),
+        TreeItem<NavItem> ti = new TreeItem<>(new NavItem(null, label, () -> this.openRecordServicePanel.accept(binding),
             binding.proposedPanel()));
         parent.getChildren().add(ti);
     }

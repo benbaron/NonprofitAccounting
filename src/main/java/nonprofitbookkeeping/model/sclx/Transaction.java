@@ -161,7 +161,7 @@ public class Transaction {
      */
     @JsonProperty("transactionId")
     public String getTransactionId() {
-        return transactionId;
+        return this.transactionId;
     }
 
     /**
@@ -181,7 +181,7 @@ public class Transaction {
      */
     @JsonProperty("transactionDate")
     public String getTransactionDate() {
-        return transactionDate;
+        return this.transactionDate;
     }
 
     /**
@@ -201,7 +201,7 @@ public class Transaction {
      */
     @JsonProperty("postingDate")
     public String getPostingDate() {
-        return postingDate;
+        return this.postingDate;
     }
 
     /**
@@ -221,7 +221,7 @@ public class Transaction {
      */
     @JsonProperty("description")
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     /**
@@ -236,7 +236,7 @@ public class Transaction {
 
     @JsonProperty("reference")
     public String getReference() {
-        return reference;
+        return this.reference;
     }
 
     @JsonProperty("reference")
@@ -251,7 +251,7 @@ public class Transaction {
      */
     @JsonProperty("status")
     public Transaction.TransactionStatus getStatus() {
-        return status;
+        return this.status;
     }
 
     /**
@@ -271,7 +271,7 @@ public class Transaction {
      */
     @JsonProperty("source")
     public Transaction.TransactionSource getSource() {
-        return source;
+        return this.source;
     }
 
     /**
@@ -286,7 +286,7 @@ public class Transaction {
 
     @JsonProperty("documentIds")
     public Set<String> getDocumentIds() {
-        return documentIds;
+        return this.documentIds;
     }
 
     @JsonProperty("documentIds")
@@ -296,7 +296,7 @@ public class Transaction {
 
     @JsonProperty("eventId")
     public String getEventId() {
-        return eventId;
+        return this.eventId;
     }
 
     @JsonProperty("eventId")
@@ -306,7 +306,7 @@ public class Transaction {
 
     @JsonProperty("approval")
     public Approval getApproval() {
-        return approval;
+        return this.approval;
     }
 
     @JsonProperty("approval")
@@ -316,7 +316,7 @@ public class Transaction {
 
     @JsonProperty("bankTiming")
     public Transaction.TimingValue getBankTiming() {
-        return bankTiming;
+        return this.bankTiming;
     }
 
     @JsonProperty("bankTiming")
@@ -326,7 +326,7 @@ public class Transaction {
 
     @JsonProperty("budgetTiming")
     public Transaction.TimingValue getBudgetTiming() {
-        return budgetTiming;
+        return this.budgetTiming;
     }
 
     @JsonProperty("budgetTiming")
@@ -336,7 +336,7 @@ public class Transaction {
 
     @JsonProperty("budgetId")
     public String getBudgetId() {
-        return budgetId;
+        return this.budgetId;
     }
 
     @JsonProperty("budgetId")
@@ -351,7 +351,7 @@ public class Transaction {
      */
     @JsonProperty("lines")
     public List<TransactionLine> getLines() {
-        return lines;
+        return this.lines;
     }
 
     /**
@@ -366,7 +366,7 @@ public class Transaction {
 
     @JsonProperty("workbookLink")
     public WorkbookLink getWorkbookLink() {
-        return workbookLink;
+        return this.workbookLink;
     }
 
     @JsonProperty("workbookLink")
@@ -376,7 +376,7 @@ public class Transaction {
 
     @JsonProperty("extensions")
     public Extensions getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     @JsonProperty("extensions")

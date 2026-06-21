@@ -15,18 +15,18 @@ public class FocusCommitTextFieldTableCell<S> extends TextFieldTableCell<S, Stri
     public void startEdit()
     {
         super.startEdit();
-        if (textField == null)
+        if (this.textField == null)
         {
-            textField = (TextField) getGraphic();
+            this.textField = (TextField) getGraphic();
         }
-        if (textField != null && !listenerInstalled)
+        if (this.textField != null && !this.listenerInstalled)
         {
-            listenerInstalled = true;
-            textField.focusedProperty().addListener((obs, oldValue, newValue) ->
+            this.listenerInstalled = true;
+            this.textField.focusedProperty().addListener((obs, oldValue, newValue) ->
             {
                 if (!newValue && isEditing())
                 {
-                    commitEdit(textField.getText());
+                    commitEdit(this.textField.getText());
                 }
             });
         }

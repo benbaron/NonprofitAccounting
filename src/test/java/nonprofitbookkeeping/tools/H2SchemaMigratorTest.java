@@ -38,8 +38,8 @@ class H2SchemaMigratorTest
     @Test
     void migrate_upgradesSchemaAndOptionallyWritesScript() throws Exception
     {
-        Path dbPath = tempDir.resolve("legacy-company");
-        Path scriptPath = tempDir.resolve("after-migration.sql");
+        Path dbPath = this.tempDir.resolve("legacy-company");
+        Path scriptPath = this.tempDir.resolve("after-migration.sql");
 
         Database.init(dbPath);
         try (Connection c = Database.get().getConnection(); Statement st = c.createStatement())

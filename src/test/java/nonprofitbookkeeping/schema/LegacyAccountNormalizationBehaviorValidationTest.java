@@ -23,7 +23,7 @@ class LegacyAccountNormalizationBehaviorValidationTest
     @Test
     void flywayNormalizesLegacyAccountCodeAndNormalBalanceOnlyWhenMissing() throws Exception
     {
-        Database.init(tempDir.resolve("legacy-account-normalization-behavior"));
+        Database.init(this.tempDir.resolve("legacy-account-normalization-behavior"));
         Database database = Database.get();
 
         migrateWithFlyway(database, "15");

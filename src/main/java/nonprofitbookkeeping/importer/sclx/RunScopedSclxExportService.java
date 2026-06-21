@@ -6,10 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nonprofitbookkeeping.persistence.DocumentRepository;
 
 import java.sql.SQLException;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +75,7 @@ public class RunScopedSclxExportService
         String effectiveRunId = Objects.requireNonNullElse(runId, "").trim();
         Optional<String> rawPayload = effectiveRunId.isEmpty()
             ? Optional.empty()
-            : documentRepository.find("sclx.raw." + effectiveRunId);
+            : this.documentRepository.find("sclx.raw." + effectiveRunId);
 
         SclxDocument document = rawPayload
             .map(this::parseRawDocument)
@@ -103,56 +100,56 @@ public class RunScopedSclxExportService
     {
         try
         {
-            SclxDocument canonical = canonicalExportService.exportDocument();
+            SclxDocument canonical = this.canonicalExportService.exportDocument();
 
             SclxDocument.Organization organization = pickFirst(
-                asList(organizationRepository.loadAll(), runId, SclxDocument.Organization.class),
+                asList(this.organizationRepository.loadAll(), runId, SclxDocument.Organization.class),
                 canonical.organization());
             SclxDocument.ReportingPeriod reportingPeriod = pickFirst(
-                asList(reportingPeriodRepository.loadAll(), runId, SclxDocument.ReportingPeriod.class),
+                asList(this.reportingPeriodRepository.loadAll(), runId, SclxDocument.ReportingPeriod.class),
                 canonical.reportingPeriod());
 
             List<SclxDocument.Account> accounts = pickList(
-                asList(accountRepository.loadAll(), runId, SclxDocument.Account.class),
+                asList(this.accountRepository.loadAll(), runId, SclxDocument.Account.class),
                 canonical.chartOfAccounts());
             List<SclxDocument.Fund> funds = pickList(
-                asList(fundRepository.loadAll(), runId, SclxDocument.Fund.class),
+                asList(this.fundRepository.loadAll(), runId, SclxDocument.Fund.class),
                 canonical.funds());
             List<SclxDocument.Budget> budgets = pickList(
-                asList(budgetRepository.loadAll(), runId, SclxDocument.Budget.class),
+                asList(this.budgetRepository.loadAll(), runId, SclxDocument.Budget.class),
                 canonical.budgets());
             List<SclxDocument.Person> people = pickList(
-                asList(personRepository.loadAll(), runId, SclxDocument.Person.class),
+                asList(this.personRepository.loadAll(), runId, SclxDocument.Person.class),
                 canonical.people());
             List<SclxDocument.Event> events = pickList(
-                asList(eventRepository.loadAll(), runId, SclxDocument.Event.class),
+                asList(this.eventRepository.loadAll(), runId, SclxDocument.Event.class),
                 canonical.events());
             List<SclxDocument.Document> documents = pickList(
-                asList(sclxDocumentRepository.loadAll(), runId, SclxDocument.Document.class),
+                asList(this.sclxDocumentRepository.loadAll(), runId, SclxDocument.Document.class),
                 canonical.documents());
             List<SclxDocument.Transaction> transactions = pickList(
-                asList(transactionRepository.loadAll(), runId, SclxDocument.Transaction.class),
+                asList(this.transactionRepository.loadAll(), runId, SclxDocument.Transaction.class),
                 canonical.transactions());
             List<SclxDocument.BankingItem> bankingItems = pickList(
-                asList(bankingItemRepository.loadAll(), runId, SclxDocument.BankingItem.class),
+                asList(this.bankingItemRepository.loadAll(), runId, SclxDocument.BankingItem.class),
                 canonical.bankingItems());
             List<SclxDocument.OutstandingItem> outstandingItems = pickList(
-                asList(outstandingItemRepository.loadAll(), runId, SclxDocument.OutstandingItem.class),
+                asList(this.outstandingItemRepository.loadAll(), runId, SclxDocument.OutstandingItem.class),
                 canonical.outstandingItems());
             List<SclxDocument.OtherAssetItem> otherAssetItems = pickList(
-                asList(otherAssetItemRepository.loadAll(), runId, SclxDocument.OtherAssetItem.class),
+                asList(this.otherAssetItemRepository.loadAll(), runId, SclxDocument.OtherAssetItem.class),
                 canonical.otherAssetItems());
             List<SclxDocument.SupplementalItem> supplementalItems = pickList(
-                asList(supplementalItemRepository.loadAll(), runId, SclxDocument.SupplementalItem.class),
+                asList(this.supplementalItemRepository.loadAll(), runId, SclxDocument.SupplementalItem.class),
                 canonical.supplementalItems());
             List<SclxDocument.Asset> assets = pickList(
-                asList(assetRepository.loadAll(), runId, SclxDocument.Asset.class),
+                asList(this.assetRepository.loadAll(), runId, SclxDocument.Asset.class),
                 canonical.assets());
             List<SclxDocument.Supply> supplies = pickList(
-                asList(supplyRepository.loadAll(), runId, SclxDocument.Supply.class),
+                asList(this.supplyRepository.loadAll(), runId, SclxDocument.Supply.class),
                 canonical.supplies());
             List<SclxDocument.BankStatementImport> bankStatementImports = pickList(
-                asList(bankStatementImportRepository.loadAll(), runId, SclxDocument.BankStatementImport.class),
+                asList(this.bankStatementImportRepository.loadAll(), runId, SclxDocument.BankStatementImport.class),
                 canonical.bankStatementImports());
 
             return new SclxDocument(
@@ -235,7 +232,7 @@ public class RunScopedSclxExportService
     {
         try
         {
-            Optional<String> raw = documentRepository.find("sclx.importSummary." + runId);
+            Optional<String> raw = this.documentRepository.find("sclx.importSummary." + runId);
             if (raw.isEmpty())
             {
                 return Map.of();

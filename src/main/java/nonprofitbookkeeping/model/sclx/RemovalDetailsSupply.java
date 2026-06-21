@@ -46,7 +46,7 @@ public class RemovalDetailsSupply {
 
     @JsonProperty("approvedBy")
     public String getApprovedBy() {
-        return approvedBy;
+        return this.approvedBy;
     }
 
     @JsonProperty("approvedBy")
@@ -56,7 +56,7 @@ public class RemovalDetailsSupply {
 
     @JsonProperty("reason")
     public String getReason() {
-        return reason;
+        return this.reason;
     }
 
     @JsonProperty("reason")
@@ -66,7 +66,7 @@ public class RemovalDetailsSupply {
 
     @JsonProperty("numberRemoved")
     public Integer getNumberRemoved() {
-        return numberRemoved;
+        return this.numberRemoved;
     }
 
     @JsonProperty("numberRemoved")
@@ -76,7 +76,7 @@ public class RemovalDetailsSupply {
 
     @JsonProperty("removed")
     public Boolean getRemoved() {
-        return removed;
+        return this.removed;
     }
 
     @JsonProperty("removed")
@@ -86,7 +86,7 @@ public class RemovalDetailsSupply {
 
     @JsonProperty("removalType")
     public nonprofitbookkeeping.model.sclx.RemovalDetailsAsset.RemovalType getRemovalType() {
-        return removalType;
+        return this.removalType;
     }
 
     @JsonProperty("removalType")

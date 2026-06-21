@@ -28,7 +28,7 @@ public class BudgetEditorPanel implements AppPanel, AppPanel.SaveAware
 
     public BudgetEditorPanel()
     {
-        root.setPadding(new Insets(8));
+        this.root.setPadding(new Insets(8));
         Label title = new Label("Budget Editor");
         title.getStyleClass().add("panel-title");
 
@@ -38,22 +38,22 @@ public class BudgetEditorPanel implements AppPanel, AppPanel.SaveAware
         Button cancel = new Button("Cancel");
         HBox actions = new HBox(8, add, delete, save, cancel);
 
-        root.setTop(new VBox(6, title, actions, new Separator()));
+        this.root.setTop(new VBox(6, title, actions, new Separator()));
 
         refreshFundChoices();
-        table.setEditable(true);
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        table.getColumns().add(col("Account", BudgetRow::account));
-        table.getColumns().add(fundCol());
-        table.getColumns().add(col("Period", BudgetRow::period));
-        table.getColumns().add(col("Budget Amount", BudgetRow::amount));
-        table.setPlaceholder(new Label(NO_SERVICE_DATA_MESSAGE));
-        root.setCenter(table);
-        root.setBottom(new VBox(new Separator(), status));
+        this.table.setEditable(true);
+        this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+        this.table.getColumns().add(col("Account", BudgetRow::account));
+        this.table.getColumns().add(fundCol());
+        this.table.getColumns().add(col("Period", BudgetRow::period));
+        this.table.getColumns().add(col("Budget Amount", BudgetRow::amount));
+        this.table.setPlaceholder(new Label(NO_SERVICE_DATA_MESSAGE));
+        this.root.setCenter(this.table);
+        this.root.setBottom(new VBox(new Separator(), this.status));
 
         add.setOnAction(e -> {
             refreshFundChoices();
-            status.setText(NO_SERVICE_DATA_MESSAGE);
+            this.status.setText(NO_SERVICE_DATA_MESSAGE);
         });
         delete.setOnAction(e -> onDelete());
         save.setOnAction(e -> onSave());
@@ -70,9 +70,9 @@ public class BudgetEditorPanel implements AppPanel, AppPanel.SaveAware
     private TableColumn<BudgetRow, String> fundCol()
     {
         TableColumn<BudgetRow, String> c = col("Fund", BudgetRow::fund);
-        c.setCellFactory(ComboBoxTableCell.forTableColumn(fundChoices));
+        c.setCellFactory(ComboBoxTableCell.forTableColumn(this.fundChoices));
         c.setOnEditStart(event -> refreshFundChoices());
-        c.setOnEditCommit(event -> table.getItems().set(
+        c.setOnEditCommit(event -> this.table.getItems().set(
             event.getTablePosition().getRow(),
             event.getRowValue().withFund(event.getNewValue())));
         return c;
@@ -82,49 +82,49 @@ public class BudgetEditorPanel implements AppPanel, AppPanel.SaveAware
     {
         try
         {
-            fundChoices.setAll(FundNameLookup.listActiveFundNames());
+            this.fundChoices.setAll(FundNameLookup.listActiveFundNames());
         }
         catch (SQLException ex)
         {
-            fundChoices.clear();
-            status.setText("Unable to load fund choices: " + ex.getMessage());
+            this.fundChoices.clear();
+            this.status.setText("Unable to load fund choices: " + ex.getMessage());
         }
     }
 
     private String defaultFundChoice()
     {
-        return fundChoices.isEmpty() ? "" : fundChoices.get(0);
+        return this.fundChoices.isEmpty() ? "" : this.fundChoices.get(0);
     }
 
     @Override public String title() { return "Budget Editor"; }
-    @Override public Node root() { return root; }
+    @Override public Node root() { return this.root; }
 
     @Override public void onSave()
     {
-        status.setText(NO_SERVICE_DATA_MESSAGE);
+        this.status.setText(NO_SERVICE_DATA_MESSAGE);
     }
 
     @Override public void onDelete()
     {
-        BudgetRow selected = table.getSelectionModel().getSelectedItem();
+        BudgetRow selected = this.table.getSelectionModel().getSelectedItem();
         if (selected == null)
         {
-            status.setText("Select a budget row to delete.");
+            this.status.setText("Select a budget row to delete.");
             return;
         }
-        table.getItems().remove(selected);
-        status.setText("Deleted selected budget row.");
+        this.table.getItems().remove(selected);
+        this.status.setText("Deleted selected budget row.");
     }
 
     @Override public void onCancel()
     {
-        table.getSelectionModel().clearSelection();
-        status.setText("Cancelled budget edit and cleared the selection.");
+        this.table.getSelectionModel().clearSelection();
+        this.status.setText("Cancelled budget edit and cleared the selection.");
     }
 
     public record BudgetRow(String account, String fund, String period, String amount)
     {
-        BudgetRow withFund(String value) { return new BudgetRow(account, value, period, amount); }
+        BudgetRow withFund(String value) { return new BudgetRow(this.account, value, this.period, this.amount); }
     }
 
     @Override

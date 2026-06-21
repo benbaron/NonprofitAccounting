@@ -12,30 +12,30 @@ class WorkspaceRouterTest
     @Test
     void chartOfAccountsLedgerAndInventoryNowRouteThroughPanelHost()
     {
-        assertTrue(router.decide(AppPanelId.CHART_OF_ACCOUNTS).isPanelHost());
-        assertTrue(router.decide(AppPanelId.LEDGER_REGISTER).isPanelHost());
-        assertTrue(router.decide(AppPanelId.INVENTORY).isPanelHost());
+        assertTrue(this.router.decide(AppPanelId.CHART_OF_ACCOUNTS).isPanelHost());
+        assertTrue(this.router.decide(AppPanelId.LEDGER_REGISTER).isPanelHost());
+        assertTrue(this.router.decide(AppPanelId.INVENTORY).isPanelHost());
     }
 
     @Test
     void dashboardRemainsNativeShellRoute()
     {
-        assertTrue(router.decide(AppPanelId.DASHBOARD).isDashboard());
+        assertTrue(this.router.decide(AppPanelId.DASHBOARD).isDashboard());
     }
 
     @Test
     void settingsUsesPanelHostAndBudgetSchedulesRemainAlternateCustomPanes()
     {
-        assertTrue(router.decide(AppPanelId.SETTINGS).isPanelHost());
-        assertTrue(router.decide(AppPanelId.BUDGET_EDITOR).isAlternateCustomPane());
-        assertTrue(router.decide(AppPanelId.SCHEDULES).isAlternateCustomPane());
-        assertTrue(router.decide(AppPanelId.REPORTS_WORKSPACE).isPanelHost());
-        assertTrue(router.decide(AppPanelId.REPORT_LIBRARY).isPanelHost());
-        assertTrue(router.decide(AppPanelId.ASSETS_REGISTER).isPanelHost());
-        assertTrue(router.decide(AppPanelId.BUDGET_VS_ACTUAL).isPanelHost());
-        assertTrue(router.decide(AppPanelId.DEPRECIATION_RUNS).isPanelHost());
-        assertTrue(router.decide(AppPanelId.FUNDS).isPanelHost());
-        assertTrue(router.decide(AppPanelId.DATABASE_ADMIN).isPanelHost());
-        assertTrue(router.decide(AppPanelId.IMPORT_EXPORT).isPanelHost());
+        assertTrue(this.router.decide(AppPanelId.SETTINGS).isPanelHost());
+        assertTrue(this.router.decide(AppPanelId.BUDGET_EDITOR).isAlternateCustomPane());
+        assertTrue(this.router.decide(AppPanelId.SCHEDULES).isAlternateCustomPane());
+        assertTrue(this.router.decide(AppPanelId.REPORTS_WORKSPACE).isPanelHost());
+        assertTrue(this.router.decide(AppPanelId.REPORT_LIBRARY).isPanelHost());
+        assertTrue(this.router.decide(AppPanelId.ASSETS_REGISTER).isPanelHost());
+        assertTrue(this.router.decide(AppPanelId.BUDGET_VS_ACTUAL).isPanelHost());
+        assertTrue(this.router.decide(AppPanelId.DEPRECIATION_RUNS).isPanelHost());
+        assertTrue(this.router.decide(AppPanelId.FUNDS).isPanelHost());
+        assertTrue(this.router.decide(AppPanelId.DATABASE_ADMIN).isPanelHost());
+        assertTrue(this.router.decide(AppPanelId.IMPORT_EXPORT).isPanelHost());
     }
 }

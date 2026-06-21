@@ -35,7 +35,7 @@ class EnsureSchemaBankingReconciliationCompatibilityValidationTest
     @Test
     void ensureSchemaDoesNotChangeFlywayOwnedBankingReconciliationColumns() throws Exception
     {
-        Database.init(tempDir.resolve("banking-reconciliation-compatibility"));
+        Database.init(this.tempDir.resolve("banking-reconciliation-compatibility"));
         Database database = Database.get();
 
         migrateWithFlyway(database);

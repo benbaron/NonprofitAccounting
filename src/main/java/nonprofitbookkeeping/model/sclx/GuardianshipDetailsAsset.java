@@ -46,7 +46,7 @@ public class GuardianshipDetailsAsset {
 
     @JsonProperty("dateAsOf")
     public String getDateAsOf() {
-        return dateAsOf;
+        return this.dateAsOf;
     }
 
     @JsonProperty("dateAsOf")
@@ -56,7 +56,7 @@ public class GuardianshipDetailsAsset {
 
     @JsonProperty("confirmed")
     public Boolean getConfirmed() {
-        return confirmed;
+        return this.confirmed;
     }
 
     @JsonProperty("confirmed")
@@ -66,7 +66,7 @@ public class GuardianshipDetailsAsset {
 
     @JsonProperty("confirmationStatus")
     public GuardianshipDetailsAsset.ConfirmationStatus getConfirmationStatus() {
-        return confirmationStatus;
+        return this.confirmationStatus;
     }
 
     @JsonProperty("confirmationStatus")
@@ -76,7 +76,7 @@ public class GuardianshipDetailsAsset {
 
     @JsonProperty("notes")
     public String getNotes() {
-        return notes;
+        return this.notes;
     }
 
     @JsonProperty("notes")

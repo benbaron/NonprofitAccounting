@@ -69,7 +69,7 @@ public class PostingService
             if (s.amountSigned().compareTo(BigDecimal.ZERO) == 0) throw new PostingException("Split amountSigned must be non-zero.");
         }
 
-        try (EntityManager em = jpa.em())
+        try (EntityManager em = this.jpa.em())
         {
             em.getTransaction().begin();
 
@@ -129,11 +129,11 @@ public class PostingService
             }
 
             em.getTransaction().commit();
-            if (readModelMaintenanceService != null && txn.getId() != null)
+            if (this.readModelMaintenanceService != null && txn.getId() != null)
             {
                 try
                 {
-                    readModelMaintenanceService.refreshForTxn(txn.getId());
+                    this.readModelMaintenanceService.refreshForTxn(txn.getId());
                 }
                 catch (RuntimeException ex)
                 {
@@ -146,7 +146,7 @@ public class PostingService
 
     public List<JournalLine> journalForTxn(Long txnId)
     {
-        try (EntityManager em = jpa.em())
+        try (EntityManager em = this.jpa.em())
         {
             TypedQuery<Object[]> q = em.createQuery(
                 "select t.txnDate, t.id, t.memo, p.displayName, a.code, a.name, f.code, f.name, a.normalBalance, s.amountSigned " +

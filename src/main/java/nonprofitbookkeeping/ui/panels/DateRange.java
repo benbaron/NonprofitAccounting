@@ -19,17 +19,17 @@ public final class DateRange
         this.endInclusive = endInclusive;
     }
 
-    public LocalDate startInclusive() { return startInclusive; }
-    public LocalDate endInclusive() { return endInclusive; }
+    public LocalDate startInclusive() { return this.startInclusive; }
+    public LocalDate endInclusive() { return this.endInclusive; }
 
-    public boolean isAll() { return startInclusive == null && endInclusive == null; }
+    public boolean isAll() { return this.startInclusive == null && this.endInclusive == null; }
 
     @Override
     public String toString()
     {
         if (isAll()) return "All Dates";
-        String s = startInclusive == null ? "…" : startInclusive.toString();
-        String e = endInclusive == null ? "…" : endInclusive.toString();
+        String s = this.startInclusive == null ? "…" : this.startInclusive.toString();
+        String e = this.endInclusive == null ? "…" : this.endInclusive.toString();
         return s + " to " + e;
     }
 
@@ -37,12 +37,12 @@ public final class DateRange
     {
         if (this == o) return true;
         if (!(o instanceof DateRange other)) return false;
-        return Objects.equals(startInclusive, other.startInclusive) &&
-               Objects.equals(endInclusive, other.endInclusive);
+        return Objects.equals(this.startInclusive, other.startInclusive) &&
+               Objects.equals(this.endInclusive, other.endInclusive);
     }
 
     @Override public int hashCode()
     {
-        return Objects.hash(startInclusive, endInclusive);
+        return Objects.hash(this.startInclusive, this.endInclusive);
     }
 }

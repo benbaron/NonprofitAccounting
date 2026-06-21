@@ -111,7 +111,7 @@ public class Person {
      */
     @JsonProperty("personId")
     public String getPersonId() {
-        return personId;
+        return this.personId;
     }
 
     /**
@@ -131,7 +131,7 @@ public class Person {
      */
     @JsonProperty("displayName")
     public String getDisplayName() {
-        return displayName;
+        return this.displayName;
     }
 
     /**
@@ -151,7 +151,7 @@ public class Person {
      */
     @JsonProperty("kind")
     public Person.PersonKind getKind() {
-        return kind;
+        return this.kind;
     }
 
     /**
@@ -166,7 +166,7 @@ public class Person {
 
     @JsonProperty("email")
     public String getEmail() {
-        return email;
+        return this.email;
     }
 
     @JsonProperty("email")
@@ -176,7 +176,7 @@ public class Person {
 
     @JsonProperty("phone")
     public String getPhone() {
-        return phone;
+        return this.phone;
     }
 
     @JsonProperty("phone")
@@ -186,7 +186,7 @@ public class Person {
 
     @JsonProperty("extensions")
     public Extensions getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     @JsonProperty("extensions")
@@ -196,7 +196,7 @@ public class Person {
 
     @JsonProperty("scaName")
     public String getScaName() {
-        return scaName;
+        return this.scaName;
     }
 
     @JsonProperty("scaName")
@@ -206,7 +206,7 @@ public class Person {
 
     @JsonProperty("membershipNumber")
     public String getMembershipNumber() {
-        return membershipNumber;
+        return this.membershipNumber;
     }
 
     @JsonProperty("membershipNumber")
@@ -216,7 +216,7 @@ public class Person {
 
     @JsonProperty("membershipExpiry")
     public String getMembershipExpiry() {
-        return membershipExpiry;
+        return this.membershipExpiry;
     }
 
     @JsonProperty("membershipExpiry")
@@ -226,7 +226,7 @@ public class Person {
 
     @JsonProperty("addresses")
     public List<Address> getAddresses() {
-        return addresses;
+        return this.addresses;
     }
 
     @JsonProperty("addresses")
@@ -236,7 +236,7 @@ public class Person {
 
     @JsonProperty("emails")
     public List<String> getEmails() {
-        return emails;
+        return this.emails;
     }
 
     @JsonProperty("emails")
@@ -246,7 +246,7 @@ public class Person {
 
     @JsonProperty("phones")
     public List<String> getPhones() {
-        return phones;
+        return this.phones;
     }
 
     @JsonProperty("phones")

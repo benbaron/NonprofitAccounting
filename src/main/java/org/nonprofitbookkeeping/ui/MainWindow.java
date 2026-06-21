@@ -92,13 +92,13 @@ public class MainWindow extends BorderPane
         initialiseScaPlugin();
 
         setTop(buildTopChrome());
-        setLeft(nav);
-        setCenter(panelHost);
-        setRight(inspectorPane);
+        setLeft(this.nav);
+        setCenter(this.panelHost);
+        setRight(this.inspectorPane);
 
-        BorderPane.setMargin(panelHost, new Insets(8));
-        BorderPane.setMargin(nav, new Insets(8, 4, 8, 8));
-        BorderPane.setMargin(inspectorPane, new Insets(8, 8, 8, 4));
+        BorderPane.setMargin(this.panelHost, new Insets(8));
+        BorderPane.setMargin(this.nav, new Insets(8, 4, 8, 8));
+        BorderPane.setMargin(this.inspectorPane, new Insets(8, 8, 8, 4));
 
         openPanel(AppPanelId.DASHBOARD);
     }
@@ -154,15 +154,15 @@ public class MainWindow extends BorderPane
             item("Reconcile Accounts", null,
                 () -> showLegacyPanel("Reconciliation", new LedgerReconcilePanelFX(new ReconciliationService()))),
             item("Undeposited Funds", null,
-                () -> showLegacyPanel("Undeposited Funds", new UndepositedFundsPanelFX(undepositedFundsService))),
+                () -> showLegacyPanel("Undeposited Funds", new UndepositedFundsPanelFX(this.undepositedFundsService))),
             item("Sales & COGS", null,
-                () -> showLegacyPanel("Sales & COGS", new SalesAndCOGPanelFX(salesService, null))),
+                () -> showLegacyPanel("Sales & COGS", new SalesAndCOGPanelFX(this.salesService, null))),
 
             new SeparatorMenuItem(),
             item("Documents & Attachments", null,
-                () -> showLegacyPanel("Documents", new DocumentsPanelFX(documentStorageService))),
+                () -> showLegacyPanel("Documents", new DocumentsPanelFX(this.documentStorageService))),
             item("Inventory & Depreciation", null,
-                () -> showLegacyPanel("Inventory", new InventoryPanelFX(inventoryService, null)))
+                () -> showLegacyPanel("Inventory", new InventoryPanelFX(this.inventoryService, null)))
         );
 
         Menu database = new Menu("Database");
@@ -196,15 +196,15 @@ public class MainWindow extends BorderPane
         Menu fundraising = new Menu("Fundraising");
         fundraising.getItems().addAll(
             item("Donors", null,
-                () -> showLegacyPanel("Donors", new DonorsPanelFX(donorService, null))),
+                () -> showLegacyPanel("Donors", new DonorsPanelFX(this.donorService, null))),
             item("Funds & Fund Accounting", null,
-                () -> showLegacyPanel("Funds", new FundsPanelFX(fundAccountingService, null)))
+                () -> showLegacyPanel("Funds", new FundsPanelFX(this.fundAccountingService, null)))
         );
 
         Menu settings = new Menu("Settings");
         settings.getItems().addAll(
             item("Show Settings", null,
-                () -> showLegacyPanel("Settings", new SettingsPanelFX(getOwningStage(), settingsService, () -> {})))
+                () -> showLegacyPanel("Settings", new SettingsPanelFX(getOwningStage(), this.settingsService, () -> {})))
         );
 
         Menu plugins = new Menu("Plugins");
@@ -259,9 +259,9 @@ public class MainWindow extends BorderPane
     
     private void focusDateRangeSelector()
     {
-        if (dateRangeSelector == null) return;
-        dateRangeSelector.presetBox().requestFocus();
-        dateRangeSelector.presetBox().show();
+        if (this.dateRangeSelector == null) return;
+        this.dateRangeSelector.presetBox().requestFocus();
+        this.dateRangeSelector.presetBox().show();
     }
 
     private MenuItem item(String text, String accel, Runnable action)
@@ -275,13 +275,13 @@ public class MainWindow extends BorderPane
     // --- hooks ---
     public void openPanel(AppPanelId id)
     {
-        panelHost.show(id);
-        nav.highlight(id);
+        this.panelHost.show(id);
+        this.nav.highlight(id);
     }
 
     public void openInspectorForSelection(String title, String body)
     {
-        inspectorPane.show(title, body);
+        this.inspectorPane.show(title, body);
     }
 
     void openRecordServicePanel(RecordServicePanelRegistry.PanelBinding binding)
@@ -305,38 +305,38 @@ public class MainWindow extends BorderPane
 
     public void closeInspector()
     {
-        inspectorPane.clear();
+        this.inspectorPane.clear();
     }
 
     public void saveActivePanel()
     {
-        panelHost.saveActive();
-        info("Save: " + panelHost.getActiveTitle());
+        this.panelHost.saveActive();
+        info("Save: " + this.panelHost.getActiveTitle());
     }
 
     public void newItemInActivePanel()
     {
-        panelHost.newItemActive();
+        this.panelHost.newItemActive();
     }
 
     public void copySelection()
     {
-        panelHost.copySelectionActive();
+        this.panelHost.copySelectionActive();
     }
 
     public void paste()
     {
-        panelHost.pasteActive();
+        this.panelHost.pasteActive();
     }
 
     public void openSearch()
     {
-        inspectorPane.show("Search", "Search UI placeholder.\n\n(We’ll decide whether this is a modal dialog or a side pane.)");
+        this.inspectorPane.show("Search", "Search UI placeholder.\n\n(We’ll decide whether this is a modal dialog or a side pane.)");
     }
 
     public void openInspectorJournal()
     {
-        inspectorPane.show("Journal View", "Journal drawer placeholder.\n\nFrom any panel, this should show derived DR/CR lines for the current selection.");
+        this.inspectorPane.show("Journal View", "Journal drawer placeholder.\n\nFrom any panel, this should show derived DR/CR lines for the current selection.");
     }
 
     private void openEditJournal()
@@ -346,7 +346,7 @@ public class MainWindow extends BorderPane
 
     private void info(String msg)
     {
-        inspectorPane.show("Info", msg);
+        this.inspectorPane.show("Info", msg);
     }
 
     private void showLegacyPanel(String title, Node content)
@@ -657,7 +657,7 @@ public class MainWindow extends BorderPane
             return stage;
         }
 
-        return stageSupplier.get();
+        return this.stageSupplier.get();
     }
 
     private void initialiseScaPlugin()

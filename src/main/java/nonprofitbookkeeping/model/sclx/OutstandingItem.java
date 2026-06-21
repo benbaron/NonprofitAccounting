@@ -139,7 +139,7 @@ public class OutstandingItem {
      */
     @JsonProperty("outstandingItemId")
     public String getOutstandingItemId() {
-        return outstandingItemId;
+        return this.outstandingItemId;
     }
 
     /**
@@ -159,7 +159,7 @@ public class OutstandingItem {
      */
     @JsonProperty("kind")
     public OutstandingItem.OutstandingItemKind getKind() {
-        return kind;
+        return this.kind;
     }
 
     /**
@@ -179,7 +179,7 @@ public class OutstandingItem {
      */
     @JsonProperty("ledgerLink")
     public Object getLedgerLink() {
-        return ledgerLink;
+        return this.ledgerLink;
     }
 
     /**
@@ -194,7 +194,7 @@ public class OutstandingItem {
 
     @JsonProperty("workbookLink")
     public WorkbookLink getWorkbookLink() {
-        return workbookLink;
+        return this.workbookLink;
     }
 
     @JsonProperty("workbookLink")
@@ -204,7 +204,7 @@ public class OutstandingItem {
 
     @JsonProperty("dateSentOrReceived")
     public String getDateSentOrReceived() {
-        return dateSentOrReceived;
+        return this.dateSentOrReceived;
     }
 
     @JsonProperty("dateSentOrReceived")
@@ -214,7 +214,7 @@ public class OutstandingItem {
 
     @JsonProperty("incomingCheckOrTransferDate")
     public String getIncomingCheckOrTransferDate() {
-        return incomingCheckOrTransferDate;
+        return this.incomingCheckOrTransferDate;
     }
 
     @JsonProperty("incomingCheckOrTransferDate")
@@ -224,7 +224,7 @@ public class OutstandingItem {
 
     @JsonProperty("transferIdOrCheckNumber")
     public String getTransferIdOrCheckNumber() {
-        return transferIdOrCheckNumber;
+        return this.transferIdOrCheckNumber;
     }
 
     @JsonProperty("transferIdOrCheckNumber")
@@ -234,7 +234,7 @@ public class OutstandingItem {
 
     @JsonProperty("dateShowsOnStatement")
     public String getDateShowsOnStatement() {
-        return dateShowsOnStatement;
+        return this.dateShowsOnStatement;
     }
 
     @JsonProperty("dateShowsOnStatement")
@@ -244,7 +244,7 @@ public class OutstandingItem {
 
     @JsonProperty("personOrBusinessName")
     public String getPersonOrBusinessName() {
-        return personOrBusinessName;
+        return this.personOrBusinessName;
     }
 
     @JsonProperty("personOrBusinessName")
@@ -254,7 +254,7 @@ public class OutstandingItem {
 
     @JsonProperty("detailsNotes")
     public String getDetailsNotes() {
-        return detailsNotes;
+        return this.detailsNotes;
     }
 
     @JsonProperty("detailsNotes")
@@ -264,7 +264,7 @@ public class OutstandingItem {
 
     @JsonProperty("fromToCardMerchant")
     public String getFromToCardMerchant() {
-        return fromToCardMerchant;
+        return this.fromToCardMerchant;
     }
 
     @JsonProperty("fromToCardMerchant")
@@ -274,7 +274,7 @@ public class OutstandingItem {
 
     @JsonProperty("accountForPaymentOrDeposit")
     public String getAccountForPaymentOrDeposit() {
-        return accountForPaymentOrDeposit;
+        return this.accountForPaymentOrDeposit;
     }
 
     @JsonProperty("accountForPaymentOrDeposit")
@@ -289,7 +289,7 @@ public class OutstandingItem {
      */
     @JsonProperty("amount")
     public String getAmount() {
-        return amount;
+        return this.amount;
     }
 
     /**
@@ -304,7 +304,7 @@ public class OutstandingItem {
 
     @JsonProperty("dateReversed")
     public String getDateReversed() {
-        return dateReversed;
+        return this.dateReversed;
     }
 
     @JsonProperty("dateReversed")
@@ -314,7 +314,7 @@ public class OutstandingItem {
 
     @JsonProperty("reversalReasonAndApproval")
     public String getReversalReasonAndApproval() {
-        return reversalReasonAndApproval;
+        return this.reversalReasonAndApproval;
     }
 
     @JsonProperty("reversalReasonAndApproval")
@@ -324,7 +324,7 @@ public class OutstandingItem {
 
     @JsonProperty("reversalLedgerLink")
     public Object getReversalLedgerLink() {
-        return reversalLedgerLink;
+        return this.reversalLedgerLink;
     }
 
     @JsonProperty("reversalLedgerLink")
@@ -334,7 +334,7 @@ public class OutstandingItem {
 
     @JsonProperty("status")
     public OutstandingItem.OutstandingItemStatus getStatus() {
-        return status;
+        return this.status;
     }
 
     @JsonProperty("status")
@@ -344,7 +344,7 @@ public class OutstandingItem {
 
     @JsonProperty("extensions")
     public Extensions getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     @JsonProperty("extensions")

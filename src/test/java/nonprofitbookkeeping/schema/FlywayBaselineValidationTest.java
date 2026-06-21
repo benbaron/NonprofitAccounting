@@ -115,7 +115,7 @@ class FlywayBaselineValidationTest
     @Test
     void flywayCreatesCurrentRuntimeMinimum() throws Exception
     {
-        DbSnapshot flyway = createFlywaySnapshot(tempDir.resolve("flyway-baseline"));
+        DbSnapshot flyway = createFlywaySnapshot(this.tempDir.resolve("flyway-baseline"));
 
         List<String> failures = new ArrayList<>();
         for (String version : REQUIRED_FLYWAY_VERSIONS)

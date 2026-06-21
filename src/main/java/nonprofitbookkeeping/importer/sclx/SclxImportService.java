@@ -51,7 +51,7 @@ public class SclxImportService
         SclxDocument document;
         try
         {
-            document = parser.parse(rawSource);
+            document = this.parser.parse(rawSource);
         }
         catch (SclxImportException ex)
         {

@@ -18,7 +18,7 @@ public class UndepositedFundsItem
 
     public Long getId()
     {
-        return id;
+        return this.id;
     }
 
     public void setId(Long id)
@@ -28,7 +28,7 @@ public class UndepositedFundsItem
 
     public String getDate_sent_received()
     {
-        return date_sent_received;
+        return this.date_sent_received;
     }
 
     public void setDate_sent_received(String date_sent_received)
@@ -38,7 +38,7 @@ public class UndepositedFundsItem
 
     public String getDate_transfer_or_check()
     {
-        return date_transfer_or_check;
+        return this.date_transfer_or_check;
     }
 
     public void setDate_transfer_or_check(String date_transfer_or_check)
@@ -48,7 +48,7 @@ public class UndepositedFundsItem
 
     public String getDate_on_statement()
     {
-        return date_on_statement;
+        return this.date_on_statement;
     }
 
     public void setDate_on_statement(String date_on_statement)
@@ -58,7 +58,7 @@ public class UndepositedFundsItem
 
     public String getName_of_person_business()
     {
-        return name_of_person_business;
+        return this.name_of_person_business;
     }
 
     public void setName_of_person_business(String name_of_person_business)
@@ -68,7 +68,7 @@ public class UndepositedFundsItem
 
     public String getDetails_notes()
     {
-        return details_notes;
+        return this.details_notes;
     }
 
     public void setDetails_notes(String details_notes)
@@ -78,7 +78,7 @@ public class UndepositedFundsItem
 
     public String getFrom_to_card_merchant()
     {
-        return from_to_card_merchant;
+        return this.from_to_card_merchant;
     }
 
     public void setFrom_to_card_merchant(String from_to_card_merchant)
@@ -88,7 +88,7 @@ public class UndepositedFundsItem
 
     public String getAccount_for_payment_or_deposit()
     {
-        return account_for_payment_or_deposit;
+        return this.account_for_payment_or_deposit;
     }
 
     public void setAccount_for_payment_or_deposit(
@@ -100,7 +100,7 @@ public class UndepositedFundsItem
 
     public BigDecimal getAmount()
     {
-        return amount;
+        return this.amount;
     }
 
     public void setAmount(BigDecimal amount)
@@ -110,7 +110,7 @@ public class UndepositedFundsItem
 
     public String getDate_reversed()
     {
-        return date_reversed;
+        return this.date_reversed;
     }
 
     public void setDate_reversed(String date_reversed)
@@ -120,7 +120,7 @@ public class UndepositedFundsItem
 
     public String getReversal_approved_by()
     {
-        return reversal_approved_by;
+        return this.reversal_approved_by;
     }
 
     public void setReversal_approved_by(String reversal_approved_by)

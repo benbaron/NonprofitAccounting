@@ -127,7 +127,7 @@ public class OtherAssetItem {
      */
     @JsonProperty("otherAssetItemId")
     public String getOtherAssetItemId() {
-        return otherAssetItemId;
+        return this.otherAssetItemId;
     }
 
     /**
@@ -147,7 +147,7 @@ public class OtherAssetItem {
      */
     @JsonProperty("ledgerLink")
     public LedgerLink getLedgerLink() {
-        return ledgerLink;
+        return this.ledgerLink;
     }
 
     /**
@@ -162,7 +162,7 @@ public class OtherAssetItem {
 
     @JsonProperty("workbookLink")
     public WorkbookLink getWorkbookLink() {
-        return workbookLink;
+        return this.workbookLink;
     }
 
     @JsonProperty("workbookLink")
@@ -172,7 +172,7 @@ public class OtherAssetItem {
 
     @JsonProperty("paidTo")
     public String getPaidTo() {
-        return paidTo;
+        return this.paidTo;
     }
 
     @JsonProperty("paidTo")
@@ -182,7 +182,7 @@ public class OtherAssetItem {
 
     @JsonProperty("year")
     public Integer getYear() {
-        return year;
+        return this.year;
     }
 
     @JsonProperty("year")
@@ -192,7 +192,7 @@ public class OtherAssetItem {
 
     @JsonProperty("reason")
     public String getReason() {
-        return reason;
+        return this.reason;
     }
 
     @JsonProperty("reason")
@@ -207,7 +207,7 @@ public class OtherAssetItem {
      */
     @JsonProperty("type")
     public OtherAssetItem.OtherAssetItemType getType() {
-        return type;
+        return this.type;
     }
 
     /**
@@ -222,7 +222,7 @@ public class OtherAssetItem {
 
     @JsonProperty("typeCode")
     public OtherAssetItem.TypeCode getTypeCode() {
-        return typeCode;
+        return this.typeCode;
     }
 
     @JsonProperty("typeCode")
@@ -232,7 +232,7 @@ public class OtherAssetItem {
 
     @JsonProperty("eventBudgetLabel")
     public String getEventBudgetLabel() {
-        return eventBudgetLabel;
+        return this.eventBudgetLabel;
     }
 
     @JsonProperty("eventBudgetLabel")
@@ -247,7 +247,7 @@ public class OtherAssetItem {
      */
     @JsonProperty("amountAsOfPriorYearEnd")
     public String getAmountAsOfPriorYearEnd() {
-        return amountAsOfPriorYearEnd;
+        return this.amountAsOfPriorYearEnd;
     }
 
     /**
@@ -262,7 +262,7 @@ public class OtherAssetItem {
 
     @JsonProperty("paidReturnedOnLedgerRowIndex")
     public Integer getPaidReturnedOnLedgerRowIndex() {
-        return paidReturnedOnLedgerRowIndex;
+        return this.paidReturnedOnLedgerRowIndex;
     }
 
     @JsonProperty("paidReturnedOnLedgerRowIndex")
@@ -272,7 +272,7 @@ public class OtherAssetItem {
 
     @JsonProperty("settlementLedgerLink")
     public LedgerLink getSettlementLedgerLink() {
-        return settlementLedgerLink;
+        return this.settlementLedgerLink;
     }
 
     @JsonProperty("settlementLedgerLink")
@@ -282,7 +282,7 @@ public class OtherAssetItem {
 
     @JsonProperty("status")
     public OtherAssetItem.OtherAssetItemStatus getStatus() {
-        return status;
+        return this.status;
     }
 
     @JsonProperty("status")
@@ -292,7 +292,7 @@ public class OtherAssetItem {
 
     @JsonProperty("extensions")
     public Extensions getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     @JsonProperty("extensions")

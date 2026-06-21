@@ -22,7 +22,7 @@ class GrantsFinancePostingServiceTest {
 
     @Test
     void awardAndEdit_postingsAndLinksPersist() throws Exception {
-        Database.init(tempDir.resolve("grants-fin"));
+        Database.init(this.tempDir.resolve("grants-fin"));
         FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
         seedAccounts();
@@ -56,7 +56,7 @@ class GrantsFinancePostingServiceTest {
 
     @Test
     void postFinancialEvent_unknownGrantRecord_throws() throws Exception {
-        Database.init(tempDir.resolve("grants-fin-missing"));
+        Database.init(this.tempDir.resolve("grants-fin-missing"));
         FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
         seedAccounts();

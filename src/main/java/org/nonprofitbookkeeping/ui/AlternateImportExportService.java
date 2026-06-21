@@ -38,7 +38,7 @@ class AlternateImportExportService
 
     ImportExportOperationResult importSclx(Path path, SclxImportOptions options)
     {
-        SclxImportResult result = sclxImportService.importFile(path, new NonprofitBookkeepingSclxImportTarget(), options);
+        SclxImportResult result = this.sclxImportService.importFile(path, new NonprofitBookkeepingSclxImportTarget(), options);
         return summarizeSclxResult(result);
     }
 

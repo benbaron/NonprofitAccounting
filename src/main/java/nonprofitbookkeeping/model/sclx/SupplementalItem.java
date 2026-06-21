@@ -119,7 +119,7 @@ public class SupplementalItem {
      */
     @JsonProperty("supplementalItemId")
     public String getSupplementalItemId() {
-        return supplementalItemId;
+        return this.supplementalItemId;
     }
 
     /**
@@ -139,7 +139,7 @@ public class SupplementalItem {
      */
     @JsonProperty("kind")
     public SupplementalKind getKind() {
-        return kind;
+        return this.kind;
     }
 
     /**
@@ -154,7 +154,7 @@ public class SupplementalItem {
 
     @JsonProperty("counterpartyName")
     public String getCounterpartyName() {
-        return counterpartyName;
+        return this.counterpartyName;
     }
 
     @JsonProperty("counterpartyName")
@@ -164,7 +164,7 @@ public class SupplementalItem {
 
     @JsonProperty("personId")
     public String getPersonId() {
-        return personId;
+        return this.personId;
     }
 
     @JsonProperty("personId")
@@ -174,7 +174,7 @@ public class SupplementalItem {
 
     @JsonProperty("year")
     public Integer getYear() {
-        return year;
+        return this.year;
     }
 
     @JsonProperty("year")
@@ -184,7 +184,7 @@ public class SupplementalItem {
 
     @JsonProperty("reason")
     public String getReason() {
-        return reason;
+        return this.reason;
     }
 
     @JsonProperty("reason")
@@ -194,7 +194,7 @@ public class SupplementalItem {
 
     @JsonProperty("subtypeCode")
     public String getSubtypeCode() {
-        return subtypeCode;
+        return this.subtypeCode;
     }
 
     @JsonProperty("subtypeCode")
@@ -204,7 +204,7 @@ public class SupplementalItem {
 
     @JsonProperty("eventBudgetLabel")
     public String getEventBudgetLabel() {
-        return eventBudgetLabel;
+        return this.eventBudgetLabel;
     }
 
     @JsonProperty("eventBudgetLabel")
@@ -214,7 +214,7 @@ public class SupplementalItem {
 
     @JsonProperty("budgetId")
     public String getBudgetId() {
-        return budgetId;
+        return this.budgetId;
     }
 
     @JsonProperty("budgetId")
@@ -224,7 +224,7 @@ public class SupplementalItem {
 
     @JsonProperty("sourceLabel")
     public String getSourceLabel() {
-        return sourceLabel;
+        return this.sourceLabel;
     }
 
     @JsonProperty("sourceLabel")
@@ -239,7 +239,7 @@ public class SupplementalItem {
      */
     @JsonProperty("amountAsOf")
     public String getAmountAsOf() {
-        return amountAsOf;
+        return this.amountAsOf;
     }
 
     /**
@@ -254,7 +254,7 @@ public class SupplementalItem {
 
     @JsonProperty("ledgerRowIndex")
     public Integer getLedgerRowIndex() {
-        return ledgerRowIndex;
+        return this.ledgerRowIndex;
     }
 
     @JsonProperty("ledgerRowIndex")
@@ -269,7 +269,7 @@ public class SupplementalItem {
      */
     @JsonProperty("workbookLink")
     public WorkbookLink getWorkbookLink() {
-        return workbookLink;
+        return this.workbookLink;
     }
 
     /**
@@ -284,7 +284,7 @@ public class SupplementalItem {
 
     @JsonProperty("extensions")
     public Extensions getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     @JsonProperty("extensions")

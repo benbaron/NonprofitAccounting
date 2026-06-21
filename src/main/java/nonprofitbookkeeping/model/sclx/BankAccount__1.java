@@ -45,7 +45,7 @@ public class BankAccount__1 {
 
     @JsonProperty("bankId")
     public String getBankId() {
-        return bankId;
+        return this.bankId;
     }
 
     @JsonProperty("bankId")
@@ -60,7 +60,7 @@ public class BankAccount__1 {
      */
     @JsonProperty("accountId")
     public String getAccountId() {
-        return accountId;
+        return this.accountId;
     }
 
     /**
@@ -75,7 +75,7 @@ public class BankAccount__1 {
 
     @JsonProperty("accountType")
     public String getAccountType() {
-        return accountType;
+        return this.accountType;
     }
 
     @JsonProperty("accountType")

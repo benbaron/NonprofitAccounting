@@ -34,7 +34,7 @@ public class FundBalanceService
 
     public List<FundBalanceRow> balancesAsOf(LocalDate asOf)
     {
-        try (EntityManager em = jpa.em())
+        try (EntityManager em = this.jpa.em())
         {
             List<Object[]> rows = em.createQuery(
                 "select f.code, f.name, coalesce(sum(s.amountSigned), 0) " +

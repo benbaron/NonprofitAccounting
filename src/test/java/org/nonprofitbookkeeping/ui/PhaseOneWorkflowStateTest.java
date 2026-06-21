@@ -63,13 +63,13 @@ class PhaseOneWorkflowStateTest
         @Override
         public String get(String key, String defaultValue)
         {
-            return values.getOrDefault(key, defaultValue);
+            return this.values.getOrDefault(key, defaultValue);
         }
 
         @Override
         public void put(String key, String value)
         {
-            values.put(key, value);
+            this.values.put(key, value);
         }
     }
 
@@ -80,7 +80,7 @@ class PhaseOneWorkflowStateTest
 
         void markDirty()
         {
-            dirty = true;
+            this.dirty = true;
         }
 
         @Override
@@ -98,14 +98,14 @@ class PhaseOneWorkflowStateTest
         @Override
         public void onSave()
         {
-            saveCalls++;
-            dirty = false;
+            this.saveCalls++;
+            this.dirty = false;
         }
 
         @Override
         public boolean isDirty()
         {
-            return dirty;
+            return this.dirty;
         }
     }
 }

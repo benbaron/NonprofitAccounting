@@ -95,13 +95,13 @@ class AlternateDataContextServiceTest
         @Override
         public String get(String key, String defaultValue)
         {
-            return values.getOrDefault(key, defaultValue);
+            return this.values.getOrDefault(key, defaultValue);
         }
 
         @Override
         public void put(String key, String value)
         {
-            values.put(key, value);
+            this.values.put(key, value);
         }
     }
 }

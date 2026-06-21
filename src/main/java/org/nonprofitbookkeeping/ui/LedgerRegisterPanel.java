@@ -1,7 +1,6 @@
 package org.nonprofitbookkeeping.ui;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -42,42 +41,42 @@ public class LedgerRegisterPanel implements AppPanel
     LedgerRegisterPanel(LedgerTransactionQueryService service)
     {
         this.service = service;
-        root.setSubtitle("Service-backed journal and account activity register.");
-        root.setSecondaryActions(List.of(button("Refresh", this::refresh), button("New", this::onNew), button("Edit/Open", this::openSelected), button("Import Review…", this::showImportReviewEntryPoints)));
-        root.setFilterBar(filterBar());
-        root.setFooter(status);
+        this.root.setSubtitle("Service-backed journal and account activity register.");
+        this.root.setSecondaryActions(List.of(button("Refresh", this::refresh), button("New", this::onNew), button("Edit/Open", this::openSelected), button("Import Review…", this::showImportReviewEntryPoints)));
+        this.root.setFilterBar(filterBar());
+        this.root.setFooter(this.status);
         buildTable();
-        txnTable.setPlaceholder(new Label(NO_SERVICE_DATA_MESSAGE));
-        root.setContent(txnTable);
+        this.txnTable.setPlaceholder(new Label(NO_SERVICE_DATA_MESSAGE));
+        this.root.setContent(this.txnTable);
         refresh();
     }
 
     private HBox filterBar()
     {
-        memo.setPromptText("Memo/payee");
-        amount.setPromptText("Amount");
-        fund.setPromptText("Fund");
-        account.setPromptText("All accounts");
-        account.setEditable(true);
+        this.memo.setPromptText("Memo/payee");
+        this.amount.setPromptText("Amount");
+        this.fund.setPromptText("Fund");
+        this.account.setPromptText("All accounts");
+        this.account.setEditable(true);
         Button apply = button("Apply Filters", this::refresh);
-        return new HBox(8, new Label("From"), fromDate, new Label("To"), toDate, new Label("Account"), account,
-            memo, amount, fund, cleared, reconciled, apply);
+        return new HBox(8, new Label("From"), this.fromDate, new Label("To"), this.toDate, new Label("Account"), this.account,
+            this.memo, this.amount, this.fund, this.cleared, this.reconciled, apply);
     }
 
     private void buildTable()
     {
-        txnTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        txnTable.getColumns().add(col("Type", RegisterRow::type));
-        txnTable.getColumns().add(col("Date", RegisterRow::date));
-        txnTable.getColumns().add(col("Payee", RegisterRow::payee));
-        txnTable.getColumns().add(col("Account", RegisterRow::account));
-        txnTable.getColumns().add(col("Memo", RegisterRow::memo));
-        txnTable.getColumns().add(col("Fund", RegisterRow::fund));
-        txnTable.getColumns().add(col("Debit", row -> money(row.debit())));
-        txnTable.getColumns().add(col("Credit", row -> money(row.credit())));
-        txnTable.getColumns().add(col("Amount", row -> money(row.amount())));
-        txnTable.getColumns().add(col("Status", RegisterRow::status));
-        txnTable.setRowFactory(tv -> {
+        this.txnTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+        this.txnTable.getColumns().add(col("Type", RegisterRow::type));
+        this.txnTable.getColumns().add(col("Date", RegisterRow::date));
+        this.txnTable.getColumns().add(col("Payee", RegisterRow::payee));
+        this.txnTable.getColumns().add(col("Account", RegisterRow::account));
+        this.txnTable.getColumns().add(col("Memo", RegisterRow::memo));
+        this.txnTable.getColumns().add(col("Fund", RegisterRow::fund));
+        this.txnTable.getColumns().add(col("Debit", row -> money(row.debit())));
+        this.txnTable.getColumns().add(col("Credit", row -> money(row.credit())));
+        this.txnTable.getColumns().add(col("Amount", row -> money(row.amount())));
+        this.txnTable.getColumns().add(col("Status", RegisterRow::status));
+        this.txnTable.setRowFactory(tv -> {
             TableRow<RegisterRow> row = new TableRow<>();
             row.setOnMouseClicked(event -> { if (event.getClickCount() == 2 && !row.isEmpty()) openSelected(); });
             return row;
@@ -87,35 +86,35 @@ public class LedgerRegisterPanel implements AppPanel
     private void refresh()
     {
         LedgerTransactionFilter filter = currentFilter();
-        account.setItems(FXCollections.observableArrayList(service.accountChoices()));
-        List<LedgerTransactionRow> transactions = service.query(filter);
-        txnTable.setItems(FXCollections.observableArrayList(transactions.stream().flatMap(row -> RegisterRow.from(row).stream()).toList()));
-        if (txnTable.getItems().isEmpty())
+        this.account.setItems(FXCollections.observableArrayList(this.service.accountChoices()));
+        List<LedgerTransactionRow> transactions = this.service.query(filter);
+        this.txnTable.setItems(FXCollections.observableArrayList(transactions.stream().flatMap(row -> RegisterRow.from(row).stream()).toList()));
+        if (this.txnTable.getItems().isEmpty())
         {
-            status.setText(service.hasOpenCompany() ? "No ledger transactions match the current filters." : NO_SERVICE_DATA_MESSAGE);
-            root.showEmpty(status.getText());
+            this.status.setText(this.service.hasOpenCompany() ? "No ledger transactions match the current filters." : NO_SERVICE_DATA_MESSAGE);
+            this.root.showEmpty(this.status.getText());
         }
         else
         {
-            status.setText(txnTable.getItems().stream().filter(RegisterRow::header).count() + " transactions loaded from the active company ledger.");
-            root.showContent();
+            this.status.setText(this.txnTable.getItems().stream().filter(RegisterRow::header).count() + " transactions loaded from the active company ledger.");
+            this.root.showContent();
         }
     }
 
     private LedgerTransactionFilter currentFilter()
     {
-        return new LedgerTransactionFilter(fromDate.getValue(), toDate.getValue(), account.getEditor().getText(), memo.getText(), parseAmount(amount.getText()), fund.getText(), tri(cleared), tri(reconciled));
+        return new LedgerTransactionFilter(this.fromDate.getValue(), this.toDate.getValue(), this.account.getEditor().getText(), this.memo.getText(), parseAmount(this.amount.getText()), this.fund.getText(), tri(this.cleared), tri(this.reconciled));
     }
 
     private BigDecimal parseAmount(String text)
     {
         try { return text == null || text.isBlank() ? null : new BigDecimal(text.trim()); }
-        catch (NumberFormatException ex) { status.setText("Amount filter is not a valid decimal; ignoring it."); return null; }
+        catch (NumberFormatException ex) { this.status.setText("Amount filter is not a valid decimal; ignoring it."); return null; }
     }
 
     private void openSelected()
     {
-        RegisterRow selected = txnTable.getSelectionModel().getSelectedItem();
+        RegisterRow selected = this.txnTable.getSelectionModel().getSelectedItem();
         AccountingTransaction transaction = selected == null ? null : selected.transaction();
         Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle(transaction == null ? "New Journal Entry" : "Edit Journal Entry");
@@ -133,7 +132,7 @@ public class LedgerRegisterPanel implements AppPanel
     }
 
     @Override public String title() { return "Ledger Register"; }
-    @Override public Node root() { return root; }
+    @Override public Node root() { return this.root; }
     @Override public void onNew() { openSelected(); }
     @Override public void onDelete()
     {

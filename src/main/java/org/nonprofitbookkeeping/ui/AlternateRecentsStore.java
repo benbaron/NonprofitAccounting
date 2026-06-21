@@ -67,12 +67,12 @@ class AlternateRecentsStore
         ordered.add(value);
         ordered.addAll(readRecents(key));
         List<String> trimmed = new ArrayList<>(ordered).subList(0, Math.min(MAX_RECENTS, ordered.size()));
-        preferencesStore.put(key, String.join("\n", trimmed));
+        this.preferencesStore.put(key, String.join("\n", trimmed));
     }
 
     private List<String> readRecents(String key)
     {
-        String raw = preferencesStore.get(key, "");
+        String raw = this.preferencesStore.get(key, "");
         if (raw.isBlank())
         {
             return List.of();

@@ -42,7 +42,7 @@ public class SupplementalLinesEditor extends VBox
 	
 	/** The table. */
 	private final TableView<SupplementalLineRow> table =
-		new TableView<>(rows);
+		new TableView<>(this.rows);
 	
 	/** The validation label. */
 	private final Label validationLabel = new Label();

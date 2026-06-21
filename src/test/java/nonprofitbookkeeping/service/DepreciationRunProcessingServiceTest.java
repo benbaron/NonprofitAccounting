@@ -181,7 +181,7 @@ class DepreciationRunProcessingServiceTest
 
     private void initDb() throws Exception
     {
-        Path dbPath = tempDir.resolve("depreciation-run-processing");
+        Path dbPath = this.tempDir.resolve("depreciation-run-processing");
         Database.init(dbPath);
         FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();

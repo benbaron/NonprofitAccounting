@@ -31,9 +31,9 @@ public class DashboardDataBridge
     public DashboardSnapshot load(LocalDate asOf)
     {
         LocalDate effectiveAsOf = asOf == null ? LocalDate.now() : asOf;
-        List<FundBalanceRow> rows = services.fundBalance().balancesAsOf(effectiveAsOf);
-        int accountCount = services.accountLookup().listActivePostingAccounts().size();
-        int fundCount = services.fundLookup().listActiveFunds().size();
+        List<FundBalanceRow> rows = this.services.fundBalance().balancesAsOf(effectiveAsOf);
+        int accountCount = this.services.accountLookup().listActivePostingAccounts().size();
+        int fundCount = this.services.fundLookup().listActiveFunds().size();
         return new DashboardSnapshot(rows, accountCount, fundCount);
     }
 

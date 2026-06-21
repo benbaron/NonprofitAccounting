@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -16,8 +15,6 @@ import org.junit.jupiter.api.Test;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.layout.VBox;
 
 class MainWindowAlternateCommandCenterTest
 {

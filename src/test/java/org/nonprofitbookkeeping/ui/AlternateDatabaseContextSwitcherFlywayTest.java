@@ -24,7 +24,7 @@ class AlternateDatabaseContextSwitcherFlywayTest
     @Test
     void openDatabaseRunsFlywayBaselineAndCompatibilitySchema() throws Exception
     {
-        Path dbBase = tempDir.resolve("alternate-shell-flyway");
+        Path dbBase = this.tempDir.resolve("alternate-shell-flyway");
 
         new AlternateDatabaseContextSwitcher().openDatabase(dbBase);
 

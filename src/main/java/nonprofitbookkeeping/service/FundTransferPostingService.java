@@ -44,20 +44,20 @@ public class FundTransferPostingService {
         throws SQLException {
         validateInputs(transferId, fromFund, toFund, amount,
             clearingAccount, transferAccount);
-        lifecycleService.transitionStatus(transferId, "POSTING", null,
+        this.lifecycleService.transitionStatus(transferId, "POSTING", null,
             "posting started");
         try {
-            int txnId = journalRepository.reserveNextTransactionId();
+            int txnId = this.journalRepository.reserveNextTransactionId();
             PostingCommand command = new PostingCommand(
                 toTransaction(transferId, date, fromFund, toFund, amount, memo,
                     clearingAccount, transferAccount, "ORIGINAL", txnId),
                 "FUNDS", String.valueOf(transferId), "ORIGINAL",
                 "FUNDS:" + transferId);
-            PostingReference posted = postingFacade.post(command);
+            PostingReference posted = this.postingFacade.post(command);
             try
             {
                 FinanceWriteEnforcement.runWithinFacadeScope(() ->
-                    lifecycleService.transitionStatus(transferId, "POSTED",
+                    this.lifecycleService.transitionStatus(transferId, "POSTED",
                         postedTxnId(posted), "posted via facade"));
             }
             catch (Exception e)
@@ -68,7 +68,7 @@ public class FundTransferPostingService {
             }
             return posted;
         } catch (RuntimeException | SQLException ex) {
-            lifecycleService.transitionStatus(transferId, "FAILED", null,
+            this.lifecycleService.transitionStatus(transferId, "FAILED", null,
                 ex.getMessage());
             throw ex;
         }
@@ -82,13 +82,13 @@ public class FundTransferPostingService {
         throws SQLException {
         validateInputs(transferId, fromFund, toFund, amount,
             clearingAccount, transferAccount);
-        int txnId = journalRepository.reserveNextTransactionId();
+        int txnId = this.journalRepository.reserveNextTransactionId();
         PostingCommand amended = new PostingCommand(
             toTransaction(transferId, date, fromFund, toFund, amount, memo,
                 clearingAccount, transferAccount, "ADJUSTMENT", txnId),
             "FUNDS", String.valueOf(transferId), "ADJUSTMENT",
             "FUNDS:" + transferId + ":A");
-        return postingFacade.amend(oldJournalTxnId, amended,
+        return this.postingFacade.amend(oldJournalTxnId, amended,
             "Fund transfer financial edit");
     }
 

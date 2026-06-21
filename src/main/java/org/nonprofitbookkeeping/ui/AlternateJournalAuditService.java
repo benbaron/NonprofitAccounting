@@ -31,7 +31,7 @@ class AlternateJournalAuditService
 
     AccountingTransaction reverse(long bookingDateTimestamp, String reason) throws IOException
     {
-        Company company = companyOpenSupplier.getAsBoolean() ? companySupplier.get() : null;
+        Company company = this.companyOpenSupplier.getAsBoolean() ? this.companySupplier.get() : null;
         if (company == null || company.getLedger() == null || company.getLedger().getJournal() == null)
         {
             throw new IllegalArgumentException("Open a company before reversing journal entries.");
@@ -62,7 +62,7 @@ class AlternateJournalAuditService
         }
         reversal.setEntries(entries);
         company.getLedger().getJournal().addTransaction(reversal);
-        persister.persist();
+        this.persister.persist();
         return reversal;
     }
 }

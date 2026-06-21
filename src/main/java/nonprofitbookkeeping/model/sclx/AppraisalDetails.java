@@ -46,7 +46,7 @@ public class AppraisalDetails {
 
     @JsonProperty("appraiserName")
     public String getAppraiserName() {
-        return appraiserName;
+        return this.appraiserName;
     }
 
     @JsonProperty("appraiserName")
@@ -56,7 +56,7 @@ public class AppraisalDetails {
 
     @JsonProperty("appraisalDate")
     public String getAppraisalDate() {
-        return appraisalDate;
+        return this.appraisalDate;
     }
 
     @JsonProperty("appraisalDate")
@@ -66,7 +66,7 @@ public class AppraisalDetails {
 
     @JsonProperty("revisedValue")
     public String getRevisedValue() {
-        return revisedValue;
+        return this.revisedValue;
     }
 
     @JsonProperty("revisedValue")
@@ -76,7 +76,7 @@ public class AppraisalDetails {
 
     @JsonProperty("extensions")
     public Extensions getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     @JsonProperty("extensions")

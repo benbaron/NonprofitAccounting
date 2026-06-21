@@ -25,27 +25,27 @@ class MapDrivenRoutingTest extends ApplicationTest
     @Override
     public void start(Stage stage)
     {
-        host = new PanelHost();
+        this.host = new PanelHost();
 
-        NavigationPane nav = new NavigationPane(host::show, (title, body) -> { });
+        NavigationPane nav = new NavigationPane(this.host::show, (title, body) -> { });
         @SuppressWarnings("unchecked")
         TreeView<NavigationPane.NavItem> navTree = (TreeView<NavigationPane.NavItem>) nav.getChildren().get(0);
-        tree = navTree;
+        this.tree = navTree;
 
         Button inventoryRun = new Button("Inventory & Depreciation");
         inventoryRun.setId("inventoryRunBtn");
-        inventoryRun.setOnAction(e -> host.show(AppPanelId.INVENTORY));
+        inventoryRun.setOnAction(e -> this.host.show(AppPanelId.INVENTORY));
 
         Button reportsRun = new Button("Reports Workspace");
         reportsRun.setId("reportsRunBtn");
-        reportsRun.setOnAction(e -> host.show(AppPanelId.REPORTS_WORKSPACE));
+        reportsRun.setOnAction(e -> this.host.show(AppPanelId.REPORTS_WORKSPACE));
 
         BorderPane root = new BorderPane();
         root.setTop(new HBox(8, inventoryRun, reportsRun));
         root.setLeft(nav);
-        root.setCenter(host);
+        root.setCenter(this.host);
 
-        host.show(AppPanelId.LEDGER_REGISTER);
+        this.host.show(AppPanelId.LEDGER_REGISTER);
 
         stage.setScene(new Scene(root, 1200, 800));
         stage.show();
@@ -55,27 +55,27 @@ class MapDrivenRoutingTest extends ApplicationTest
     @Test
     void startsOnLedgerRegisterInTestHarness()
     {
-        assertEquals("Ledger Register", host.getActiveTitle());
+        assertEquals("Ledger Register", this.host.getActiveTitle());
     }
 
     @Test
     void dashboardAndReportsAliasRoutesAreDeterministic()
     {
-        TreeItem<NavigationPane.NavItem> dashboard = findByLabel(tree.getRoot(), "Dashboard");
+        TreeItem<NavigationPane.NavItem> dashboard = findByLabel(this.tree.getRoot(), "Dashboard");
         assertNotNull(dashboard);
         assertEquals(AppPanelId.DASHBOARD, dashboard.getValue().panelId());
 
-        interact(() -> host.show(dashboard.getValue().panelId()));
+        interact(() -> this.host.show(dashboard.getValue().panelId()));
         WaitForAsyncUtils.waitForFxEvents();
-        assertEquals("Dashboard", host.getActiveTitle());
+        assertEquals("Dashboard", this.host.getActiveTitle());
 
-        interact(() -> host.show(AppPanelId.REPORT_LIBRARY));
+        interact(() -> this.host.show(AppPanelId.REPORT_LIBRARY));
         WaitForAsyncUtils.waitForFxEvents();
-        assertEquals("Reports", host.getActiveTitle());
+        assertEquals("Reports", this.host.getActiveTitle());
 
-        interact(() -> host.show(AppPanelId.REPORTS_WORKSPACE));
+        interact(() -> this.host.show(AppPanelId.REPORTS_WORKSPACE));
         WaitForAsyncUtils.waitForFxEvents();
-        assertEquals("Reports", host.getActiveTitle());
+        assertEquals("Reports", this.host.getActiveTitle());
     }
 
     @Test
@@ -83,35 +83,35 @@ class MapDrivenRoutingTest extends ApplicationTest
     {
         interact(() -> ((Button) lookup("#inventoryRunBtn").query()).fire());
         WaitForAsyncUtils.waitForFxEvents();
-        assertEquals("Inventory", host.getActiveTitle());
+        assertEquals("Inventory", this.host.getActiveTitle());
 
         interact(() -> ((Button) lookup("#reportsRunBtn").query()).fire());
         WaitForAsyncUtils.waitForFxEvents();
-        assertEquals("Reports", host.getActiveTitle());
+        assertEquals("Reports", this.host.getActiveTitle());
 
-        interact(() -> host.show(AppPanelId.REPORT_LIBRARY));
+        interact(() -> this.host.show(AppPanelId.REPORT_LIBRARY));
         WaitForAsyncUtils.waitForFxEvents();
-        assertEquals("Reports", host.getActiveTitle());
+        assertEquals("Reports", this.host.getActiveTitle());
     }
 
     @Test
     void navigationNodesMapToExpectedPanelIds()
     {
-        TreeItem<NavigationPane.NavItem> inventory = findByLabel(tree.getRoot(), "Inventory");
-        TreeItem<NavigationPane.NavItem> reportsWorkspace = findByLabel(tree.getRoot(), "Reports Workspace");
+        TreeItem<NavigationPane.NavItem> inventory = findByLabel(this.tree.getRoot(), "Inventory");
+        TreeItem<NavigationPane.NavItem> reportsWorkspace = findByLabel(this.tree.getRoot(), "Reports Workspace");
 
         assertNotNull(inventory);
         assertNotNull(reportsWorkspace);
         assertEquals(AppPanelId.INVENTORY, inventory.getValue().panelId());
         assertEquals(AppPanelId.REPORTS_WORKSPACE, reportsWorkspace.getValue().panelId());
 
-        interact(() -> host.show(inventory.getValue().panelId()));
+        interact(() -> this.host.show(inventory.getValue().panelId()));
         WaitForAsyncUtils.waitForFxEvents();
-        assertEquals("Inventory", host.getActiveTitle());
+        assertEquals("Inventory", this.host.getActiveTitle());
 
-        interact(() -> host.show(reportsWorkspace.getValue().panelId()));
+        interact(() -> this.host.show(reportsWorkspace.getValue().panelId()));
         WaitForAsyncUtils.waitForFxEvents();
-        assertEquals("Reports", host.getActiveTitle());
+        assertEquals("Reports", this.host.getActiveTitle());
     }
 
     private static TreeItem<NavigationPane.NavItem> findByLabel(TreeItem<NavigationPane.NavItem> root,

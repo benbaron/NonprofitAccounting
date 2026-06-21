@@ -31,11 +31,11 @@ class RunScopedSclxExportServiceIntegrationTest
     @BeforeEach
     void setUp() throws SQLException
     {
-        TestDatabase.reset(tempDir);
-        importService = new SclxImportService();
-        importTarget = new NonprofitBookkeepingSclxImportTarget();
-        exportService = new RunScopedSclxExportService();
-        documentRepository = new DocumentRepository();
+        TestDatabase.reset(this.tempDir);
+        this.importService = new SclxImportService();
+        this.importTarget = new NonprofitBookkeepingSclxImportTarget();
+        this.exportService = new RunScopedSclxExportService();
+        this.documentRepository = new DocumentRepository();
     }
 
     @Test
@@ -43,7 +43,7 @@ class RunScopedSclxExportServiceIntegrationTest
     {
         SclxDocument source = sampleDocumentWithRootExtension();
 
-        importService.importDocument(source, importTarget, new SclxImportOptions(
+        this.importService.importDocument(source, this.importTarget, new SclxImportOptions(
             true,
             true,
             true,
@@ -53,7 +53,7 @@ class RunScopedSclxExportServiceIntegrationTest
             AccountImportMode.AS_IS,
             Map.of()));
 
-        SclxDocument exported = exportService.exportByRunId(RUN_ID);
+        SclxDocument exported = this.exportService.exportByRunId(RUN_ID);
 
         assertNotNull(exported.extensions());
         assertNull(exported.extensions().get("sourceMarker"));
@@ -72,7 +72,7 @@ class RunScopedSclxExportServiceIntegrationTest
     void exportByRunId_assemblesFromRepositoriesWhenRawIsMissing() throws SQLException
     {
         SclxDocument source = sampleDocumentWithRootExtension();
-        importService.importDocument(source, importTarget, new SclxImportOptions(
+        this.importService.importDocument(source, this.importTarget, new SclxImportOptions(
             true,
             true,
             true,
@@ -82,9 +82,9 @@ class RunScopedSclxExportServiceIntegrationTest
             AccountImportMode.AS_IS,
             Map.of()));
 
-        documentRepository.delete("sclx.raw." + RUN_ID);
+        this.documentRepository.delete("sclx.raw." + RUN_ID);
 
-        SclxDocument exported = exportService.exportByRunId(RUN_ID);
+        SclxDocument exported = this.exportService.exportByRunId(RUN_ID);
 
         assertNotNull(exported);
         assertFalse(exported.chartOfAccounts().isEmpty(), "Fallback export should include canonical accounts.");

@@ -38,7 +38,7 @@ public class ScheduleEligibilityService
     {
         if (account == null) return Set.of();
 
-        try (EntityManager em = jpa.em())
+        try (EntityManager em = this.jpa.em())
         {
             Set<String> normalized = normalizedScheduleCodes(em, account);
             if (!normalized.isEmpty())
@@ -65,7 +65,7 @@ public class ScheduleEligibilityService
         if (subtype == null) return Set.of();
 
         // Legacy DB mapping (kept for compatibility).
-        try (EntityManager em = jpa.em())
+        try (EntityManager em = this.jpa.em())
         {
             List<String> codes = em.createQuery(
                     "select k.code from AccountSubtypeScheduleDefault d join d.scheduleKind k where d.subtype = :s",
@@ -102,7 +102,7 @@ public class ScheduleEligibilityService
     {
         if (accountId == null) return Set.of();
 
-        try (EntityManager em = jpa.em())
+        try (EntityManager em = this.jpa.em())
         {
             List<String> codes = em.createQuery(
                     "select k.code from AccountScheduleRequirement r join r.scheduleKind k where r.account.id = :aid",

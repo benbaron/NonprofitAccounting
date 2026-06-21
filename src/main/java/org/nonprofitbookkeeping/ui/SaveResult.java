@@ -67,27 +67,27 @@ public final class SaveResult
 
     public Status status()
     {
-        return status;
+        return this.status;
     }
 
     public String message()
     {
-        return message;
+        return this.message;
     }
 
     public Throwable cause()
     {
-        return cause;
+        return this.cause;
     }
 
     public boolean savedChanges()
     {
-        return status == Status.SAVED;
+        return this.status == Status.SAVED;
     }
 
     public boolean failed()
     {
-        return status == Status.FAILED;
+        return this.status == Status.FAILED;
     }
 
     private static String defaultMessage(Status status)

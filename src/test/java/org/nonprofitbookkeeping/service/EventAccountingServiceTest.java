@@ -23,15 +23,15 @@ class EventAccountingServiceTest
     @AfterEach
     void tearDown()
     {
-        if (jpa != null) jpa.close();
+        if (this.jpa != null) this.jpa.close();
     }
 
     @Test
     void summaryUsesActivityLinkedIncomeExpenseAndDepositRefundSplits() throws Exception
     {
         seedEventAccountingData();
-        jpa = new Jpa();
-        EventAccountingService.EventAccountingWorkspace workspace = new EventAccountingService(jpa).getWorkspace(10L);
+        this.jpa = new Jpa();
+        EventAccountingService.EventAccountingWorkspace workspace = new EventAccountingService(this.jpa).getWorkspace(10L);
 
         assertEquals("GALA", workspace.code());
         assertAmount("1500", workspace.summary().income());
@@ -46,8 +46,8 @@ class EventAccountingServiceTest
     void eventToTransactionLinkingRequiresMatchingActivitySplit() throws Exception
     {
         seedEventAccountingData();
-        jpa = new Jpa();
-        var workspaces = new EventAccountingService(jpa).listWorkspaces();
+        this.jpa = new Jpa();
+        var workspaces = new EventAccountingService(this.jpa).listWorkspaces();
 
         var gala = workspaces.stream().filter(w -> w.code().equals("GALA")).findFirst().orElseThrow();
         assertEquals(5, gala.linkedTransactions().size());
@@ -61,7 +61,7 @@ class EventAccountingServiceTest
 
     private void seedEventAccountingData() throws Exception
     {
-        Database.init(tempDir.resolve("event-accounting"));
+        Database.init(this.tempDir.resolve("event-accounting"));
         FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
         try (Connection c = Database.get().getConnection(); Statement st = c.createStatement())

@@ -97,7 +97,7 @@ public class LedgerTransactionQueryService
 
     private Company openCompany()
     {
-        return companyOpenSupplier.getAsBoolean() ? companySupplier.get() : null;
+        return this.companyOpenSupplier.getAsBoolean() ? this.companySupplier.get() : null;
     }
 
     private boolean matchesHeader(AccountingTransaction transaction, LedgerTransactionFilter filter)
@@ -173,7 +173,7 @@ public class LedgerTransactionQueryService
         public static LedgerTransactionFilter empty() { return new LedgerTransactionFilter(null, null, null, null, null, null, null, null); }
         boolean hasDetailFilter()
         {
-            return account != null && !account.isBlank() || fund != null && !fund.isBlank();
+            return this.account != null && !this.account.isBlank() || this.fund != null && !this.fund.isBlank();
         }
     }
 
@@ -181,6 +181,6 @@ public class LedgerTransactionQueryService
 
     public record LedgerEntryLine(String account, String fund, BigDecimal debit, BigDecimal credit, String memo)
     {
-        public BigDecimal signedAmount() { return debit.subtract(credit); }
+        public BigDecimal signedAmount() { return this.debit.subtract(this.credit); }
     }
 }

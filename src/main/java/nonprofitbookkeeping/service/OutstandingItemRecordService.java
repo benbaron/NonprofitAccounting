@@ -25,16 +25,16 @@ public class OutstandingItemRecordService
 
     public void save(OutstandingItemRecord record) throws SQLException
     {
-        repository.upsert(record);
+        this.repository.upsert(record);
     }
 
     public List<OutstandingItemRecord> listAll() throws SQLException
     {
-        return repository.listAll();
+        return this.repository.listAll();
     }
 
     public int delete(String outstandingItemId) throws SQLException
     {
-        return repository.deleteById(outstandingItemId);
+        return this.repository.deleteById(outstandingItemId);
     }
 }

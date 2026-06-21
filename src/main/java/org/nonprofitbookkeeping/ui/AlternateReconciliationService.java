@@ -28,12 +28,12 @@ public class AlternateReconciliationService
 
     public List<String> listAccounts()
     {
-        return gateway.listAccounts();
+        return this.gateway.listAccounts();
     }
 
     public List<ReconciliationRow> loadRows(String account)
     {
-        return gateway.loadTransactions(account).stream().map(ReconciliationRow::new).toList();
+        return this.gateway.loadTransactions(account).stream().map(ReconciliationRow::new).toList();
     }
 
     public ReconciliationSummary summarize(BigDecimal beginningBalance, BigDecimal endingBalance, List<ReconciliationRow> rows)
@@ -77,7 +77,7 @@ public class AlternateReconciliationService
         {
             return SaveResult.failed("Cannot save reconciliation while difference is " + FormatUtils.formatCurrency(summary.difference()) + ". Adjustment workflow is not implemented.", null);
         }
-        gateway.reconcile(account, statementDate.toString(), parsed.balance(), selectedIds(rows));
+        this.gateway.reconcile(account, statementDate.toString(), parsed.balance(), selectedIds(rows));
         return SaveResult.saved("Reconciliation saved.");
     }
 
@@ -100,7 +100,7 @@ public class AlternateReconciliationService
         public List<AccountingTransaction> loadTransactions(String account) { return ReconciliationService.getUnreconciled(account); }
         public void reconcile(String account, String statementDate, BigDecimal endingBalance, List<Long> clearedIds)
         {
-            service.reconcile(account, statementDate, endingBalance, clearedIds);
+            this.service.reconcile(account, statementDate, endingBalance, clearedIds);
         }
     }
 
@@ -133,12 +133,12 @@ public class AlternateReconciliationService
             this.amount = amount == null ? BigDecimal.ZERO : amount;
         }
 
-        public long id() { return id; }
-        public String date() { return date; }
-        public String memo() { return memo; }
-        public BigDecimal amount() { return amount; }
-        public boolean isCleared() { return cleared.get(); }
-        public void setCleared(boolean value) { cleared.set(value); }
-        public BooleanProperty clearedProperty() { return cleared; }
+        public long id() { return this.id; }
+        public String date() { return this.date; }
+        public String memo() { return this.memo; }
+        public BigDecimal amount() { return this.amount; }
+        public boolean isCleared() { return this.cleared.get(); }
+        public void setCleared(boolean value) { this.cleared.set(value); }
+        public BooleanProperty clearedProperty() { return this.cleared; }
     }
 }

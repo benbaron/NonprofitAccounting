@@ -45,13 +45,13 @@ public class DashboardPanelFX extends BorderPane
         buildTopFilters();
         buildTable();
         setCenter(new TitledPane("Fund dashboard rows", this.table) {{ setCollapsible(false); }});
-        reloadBtn.setOnAction(e -> refresh());
+        this.reloadBtn.setOnAction(e -> refresh());
         refresh();
     }
 
     private void buildTopBanner()
     {
-        HBox banner = new HBox(UiSpacing.SECTION_SPACING, new Label("Context:"), companyLbl, reloadBtn);
+        HBox banner = new HBox(UiSpacing.SECTION_SPACING, new Label("Context:"), this.companyLbl, this.reloadBtn);
         banner.setPadding(new Insets(UiSpacing.SECTION_SPACING));
         banner.getStyleClass().add("dashboard-banner");
         setTop(banner);
@@ -59,16 +59,16 @@ public class DashboardPanelFX extends BorderPane
 
     private void buildTopFilters()
     {
-        accountSelector.setPromptText("Filter by fund code");
-        memoFilter.setPromptText("Filter by fund name");
-        amountFilter.setPromptText("Min balance");
+        this.accountSelector.setPromptText("Filter by fund code");
+        this.memoFilter.setPromptText("Filter by fund name");
+        this.amountFilter.setPromptText("Min balance");
         Button apply = new Button("Apply");
         apply.setOnAction(e -> refresh());
 
         HBox filterBox = new HBox(UiSpacing.SECTION_SPACING,
-            new Label("Fund:"), accountSelector,
-            new Label("Name:"), memoFilter,
-            new Label("Min:"), amountFilter,
+            new Label("Fund:"), this.accountSelector,
+            new Label("Name:"), this.memoFilter,
+            new Label("Min:"), this.amountFilter,
             apply);
         filterBox.setPadding(new Insets(UiSpacing.SECTION_SPACING));
         filterBox.getStyleClass().add("dashboard-filter-box");
@@ -84,8 +84,8 @@ public class DashboardPanelFX extends BorderPane
         TableColumn<Row, Object> codeCol = mkCol("Fund", r -> r.fundCode);
         TableColumn<Row, Object> nameCol = mkCol("Name", r -> r.fundName);
         TableColumn<Row, Object> balCol = mkCol("Balance", r -> r.balance);
-        table.getColumns().addAll(codeCol, nameCol, balCol);
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        this.table.getColumns().addAll(codeCol, nameCol, balCol);
+        this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
 
     private static <T> TableColumn<Row, T> mkCol(String n, Function<Row, T> f)
@@ -102,21 +102,21 @@ public class DashboardPanelFX extends BorderPane
 
     private void refresh()
     {
-        reloadBtn.setDisable(true);
+        this.reloadBtn.setDisable(true);
         UiAsync.run("imported-dashboard-load",
-            bridge::load,
+            this.bridge::load,
             snapshot -> {
-                String selected = accountSelector.getValue();
-                accountSelector.getItems().setAll(snapshot.rows().stream().map(FundBalanceRow::getFundCode).filter(Objects::nonNull).sorted().toList());
-                if (selected != null && accountSelector.getItems().contains(selected)) {
-                    accountSelector.setValue(selected);
+                String selected = this.accountSelector.getValue();
+                this.accountSelector.getItems().setAll(snapshot.rows().stream().map(FundBalanceRow::getFundCode).filter(Objects::nonNull).sorted().toList());
+                if (selected != null && this.accountSelector.getItems().contains(selected)) {
+                    this.accountSelector.setValue(selected);
                 }
 
-                String nameLike = memoFilter.getText() == null ? "" : memoFilter.getText().trim().toLowerCase();
-                BigDecimal min = parseMin(amountFilter.getText());
-                String fundCode = accountSelector.getValue();
+                String nameLike = this.memoFilter.getText() == null ? "" : this.memoFilter.getText().trim().toLowerCase();
+                BigDecimal min = parseMin(this.amountFilter.getText());
+                String fundCode = this.accountSelector.getValue();
 
-                table.getItems().setAll(snapshot.rows().stream()
+                this.table.getItems().setAll(snapshot.rows().stream()
                     .filter(r -> fundCode == null || fundCode.isBlank() || fundCode.equals(r.getFundCode()))
                     .filter(r -> {
                         String fundName = r.getFundName() == null ? "" : r.getFundName();
@@ -126,12 +126,12 @@ public class DashboardPanelFX extends BorderPane
                     .map(r -> new Row(r.getFundCode(), r.getFundName(), r.getBalance().toPlainString()))
                     .toList());
 
-                companyLbl.setText("Funds=" + snapshot.fundCount() + " | Accounts=" + snapshot.accountCount());
-                reloadBtn.setDisable(false);
+                this.companyLbl.setText("Funds=" + snapshot.fundCount() + " | Accounts=" + snapshot.accountCount());
+                this.reloadBtn.setDisable(false);
             },
             ex -> {
-                companyLbl.setText("Dashboard error: " + UiErrors.safeMessage(ex));
-                reloadBtn.setDisable(false);
+                this.companyLbl.setText("Dashboard error: " + UiErrors.safeMessage(ex));
+                this.reloadBtn.setDisable(false);
             });
     }
 

@@ -18,6 +18,6 @@ public record OperationCounts(int created, int updated, int skipped, int warning
 
     public int changed()
     {
-        return created + updated;
+        return this.created + this.updated;
     }
 }

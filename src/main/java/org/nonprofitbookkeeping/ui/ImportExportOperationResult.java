@@ -18,22 +18,22 @@ public record ImportExportOperationResult(
 
     public int warningCount()
     {
-        return warnings.size();
+        return this.warnings.size();
     }
 
     public int errorCount()
     {
-        return errors.size();
+        return this.errors.size();
     }
 
     public boolean hasBlockingErrors()
     {
-        return !errors.isEmpty();
+        return !this.errors.isEmpty();
     }
 
     public String describeCounts()
     {
-        return "Created: " + created + "\nUpdated: " + updated + "\nSkipped: " + skipped
+        return "Created: " + this.created + "\nUpdated: " + this.updated + "\nSkipped: " + this.skipped
             + "\nWarnings: " + warningCount() + "\nErrors: " + errorCount();
     }
 }

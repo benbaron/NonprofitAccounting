@@ -70,7 +70,7 @@ public class BankAccountSigner {
      */
     @JsonProperty("personId")
     public String getPersonId() {
-        return personId;
+        return this.personId;
     }
 
     /**
@@ -85,7 +85,7 @@ public class BankAccountSigner {
 
     @JsonProperty("legalName")
     public String getLegalName() {
-        return legalName;
+        return this.legalName;
     }
 
     @JsonProperty("legalName")
@@ -95,7 +95,7 @@ public class BankAccountSigner {
 
     @JsonProperty("membershipNumber")
     public String getMembershipNumber() {
-        return membershipNumber;
+        return this.membershipNumber;
     }
 
     @JsonProperty("membershipNumber")
@@ -105,7 +105,7 @@ public class BankAccountSigner {
 
     @JsonProperty("membershipExpiry")
     public String getMembershipExpiry() {
-        return membershipExpiry;
+        return this.membershipExpiry;
     }
 
     @JsonProperty("membershipExpiry")
@@ -115,7 +115,7 @@ public class BankAccountSigner {
 
     @JsonProperty("role")
     public String getRole() {
-        return role;
+        return this.role;
     }
 
     @JsonProperty("role")
@@ -125,7 +125,7 @@ public class BankAccountSigner {
 
     @JsonProperty("status")
     public String getStatus() {
-        return status;
+        return this.status;
     }
 
     @JsonProperty("status")
@@ -135,7 +135,7 @@ public class BankAccountSigner {
 
     @JsonProperty("extensions")
     public Extensions getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     @JsonProperty("extensions")

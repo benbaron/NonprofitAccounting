@@ -35,15 +35,15 @@ public class MonthlyCloseChecklistPanel implements AppPanel
     }
 
     public String title() { return "Monthly Close Checklist"; }
-    public Node root() { return scaffold; }
+    public Node root() { return this.scaffold; }
 
     private void build()
     {
-        scaffold.setSubtitle("Guide the branch exchequer through service-backed close checks without inventing completion statuses.");
+        this.scaffold.setSubtitle("Guide the branch exchequer through service-backed close checks without inventing completion statuses.");
         Button refresh = new Button("Refresh Checks");
         refresh.setOnAction(e -> refresh());
-        scaffold.setPrimaryActions(List.of(refresh));
-        scaffold.setFilterBar(new HBox(8, new Label("Period end"), periodEnd));
+        this.scaffold.setPrimaryActions(List.of(refresh));
+        this.scaffold.setFilterBar(new HBox(8, new Label("Period end"), this.periodEnd));
 
         TableColumn<MonthlyCloseChecklistService.CloseChecklistItem, String> step = new TableColumn<>("Step");
         step.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().label()));
@@ -54,21 +54,21 @@ public class MonthlyCloseChecklistPanel implements AppPanel
         TableColumn<MonthlyCloseChecklistService.CloseChecklistItem, String> detail = new TableColumn<>("Service-backed detail / not-wired state");
         detail.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().detail()));
         detail.setPrefWidth(620);
-        table.getColumns().setAll(step, status, detail);
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+        this.table.getColumns().setAll(step, status, detail);
+        this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 
         Label note = new Label("Use the linked workspaces to reconcile accounts, review deposits/imports, verify fund balances, generate reports, back up the database, and close/lock only where a real service supports it.");
         note.setWrapText(true);
-        VBox content = new VBox(10, note, table);
+        VBox content = new VBox(10, note, this.table);
         content.setPadding(new Insets(12));
-        scaffold.setContent(content);
+        this.scaffold.setContent(content);
     }
 
     private void refresh()
     {
-        MonthlyCloseChecklistService.CloseChecklistState state = service.calculate(periodEnd.getValue());
-        table.getItems().setAll(state.items());
-        scaffold.setStatus("Checklist calculated for period ending " + state.periodEnd() + ". Not-wired means no service-backed check exists yet.");
+        MonthlyCloseChecklistService.CloseChecklistState state = this.service.calculate(this.periodEnd.getValue());
+        this.table.getItems().setAll(state.items());
+        this.scaffold.setStatus("Checklist calculated for period ending " + state.periodEnd() + ". Not-wired means no service-backed check exists yet.");
     }
 
     private static String label(MonthlyCloseChecklistService.ChecklistStatus status)

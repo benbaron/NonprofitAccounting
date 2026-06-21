@@ -24,7 +24,7 @@ class AlternateReportsWorkspaceServiceTest
     @Test
     void catalogIncludesLegacyFinancialAndSemanticWorkbookReports()
     {
-        AlternateReportsWorkspaceService service = new AlternateReportsWorkspaceService(new CapturingReportService(tempDir), new WorkbookSemanticReportService());
+        AlternateReportsWorkspaceService service = new AlternateReportsWorkspaceService(new CapturingReportService(this.tempDir), new WorkbookSemanticReportService());
         assertTrue(service.catalog().stream().anyMatch(item -> item.id().equals("legacy-income-statement")
             && item.kind() == ReportKind.LEGACY_FINANCIAL));
         assertTrue(service.catalog().stream().anyMatch(item -> item.id().equals("semantic-BalanceStmt")
@@ -34,7 +34,7 @@ class AlternateReportsWorkspaceServiceTest
     @Test
     void selectedReportTypeDateRangeFormatAndParametersReachGenerationService() throws Exception
     {
-        CapturingReportService reportService = new CapturingReportService(tempDir);
+        CapturingReportService reportService = new CapturingReportService(this.tempDir);
         AlternateReportsWorkspaceService service = new AlternateReportsWorkspaceService(reportService, new WorkbookSemanticReportService());
         ReportGenerationRequest request = new ReportGenerationRequest("legacy-fund-activity",
             ReportKind.LEGACY_FINANCIAL, "FundTransfers",
@@ -58,7 +58,7 @@ class AlternateReportsWorkspaceServiceTest
     @Test
     void validationRejectsMissingDatesAndUnsupportedFormats()
     {
-        AlternateReportsWorkspaceService service = new AlternateReportsWorkspaceService(new CapturingReportService(tempDir), new WorkbookSemanticReportService());
+        AlternateReportsWorkspaceService service = new AlternateReportsWorkspaceService(new CapturingReportService(this.tempDir), new WorkbookSemanticReportService());
         ReportGenerationRequest missingDate = new ReportGenerationRequest("semantic-BalanceStmt",
             ReportKind.SEMANTIC_WORKBOOK, "BalanceStmt", null,
             LocalDate.of(2026, 1, 31), null, null, null, ReportFormat.TEXT, Map.of());
@@ -74,7 +74,7 @@ class AlternateReportsWorkspaceServiceTest
     @Test
     void namingConventionUsesReportDateAndSupportedExtension()
     {
-        AlternateReportsWorkspaceService service = new AlternateReportsWorkspaceService(new CapturingReportService(tempDir), new WorkbookSemanticReportService());
+        AlternateReportsWorkspaceService service = new AlternateReportsWorkspaceService(new CapturingReportService(this.tempDir), new WorkbookSemanticReportService());
         ReportCatalogItem item = service.catalog().stream().filter(r -> r.id().equals("legacy-income-statement")).findFirst().orElseThrow();
         assertEquals("income-statement_2026-12-31.csv", service.exportNamingConvention(item, ReportFormat.CSV, LocalDate.of(2026, 12, 31)));
     }
@@ -93,7 +93,7 @@ class AlternateReportsWorkspaceServiceTest
         public File generateReport(ReportGenerationRequest request) throws IOException
         {
             this.lastRequest = request;
-            Path output = tempDir.resolve(request.reportId() + "." + request.format().extension());
+            Path output = this.tempDir.resolve(request.reportId() + "." + request.format().extension());
             Files.writeString(output, "report");
             return output.toFile();
         }

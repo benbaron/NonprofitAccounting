@@ -2,7 +2,6 @@ package org.nonprofitbookkeeping.model;
 
 import jakarta.persistence.*;
 import java.time.*;
-import java.math.*;
 
 
 @Entity
@@ -54,33 +53,33 @@ public class Fund
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt = Instant.now();
 
-    public Long getId() { return id; }
+    public Long getId() { return this.id; }
 
-    public String getCode() { return code; }
+    public String getCode() { return this.code; }
     public void setCode(String code) { this.code = code; }
 
-    public String getName() { return name; }
+    public String getName() { return this.name; }
     public void setName(String name) { this.name = name; }
 
-    public FundType getFundType() { return fundType; }
+    public FundType getFundType() { return this.fundType; }
     public void setFundType(FundType fundType) { this.fundType = fundType; }
 
-    public Fund getParent() { return parent; }
+    public Fund getParent() { return this.parent; }
     public void setParent(Fund parent) { this.parent = parent; }
 
-    public boolean isActive() { return active; }
+    public boolean isActive() { return this.active; }
     public void setActive(boolean active) { this.active = active; }
 
-    public LocalDate getEffectiveFrom() { return effectiveFrom; }
+    public LocalDate getEffectiveFrom() { return this.effectiveFrom; }
     public void setEffectiveFrom(LocalDate effectiveFrom) { this.effectiveFrom = effectiveFrom; }
 
-    public LocalDate getEffectiveTo() { return effectiveTo; }
+    public LocalDate getEffectiveTo() { return this.effectiveTo; }
     public void setEffectiveTo(LocalDate effectiveTo) { this.effectiveTo = effectiveTo; }
 
-    public String getRestrictionText() { return restrictionText; }
+    public String getRestrictionText() { return this.restrictionText; }
     public void setRestrictionText(String restrictionText) { this.restrictionText = restrictionText; }
 
-    public Instant getCreatedAt() { return createdAt; }
-    public Instant getUpdatedAt() { return updatedAt; }
+    public Instant getCreatedAt() { return this.createdAt; }
+    public Instant getUpdatedAt() { return this.updatedAt; }
     public void touchUpdatedAt() { this.updatedAt = Instant.now(); }
 }

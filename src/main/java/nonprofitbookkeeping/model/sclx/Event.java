@@ -73,7 +73,7 @@ public class Event {
      */
     @JsonProperty("eventId")
     public String getEventId() {
-        return eventId;
+        return this.eventId;
     }
 
     /**
@@ -93,7 +93,7 @@ public class Event {
      */
     @JsonProperty("name")
     public String getName() {
-        return name;
+        return this.name;
     }
 
     /**
@@ -108,7 +108,7 @@ public class Event {
 
     @JsonProperty("startDate")
     public String getStartDate() {
-        return startDate;
+        return this.startDate;
     }
 
     @JsonProperty("startDate")
@@ -118,7 +118,7 @@ public class Event {
 
     @JsonProperty("endDate")
     public String getEndDate() {
-        return endDate;
+        return this.endDate;
     }
 
     @JsonProperty("endDate")
@@ -128,7 +128,7 @@ public class Event {
 
     @JsonProperty("hostingOrganizationId")
     public String getHostingOrganizationId() {
-        return hostingOrganizationId;
+        return this.hostingOrganizationId;
     }
 
     @JsonProperty("hostingOrganizationId")
@@ -138,7 +138,7 @@ public class Event {
 
     @JsonProperty("extensions")
     public Extensions getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     @JsonProperty("extensions")

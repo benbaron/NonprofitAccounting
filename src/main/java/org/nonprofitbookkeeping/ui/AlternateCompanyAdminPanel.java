@@ -38,18 +38,18 @@ public class AlternateCompanyAdminPanel implements AppPanel
     }
 
     @Override public String title() { return "Company Administration"; }
-    @Override public Node root() { return root; }
+    @Override public Node root() { return this.root; }
 
     private void build()
     {
-        root.setPadding(new Insets(12));
-        root.getStyleClass().add("alternate-content-card");
+        this.root.setPadding(new Insets(12));
+        this.root.getStyleClass().add("alternate-content-card");
         Label title = new Label("Company Administration");
         title.getStyleClass().add("alternate-panel-title");
         Label safety = new Label(AlternateCompanyAdminService.DELETE_DEFINITION + " " + AlternateCompanyAdminService.BACKUP_GUIDANCE);
         safety.setWrapText(true);
         safety.getStyleClass().add("alternate-panel-subtitle");
-        companies.setCellFactory(view -> new javafx.scene.control.ListCell<>()
+        this.companies.setCellFactory(view -> new javafx.scene.control.ListCell<>()
         {
             @Override protected void updateItem(CompanyRecord item, boolean empty)
             {
@@ -60,19 +60,19 @@ public class AlternateCompanyAdminPanel implements AppPanel
         Button refresh = new Button("Refresh");
         refresh.setOnAction(e -> refreshCompanies());
         Button open = new Button("Open / Switch");
-        open.setOnAction(e -> withSelected(record -> { service.openCompany(record.id()); return "Opened " + record.name(); }));
+        open.setOnAction(e -> withSelected(record -> { this.service.openCompany(record.id()); return "Opened " + record.name(); }));
         Button close = new Button("Close Active Company");
-        close.setOnAction(e -> { service.closeActiveCompany(); setStatus("Active company closed safely."); });
+        close.setOnAction(e -> { this.service.closeActiveCompany(); setStatus("Active company closed safely."); });
         Button populate = new Button("Populate Starter Chart");
-        populate.setOnAction(e -> withSelected(record -> service.populateCompany(record.id()).message()));
+        populate.setOnAction(e -> withSelected(record -> this.service.populateCompany(record.id()).message()));
         Button sample = new Button("Create Deterministic Sample Company");
-        sample.setOnAction(e -> run(() -> "Created sample company ID " + service.createSampleCompany()));
+        sample.setOnAction(e -> run(() -> "Created sample company ID " + this.service.createSampleCompany()));
 
         GridPane create = createCompanyForm();
         GridPane delete = deleteForm();
-        status.setEditable(false);
-        status.setPrefRowCount(6);
-        root.getChildren().setAll(title, safety, companies, new HBox(8, refresh, open, close, populate, sample), create, delete, status);
+        this.status.setEditable(false);
+        this.status.setPrefRowCount(6);
+        this.root.getChildren().setAll(title, safety, this.companies, new HBox(8, refresh, open, close, populate, sample), create, delete, this.status);
     }
 
     private GridPane createCompanyForm()
@@ -90,7 +90,7 @@ public class AlternateCompanyAdminPanel implements AppPanel
         fund.setSelected(true);
         Button create = new Button("Create and Open");
         create.setOnAction(e -> run(() -> {
-            long id = service.createCompany(new AlternateCompanyAdminService.CreateCompanyRequest(name.getText(), legal.getText(), fiscal.getText(), currency.getText(), start.getText(), fund.isSelected()));
+            long id = this.service.createCompany(new AlternateCompanyAdminService.CreateCompanyRequest(name.getText(), legal.getText(), fiscal.getText(), currency.getText(), start.getText(), fund.isSelected()));
             refreshCompanies();
             return "Created and opened company ID " + id;
         }));
@@ -107,7 +107,7 @@ public class AlternateCompanyAdminPanel implements AppPanel
         CheckBox backup = new CheckBox("I exported/backed up the database and understand deletion removes the selected company row.");
         Button delete = new Button("Delete Selected Company");
         delete.setOnAction(e -> withSelected(record -> {
-            service.deleteCompany(record.id(), typedName.getText(), backup.isSelected());
+            this.service.deleteCompany(record.id(), typedName.getText(), backup.isSelected());
             refreshCompanies();
             return "Deleted company " + record.name();
         }));
@@ -134,15 +134,15 @@ public class AlternateCompanyAdminPanel implements AppPanel
     private void refreshCompanies()
     {
         run(() -> {
-            List<CompanyRecord> records = service.listCompanies();
-            companies.setItems(FXCollections.observableArrayList(records));
+            List<CompanyRecord> records = this.service.listCompanies();
+            this.companies.setItems(FXCollections.observableArrayList(records));
             return records.isEmpty() ? "No companies in the active database." : "Loaded " + records.size() + " companies.";
         });
     }
 
     private void withSelected(ThrowingAction action)
     {
-        CompanyRecord record = companies.getSelectionModel().getSelectedItem();
+        CompanyRecord record = this.companies.getSelectionModel().getSelectedItem();
         if (record == null) { setStatus("Select a company first."); return; }
         run(() -> action.run(record));
     }
@@ -153,7 +153,7 @@ public class AlternateCompanyAdminPanel implements AppPanel
         catch (Exception ex) { setStatus("Company administration failed: " + ex.getMessage()); }
     }
 
-    private void setStatus(String message) { status.setText(message == null ? "" : message); }
+    private void setStatus(String message) { this.status.setText(message == null ? "" : message); }
 
     @FunctionalInterface private interface ThrowingSupplier { String get() throws Exception; }
     @FunctionalInterface private interface ThrowingAction { String run(CompanyRecord record) throws Exception; }

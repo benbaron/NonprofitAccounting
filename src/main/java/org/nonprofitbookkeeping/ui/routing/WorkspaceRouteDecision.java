@@ -16,16 +16,16 @@ public record WorkspaceRouteDecision(AppPanelId panelId, RouteTarget target)
 
     public boolean isDashboard()
     {
-        return target == RouteTarget.DASHBOARD;
+        return this.target == RouteTarget.DASHBOARD;
     }
 
     public boolean isAlternateCustomPane()
     {
-        return target == RouteTarget.ALTERNATE_CUSTOM_PANE;
+        return this.target == RouteTarget.ALTERNATE_CUSTOM_PANE;
     }
 
     public boolean isPanelHost()
     {
-        return target == RouteTarget.PANEL_HOST;
+        return this.target == RouteTarget.PANEL_HOST;
     }
 }

@@ -21,10 +21,10 @@ public enum ReportFormat
         this.explanation = explanation;
     }
 
-    public String label() { return label; }
-    public String extension() { return extension; }
-    public boolean supported() { return supported; }
-    public String explanation() { return explanation; }
+    public String label() { return this.label; }
+    public String extension() { return this.extension; }
+    public boolean supported() { return this.supported; }
+    public String explanation() { return this.explanation; }
 
-    @Override public String toString() { return label; }
+    @Override public String toString() { return this.label; }
 }

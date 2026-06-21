@@ -56,32 +56,32 @@ public class SchedulesPanel implements AppPanel
 
         buildTabs();
 
-        HBox top = new HBox(10, new Label("Account:"), accountSelect);
+        HBox top = new HBox(10, new Label("Account:"), this.accountSelect);
         top.setPadding(new Insets(6, 6, 6, 6));
 
-        VBox header = new VBox(6, title, help, top, status, new Separator());
+        VBox header = new VBox(6, title, help, top, this.status, new Separator());
         header.setPadding(new Insets(6, 6, 6, 6));
 
-        root.setTop(header);
-        root.setCenter(tabs);
+        this.root.setTop(header);
+        this.root.setCenter(this.tabs);
 
         loadAccounts();
 
-        accountSelect.valueProperty().addListener((obs, oldV, newV) -> applyGating(newV));
-        if (!accountSelect.getItems().isEmpty())
+        this.accountSelect.valueProperty().addListener((obs, oldV, newV) -> applyGating(newV));
+        if (!this.accountSelect.getItems().isEmpty())
         {
-            accountSelect.getSelectionModel().select(0);
+            this.accountSelect.getSelectionModel().select(0);
         }
     }
 
     @Override public String title() { return "Schedules"; }
 
-    public Node node() { return root; }
+    public Node node() { return this.root; }
 
     private void configureAccountCombo()
     {
-        accountSelect.setPrefWidth(560);
-        accountSelect.setCellFactory(cb -> new ListCell<>()
+        this.accountSelect.setPrefWidth(560);
+        this.accountSelect.setCellFactory(cb -> new ListCell<>()
         {
             @Override protected void updateItem(Account a, boolean empty)
             {
@@ -91,7 +91,7 @@ public class SchedulesPanel implements AppPanel
                 setText(a.getCode() + " — " + a.getName() + sub);
             }
         });
-        accountSelect.setButtonCell(accountSelect.getCellFactory().call(null));
+        this.accountSelect.setButtonCell(this.accountSelect.getCellFactory().call(null));
     }
 
     private void buildTabs()
@@ -106,7 +106,7 @@ public class SchedulesPanel implements AppPanel
         addTab("FIXED_ASSET", "Fixed Assets");
 
         // Default: disabled until account selection happens
-        for (Tab t : tabs.getTabs()) t.setDisable(true);
+        for (Tab t : this.tabs.getTabs()) t.setDisable(true);
     }
 
     private void addTab(String scheduleCode, String label)
@@ -114,28 +114,28 @@ public class SchedulesPanel implements AppPanel
         Tab t = new Tab(label);
         t.setClosable(false);
         t.setContent(new Label(label + " schedule UI not wired yet."));
-        tabs.getTabs().add(t);
-        tabIndex.put(scheduleCode, t);
+        this.tabs.getTabs().add(t);
+        this.tabIndex.put(scheduleCode, t);
     }
 
     private void loadAccounts()
     {
-        if (!services.sessionContext().isDatabaseOpen())
+        if (!this.services.sessionContext().isDatabaseOpen())
         {
             showNoAccountsMessage("Open a database to load schedule account eligibility.");
             return;
         }
 
-        status.setText("Loading accounts...");
+        this.status.setText("Loading accounts...");
 
         UiAsync.run("schedule-accounts-load",
             this::loadDbAccounts,
             accounts -> {
                 if (!accounts.isEmpty())
                 {
-                    accountSelect.getItems().setAll(accounts);
-                    status.setText("Loaded " + accounts.size() + " account(s).");
-                    accountSelect.getSelectionModel().select(0);
+                    this.accountSelect.getItems().setAll(accounts);
+                    this.status.setText("Loaded " + accounts.size() + " account(s).");
+                    this.accountSelect.getSelectionModel().select(0);
                     return;
                 }
                 showNoAccountsMessage("No service-backed accounts are available.");
@@ -145,29 +145,29 @@ public class SchedulesPanel implements AppPanel
 
     private List<Account> loadDbAccounts()
     {
-        AccountLookupService lookup = services.accountLookup();
+        AccountLookupService lookup = this.services.accountLookup();
         return lookup.listActivePostingAccounts();
     }
 
     private void showNoAccountsMessage(String message)
     {
-        accountSelect.getItems().clear();
-        accountSelect.getSelectionModel().clearSelection();
-        status.setText(message + " " + NO_SERVICE_DATA_MESSAGE);
+        this.accountSelect.getItems().clear();
+        this.accountSelect.getSelectionModel().clearSelection();
+        this.status.setText(message + " " + NO_SERVICE_DATA_MESSAGE);
     }
 
     private void applyGating(Account account)
     {
-        for (Tab t : tabs.getTabs()) t.setDisable(true);
+        for (Tab t : this.tabs.getTabs()) t.setDisable(true);
         if (account == null) return;
 
-        Set<String> allowed = eligibility == null ? Set.of() : eligibility.allowedScheduleKindCodes(account);
+        Set<String> allowed = this.eligibility == null ? Set.of() : this.eligibility.allowedScheduleKindCodes(account);
         for (String code : allowed)
         {
-            Tab t = tabIndex.get(code);
+            Tab t = this.tabIndex.get(code);
             if (t != null) t.setDisable(false);
         }
     }
 
-    @Override public Node root() { return root; }
+    @Override public Node root() { return this.root; }
 }

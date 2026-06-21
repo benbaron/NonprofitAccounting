@@ -54,7 +54,7 @@ public class Approval {
 
     @JsonProperty("policyRequired")
     public Boolean getPolicyRequired() {
-        return policyRequired;
+        return this.policyRequired;
     }
 
     @JsonProperty("policyRequired")
@@ -64,7 +64,7 @@ public class Approval {
 
     @JsonProperty("committeeApprovalRef")
     public String getCommitteeApprovalRef() {
-        return committeeApprovalRef;
+        return this.committeeApprovalRef;
     }
 
     @JsonProperty("committeeApprovalRef")
@@ -74,7 +74,7 @@ public class Approval {
 
     @JsonProperty("approvedBy")
     public List<String> getApprovedBy() {
-        return approvedBy;
+        return this.approvedBy;
     }
 
     @JsonProperty("approvedBy")
@@ -84,7 +84,7 @@ public class Approval {
 
     @JsonProperty("approvalDate")
     public String getApprovalDate() {
-        return approvalDate;
+        return this.approvalDate;
     }
 
     @JsonProperty("approvalDate")
@@ -94,7 +94,7 @@ public class Approval {
 
     @JsonProperty("notes")
     public String getNotes() {
-        return notes;
+        return this.notes;
     }
 
     @JsonProperty("notes")
@@ -104,7 +104,7 @@ public class Approval {
 
     @JsonProperty("extensions")
     public Extensions getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     @JsonProperty("extensions")

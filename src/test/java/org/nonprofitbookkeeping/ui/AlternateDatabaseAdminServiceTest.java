@@ -22,7 +22,7 @@ class AlternateDatabaseAdminServiceTest
         UiSessionContext context = new UiSessionContext();
         AlternateDatabaseAdminService service = service(context);
 
-        assertThrows(IOException.class, () -> service.openDatabase(tempDir.resolve("missing.mv.db")));
+        assertThrows(IOException.class, () -> service.openDatabase(this.tempDir.resolve("missing.mv.db")));
 
         assertFalse(context.isDatabaseOpen());
     }
@@ -30,7 +30,7 @@ class AlternateDatabaseAdminServiceTest
     @Test
     void unsupportedExtensionFails() throws Exception
     {
-        Path txt = tempDir.resolve("company.txt");
+        Path txt = this.tempDir.resolve("company.txt");
         Files.writeString(txt, "not a database");
 
         assertThrows(IllegalArgumentException.class, () -> service(new UiSessionContext()).validateDatabase(txt));
@@ -39,7 +39,7 @@ class AlternateDatabaseAdminServiceTest
     @Test
     void dbExtensionIsRejectedBecauseH2OpensMvDbFiles() throws Exception
     {
-        Path db = tempDir.resolve("backup.db");
+        Path db = this.tempDir.resolve("backup.db");
         Files.writeString(db, "not an mv.db database");
 
         assertThrows(IllegalArgumentException.class, () -> service(new UiSessionContext()).validateDatabase(db));
@@ -49,7 +49,7 @@ class AlternateDatabaseAdminServiceTest
     void closeDatabaseClearsLegacyDatabaseSingleton()
     {
         UiSessionContext context = new UiSessionContext();
-        Path base = tempDir.resolve("legacy-open");
+        Path base = this.tempDir.resolve("legacy-open");
         Database.init(base);
         context.openDatabase(base);
 
@@ -62,8 +62,8 @@ class AlternateDatabaseAdminServiceTest
     @Test
     void exportTargetExistsFailsWithoutOverwrite() throws Exception
     {
-        Path source = tempDir.resolve("source.mv.db");
-        Path target = tempDir.resolve("target.mv.db");
+        Path source = this.tempDir.resolve("source.mv.db");
+        Path target = this.tempDir.resolve("target.mv.db");
         Files.writeString(source, "source");
         Files.writeString(target, "target");
 
@@ -77,10 +77,10 @@ class AlternateDatabaseAdminServiceTest
     @Test
     void repairActiveDatabaseRequiresBackupConfirmation() throws Exception
     {
-        Path source = tempDir.resolve("active.mv.db");
+        Path source = this.tempDir.resolve("active.mv.db");
         Files.writeString(source, "not a valid h2 database");
         UiSessionContext context = new UiSessionContext();
-        context.openDatabase(tempDir.resolve("active"));
+        context.openDatabase(this.tempDir.resolve("active"));
 
         IllegalStateException ex = assertThrows(IllegalStateException.class,
             () -> service(context).repairDatabase(source, false, false));
@@ -92,10 +92,10 @@ class AlternateDatabaseAdminServiceTest
     @Test
     void repairFailureClosesActiveContextOnlyAfterConfirmation() throws Exception
     {
-        Path source = tempDir.resolve("active.mv.db");
+        Path source = this.tempDir.resolve("active.mv.db");
         Files.createDirectory(source);
         UiSessionContext context = new UiSessionContext();
-        context.openDatabase(tempDir.resolve("active"));
+        context.openDatabase(this.tempDir.resolve("active"));
 
         assertThrows(Exception.class, () -> failingRepairService(context).repairDatabase(source, true, false));
 
@@ -105,8 +105,8 @@ class AlternateDatabaseAdminServiceTest
     @Test
     void importCanOpenAfterSuccessfulCopy() throws Exception
     {
-        Path source = tempDir.resolve("source.mv.db");
-        Path target = tempDir.resolve("target.mv.db");
+        Path source = this.tempDir.resolve("source.mv.db");
+        Path target = this.tempDir.resolve("target.mv.db");
         Files.writeString(source, "database payload");
         UiSessionContext context = new UiSessionContext();
 
@@ -114,14 +114,14 @@ class AlternateDatabaseAdminServiceTest
 
         assertEquals("database payload", Files.readString(target));
         assertTrue(context.isDatabaseOpen());
-        assertEquals(tempDir.resolve("target").toAbsolutePath().normalize(), context.activeDatabaseBasePath());
+        assertEquals(this.tempDir.resolve("target").toAbsolutePath().normalize(), context.activeDatabaseBasePath());
         assertNotNull(result.openResult());
     }
 
     @Test
     void repairCanOpenAfterSuccessfulRecovery() throws Exception
     {
-        Path source = tempDir.resolve("recover.mv.db");
+        Path source = this.tempDir.resolve("recover.mv.db");
         Files.writeString(source, "database payload");
         UiSessionContext context = new UiSessionContext();
 
@@ -129,8 +129,8 @@ class AlternateDatabaseAdminServiceTest
             .repairDatabase(source, false, true);
 
         assertTrue(context.isDatabaseOpen());
-        assertEquals(tempDir.resolve("recover").toAbsolutePath().normalize(), context.activeDatabaseBasePath());
-        assertEquals(tempDir.resolve("recover-recovered.sql"), result.resultPath());
+        assertEquals(this.tempDir.resolve("recover").toAbsolutePath().normalize(), context.activeDatabaseBasePath());
+        assertEquals(this.tempDir.resolve("recover-recovered.sql"), result.resultPath());
         assertNotNull(result.openResult());
     }
 
@@ -159,7 +159,7 @@ class AlternateDatabaseAdminServiceTest
             nonprofitbookkeeping.tools.H2SchemaMigrator.RepairResult repairCorruptedDatabase(Path basePath)
             {
                 return new nonprofitbookkeeping.tools.H2SchemaMigrator.RepairResult(
-                    tempDir.resolve("recover-recovered.sql"), java.util.List.of(tempDir.resolve("recover.mv.db.bak")));
+                    AlternateDatabaseAdminServiceTest.this.tempDir.resolve("recover-recovered.sql"), java.util.List.of(AlternateDatabaseAdminServiceTest.this.tempDir.resolve("recover.mv.db.bak")));
             }
         };
     }
@@ -178,14 +178,14 @@ class AlternateDatabaseAdminServiceTest
         public DatabaseOpenService.OpenResult openDatabase(Path basePath)
         {
             Path normalized = basePath.toAbsolutePath().normalize();
-            context.openDatabase(normalized);
+            this.context.openDatabase(normalized);
             return new DatabaseOpenService.OpenResult(normalized, null);
         }
 
         @Override
         public void closeDatabase()
         {
-            context.clearDatabase();
+            this.context.clearDatabase();
         }
     }
 }

@@ -43,19 +43,19 @@ public class DefaultPostingFacade implements PostingFacade
     {
         Objects.requireNonNull(command, "command");
         requireValid(command.transaction());
-        postingDatePolicyValidator.validate(command);
-        accountFundRestrictionValidator.validate(command);
-        postingLockValidator.validate(command);
+        this.postingDatePolicyValidator.validate(command);
+        this.accountFundRestrictionValidator.validate(command);
+        this.postingLockValidator.validate(command);
         enrichInfo(command);
-        journalRepository.upsertTransaction(command.transaction());
+        this.journalRepository.upsertTransaction(command.transaction());
         return referenceFor(command.transaction().getId());
     }
 
     public PostingReference reverse(int journalTxnId, String reason) throws SQLException
     {
-        AccountingTransaction source = journalRepository.findTransactionById(journalTxnId)
+        AccountingTransaction source = this.journalRepository.findTransactionById(journalTxnId)
             .orElseThrow(() -> new IllegalArgumentException("journalTxnId not found: " + journalTxnId));
-        AccountingTransaction reversal = copyWithReversedEntries(source, journalRepository.reserveNextTransactionId(), reason);
+        AccountingTransaction reversal = copyWithReversedEntries(source, this.journalRepository.reserveNextTransactionId(), reason);
         return post(new PostingCommand(reversal,
             source.getInfo().getOrDefault("module", "JOURNAL"),
             source.getInfo().get("domain_record_id"),

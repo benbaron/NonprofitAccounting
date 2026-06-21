@@ -5,7 +5,6 @@ import java.time.LocalDate;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.geometry.Insets;
 import javafx.scene.control.DatePicker;
 import javafx.scene.layout.BorderPane;
 

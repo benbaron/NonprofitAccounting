@@ -58,7 +58,7 @@ public class SupplementalRef {
      */
     @JsonProperty("recordType")
     public SupplementalRef.SupplementalRefType getRecordType() {
-        return recordType;
+        return this.recordType;
     }
 
     /**
@@ -78,7 +78,7 @@ public class SupplementalRef {
      */
     @JsonProperty("recordId")
     public String getRecordId() {
-        return recordId;
+        return this.recordId;
     }
 
     /**

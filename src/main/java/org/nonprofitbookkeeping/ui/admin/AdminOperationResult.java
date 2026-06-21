@@ -67,16 +67,16 @@ public record AdminOperationResult(
 
     public boolean hasBlockingMessages()
     {
-        return messages.stream().anyMatch(ValidationMessage::isBlocking);
+        return this.messages.stream().anyMatch(ValidationMessage::isBlocking);
     }
 
     public boolean requiresConfirmation()
     {
-        return confirmationRequirement.required();
+        return this.confirmationRequirement.required();
     }
 
     public boolean successfulCommit()
     {
-        return status == AdminOperationStatus.COMMITTED && !hasBlockingMessages();
+        return this.status == AdminOperationStatus.COMMITTED && !hasBlockingMessages();
     }
 }

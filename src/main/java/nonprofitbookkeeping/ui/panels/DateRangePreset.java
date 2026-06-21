@@ -23,7 +23,7 @@ public enum DateRangePreset
 
     DateRangePreset(String label) { this.label = label; }
 
-    public String label() { return label; }
+    public String label() { return this.label; }
 
-    @Override public String toString() { return label; }
+    @Override public String toString() { return this.label; }
 }

@@ -25,7 +25,7 @@ class DonationPostingServiceTest
 	@Test
 	void postDonation_persistsJournalAndBidirectionalLinkage() throws Exception
 	{
-		Path dbPath = tempDir.resolve("donation-posting");
+		Path dbPath = this.tempDir.resolve("donation-posting");
 		Database.init(dbPath);
 		FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
 		Database.get().ensureSchema();
@@ -61,7 +61,7 @@ class DonationPostingServiceTest
 	void editDonation_reverseAndRepost_policyCreatesReversalAndAdjustment()
 		throws Exception
 	{
-		Path dbPath = tempDir.resolve("donation-reverse-policy");
+		Path dbPath = this.tempDir.resolve("donation-reverse-policy");
 		Database.init(dbPath);
 		FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
 		Database.get().ensureSchema();

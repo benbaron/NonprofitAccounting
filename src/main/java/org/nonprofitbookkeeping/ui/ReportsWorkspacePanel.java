@@ -42,72 +42,72 @@ public class ReportsWorkspacePanel implements AppPanel
     public ReportsWorkspacePanel(AlternateReportsWorkspaceService service)
     {
         this.service = service;
-        scaffold.setSubtitle("Generate financial and semantic workbook reports. Reports are written to ~/NonprofitBookkeepingReports using <report>_<as-of-date>.<format> naming.");
+        this.scaffold.setSubtitle("Generate financial and semantic workbook reports. Reports are written to ~/NonprofitBookkeepingReports using <report>_<as-of-date>.<format> naming.");
         Button generate = new Button("Generate");
         generate.setDefaultButton(true);
         generate.setOnAction(e -> generateSelected());
         Button refresh = new Button("Refresh History");
         refresh.setOnAction(e -> refreshHistory());
-        scaffold.setPrimaryActions(List.of(generate, refresh));
-        scaffold.setContent(buildContent());
-        format.getSelectionModel().select(ReportFormat.TEXT);
+        this.scaffold.setPrimaryActions(List.of(generate, refresh));
+        this.scaffold.setContent(buildContent());
+        this.format.getSelectionModel().select(ReportFormat.TEXT);
         refreshCatalog();
         refreshHistory();
     }
 
     @Override public String title() { return "Reports"; }
-    @Override public Node root() { return scaffold; }
+    @Override public Node root() { return this.scaffold; }
 
     private Node buildContent()
     {
-        catalog.setCellFactory(list -> new ListCell<>() {
+        this.catalog.setCellFactory(list -> new ListCell<>() {
             @Override protected void updateItem(ReportCatalogItem item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(empty || item == null ? null : item.displayName() + " — " + item.kind());
             }
         });
-        catalog.getSelectionModel().selectedItemProperty().addListener((obs, old, item) -> updateParameterState(item));
+        this.catalog.getSelectionModel().selectedItemProperty().addListener((obs, old, item) -> updateParameterState(item));
         GridPane params = new GridPane();
         params.setHgap(8); params.setVgap(8);
-        params.addRow(0, new Label("Start date"), startDate, new Label("End date"), endDate);
-        params.addRow(1, new Label("Fund"), fund, new Label("Account"), account);
-        params.addRow(2, new Label("Donor"), donor, new Label("Output"), format);
-        params.addRow(3, new Label("Options"), new VBox(4, optionA, optionB));
-        format.setCellFactory(list -> new ListCell<>() {
+        params.addRow(0, new Label("Start date"), this.startDate, new Label("End date"), this.endDate);
+        params.addRow(1, new Label("Fund"), this.fund, new Label("Account"), this.account);
+        params.addRow(2, new Label("Donor"), this.donor, new Label("Output"), this.format);
+        params.addRow(3, new Label("Options"), new VBox(4, this.optionA, this.optionB));
+        this.format.setCellFactory(list -> new ListCell<>() {
             @Override protected void updateItem(ReportFormat item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(empty || item == null ? null : item.label() + (item.supported() ? "" : " — unsupported: " + item.explanation()));
                 setDisable(item != null && !item.supported());
             }
         });
-        format.setButtonCell(new ListCell<>() {
+        this.format.setButtonCell(new ListCell<>() {
             @Override protected void updateItem(ReportFormat item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(empty || item == null ? null : item.label());
             }
         });
         buildHistoryTable();
-        SplitPane split = new SplitPane(new VBox(8, new Label("Report Catalog"), catalog), new VBox(8, new Label("Parameters"), params, new Label("Generated Report History"), history));
+        SplitPane split = new SplitPane(new VBox(8, new Label("Report Catalog"), this.catalog), new VBox(8, new Label("Parameters"), params, new Label("Generated Report History"), this.history));
         split.setDividerPositions(0.35);
         return split;
     }
 
     private void refreshCatalog()
     {
-        catalog.setItems(FXCollections.observableArrayList(service.catalog()));
-        if (!catalog.getItems().isEmpty()) catalog.getSelectionModel().selectFirst();
+        this.catalog.setItems(FXCollections.observableArrayList(this.service.catalog()));
+        if (!this.catalog.getItems().isEmpty()) this.catalog.getSelectionModel().selectFirst();
     }
 
     private void updateParameterState(ReportCatalogItem item)
     {
         boolean none = item == null;
-        fund.setDisable(none || !item.fundSupported());
-        account.setDisable(none || !item.accountSupported());
-        donor.setDisable(none || !item.donorSupported());
+        this.fund.setDisable(none || !item.fundSupported());
+        this.account.setDisable(none || !item.accountSupported());
+        this.donor.setDisable(none || !item.donorSupported());
         List<String> options = none ? List.of() : item.optionNames();
-        configureOption(optionA, options, 0);
-        configureOption(optionB, options, 1);
-        scaffold.setStatus(item == null ? "Select a report." : "Default export name: " + service.exportNamingConvention(item, format.getValue(), endDate.getValue()));
+        configureOption(this.optionA, options, 0);
+        configureOption(this.optionB, options, 1);
+        this.scaffold.setStatus(item == null ? "Select a report." : "Default export name: " + this.service.exportNamingConvention(item, this.format.getValue(), this.endDate.getValue()));
     }
 
     private static void configureOption(CheckBox box, List<String> options, int index)
@@ -122,25 +122,25 @@ public class ReportsWorkspacePanel implements AppPanel
 
     private void generateSelected()
     {
-        ReportCatalogItem item = catalog.getSelectionModel().getSelectedItem();
-        if (item == null) { scaffold.showError("Select a report before generating."); return; }
+        ReportCatalogItem item = this.catalog.getSelectionModel().getSelectedItem();
+        if (item == null) { this.scaffold.showError("Select a report before generating."); return; }
         try {
-            service.generate(buildRequest(item));
-            scaffold.showContent();
-            scaffold.setStatus("Generated report in ~/NonprofitBookkeepingReports. Use Open or Export in history.");
+            this.service.generate(buildRequest(item));
+            this.scaffold.showContent();
+            this.scaffold.setStatus("Generated report in ~/NonprofitBookkeepingReports. Use Open or Export in history.");
             refreshHistory();
         } catch (Exception ex) {
-            scaffold.showError(UiErrors.safeMessage(ex));
+            this.scaffold.showError(UiErrors.safeMessage(ex));
         }
     }
 
     ReportGenerationRequest buildRequest(ReportCatalogItem item)
     {
         Map<String, String> options = new LinkedHashMap<>();
-        if (optionA.isVisible()) options.put(optionA.getText(), Boolean.toString(optionA.isSelected()));
-        if (optionB.isVisible()) options.put(optionB.getText(), Boolean.toString(optionB.isSelected()));
-        return new ReportGenerationRequest(item.id(), item.kind(), item.templateId(), startDate.getValue(), endDate.getValue(),
-            value(fund), value(account), value(donor), format.getValue(), options);
+        if (this.optionA.isVisible()) options.put(this.optionA.getText(), Boolean.toString(this.optionA.isSelected()));
+        if (this.optionB.isVisible()) options.put(this.optionB.getText(), Boolean.toString(this.optionB.isSelected()));
+        return new ReportGenerationRequest(item.id(), item.kind(), item.templateId(), this.startDate.getValue(), this.endDate.getValue(),
+            value(this.fund), value(this.account), value(this.donor), this.format.getValue(), options);
     }
 
     private static String value(TextField field) { return field.isDisabled() || field.getText().isBlank() ? null : field.getText().trim(); }
@@ -155,13 +155,13 @@ public class ReportsWorkspacePanel implements AppPanel
         actions.setCellFactory(tc -> new TableCell<>() {
             private final Button open = new Button("Open");
             private final Button export = new Button("Export");
-            private final HBox buttons = new HBox(4, open, export);
-            { open.setOnAction(e -> openFile(row().path)); export.setOnAction(e -> openFile(new File(row().path).getParent())); }
-            @Override protected void updateItem(Void item, boolean empty) { super.updateItem(item, empty); setGraphic(empty ? null : buttons); }
+            private final HBox buttons = new HBox(4, this.open, this.export);
+            { this.open.setOnAction(e -> openFile(row().path)); this.export.setOnAction(e -> openFile(new File(row().path).getParent())); }
+            @Override protected void updateItem(Void item, boolean empty) { super.updateItem(item, empty); setGraphic(empty ? null : this.buttons); }
             private HistoryRow row() { return getTableView().getItems().get(getIndex()); }
         });
-        history.getColumns().setAll(name, created, path, actions);
-        history.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        this.history.getColumns().setAll(name, created, path, actions);
+        this.history.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
 
     private static TableColumn<HistoryRow, String> col(String title, String property)
@@ -173,21 +173,21 @@ public class ReportsWorkspacePanel implements AppPanel
 
     private void refreshHistory()
     {
-        history.setItems(FXCollections.observableArrayList(service.history().stream().map(HistoryRow::new).toList()));
+        this.history.setItems(FXCollections.observableArrayList(this.service.history().stream().map(HistoryRow::new).toList()));
     }
 
     private void openFile(String path)
     {
         try { Desktop.getDesktop().open(new File(path)); }
-        catch (Exception ex) { scaffold.showError("Cannot open report location: " + UiErrors.safeMessage(ex)); }
+        catch (Exception ex) { this.scaffold.showError("Cannot open report location: " + UiErrors.safeMessage(ex)); }
     }
 
     public static class HistoryRow
     {
         private final String name; private final String created; private final String path;
-        HistoryRow(ReportMetadata metadata) { name = metadata.getReportName(); created = metadata.getCreated(); path = metadata.getFilePath(); }
-        public String getName() { return name; }
-        public String getCreated() { return created; }
-        public String getPath() { return path; }
+        HistoryRow(ReportMetadata metadata) { this.name = metadata.getReportName(); this.created = metadata.getCreated(); this.path = metadata.getFilePath(); }
+        public String getName() { return this.name; }
+        public String getCreated() { return this.created; }
+        public String getPath() { return this.path; }
     }
 }

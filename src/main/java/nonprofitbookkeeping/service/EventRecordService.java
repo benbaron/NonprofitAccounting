@@ -25,16 +25,16 @@ public class EventRecordService
 
     public void save(EventRecord record) throws SQLException
     {
-        repository.upsert(record);
+        this.repository.upsert(record);
     }
 
     public List<EventRecord> listAll() throws SQLException
     {
-        return repository.listAll();
+        return this.repository.listAll();
     }
 
     public int delete(String eventId) throws SQLException
     {
-        return repository.deleteById(eventId);
+        return this.repository.deleteById(eventId);
     }
 }

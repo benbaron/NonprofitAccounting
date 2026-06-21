@@ -171,7 +171,7 @@ class GenericRecordEditorPanelDeleteBehaviorTest
         @Override
         public int deleteByPrimaryKey(String tableName, Map<String, Object> primaryKey)
         {
-            deleteCalls++;
+            this.deleteCalls++;
             return 1;
         }
     }

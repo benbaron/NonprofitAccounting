@@ -14,25 +14,25 @@ public class ImportedTransactionService
 
     public void add(ImportedTransaction transaction)
     {
-        synchronized (transactions)
+        synchronized (this.transactions)
         {
-            transactions.add(transaction);
+            this.transactions.add(transaction);
         }
     }
 
     public List<ImportedTransaction> listAll()
     {
-        synchronized (transactions)
+        synchronized (this.transactions)
         {
-            return List.copyOf(transactions);
+            return List.copyOf(this.transactions);
         }
     }
 
     public boolean delete(ImportedTransaction transaction)
     {
-        synchronized (transactions)
+        synchronized (this.transactions)
         {
-            return transactions.remove(transaction);
+            return this.transactions.remove(transaction);
         }
     }
 }

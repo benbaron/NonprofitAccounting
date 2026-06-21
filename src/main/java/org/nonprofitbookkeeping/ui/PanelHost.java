@@ -47,7 +47,7 @@ public class PanelHost extends BorderPane
     public SaveResult show(AppPanelId id)
     {
         SaveResult saveResult = SaveResult.noChanges();
-        if (activeId != null && activeId != id)
+        if (this.activeId != null && this.activeId != id)
         {
             saveResult = prepareActiveForNavigation();
             if (saveResult.failed())
@@ -55,8 +55,8 @@ public class PanelHost extends BorderPane
                 return saveResult;
             }
         }
-        AppPanel panel = panels.computeIfAbsent(id, this::create);
-        activeId = id;
+        AppPanel panel = this.panels.computeIfAbsent(id, this::create);
+        this.activeId = id;
         setCenter(panel.root());
         return saveResult;
     }
@@ -119,7 +119,7 @@ public class PanelHost extends BorderPane
     public void deleteActive() { AppPanel p = getActive(); if (p != null) p.onDelete(); }
     public void cancelActive() { AppPanel p = getActive(); if (p != null) p.onCancel(); }
 
-    private AppPanel getActive() { return activeId == null ? null : panels.get(activeId); }
+    private AppPanel getActive() { return this.activeId == null ? null : this.panels.get(this.activeId); }
 
     /**
      * Creates the AppPanel (Classic way)
@@ -129,7 +129,7 @@ public class PanelHost extends BorderPane
      */
     private AppPanel create(AppPanelId id)
     {
-        return panelFactory.create(id);
+        return this.panelFactory.create(id);
     }
 
     private boolean canNavigateAway()
@@ -166,12 +166,12 @@ public class PanelHost extends BorderPane
         {
         return switch (id)
         {
-            case DASHBOARD -> new AlternateDashboardPanel(services.sessionContext(), services);
+            case DASHBOARD -> new AlternateDashboardPanel(this.services.sessionContext(), this.services);
 
             case LEDGER_REGISTER -> new LedgerRegisterPanel();
-            case EVENT_ACCOUNTING -> new EventAccountingPanel(services);
+            case EVENT_ACCOUNTING -> new EventAccountingPanel(this.services);
 
-            case SCHEDULES -> new SchedulesPanel(services);
+            case SCHEDULES -> new SchedulesPanel(this.services);
             case INVENTORY -> new AssetsRegisterPanel("Inventory");
 
             case BUDGET_EDITOR -> new BudgetEditorPanel();
@@ -187,11 +187,11 @@ public class PanelHost extends BorderPane
             case DONORS -> new DonorManagementPanel();
             case RECONCILIATION -> new AlternateReconciliationPanel();
 
-            case DATABASE_ADMIN -> new AlternateDatabaseAdminPanel(services);
-            case COMPANY_ADMIN -> new AlternateCompanyAdminPanel(services);
+            case DATABASE_ADMIN -> new AlternateDatabaseAdminPanel(this.services);
+            case COMPANY_ADMIN -> new AlternateCompanyAdminPanel(this.services);
             case IMPORT_EXPORT -> new AlternateImportExportPanel();
-            case MONTHLY_CLOSE -> new MonthlyCloseChecklistPanel(services);
-            case SETTINGS -> new SettingsPanel(services);
+            case MONTHLY_CLOSE -> new MonthlyCloseChecklistPanel(this.services);
+            case SETTINGS -> new SettingsPanel(this.services);
         };
         }
     }

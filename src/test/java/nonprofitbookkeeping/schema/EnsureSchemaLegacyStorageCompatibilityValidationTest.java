@@ -37,7 +37,7 @@ class EnsureSchemaLegacyStorageCompatibilityValidationTest
     @Test
     void ensureSchemaDoesNotChangeFlywayOwnedLegacyStorageColumnsOrIndexes() throws Exception
     {
-        Database.init(tempDir.resolve("legacy-storage-compatibility"));
+        Database.init(this.tempDir.resolve("legacy-storage-compatibility"));
         Database database = Database.get();
 
         migrateWithFlyway(database);

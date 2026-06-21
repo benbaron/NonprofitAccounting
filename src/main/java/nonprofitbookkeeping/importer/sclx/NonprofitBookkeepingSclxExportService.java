@@ -150,7 +150,7 @@ public class NonprofitBookkeepingSclxExportService
         );
 
         List<SclxDocument.Account> accounts = new ArrayList<>();
-        for (Account account : accountRepository.listAll())
+        for (Account account : this.accountRepository.listAll())
         {
             accounts.add(new SclxDocument.Account(
                 account.getAccountNumber(),
@@ -171,18 +171,18 @@ public class NonprofitBookkeepingSclxExportService
 
         try
 		{        	
-			fundAccountingService.loadFunds(null);
+			this.fundAccountingService.loadFunds(null);
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
         
-        List<SclxDocument.Fund> funds = fundAccountingService.listFunds().stream()
+        List<SclxDocument.Fund> funds = this.fundAccountingService.listFunds().stream()
             .map(fund -> new SclxDocument.Fund(fund.getFundId(), fund.getName(), null, null, Map.of()))
             .toList();
 
-        List<SclxDocument.Budget> budgets = budgetRecordRepository.listAll().stream()
+        List<SclxDocument.Budget> budgets = this.budgetRecordRepository.listAll().stream()
             .map(this::toSclxBudget)
             .toList();
 
@@ -219,11 +219,11 @@ public class NonprofitBookkeepingSclxExportService
             }
         }
 
-        List<SclxDocument.BankingItem> bankingItems = bankingItemRecordRepository.listAll().stream()
+        List<SclxDocument.BankingItem> bankingItems = this.bankingItemRecordRepository.listAll().stream()
             .map(this::toSclxBankingItem)
             .toList();
 
-        List<SclxDocument.BankStatementImport> bankStatementImports = bankStatementRecordRepository.listAll().stream()
+        List<SclxDocument.BankStatementImport> bankStatementImports = this.bankStatementRecordRepository.listAll().stream()
             .map(this::toSclxBankStatementImport)
             .toList();
 
@@ -452,7 +452,7 @@ private List<SclxDocument.Person> buildSclxPeople() throws java.sql.SQLException
 {
     Map<String, SclxDocument.Person> byId = new LinkedHashMap<>();
 
-    for (Person person : personRepository.list())
+    for (Person person : this.personRepository.list())
     {
         String personId = "person-" + person.getId();
         byId.put(personId, new SclxDocument.Person(
@@ -507,7 +507,7 @@ private String resolveExportPersonId(String displayName)
 
     try
     {
-        for (Person person : personRepository.list())
+        for (Person person : this.personRepository.list())
         {
             if (person.getName() != null && person.getName().equalsIgnoreCase(displayName))
             {

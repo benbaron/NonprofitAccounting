@@ -21,7 +21,7 @@ public class BudgetVsActualPanel implements AppPanel
 
     public BudgetVsActualPanel()
     {
-        root.setPadding(new Insets(8));
+        this.root.setPadding(new Insets(8));
         Label title = new Label("Budget vs Actual");
         title.getStyleClass().add("panel-title");
 
@@ -30,16 +30,16 @@ public class BudgetVsActualPanel implements AppPanel
         Button collapseAll = new Button("Collapse All");
         HBox actions = new HBox(8, run, expandAll, collapseAll);
 
-        root.setTop(new VBox(6, title, actions, new Separator()));
+        this.root.setTop(new VBox(6, title, actions, new Separator()));
 
-        table.getColumns().add(col("Group / Account", Row::label));
-        table.getColumns().add(col("Budget", Row::budget));
-        table.getColumns().add(col("Actual", Row::actual));
-        table.getColumns().add(col("Variance", Row::variance));
-        table.setShowRoot(false);
-        table.setPlaceholder(new Label(NO_SERVICE_DATA_MESSAGE));
-        root.setCenter(table);
-        root.setBottom(new VBox(new Separator(), status));
+        this.table.getColumns().add(col("Group / Account", Row::label));
+        this.table.getColumns().add(col("Budget", Row::budget));
+        this.table.getColumns().add(col("Actual", Row::actual));
+        this.table.getColumns().add(col("Variance", Row::variance));
+        this.table.setShowRoot(false);
+        this.table.setPlaceholder(new Label(NO_SERVICE_DATA_MESSAGE));
+        this.root.setCenter(this.table);
+        this.root.setBottom(new VBox(new Separator(), this.status));
 
         run.setOnAction(e -> runReport());
         expandAll.setOnAction(e -> setExpandedOnChildren(true));
@@ -58,17 +58,17 @@ public class BudgetVsActualPanel implements AppPanel
     private void runReport()
     {
         TreeItem<Row> rootItem = new TreeItem<>(new Row("All", "", "", ""));
-        table.setRoot(rootItem);
-        status.setText(NO_SERVICE_DATA_MESSAGE + " Date range: " + DateRangeContext.get() + ".");
+        this.table.setRoot(rootItem);
+        this.status.setText(NO_SERVICE_DATA_MESSAGE + " Date range: " + DateRangeContext.get() + ".");
     }
 
     private void setExpandedOnChildren(boolean expanded)
     {
-        if (table.getRoot() == null)
+        if (this.table.getRoot() == null)
         {
             return;
         }
-        for (TreeItem<Row> item : table.getRoot().getChildren())
+        for (TreeItem<Row> item : this.table.getRoot().getChildren())
         {
             item.setExpanded(expanded);
         }
@@ -83,7 +83,7 @@ public class BudgetVsActualPanel implements AppPanel
     @Override
     public Node root()
     {
-        return root;
+        return this.root;
     }
 
     public record Row(String label, String budget, String actual, String variance)

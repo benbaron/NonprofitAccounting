@@ -30,7 +30,7 @@ class JournalRepositoryPostingSupportTest {
 
     @Test
     void findById_loadsEntriesAndInfo_andReserveNextIdAdvances() throws Exception {
-        Database.init(tempDir.resolve("jr-posting-support"));
+        Database.init(this.tempDir.resolve("jr-posting-support"));
         FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
         seedAccounts();
@@ -67,7 +67,7 @@ class JournalRepositoryPostingSupportTest {
 
     @Test
     void reserveNextId_concurrentReservationsRemainUniqueWhenPersisted() throws Exception {
-        Database.init(tempDir.resolve("jr-posting-concurrency"));
+        Database.init(this.tempDir.resolve("jr-posting-concurrency"));
         FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
         seedAccounts();

@@ -51,7 +51,7 @@ public class SclxParser
         Objects.requireNonNull(inputStream, "inputStream");
         try
         {
-            SclxDocument document = objectMapper.readValue(inputStream, SclxDocument.class);
+            SclxDocument document = this.objectMapper.readValue(inputStream, SclxDocument.class);
             log.debug(
                 "Parsed SCLX envelope format={}, version={}, hasOrganization={}, hasReportingPeriod={}, transactions={}",
                 document.format(),
@@ -72,7 +72,7 @@ public class SclxParser
         Objects.requireNonNull(jsonSource, "jsonSource");
         try
         {
-            SclxDocument document = objectMapper.readValue(jsonSource, SclxDocument.class);
+            SclxDocument document = this.objectMapper.readValue(jsonSource, SclxDocument.class);
             log.debug(
                 "Parsed SCLX envelope format={}, version={}, hasOrganization={}, hasReportingPeriod={}, transactions={}",
                 document.format(),
@@ -90,7 +90,7 @@ public class SclxParser
 
     public ObjectMapper getObjectMapper()
     {
-        return objectMapper;
+        return this.objectMapper;
     }
 
     public static ObjectMapper buildDefaultMapper()

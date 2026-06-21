@@ -23,37 +23,37 @@ public class DateRangeSelector extends HBox
         setSpacing(8);
         setPadding(new Insets(0, 0, 0, 6));
 
-        preset.getItems().setAll(DateRangePreset.values());
-        preset.getSelectionModel().select(DateRangePreset.ALL);
+        this.preset.getItems().setAll(DateRangePreset.values());
+        this.preset.getSelectionModel().select(DateRangePreset.ALL);
 
-        start.setPrefWidth(140);
-        end.setPrefWidth(140);
+        this.start.setPrefWidth(140);
+        this.end.setPrefWidth(140);
 
-        getChildren().addAll(new Label("Range:"), preset, start, new Label("to"), end, summary);
+        getChildren().addAll(new Label("Range:"), this.preset, this.start, new Label("to"), this.end, this.summary);
 
-        preset.valueProperty().addListener((o, a, b) -> recompute());
-        start.valueProperty().addListener((o, a, b) -> recompute());
-        end.valueProperty().addListener((o, a, b) -> recompute());
+        this.preset.valueProperty().addListener((o, a, b) -> recompute());
+        this.start.valueProperty().addListener((o, a, b) -> recompute());
+        this.end.valueProperty().addListener((o, a, b) -> recompute());
 
         recompute();
     }
 
     private void recompute()
     {
-        DateRangePreset p = preset.getValue();
+        DateRangePreset p = this.preset.getValue();
         boolean custom = p == DateRangePreset.CUSTOM;
 
-        start.setDisable(!custom);
-        end.setDisable(!custom);
+        this.start.setDisable(!custom);
+        this.end.setDisable(!custom);
 
-        LocalDate s = start.getValue();
-        LocalDate e = end.getValue();
+        LocalDate s = this.start.getValue();
+        LocalDate e = this.end.getValue();
 
         DateRange computed = DateRangeUtil.compute(p, LocalDate.now(), s, e);
         DateRangeContext.set(computed);
 
-        summary.setText(computed.toString());
+        this.summary.setText(computed.toString());
     }
 
-    public ComboBox<DateRangePreset> presetBox() { return preset; }
+    public ComboBox<DateRangePreset> presetBox() { return this.preset; }
 }

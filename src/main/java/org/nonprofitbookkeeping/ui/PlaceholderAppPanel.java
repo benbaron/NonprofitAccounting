@@ -25,11 +25,11 @@ class PlaceholderAppPanel implements AppPanel
 
     public String title()
     {
-        return title;
+        return this.title;
     }
 
     public Node root()
     {
-        return root;
+        return this.root;
     }
 }

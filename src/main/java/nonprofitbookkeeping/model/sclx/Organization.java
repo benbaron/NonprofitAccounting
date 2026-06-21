@@ -134,7 +134,7 @@ public class Organization {
      */
     @JsonProperty("organizationId")
     public String getOrganizationId() {
-        return organizationId;
+        return this.organizationId;
     }
 
     /**
@@ -154,7 +154,7 @@ public class Organization {
      */
     @JsonProperty("name")
     public String getName() {
-        return name;
+        return this.name;
     }
 
     /**
@@ -169,7 +169,7 @@ public class Organization {
 
     @JsonProperty("parentOrganization")
     public String getParentOrganization() {
-        return parentOrganization;
+        return this.parentOrganization;
     }
 
     @JsonProperty("parentOrganization")
@@ -184,7 +184,7 @@ public class Organization {
      */
     @JsonProperty("baseCurrency")
     public String getBaseCurrency() {
-        return baseCurrency;
+        return this.baseCurrency;
     }
 
     /**
@@ -204,7 +204,7 @@ public class Organization {
      */
     @JsonProperty("fiscalYearStart")
     public String getFiscalYearStart() {
-        return fiscalYearStart;
+        return this.fiscalYearStart;
     }
 
     /**
@@ -224,7 +224,7 @@ public class Organization {
      */
     @JsonProperty("fiscalYearEnd")
     public String getFiscalYearEnd() {
-        return fiscalYearEnd;
+        return this.fiscalYearEnd;
     }
 
     /**
@@ -239,7 +239,7 @@ public class Organization {
 
     @JsonProperty("extensions")
     public Extensions getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     @JsonProperty("extensions")
@@ -249,7 +249,7 @@ public class Organization {
 
     @JsonProperty("organizationType")
     public String getOrganizationType() {
-        return organizationType;
+        return this.organizationType;
     }
 
     @JsonProperty("organizationType")
@@ -259,7 +259,7 @@ public class Organization {
 
     @JsonProperty("jurisdictionState")
     public String getJurisdictionState() {
-        return jurisdictionState;
+        return this.jurisdictionState;
     }
 
     @JsonProperty("jurisdictionState")
@@ -269,7 +269,7 @@ public class Organization {
 
     @JsonProperty("parentJurisdictionState")
     public String getParentJurisdictionState() {
-        return parentJurisdictionState;
+        return this.parentJurisdictionState;
     }
 
     @JsonProperty("parentJurisdictionState")
@@ -279,7 +279,7 @@ public class Organization {
 
     @JsonProperty("taxId")
     public String getTaxId() {
-        return taxId;
+        return this.taxId;
     }
 
     @JsonProperty("taxId")
@@ -289,7 +289,7 @@ public class Organization {
 
     @JsonProperty("parentTaxId")
     public String getParentTaxId() {
-        return parentTaxId;
+        return this.parentTaxId;
     }
 
     @JsonProperty("parentTaxId")
@@ -299,7 +299,7 @@ public class Organization {
 
     @JsonProperty("sharesParent501c")
     public Boolean getSharesParent501c() {
-        return sharesParent501c;
+        return this.sharesParent501c;
     }
 
     @JsonProperty("sharesParent501c")
@@ -309,7 +309,7 @@ public class Organization {
 
     @JsonProperty("capitalizationThreshold")
     public String getCapitalizationThreshold() {
-        return capitalizationThreshold;
+        return this.capitalizationThreshold;
     }
 
     @JsonProperty("capitalizationThreshold")
@@ -319,7 +319,7 @@ public class Organization {
 
     @JsonProperty("reportingQuarter")
     public Integer getReportingQuarter() {
-        return reportingQuarter;
+        return this.reportingQuarter;
     }
 
     @JsonProperty("reportingQuarter")
@@ -329,7 +329,7 @@ public class Organization {
 
     @JsonProperty("reportingYear")
     public Integer getReportingYear() {
-        return reportingYear;
+        return this.reportingYear;
     }
 
     @JsonProperty("reportingYear")

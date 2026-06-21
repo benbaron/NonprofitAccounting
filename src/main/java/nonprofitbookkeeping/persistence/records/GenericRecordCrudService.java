@@ -41,7 +41,7 @@ public class GenericRecordCrudService
     public int upsert(String tableName, Map<String, Object> rowValues) throws SQLException
     {
         String normalizedTable = normalizeIdentifier(tableName, "tableName");
-        List<TableColumnMetadata> columns = schemaService.columnsForTable(normalizedTable);
+        List<TableColumnMetadata> columns = this.schemaService.columnsForTable(normalizedTable);
         if (columns.isEmpty())
         {
             throw new IllegalArgumentException("Unknown table or no visible columns: " + normalizedTable);
@@ -91,7 +91,7 @@ public class GenericRecordCrudService
     public int deleteByPrimaryKey(String tableName, Map<String, Object> primaryKeyValues) throws SQLException
     {
         String normalizedTable = normalizeIdentifier(tableName, "tableName");
-        List<TableColumnMetadata> columns = schemaService.columnsForTable(normalizedTable);
+        List<TableColumnMetadata> columns = this.schemaService.columnsForTable(normalizedTable);
         Map<String, TableColumnMetadata> columnsByName = columns.stream()
             .collect(Collectors.toMap(column -> normalizeKey(column.columnName()), column -> column));
         Map<String, Object> normalizedPkValues = normalizeKeys(primaryKeyValues);

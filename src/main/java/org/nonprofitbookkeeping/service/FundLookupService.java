@@ -27,7 +27,7 @@ public class FundLookupService
 
     public List<Fund> listActiveFunds()
     {
-        try (EntityManager em = jpa.em())
+        try (EntityManager em = this.jpa.em())
         {
             return em.createQuery(
                     "from Fund f where f.active = true order by f.code",

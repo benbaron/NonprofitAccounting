@@ -25,7 +25,7 @@ class OperationalReconciliationServiceTest
 	@Test
 	void confirmVoidAndReconcile_updatesMatchAndLinkStatuses() throws Exception
 	{
-		Path dbPath = tempDir.resolve("operational-reconciliation-service");
+		Path dbPath = this.tempDir.resolve("operational-reconciliation-service");
 		Database.init(dbPath);
 		FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
 		Database.get().ensureSchema();
@@ -65,7 +65,7 @@ class OperationalReconciliationServiceTest
 	void reconcileFromBookingTimestamps_persistsStatementAndUpdatesRows()
 		throws Exception
 	{
-		Path dbPath = tempDir.resolve("operational-reconciliation-booking");
+		Path dbPath = this.tempDir.resolve("operational-reconciliation-booking");
 		Database.init(dbPath);
 		FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
 		Database.get().ensureSchema();
@@ -87,7 +87,7 @@ class OperationalReconciliationServiceTest
 	@Test
 	void postAdjustment_postsThroughFacade_and_linksBankTransaction() throws Exception
 	{
-		Path dbPath = tempDir.resolve("operational-reconciliation-adjustment");
+		Path dbPath = this.tempDir.resolve("operational-reconciliation-adjustment");
 		Database.init(dbPath);
 		FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
 		Database.get().ensureSchema();

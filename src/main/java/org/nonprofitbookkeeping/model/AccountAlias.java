@@ -1,7 +1,6 @@
 package org.nonprofitbookkeeping.model;
 
 import jakarta.persistence.*;
-import java.time.*;
 
 
 @Entity

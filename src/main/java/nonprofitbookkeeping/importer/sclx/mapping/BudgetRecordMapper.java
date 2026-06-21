@@ -29,7 +29,7 @@ public final class BudgetRecordMapper {
             node == null || node.get("active") == null || node.get("active").isNull() ? null : node.get("active").asBoolean(),
             JacksonJsonNodeSupport.text(node, "description"),
             budgetLines(node == null ? null : node.get("lines")),
-            JacksonJsonNodeSupport.objectMap(node, "extensions", objectMapper),
+            JacksonJsonNodeSupport.objectMap(node, "extensions", this.objectMapper),
             node == null ? null : node.toString()
         );
     }
@@ -48,7 +48,7 @@ public final class BudgetRecordMapper {
                 JacksonJsonNodeSupport.text(node, "expenseCategory"),
                 JacksonJsonNodeSupport.text(node, "accountId"),
                 JacksonJsonNodeSupport.text(node, "notes"),
-                JacksonJsonNodeSupport.objectMap(node, "extensions", objectMapper)
+                JacksonJsonNodeSupport.objectMap(node, "extensions", this.objectMapper)
             ));
         }
         return List.copyOf(result);

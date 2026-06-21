@@ -43,7 +43,7 @@ class EnsureSchemaReportingScheduleCompatibilityValidationTest
     @Test
     void ensureSchemaDoesNotChangeFlywayOwnedReportingScheduleColumns() throws Exception
     {
-        Database.init(tempDir.resolve("reporting-schedule-compatibility"));
+        Database.init(this.tempDir.resolve("reporting-schedule-compatibility"));
         Database database = Database.get();
 
         migrateWithFlyway(database);
@@ -59,7 +59,7 @@ class EnsureSchemaReportingScheduleCompatibilityValidationTest
     @Test
     void flywayCreatesLegacyBaselineReportingScheduleRelease() throws Exception
     {
-        Database.init(tempDir.resolve("reporting-schedule-baseline-release"));
+        Database.init(this.tempDir.resolve("reporting-schedule-baseline-release"));
         Database database = Database.get();
 
         migrateWithFlyway(database);

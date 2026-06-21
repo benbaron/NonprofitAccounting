@@ -109,31 +109,31 @@ class OrgAppPanelAdapterTest
         @Override
         public Node root()
         {
-            return root;
+            return this.root;
         }
 
         @Override
         public void onSave()
         {
-            saveCalls++;
+            this.saveCalls++;
         }
 
         @Override
         public void onNew()
         {
-            newCalls++;
+            this.newCalls++;
         }
 
         @Override
         public void onCopy()
         {
-            copyCalls++;
+            this.copyCalls++;
         }
 
         @Override
         public void onPaste()
         {
-            pasteCalls++;
+            this.pasteCalls++;
         }
     }
 

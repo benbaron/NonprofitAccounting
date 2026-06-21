@@ -70,58 +70,58 @@ public class SettingsPanel implements AppPanel, AppPanel.SaveAware
     }
 
     @Override public String title() { return "Settings"; }
-    @Override public Node root() { return root; }
+    @Override public Node root() { return this.root; }
 
     @Override
     public SaveResult save()
     {
-        List<String> errors = AlternateSettingsValidator.validate(fiscalYearStart.getText(),
-            incomeAccount.getValue(), expenseAccount.getValue(), accountKeys);
+        List<String> errors = AlternateSettingsValidator.validate(this.fiscalYearStart.getText(),
+            this.incomeAccount.getValue(), this.expenseAccount.getValue(), this.accountKeys);
         if (!errors.isEmpty())
         {
             String message = String.join(" ", errors);
-            status.setText(message);
+            this.status.setText(message);
             return SaveResult.failed(message, null);
         }
 
-        PreferencesService.setDefaultCompanyDir(defaultCompanyDirectory.getText());
-        PreferencesService.setLastUsedCompanyFile(lastUsedCompanyFile.getText());
-        PreferencesService.setThemePreference(theme.getValue());
+        PreferencesService.setDefaultCompanyDir(this.defaultCompanyDirectory.getText());
+        PreferencesService.setLastUsedCompanyFile(this.lastUsedCompanyFile.getText());
+        PreferencesService.setThemePreference(this.theme.getValue());
 
         if (canPersistCompanySettings())
         {
-            SettingsModel m = settingsService.getSettings();
-            m.setOrganizationName(organizationName.getText());
-            m.setFiscalYearStart(fiscalYearStart.getText());
-            m.setDefaultCurrency(currency.getValue());
-            m.setCurrencyFormat(currencyFormat.getText());
-            m.setDefaultIncomeAccount(incomeAccount.getValue());
-            m.setDefaultExpenseAccount(expenseAccount.getValue());
-            m.setDefaultReportPeriod(defaultReportPeriod.getValue().name());
-            m.setEnableYearToDateOption(yearToDate.isSelected());
-            m.setEnableFullYearOption(fullYear.isSelected());
-            m.setEnableLastMonthOption(lastMonth.isSelected());
-            m.setAutosaveEnabled(autosaveEnabled.isSelected());
-            m.setAutosaveIntervalMinutes(autosaveInterval.getValue());
-            m.setDefaultCompanyDirectory(defaultCompanyDirectory.getText());
-            m.setLastUsedCompanyFile(lastUsedCompanyFile.getText());
-            m.setTheme(theme.getValue());
+            SettingsModel m = this.settingsService.getSettings();
+            m.setOrganizationName(this.organizationName.getText());
+            m.setFiscalYearStart(this.fiscalYearStart.getText());
+            m.setDefaultCurrency(this.currency.getValue());
+            m.setCurrencyFormat(this.currencyFormat.getText());
+            m.setDefaultIncomeAccount(this.incomeAccount.getValue());
+            m.setDefaultExpenseAccount(this.expenseAccount.getValue());
+            m.setDefaultReportPeriod(this.defaultReportPeriod.getValue().name());
+            m.setEnableYearToDateOption(this.yearToDate.isSelected());
+            m.setEnableFullYearOption(this.fullYear.isSelected());
+            m.setEnableLastMonthOption(this.lastMonth.isSelected());
+            m.setAutosaveEnabled(this.autosaveEnabled.isSelected());
+            m.setAutosaveIntervalMinutes(this.autosaveInterval.getValue());
+            m.setDefaultCompanyDirectory(this.defaultCompanyDirectory.getText());
+            m.setLastUsedCompanyFile(this.lastUsedCompanyFile.getText());
+            m.setTheme(this.theme.getValue());
             try
             {
-                settingsService.saveSettings(null);
+                this.settingsService.saveSettings(null);
                 FormatUtils.setCurrencyFormat(m.getCurrencyFormat());
             }
             catch (IOException ex)
             {
-                status.setText("Failed to save database/company settings: " + ex.getMessage());
-                return SaveResult.failed(status.getText(), ex);
+                this.status.setText("Failed to save database/company settings: " + ex.getMessage());
+                return SaveResult.failed(this.status.getText(), ex);
             }
         }
-        status.setText(canPersistCompanySettings()
+        this.status.setText(canPersistCompanySettings()
             ? "Application, database, and company settings saved."
             : "Application settings saved. Open a database and company to edit company settings.");
-        loaded = true;
-        return SaveResult.saved(status.getText());
+        this.loaded = true;
+        return SaveResult.saved(this.status.getText());
     }
 
     private void build()
@@ -131,27 +131,27 @@ public class SettingsPanel implements AppPanel, AppPanel.SaveAware
         Button save = new Button("Save Settings");
         save.setOnAction(e -> save());
         Button databaseAdmin = new Button("Open Database Administration");
-        databaseAdmin.setOnAction(e -> status.setText("Use the Database Administration workspace for open, backup, repair, and restore workflows."));
+        databaseAdmin.setOnAction(e -> this.status.setText("Use the Database Administration workspace for open, backup, repair, and restore workflows."));
         Button companyAdmin = new Button("Open Company Administration");
-        companyAdmin.setOnAction(e -> status.setText("Use the Company Administration workspace for create, switch, populate, and delete workflows."));
-        status.setWrapText(true);
+        companyAdmin.setOnAction(e -> this.status.setText("Use the Company Administration workspace for create, switch, populate, and delete workflows."));
+        this.status.setWrapText(true);
         TabPane tabs = new TabPane(appTab(), databaseTab(), companyTab(), reportsTab());
-        root.setPadding(new Insets(8));
-        root.setTop(new VBox(6, title, new HBox(8, save, databaseAdmin, companyAdmin), status, new Separator()));
-        root.setCenter(tabs);
+        this.root.setPadding(new Insets(8));
+        this.root.setTop(new VBox(6, title, new HBox(8, save, databaseAdmin, companyAdmin), this.status, new Separator()));
+        this.root.setCenter(tabs);
     }
 
     private Tab appTab()
     {
-        theme.getItems().setAll("System", "Light", "Dark");
-        defaultCompanyDirectory.setPromptText("Default company directory");
-        lastUsedCompanyFile.setPromptText("Last used company file");
-        autosaveInterval.setEditable(true);
+        this.theme.getItems().setAll("System", "Light", "Dark");
+        this.defaultCompanyDirectory.setPromptText("Default company directory");
+        this.lastUsedCompanyFile.setPromptText("Last used company file");
+        this.autosaveInterval.setEditable(true);
         GridPane grid = grid();
-        add(grid, 0, "Theme", theme);
-        add(grid, 1, "Default company directory", defaultCompanyDirectory);
-        add(grid, 2, "Last used company file", lastUsedCompanyFile);
-        add(grid, 3, "Autosave", new HBox(8, autosaveEnabled, new Label("minutes"), autosaveInterval));
+        add(grid, 0, "Theme", this.theme);
+        add(grid, 1, "Default company directory", this.defaultCompanyDirectory);
+        add(grid, 2, "Last used company file", this.lastUsedCompanyFile);
+        add(grid, 3, "Autosave", new HBox(8, this.autosaveEnabled, new Label("minutes"), this.autosaveInterval));
         return tab("Application", grid);
     }
 
@@ -164,23 +164,23 @@ public class SettingsPanel implements AppPanel, AppPanel.SaveAware
 
     private Tab companyTab()
     {
-        fiscalYearStart.setPromptText("MM-DD");
-        currency.getItems().setAll("USD", "CAD", "EUR", "GBP", defaultLocaleCurrencyCode());
-        currencyFormat.setPromptText("$#,##0.00");
+        this.fiscalYearStart.setPromptText("MM-DD");
+        this.currency.getItems().setAll("USD", "CAD", "EUR", "GBP", defaultLocaleCurrencyCode());
+        this.currencyFormat.setPromptText("$#,##0.00");
         GridPane grid = grid();
-        add(grid, 0, "Organization profile", organizationName);
-        add(grid, 1, "Fiscal year start", fiscalYearStart);
-        add(grid, 2, "Currency", currency);
-        add(grid, 3, "Currency format", currencyFormat);
-        add(grid, 4, "Default income account", incomeAccount);
-        add(grid, 5, "Default expense account", expenseAccount);
+        add(grid, 0, "Organization profile", this.organizationName);
+        add(grid, 1, "Fiscal year start", this.fiscalYearStart);
+        add(grid, 2, "Currency", this.currency);
+        add(grid, 3, "Currency format", this.currencyFormat);
+        add(grid, 4, "Default income account", this.incomeAccount);
+        add(grid, 5, "Default expense account", this.expenseAccount);
         return tab("Company", grid);
     }
 
     private Tab reportsTab()
     {
-        defaultReportPeriod.getItems().setAll(ReportPeriodPreset.values());
-        return tab("Reports", new VBox(8, new Label("Report defaults"), defaultReportPeriod, yearToDate, fullYear, lastMonth));
+        this.defaultReportPeriod.getItems().setAll(ReportPeriodPreset.values());
+        return tab("Reports", new VBox(8, new Label("Report defaults"), this.defaultReportPeriod, this.yearToDate, this.fullYear, this.lastMonth));
     }
 
     private String defaultLocaleCurrencyCode()
@@ -195,70 +195,70 @@ public class SettingsPanel implements AppPanel, AppPanel.SaveAware
 
     private void reload()
     {
-        theme.setValue(PreferencesService.getThemePreference());
-        defaultCompanyDirectory.setText(PreferencesService.getDefaultCompanyDir());
-        lastUsedCompanyFile.setText(PreferencesService.getLastUsedCompanyFile());
-        autosaveEnabled.setSelected(true);
-        yearToDate.setSelected(true); fullYear.setSelected(true); lastMonth.setSelected(true);
-        defaultReportPeriod.setValue(ReportPeriodPreset.YEAR_TO_DATE);
-        currency.setValue("USD"); currencyFormat.setText("$#,##0.00");
+        this.theme.setValue(PreferencesService.getThemePreference());
+        this.defaultCompanyDirectory.setText(PreferencesService.getDefaultCompanyDir());
+        this.lastUsedCompanyFile.setText(PreferencesService.getLastUsedCompanyFile());
+        this.autosaveEnabled.setSelected(true);
+        this.yearToDate.setSelected(true); this.fullYear.setSelected(true); this.lastMonth.setSelected(true);
+        this.defaultReportPeriod.setValue(ReportPeriodPreset.YEAR_TO_DATE);
+        this.currency.setValue("USD"); this.currencyFormat.setText("$#,##0.00");
         if (canPersistCompanySettings())
         {
             try
             {
-                settingsService.loadSettings(null);
+                this.settingsService.loadSettings(null);
                 loadAccountChoices();
-                SettingsModel m = settingsService.getSettings();
-                organizationName.setText(blankToEmpty(m.getOrganizationName()));
-                fiscalYearStart.setText(blankToEmpty(m.getFiscalYearStart()));
-                if (m.getDefaultCurrency() != null) currency.setValue(m.getDefaultCurrency());
-                currencyFormat.setText(blankToDefault(m.getCurrencyFormat(), "$#,##0.00"));
-                incomeAccount.setValue(m.getDefaultIncomeAccount());
-                expenseAccount.setValue(m.getDefaultExpenseAccount());
-                defaultReportPeriod.setValue(ReportPeriodPreset.fromString(m.getDefaultReportPeriod(), ReportPeriodPreset.YEAR_TO_DATE));
-                yearToDate.setSelected(m.isEnableYearToDateOption());
-                fullYear.setSelected(m.isEnableFullYearOption());
-                lastMonth.setSelected(m.isEnableLastMonthOption());
-                autosaveEnabled.setSelected(m.isAutosaveEnabled());
-                autosaveInterval.getValueFactory().setValue(Math.max(1, m.getAutosaveIntervalMinutes()));
-                status.setText("Company-level settings are enabled for " + services.sessionContext().activeCompanyDisplayLabel() + ".");
+                SettingsModel m = this.settingsService.getSettings();
+                this.organizationName.setText(blankToEmpty(m.getOrganizationName()));
+                this.fiscalYearStart.setText(blankToEmpty(m.getFiscalYearStart()));
+                if (m.getDefaultCurrency() != null) this.currency.setValue(m.getDefaultCurrency());
+                this.currencyFormat.setText(blankToDefault(m.getCurrencyFormat(), "$#,##0.00"));
+                this.incomeAccount.setValue(m.getDefaultIncomeAccount());
+                this.expenseAccount.setValue(m.getDefaultExpenseAccount());
+                this.defaultReportPeriod.setValue(ReportPeriodPreset.fromString(m.getDefaultReportPeriod(), ReportPeriodPreset.YEAR_TO_DATE));
+                this.yearToDate.setSelected(m.isEnableYearToDateOption());
+                this.fullYear.setSelected(m.isEnableFullYearOption());
+                this.lastMonth.setSelected(m.isEnableLastMonthOption());
+                this.autosaveEnabled.setSelected(m.isAutosaveEnabled());
+                this.autosaveInterval.getValueFactory().setValue(Math.max(1, m.getAutosaveIntervalMinutes()));
+                this.status.setText("Company-level settings are enabled for " + this.services.sessionContext().activeCompanyDisplayLabel() + ".");
             }
             catch (Exception ex)
             {
-                status.setText("Settings loaded with limited account choices: " + ex.getMessage());
+                this.status.setText("Settings loaded with limited account choices: " + ex.getMessage());
             }
         }
         else
         {
             setCompanyControlsDisabled(true);
-            status.setText("Company-level settings are disabled until a database and company are open.");
+            this.status.setText("Company-level settings are disabled until a database and company are open.");
         }
-        loaded = true;
+        this.loaded = true;
     }
 
     private boolean canPersistCompanySettings()
     {
-        return services.sessionContext().isCompanyOpen() && Database.isInitialized();
+        return this.services.sessionContext().isCompanyOpen() && Database.isInitialized();
     }
 
     private void loadAccountChoices()
     {
-        accountKeys.clear();
-        for (Account account : services.accountLookup().listActivePostingAccounts())
+        this.accountKeys.clear();
+        for (Account account : this.services.accountLookup().listActivePostingAccounts())
         {
             String key = account.getCode() + " — " + account.getName();
-            accountKeys.add(key);
+            this.accountKeys.add(key);
         }
-        incomeAccount.setItems(FXCollections.observableArrayList(accountKeys));
-        expenseAccount.setItems(FXCollections.observableArrayList(accountKeys));
+        this.incomeAccount.setItems(FXCollections.observableArrayList(this.accountKeys));
+        this.expenseAccount.setItems(FXCollections.observableArrayList(this.accountKeys));
         setCompanyControlsDisabled(false);
     }
 
     private void setCompanyControlsDisabled(boolean disabled)
     {
-        organizationName.setDisable(disabled); fiscalYearStart.setDisable(disabled); currency.setDisable(disabled);
-        currencyFormat.setDisable(disabled); incomeAccount.setDisable(disabled); expenseAccount.setDisable(disabled);
-        defaultReportPeriod.setDisable(disabled); yearToDate.setDisable(disabled); fullYear.setDisable(disabled); lastMonth.setDisable(disabled);
+        this.organizationName.setDisable(disabled); this.fiscalYearStart.setDisable(disabled); this.currency.setDisable(disabled);
+        this.currencyFormat.setDisable(disabled); this.incomeAccount.setDisable(disabled); this.expenseAccount.setDisable(disabled);
+        this.defaultReportPeriod.setDisable(disabled); this.yearToDate.setDisable(disabled); this.fullYear.setDisable(disabled); this.lastMonth.setDisable(disabled);
     }
 
     private static GridPane grid() { GridPane g = new GridPane(); g.setHgap(10); g.setVgap(8); g.setPadding(new Insets(12)); return g; }
@@ -266,5 +266,5 @@ public class SettingsPanel implements AppPanel, AppPanel.SaveAware
     private static Tab tab(String title, Node content) { Tab t = new Tab(title, content); t.setClosable(false); return t; }
     private static String blankToEmpty(String value) { return value == null ? "" : value; }
     private static String blankToDefault(String value, String fallback) { return value == null || value.isBlank() ? fallback : value; }
-    boolean isLoaded() { return loaded; }
+    boolean isLoaded() { return this.loaded; }
 }

@@ -54,7 +54,7 @@ public class RemovalDetailsAsset {
 
     @JsonProperty("approvedBy")
     public String getApprovedBy() {
-        return approvedBy;
+        return this.approvedBy;
     }
 
     @JsonProperty("approvedBy")
@@ -64,7 +64,7 @@ public class RemovalDetailsAsset {
 
     @JsonProperty("approvalDate")
     public String getApprovalDate() {
-        return approvalDate;
+        return this.approvalDate;
     }
 
     @JsonProperty("approvalDate")
@@ -74,7 +74,7 @@ public class RemovalDetailsAsset {
 
     @JsonProperty("reason")
     public String getReason() {
-        return reason;
+        return this.reason;
     }
 
     @JsonProperty("reason")
@@ -84,7 +84,7 @@ public class RemovalDetailsAsset {
 
     @JsonProperty("numberRemoved")
     public Integer getNumberRemoved() {
-        return numberRemoved;
+        return this.numberRemoved;
     }
 
     @JsonProperty("numberRemoved")
@@ -94,7 +94,7 @@ public class RemovalDetailsAsset {
 
     @JsonProperty("removed")
     public Boolean getRemoved() {
-        return removed;
+        return this.removed;
     }
 
     @JsonProperty("removed")
@@ -104,7 +104,7 @@ public class RemovalDetailsAsset {
 
     @JsonProperty("removalType")
     public RemovalDetailsAsset.RemovalType getRemovalType() {
-        return removalType;
+        return this.removalType;
     }
 
     @JsonProperty("removalType")

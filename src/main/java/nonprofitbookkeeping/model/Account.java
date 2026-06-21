@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.model.supplemental.SupplementalLineKind;

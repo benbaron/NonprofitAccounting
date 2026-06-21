@@ -47,13 +47,13 @@ public class GrantsFinancePostingService {
         throws SQLException {
         require(grantRecordId, grant, eventType, amount, debitAccount,
             creditAccount);
-        int txnId = journalRepository.reserveNextTransactionId();
+        int txnId = this.journalRepository.reserveNextTransactionId();
         PostingCommand cmd = new PostingCommand(
             toTxn(grantRecordId, grant, eventType, eventDate, amount,
                 debitAccount, creditAccount, fundNumber, "ORIGINAL", txnId),
             "GRANTS", grantRecordId, "ORIGINAL",
             "GRANTS:" + grantRecordId + ":" + eventType);
-        PostingReference ref = postingFacade.post(cmd);
+        PostingReference ref = this.postingFacade.post(cmd);
         try
         {
             FinanceWriteEnforcement.runWithinFacadeScope(() -> {
@@ -85,13 +85,13 @@ public class GrantsFinancePostingService {
         throws SQLException {
         require(grantRecordId, grant, eventType, amount, debitAccount,
             creditAccount);
-        int txnId = journalRepository.reserveNextTransactionId();
+        int txnId = this.journalRepository.reserveNextTransactionId();
         PostingCommand cmd = new PostingCommand(
             toTxn(grantRecordId, grant, eventType, eventDate, amount,
                 debitAccount, creditAccount, fundNumber, "ADJUSTMENT", txnId),
             "GRANTS", grantRecordId, "ADJUSTMENT",
             "GRANTS:" + grantRecordId + ":A:" + eventType);
-        PostingReference ref = postingFacade.amend(existingTxnId, cmd,
+        PostingReference ref = this.postingFacade.amend(existingTxnId, cmd,
             "Grant financial edit");
         try
         {

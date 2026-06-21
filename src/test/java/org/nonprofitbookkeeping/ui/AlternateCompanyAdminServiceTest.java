@@ -20,24 +20,24 @@ class AlternateCompanyAdminServiceTest
     @BeforeEach
     void setUp()
     {
-        Path db = tempDir.resolve("company-admin");
+        Path db = this.tempDir.resolve("company-admin");
         Database.init(db);
         try { Database.get().ensureSchema(); } catch (Exception ex) { throw new RuntimeException(ex); }
-        session = new UiSessionContext();
-        session.openDatabase(db);
+        this.session = new UiSessionContext();
+        this.session.openDatabase(db);
         AlternateDataContextService context = new AlternateDataContextService(new CompanyRepository(),
-            new AlternateRecentsStore(new InMemoryPreferencesStore()), new AlternateDatabaseContextSwitcher(), session);
+            new AlternateRecentsStore(new InMemoryPreferencesStore()), new AlternateDatabaseContextSwitcher(), this.session);
         context.setActiveDatabaseBasePath(db);
-        service = new AlternateCompanyAdminService(new CompanyRepository(), context, session);
+        this.service = new AlternateCompanyAdminService(new CompanyRepository(), context, this.session);
         CurrentCompany.forceCompanyLoad(null);
     }
 
     @Test
     void createRejectsInvalidRequiredFields()
     {
-        assertThrows(IllegalArgumentException.class, () -> service.createCompany(
+        assertThrows(IllegalArgumentException.class, () -> this.service.createCompany(
             new AlternateCompanyAdminService.CreateCompanyRequest("", "Non-Profit", "01-01", "USD", "2026-01-01", true)));
-        assertThrows(IllegalArgumentException.class, () -> service.createCompany(
+        assertThrows(IllegalArgumentException.class, () -> this.service.createCompany(
             new AlternateCompanyAdminService.CreateCompanyRequest("Org", "Non-Profit", "1-1", "USD", "2026-01-01", true)));
     }
 
@@ -52,33 +52,33 @@ class AlternateCompanyAdminServiceTest
     void createOpenCloseWorkflowUpdatesSession() throws Exception
     {
         long id = create("Workflow Org");
-        assertEquals(id, session.activeCompanyId());
-        assertTrue(session.isCompanyOpen());
-        service.closeActiveCompany();
-        assertFalse(session.isCompanyOpen());
-        service.openCompany(id);
-        assertEquals("Workflow Org", session.activeCompanyDisplayLabel());
+        assertEquals(id, this.session.activeCompanyId());
+        assertTrue(this.session.isCompanyOpen());
+        this.service.closeActiveCompany();
+        assertFalse(this.session.isCompanyOpen());
+        this.service.openCompany(id);
+        assertEquals("Workflow Org", this.session.activeCompanyDisplayLabel());
     }
 
     @Test
     void deleteRequiresBackupExactNameAndInactiveCompany() throws Exception
     {
         long id = create("Delete Org");
-        assertThrows(IllegalArgumentException.class, () -> service.deleteCompany(id, "Delete Org", false));
-        assertThrows(IllegalArgumentException.class, () -> service.deleteCompany(id, "Wrong", true));
-        assertThrows(IllegalStateException.class, () -> service.deleteCompany(id, "Delete Org", true));
-        service.closeActiveCompany();
-        service.deleteCompany(id, "Delete Org", true);
-        assertTrue(service.listCompanies().isEmpty());
+        assertThrows(IllegalArgumentException.class, () -> this.service.deleteCompany(id, "Delete Org", false));
+        assertThrows(IllegalArgumentException.class, () -> this.service.deleteCompany(id, "Wrong", true));
+        assertThrows(IllegalStateException.class, () -> this.service.deleteCompany(id, "Delete Org", true));
+        this.service.closeActiveCompany();
+        this.service.deleteCompany(id, "Delete Org", true);
+        assertTrue(this.service.listCompanies().isEmpty());
     }
 
     @Test
     void populateIsIdempotentAndDetectsAlreadyPopulatedCompany() throws Exception
     {
         long id = create("Populate Org");
-        service.closeActiveCompany();
-        AlternateCompanyAdminService.PopulateResult first = service.populateCompany(id);
-        AlternateCompanyAdminService.PopulateResult second = service.populateCompany(id);
+        this.service.closeActiveCompany();
+        AlternateCompanyAdminService.PopulateResult first = this.service.populateCompany(id);
+        AlternateCompanyAdminService.PopulateResult second = this.service.populateCompany(id);
         assertTrue(first.populated());
         assertFalse(second.populated());
         assertTrue(second.message().contains("already"));
@@ -87,22 +87,22 @@ class AlternateCompanyAdminServiceTest
     @Test
     void sampleCompanyIsExplicitAndDeterministic() throws Exception
     {
-        long id = service.createSampleCompany();
-        assertEquals(id, session.activeCompanyId());
-        assertTrue(session.isSampleCompany());
-        assertTrue(session.isPopulatedCompany());
-        assertEquals("Sample Nonprofit Company", session.activeCompanyDisplayLabel());
+        long id = this.service.createSampleCompany();
+        assertEquals(id, this.session.activeCompanyId());
+        assertTrue(this.session.isSampleCompany());
+        assertTrue(this.session.isPopulatedCompany());
+        assertEquals("Sample Nonprofit Company", this.session.activeCompanyDisplayLabel());
     }
 
     private long create(String name) throws Exception
     {
-        return service.createCompany(new AlternateCompanyAdminService.CreateCompanyRequest(name, "Non-Profit", "01-01", "USD", "2026-01-01", true));
+        return this.service.createCompany(new AlternateCompanyAdminService.CreateCompanyRequest(name, "Non-Profit", "01-01", "USD", "2026-01-01", true));
     }
 
     private static class InMemoryPreferencesStore implements AlternateDataContextService.PreferencesStore
     {
         private final java.util.Map<String, String> values = new java.util.HashMap<>();
-        public String get(String key, String defaultValue) { return values.getOrDefault(key, defaultValue); }
-        public void put(String key, String value) { values.put(key, value); }
+        public String get(String key, String defaultValue) { return this.values.getOrDefault(key, defaultValue); }
+        public void put(String key, String value) { this.values.put(key, value); }
     }
 }

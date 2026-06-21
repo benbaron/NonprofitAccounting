@@ -75,7 +75,7 @@ public class Fund {
      */
     @JsonProperty("fundId")
     public String getFundId() {
-        return fundId;
+        return this.fundId;
     }
 
     /**
@@ -95,7 +95,7 @@ public class Fund {
      */
     @JsonProperty("name")
     public String getName() {
-        return name;
+        return this.name;
     }
 
     /**
@@ -115,7 +115,7 @@ public class Fund {
      */
     @JsonProperty("restricted")
     public Boolean getRestricted() {
-        return restricted;
+        return this.restricted;
     }
 
     /**
@@ -130,7 +130,7 @@ public class Fund {
 
     @JsonProperty("description")
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     @JsonProperty("description")
@@ -140,7 +140,7 @@ public class Fund {
 
     @JsonProperty("extensions")
     public Extensions getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     @JsonProperty("extensions")

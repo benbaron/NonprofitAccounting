@@ -23,7 +23,7 @@ class PeopleCounterpartyRepairBehaviorValidationTest
     @Test
     void flywayRepairsDonorExternalIdsBlankPersonTypesAndCounterparties() throws Exception
     {
-        Database.init(tempDir.resolve("people-counterparty-repair-behavior"));
+        Database.init(this.tempDir.resolve("people-counterparty-repair-behavior"));
         Database database = Database.get();
 
         migrateWithFlyway(database, "14");

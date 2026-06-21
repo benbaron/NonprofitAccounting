@@ -26,7 +26,7 @@ class BankingTransactionRepositoryTest
 	void upsertFindOpenAndMarkReconciled_usesNewMatchingStructure()
 		throws Exception
 	{
-		Path dbPath = tempDir.resolve("banking-transaction-repo");
+		Path dbPath = this.tempDir.resolve("banking-transaction-repo");
 		Database.init(dbPath);
 		FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
 		Database.get().ensureSchema();

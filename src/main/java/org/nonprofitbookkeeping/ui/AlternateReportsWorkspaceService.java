@@ -47,7 +47,7 @@ public class AlternateReportsWorkspaceService
             "TransactionsList", true, true, false, true, List.of("Summarize by donor")));
         reports.add(new ReportCatalogItem("legacy-fund-activity", "Fund Activity Report", ReportKind.LEGACY_FINANCIAL,
             "FundTransfers", true, true, true, false, List.of("Include transfers")));
-        semanticReportService.displayNames().forEach((templateId, name) -> reports.add(new ReportCatalogItem(
+        this.semanticReportService.displayNames().forEach((templateId, name) -> reports.add(new ReportCatalogItem(
             "semantic-" + templateId, name, ReportKind.SEMANTIC_WORKBOOK, templateId,
             true, false, false, false, List.of())));
         return List.copyOf(reports);
@@ -56,7 +56,7 @@ public class AlternateReportsWorkspaceService
     public File generate(ReportGenerationRequest request) throws IOException
     {
         validate(request);
-        return reportService.generateReport(request);
+        return this.reportService.generateReport(request);
     }
 
     public List<ReportMetadata> history()

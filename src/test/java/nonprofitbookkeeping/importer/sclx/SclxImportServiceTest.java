@@ -320,7 +320,7 @@ class SclxImportServiceTest
         {
             this.rawSourceJson = rawSourceJson;
             this.rawRunId = options.effectiveImportRunId();
-            this.rawPersistedBeforeBeginImport = !beginImportCalled;
+            this.rawPersistedBeforeBeginImport = !this.beginImportCalled;
         }
 
         @Override

@@ -64,52 +64,52 @@ public class FundTransfer
     @PreUpdate
     void validateIntegrity()
     {
-        if (status == null)
+        if (this.status == null)
         {
             throw new IllegalStateException("FundTransfer status is required.");
         }
-        if (amount == null || amount.signum() <= 0)
+        if (this.amount == null || this.amount.signum() <= 0)
         {
             throw new IllegalStateException("FundTransfer amount must be positive.");
         }
-        if (fromFund == null || toFund == null)
+        if (this.fromFund == null || this.toFund == null)
         {
             throw new IllegalStateException("FundTransfer from/to fund references are required.");
         }
-        Long fromFundId = fromFund.getId();
-        Long toFundId = toFund.getId();
-        if (fromFund == toFund || (fromFundId != null && fromFundId.equals(toFundId)))
+        Long fromFundId = this.fromFund.getId();
+        Long toFundId = this.toFund.getId();
+        if (this.fromFund == this.toFund || (fromFundId != null && fromFundId.equals(toFundId)))
         {
             throw new IllegalStateException("FundTransfer from/to funds must be distinct.");
         }
-        if (status == FundTransferStatus.POSTED && postedTxn == null)
+        if (this.status == FundTransferStatus.POSTED && this.postedTxn == null)
         {
             throw new IllegalStateException("POSTED FundTransfer requires postedTxn.");
         }
-        if (status != FundTransferStatus.POSTED && postedTxn != null)
+        if (this.status != FundTransferStatus.POSTED && this.postedTxn != null)
         {
             throw new IllegalStateException("Only POSTED FundTransfer can reference postedTxn.");
         }
-        if (originalStatus != null && !FundTransferStatus.isTransitionAllowed(originalStatus, status))
+        if (this.originalStatus != null && !FundTransferStatus.isTransitionAllowed(this.originalStatus, this.status))
         {
             throw new IllegalStateException(
-                "Illegal FundTransfer status transition: " + originalStatus + " -> " + status);
+                "Illegal FundTransfer status transition: " + this.originalStatus + " -> " + this.status);
         }
         touchUpdatedAt();
     }
 
-    public Long getId() { return id; }
-    public LocalDate getTransferDate() { return transferDate; }
+    public Long getId() { return this.id; }
+    public LocalDate getTransferDate() { return this.transferDate; }
     public void setTransferDate(LocalDate transferDate) { this.transferDate = transferDate; }
-    public Fund getFromFund() { return fromFund; }
+    public Fund getFromFund() { return this.fromFund; }
     public void setFromFund(Fund fromFund) { this.fromFund = fromFund; }
-    public Fund getToFund() { return toFund; }
+    public Fund getToFund() { return this.toFund; }
     public void setToFund(Fund toFund) { this.toFund = toFund; }
-    public BigDecimal getAmount() { return amount; }
+    public BigDecimal getAmount() { return this.amount; }
     public void setAmount(BigDecimal amount) { this.amount = amount; }
-    public String getMemo() { return memo; }
+    public String getMemo() { return this.memo; }
     public void setMemo(String memo) { this.memo = memo; }
-    public FundTransferStatus getStatus() { return status; }
+    public FundTransferStatus getStatus() { return this.status; }
     public void setStatus(FundTransferStatus status)
     {
         if (this.status != null && status != null
@@ -120,9 +120,9 @@ public class FundTransfer
         }
         this.status = status;
     }
-    public Txn getPostedTxn() { return postedTxn; }
+    public Txn getPostedTxn() { return this.postedTxn; }
     public void setPostedTxn(Txn postedTxn) { this.postedTxn = postedTxn; }
-    public Instant getCreatedAt() { return createdAt; }
-    public Instant getUpdatedAt() { return updatedAt; }
+    public Instant getCreatedAt() { return this.createdAt; }
+    public Instant getUpdatedAt() { return this.updatedAt; }
     public void touchUpdatedAt() { this.updatedAt = Instant.now(); }
 }

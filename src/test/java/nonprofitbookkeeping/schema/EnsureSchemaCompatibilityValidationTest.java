@@ -25,7 +25,7 @@ class EnsureSchemaCompatibilityValidationTest
     @Test
     void ensureSchemaDoesNotChangeFlywayOwnedCompanyProfileColumns() throws Exception
     {
-        Database.init(tempDir.resolve("company-profile-compatibility"));
+        Database.init(this.tempDir.resolve("company-profile-compatibility"));
         Database database = Database.get();
 
         migrateWithFlyway(database);

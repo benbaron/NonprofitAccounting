@@ -24,7 +24,7 @@ class PostingFacadeTest {
 
     @Test
     void post_reverse_amend_and_unbalanced_rejection() throws Exception {
-        Path dbPath = tempDir.resolve("posting-facade");
+        Path dbPath = this.tempDir.resolve("posting-facade");
         Database.init(dbPath);
         FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();

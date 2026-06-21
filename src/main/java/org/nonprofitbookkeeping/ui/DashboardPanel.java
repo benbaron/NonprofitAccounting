@@ -33,7 +33,7 @@ public class DashboardPanel implements AppPanel
 
     public DashboardPanel()
     {
-        root.setPadding(new Insets(8));
+        this.root.setPadding(new Insets(8));
 
         Label title = new Label("Dashboard");
         title.getStyleClass().add("panel-title");
@@ -41,12 +41,12 @@ public class DashboardPanel implements AppPanel
         Button add = new Button("+ Add");
         add.setOnAction(e -> onNew());
 
-        refresh = new Button("Refresh");
-        refresh.setOnAction(e -> reload());
+        this.refresh = new Button("Refresh");
+        this.refresh.setOnAction(e -> reload());
 
-        HBox actions = new HBox(8, add, refresh);
-        VBox header = new VBox(6, title, actions, status, new Separator());
-        root.setTop(header);
+        HBox actions = new HBox(8, add, this.refresh);
+        VBox header = new VBox(6, title, actions, this.status, new Separator());
+        this.root.setTop(header);
 
         TableColumn<FundBalanceRow, String> code = new TableColumn<>("Fund");
         code.setCellValueFactory(v -> new SimpleStringProperty(v.getValue().getFundCode()));
@@ -54,48 +54,48 @@ public class DashboardPanel implements AppPanel
         name.setCellValueFactory(v -> new SimpleStringProperty(v.getValue().getFundName()));
         TableColumn<FundBalanceRow, String> balance = new TableColumn<>("Balance As Of Today");
         balance.setCellValueFactory(v -> new SimpleStringProperty(v.getValue().getBalance().toPlainString()));
-        balances.getColumns().addAll(code, name, balance);
+        this.balances.getColumns().addAll(code, name, balance);
 
-        TitledPane importedWorkspace = new TitledPane("NonprofitBookkeeping workspace", importedDashboard);
+        TitledPane importedWorkspace = new TitledPane("NonprofitBookkeeping workspace", this.importedDashboard);
         importedWorkspace.setCollapsible(false);
 
         VBox center = new VBox(8,
             new Label("Fund balances"),
-            totals,
-            balances,
+            this.totals,
+            this.balances,
             importedWorkspace);
-        VBox.setVgrow(balances, Priority.ALWAYS);
+        VBox.setVgrow(this.balances, Priority.ALWAYS);
         VBox.setVgrow(importedWorkspace, Priority.ALWAYS);
-        root.setCenter(center);
+        this.root.setCenter(center);
 
         reload();
     }
 
     @Override public String title() { return "Dashboard"; }
-    @Override public Node root() { return root; }
+    @Override public Node root() { return this.root; }
 
     @Override public void onNew()
     {
         reload();
-        importedDashboard.reloadData();
+        this.importedDashboard.reloadData();
     }
 
     private void reload()
     {
-        refresh.setDisable(true);
-        status.setText("Loading dashboard data...");
+        this.refresh.setDisable(true);
+        this.status.setText("Loading dashboard data...");
 
         UiAsync.run("dashboard-load",
             this::loadDashboardData,
             data -> {
-                balances.getItems().setAll(data.rows());
-                totals.setText("Active posting accounts: " + data.accountCount() + " | Active funds: " + data.fundCount());
-                status.setText("Dashboard updated.");
-                refresh.setDisable(false);
+                this.balances.getItems().setAll(data.rows());
+                this.totals.setText("Active posting accounts: " + data.accountCount() + " | Active funds: " + data.fundCount());
+                this.status.setText("Dashboard updated.");
+                this.refresh.setDisable(false);
             },
             ex -> {
-                status.setText("Failed to load dashboard: " + UiErrors.safeMessage(ex));
-                refresh.setDisable(false);
+                this.status.setText("Failed to load dashboard: " + UiErrors.safeMessage(ex));
+                this.refresh.setDisable(false);
             });
     }
 

@@ -26,36 +26,36 @@ public class GrantTraceabilityRow
 	private BigDecimal unrecognizedBalance;
 	private LocalDate nextReportDue;
 
-	public String getGrantRecordId() { return grantRecordId; }
+	public String getGrantRecordId() { return this.grantRecordId; }
 	public void setGrantRecordId(String grantRecordId) { this.grantRecordId = grantRecordId; }
-	public String getGrantId() { return grantId; }
+	public String getGrantId() { return this.grantId; }
 	public void setGrantId(String grantId) { this.grantId = grantId; }
-	public String getGrantReferenceNumber() { return grantReferenceNumber; }
+	public String getGrantReferenceNumber() { return this.grantReferenceNumber; }
 	public void setGrantReferenceNumber(String grantReferenceNumber) { this.grantReferenceNumber = grantReferenceNumber; }
-	public String getStatus() { return status; }
+	public String getStatus() { return this.status; }
 	public void setStatus(String status) { this.status = status; }
-	public String getComplianceStatus() { return complianceStatus; }
+	public String getComplianceStatus() { return this.complianceStatus; }
 	public void setComplianceStatus(String complianceStatus) { this.complianceStatus = complianceStatus; }
-	public String getRestrictionClass() { return restrictionClass; }
+	public String getRestrictionClass() { return this.restrictionClass; }
 	public void setRestrictionClass(String restrictionClass) { this.restrictionClass = restrictionClass; }
-	public String getFundCode() { return fundCode; }
+	public String getFundCode() { return this.fundCode; }
 	public void setFundCode(String fundCode) { this.fundCode = fundCode; }
-	public String getFundName() { return fundName; }
+	public String getFundName() { return this.fundName; }
 	public void setFundName(String fundName) { this.fundName = fundName; }
-	public String getActivityCode() { return activityCode; }
+	public String getActivityCode() { return this.activityCode; }
 	public void setActivityCode(String activityCode) { this.activityCode = activityCode; }
-	public String getActivityName() { return activityName; }
+	public String getActivityName() { return this.activityName; }
 	public void setActivityName(String activityName) { this.activityName = activityName; }
-	public String getDonorOrContact() { return donorOrContact; }
+	public String getDonorOrContact() { return this.donorOrContact; }
 	public void setDonorOrContact(String donorOrContact) { this.donorOrContact = donorOrContact; }
-	public BigDecimal getAwardedAmount() { return awardedAmount; }
+	public BigDecimal getAwardedAmount() { return this.awardedAmount; }
 	public void setAwardedAmount(BigDecimal awardedAmount) { this.awardedAmount = awardedAmount; }
-	public BigDecimal getRecognizedAmount() { return recognizedAmount; }
+	public BigDecimal getRecognizedAmount() { return this.recognizedAmount; }
 	public void setRecognizedAmount(BigDecimal recognizedAmount) { this.recognizedAmount = recognizedAmount; }
-	public BigDecimal getDeferredAmount() { return deferredAmount; }
+	public BigDecimal getDeferredAmount() { return this.deferredAmount; }
 	public void setDeferredAmount(BigDecimal deferredAmount) { this.deferredAmount = deferredAmount; }
-	public BigDecimal getUnrecognizedBalance() { return unrecognizedBalance; }
+	public BigDecimal getUnrecognizedBalance() { return this.unrecognizedBalance; }
 	public void setUnrecognizedBalance(BigDecimal unrecognizedBalance) { this.unrecognizedBalance = unrecognizedBalance; }
-	public LocalDate getNextReportDue() { return nextReportDue; }
+	public LocalDate getNextReportDue() { return this.nextReportDue; }
 	public void setNextReportDue(LocalDate nextReportDue) { this.nextReportDue = nextReportDue; }
 }

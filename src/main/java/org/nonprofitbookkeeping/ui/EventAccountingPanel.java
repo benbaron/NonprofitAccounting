@@ -55,19 +55,19 @@ public class EventAccountingPanel implements AppPanel
     {
         this.service = service;
         this.sessionContext = sessionContext;
-        root.setSubtitle("Review event/activity income, expenses, linked journal transactions, deposits/refunds, and closeout readiness from posted service data.");
-        root.setWarningBanner("Read-only workspace: accounting postings are created only through posting services, not in this UI panel.");
-        root.setSecondaryActions(List.of(refreshButton()));
-        root.setFooter(status);
+        this.root.setSubtitle("Review event/activity income, expenses, linked journal transactions, deposits/refunds, and closeout readiness from posted service data.");
+        this.root.setWarningBanner("Read-only workspace: accounting postings are created only through posting services, not in this UI panel.");
+        this.root.setSecondaryActions(List.of(refreshButton()));
+        this.root.setFooter(this.status);
         buildEvents();
         buildTransactionTables();
-        root.setContent(new HBox(12, events, new VBox(10, summaryGrid(), new Label("Linked Journal Transactions"), transactions,
-            new Label("Deposits / Refunds"), deposits, new Label("Event Close Checklist"), checklist)));
+        this.root.setContent(new HBox(12, this.events, new VBox(10, summaryGrid(), new Label("Linked Journal Transactions"), this.transactions,
+            new Label("Deposits / Refunds"), this.deposits, new Label("Event Close Checklist"), this.checklist)));
         load();
     }
 
     @Override public String title() { return "Event Accounting"; }
-    @Override public Node root() { return root; }
+    @Override public Node root() { return this.root; }
 
     private Button refreshButton()
     {
@@ -78,21 +78,21 @@ public class EventAccountingPanel implements AppPanel
 
     private void buildEvents()
     {
-        events.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+        this.events.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         TableColumn<EventAccountingWorkspace, String> code = new TableColumn<>("Code");
         code.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().code()));
         TableColumn<EventAccountingWorkspace, String> name = new TableColumn<>("Event / Activity");
         name.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().name()));
         TableColumn<EventAccountingWorkspace, String> active = new TableColumn<>("Status");
         active.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().active() ? "Active" : "Inactive"));
-        events.getColumns().setAll(code, name, active);
-        events.getSelectionModel().selectedItemProperty().addListener((obs, old, value) -> show(value));
+        this.events.getColumns().setAll(code, name, active);
+        this.events.getSelectionModel().selectedItemProperty().addListener((obs, old, value) -> show(value));
     }
 
     private void buildTransactionTables()
     {
-        configureTransactionTable(transactions);
-        configureTransactionTable(deposits);
+        configureTransactionTable(this.transactions);
+        configureTransactionTable(this.deposits);
     }
 
     private void configureTransactionTable(TableView<EventTransactionRow> table)
@@ -107,7 +107,7 @@ public class EventAccountingPanel implements AppPanel
         TableColumn<EventTransactionRow, String> type = new TableColumn<>("Type");
         type.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().accountType().name()));
         TableColumn<EventTransactionRow, String> amount = new TableColumn<>("Amount");
-        amount.setCellValueFactory(c -> new SimpleStringProperty(money.format(c.getValue().amount())));
+        amount.setCellValueFactory(c -> new SimpleStringProperty(this.money.format(c.getValue().amount())));
         table.getColumns().setAll(date, id, memo, type, amount);
     }
 
@@ -116,48 +116,48 @@ public class EventAccountingPanel implements AppPanel
         GridPane grid = new GridPane();
         grid.setHgap(16);
         grid.setVgap(6);
-        grid.addRow(0, new Label("Income"), income, new Label("Expenses"), expenses);
-        grid.addRow(1, new Label("Net"), net, new Label("Linked rows"), linked);
+        grid.addRow(0, new Label("Income"), this.income, new Label("Expenses"), this.expenses);
+        grid.addRow(1, new Label("Net"), this.net, new Label("Linked rows"), this.linked);
         return grid;
     }
 
     private void load()
     {
-        if (sessionContext != null && !sessionContext.isDatabaseOpen())
+        if (this.sessionContext != null && !this.sessionContext.isDatabaseOpen())
         {
-            root.showEmpty("Open a database to load service-backed event/activity accounting workspaces.");
-            status.setText("No database open.");
+            this.root.showEmpty("Open a database to load service-backed event/activity accounting workspaces.");
+            this.status.setText("No database open.");
             show(null);
             return;
         }
         try
         {
-            if (service == null)
+            if (this.service == null)
             {
-                root.showEmpty("Open a database to load service-backed event/activity accounting workspaces.");
-                status.setText("No database open.");
+                this.root.showEmpty("Open a database to load service-backed event/activity accounting workspaces.");
+                this.status.setText("No database open.");
                 show(null);
                 return;
             }
-            List<EventAccountingWorkspace> rows = service.listWorkspaces();
-            events.setItems(FXCollections.observableArrayList(rows));
+            List<EventAccountingWorkspace> rows = this.service.listWorkspaces();
+            this.events.setItems(FXCollections.observableArrayList(rows));
             if (rows.isEmpty())
             {
-                root.showEmpty("No event/activity records exist yet. Create activities in reference data and post transactions through accounting services.");
-                status.setText("No events loaded.");
+                this.root.showEmpty("No event/activity records exist yet. Create activities in reference data and post transactions through accounting services.");
+                this.status.setText("No events loaded.");
                 show(null);
             }
             else
             {
-                root.showContent();
-                events.getSelectionModel().selectFirst();
-                status.setText("Loaded " + rows.size() + " event/activity workspaces.");
+                this.root.showContent();
+                this.events.getSelectionModel().selectFirst();
+                this.status.setText("Loaded " + rows.size() + " event/activity workspaces.");
             }
         }
         catch (RuntimeException ex)
         {
-            root.showError("Event accounting data could not be loaded: " + ex.getMessage());
-            status.setText("Load failed.");
+            this.root.showError("Event accounting data could not be loaded: " + ex.getMessage());
+            this.status.setText("Load failed.");
         }
     }
 
@@ -165,17 +165,17 @@ public class EventAccountingPanel implements AppPanel
     {
         if (workspace == null)
         {
-            income.setText("—"); expenses.setText("—"); net.setText("—"); linked.setText("—");
-            transactions.getItems().clear(); deposits.getItems().clear(); checklist.getItems().clear();
+            this.income.setText("—"); this.expenses.setText("—"); this.net.setText("—"); this.linked.setText("—");
+            this.transactions.getItems().clear(); this.deposits.getItems().clear(); this.checklist.getItems().clear();
             return;
         }
-        income.setText(money.format(workspace.summary().income()));
-        expenses.setText(money.format(workspace.summary().expenses()));
-        net.setText(money.format(workspace.summary().net()));
-        linked.setText(String.valueOf(workspace.summary().linkedTransactionCount()));
-        transactions.setItems(FXCollections.observableArrayList(workspace.linkedTransactions()));
-        deposits.setItems(FXCollections.observableArrayList(workspace.depositsAndRefunds()));
-        checklist.setItems(FXCollections.observableArrayList(workspace.closeChecklist().stream().map(this::checklistText).toList()));
+        this.income.setText(this.money.format(workspace.summary().income()));
+        this.expenses.setText(this.money.format(workspace.summary().expenses()));
+        this.net.setText(this.money.format(workspace.summary().net()));
+        this.linked.setText(String.valueOf(workspace.summary().linkedTransactionCount()));
+        this.transactions.setItems(FXCollections.observableArrayList(workspace.linkedTransactions()));
+        this.deposits.setItems(FXCollections.observableArrayList(workspace.depositsAndRefunds()));
+        this.checklist.setItems(FXCollections.observableArrayList(workspace.closeChecklist().stream().map(this::checklistText).toList()));
     }
 
     private String checklistText(EventChecklistItem item)

@@ -38,7 +38,7 @@ class LegacyPanelAdapterTest
         @Override
         public void onSave()
         {
-            saveCalls++;
+            this.saveCalls++;
         }
     }
 }

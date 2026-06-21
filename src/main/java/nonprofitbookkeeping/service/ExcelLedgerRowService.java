@@ -14,25 +14,25 @@ public class ExcelLedgerRowService
 
     public void add(ExcelLedgerRow row)
     {
-        synchronized (rows)
+        synchronized (this.rows)
         {
-            rows.add(row);
+            this.rows.add(row);
         }
     }
 
     public List<ExcelLedgerRow> listAll()
     {
-        synchronized (rows)
+        synchronized (this.rows)
         {
-            return List.copyOf(rows);
+            return List.copyOf(this.rows);
         }
     }
 
     public boolean delete(ExcelLedgerRow row)
     {
-        synchronized (rows)
+        synchronized (this.rows)
         {
-            return rows.remove(row);
+            return this.rows.remove(row);
         }
     }
 }

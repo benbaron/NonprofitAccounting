@@ -93,7 +93,7 @@ class DepreciationRunLifecycleServiceTest
 
     private void initDb() throws Exception
     {
-        Path dbPath = tempDir.resolve("depreciation-run-lifecycle");
+        Path dbPath = this.tempDir.resolve("depreciation-run-lifecycle");
         Database.init(dbPath);
         FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();

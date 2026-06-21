@@ -56,7 +56,7 @@ public class WorkbookLink {
      */
     @JsonProperty("sheetKey")
     public String getSheetKey() {
-        return sheetKey;
+        return this.sheetKey;
     }
 
     /**
@@ -76,7 +76,7 @@ public class WorkbookLink {
      */
     @JsonProperty("ledgerRowIndex")
     public Integer getLedgerRowIndex() {
-        return ledgerRowIndex;
+        return this.ledgerRowIndex;
     }
 
     /**

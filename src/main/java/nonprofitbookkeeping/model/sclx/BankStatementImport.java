@@ -129,7 +129,7 @@ public class BankStatementImport {
      */
     @JsonProperty("importId")
     public String getImportId() {
-        return importId;
+        return this.importId;
     }
 
     /**
@@ -149,7 +149,7 @@ public class BankStatementImport {
      */
     @JsonProperty("sourceFormat")
     public BankStatementImport.SourceFormat getSourceFormat() {
-        return sourceFormat;
+        return this.sourceFormat;
     }
 
     /**
@@ -164,7 +164,7 @@ public class BankStatementImport {
 
     @JsonProperty("sourceVersion")
     public String getSourceVersion() {
-        return sourceVersion;
+        return this.sourceVersion;
     }
 
     @JsonProperty("sourceVersion")
@@ -179,7 +179,7 @@ public class BankStatementImport {
      */
     @JsonProperty("statementKind")
     public BankStatementImport.StatementKind getStatementKind() {
-        return statementKind;
+        return this.statementKind;
     }
 
     /**
@@ -199,7 +199,7 @@ public class BankStatementImport {
      */
     @JsonProperty("bankAccount")
     public BankAccount__1 getBankAccount() {
-        return bankAccount;
+        return this.bankAccount;
     }
 
     /**
@@ -214,7 +214,7 @@ public class BankStatementImport {
 
     @JsonProperty("currency")
     public String getCurrency() {
-        return currency;
+        return this.currency;
     }
 
     @JsonProperty("currency")
@@ -229,7 +229,7 @@ public class BankStatementImport {
      */
     @JsonProperty("statementStart")
     public String getStatementStart() {
-        return statementStart;
+        return this.statementStart;
     }
 
     /**
@@ -249,7 +249,7 @@ public class BankStatementImport {
      */
     @JsonProperty("statementEnd")
     public String getStatementEnd() {
-        return statementEnd;
+        return this.statementEnd;
     }
 
     /**
@@ -264,7 +264,7 @@ public class BankStatementImport {
 
     @JsonProperty("ledgerBalance")
     public BalanceSnapshot getLedgerBalance() {
-        return ledgerBalance;
+        return this.ledgerBalance;
     }
 
     @JsonProperty("ledgerBalance")
@@ -274,7 +274,7 @@ public class BankStatementImport {
 
     @JsonProperty("availableBalance")
     public BalanceSnapshot getAvailableBalance() {
-        return availableBalance;
+        return this.availableBalance;
     }
 
     @JsonProperty("availableBalance")
@@ -284,7 +284,7 @@ public class BankStatementImport {
 
     @JsonProperty("documentId")
     public String getDocumentId() {
-        return documentId;
+        return this.documentId;
     }
 
     @JsonProperty("documentId")
@@ -294,7 +294,7 @@ public class BankStatementImport {
 
     @JsonProperty("extensions")
     public Extensions getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     @JsonProperty("extensions")

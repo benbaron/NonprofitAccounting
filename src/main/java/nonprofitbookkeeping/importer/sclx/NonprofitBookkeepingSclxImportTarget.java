@@ -1502,7 +1502,7 @@ private Person resolvePerson(SclxDocument.Person source)
 
         private boolean isEmpty()
         {
-            return toFrom == null && checkNumber == null;
+            return this.toFrom == null && this.checkNumber == null;
         }
     }
 }

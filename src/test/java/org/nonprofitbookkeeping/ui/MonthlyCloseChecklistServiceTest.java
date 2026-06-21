@@ -82,11 +82,11 @@ class MonthlyCloseChecklistServiceTest
             this.openCompany = openCompany;
         }
 
-        public boolean isDatabaseOpen() { return openDatabase; }
-        public boolean isCompanyOpen() { return openCompany; }
-        public List<String> reconcilableAccounts() { return accounts; }
-        public int undepositedFundsCount() { return undepositedCount; }
-        public List<FundBalanceRow> fundBalancesAsOf(LocalDate periodEnd) { return fundBalances; }
-        public int reportCatalogCount() { return reportCount; }
+        public boolean isDatabaseOpen() { return this.openDatabase; }
+        public boolean isCompanyOpen() { return this.openCompany; }
+        public List<String> reconcilableAccounts() { return this.accounts; }
+        public int undepositedFundsCount() { return this.undepositedCount; }
+        public List<FundBalanceRow> fundBalancesAsOf(LocalDate periodEnd) { return this.fundBalances; }
+        public int reportCatalogCount() { return this.reportCount; }
     }
 }

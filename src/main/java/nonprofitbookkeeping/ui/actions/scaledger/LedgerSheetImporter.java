@@ -804,12 +804,12 @@ public class LedgerSheetImporter
 
         LedgerQuarter getQuarter()
         {
-            return quarter;
+            return this.quarter;
         }
 
         void ensureHeaderFound(String sheetName) throws IOException
         {
-            if (headerRowIdx < 0)
+            if (this.headerRowIdx < 0)
             {
                 throw new IOException("Could not locate header row in " + sheetName);
             }
@@ -818,29 +818,29 @@ public class LedgerSheetImporter
         @Override
         public void startRow(int rowNum)
         {
-            rowValues = new HashMap<>();
+            this.rowValues = new HashMap<>();
         }
 
         @Override
         public void endRow(int rowNum)
         {
-            if (headerRowIdx < 0)
+            if (this.headerRowIdx < 0)
             {
-                if (rowNum <= HEADER_SCAN_MAX_ROWS && looksLikeHeader(rowValues))
+                if (rowNum <= HEADER_SCAN_MAX_ROWS && looksLikeHeader(this.rowValues))
                 {
-                    headerRowIdx = rowNum;
-                    cols = mapColumns(rowValues);
+                    this.headerRowIdx = rowNum;
+                    this.cols = mapColumns(this.rowValues);
                 }
                 return;
             }
 
-            if (rowNum <= headerRowIdx)
+            if (rowNum <= this.headerRowIdx)
             {
                 return;
             }
 
             if (MAX_STREAMING_DATA_ROWS > 0 &&
-                dataRowsProcessed >= MAX_STREAMING_DATA_ROWS)
+                this.dataRowsProcessed >= MAX_STREAMING_DATA_ROWS)
             {
                 throw new StopParsingException();
             }
@@ -848,24 +848,24 @@ public class LedgerSheetImporter
             LedgerRow row = new LedgerRow();
             row.setSheetRowNumber(rowNum);
 
-            row.setDate(readDate(rowValues, cols.colDate));
-            row.setCheckNumber(getCellString(rowValues, cols.colCheckNum));
-            row.setClearedBankTag(getCellString(rowValues, cols.colClearBank));
-            row.setToFrom(getCellString(rowValues, cols.colToFrom));
-            row.setMemo(getCellString(rowValues, cols.colMemo));
-            row.setBudgetNotes(getCellString(rowValues, cols.colBudgetNotes));
+            row.setDate(readDate(this.rowValues, this.cols.colDate));
+            row.setCheckNumber(getCellString(this.rowValues, this.cols.colCheckNum));
+            row.setClearedBankTag(getCellString(this.rowValues, this.cols.colClearBank));
+            row.setToFrom(getCellString(this.rowValues, this.cols.colToFrom));
+            row.setMemo(getCellString(this.rowValues, this.cols.colMemo));
+            row.setBudgetNotes(getCellString(this.rowValues, this.cols.colBudgetNotes));
 
-            addSplitFromGroup(rowValues, cols.group1, row, translation);
-            addSplitFromGroup(rowValues, cols.group2, row, translation);
-            addSplitFromGroup(rowValues, cols.group3, row, translation);
-            addSplitFromGroup(rowValues, cols.group4, row, translation);
+            addSplitFromGroup(this.rowValues, this.cols.group1, row, this.translation);
+            addSplitFromGroup(this.rowValues, this.cols.group2, row, this.translation);
+            addSplitFromGroup(this.rowValues, this.cols.group3, row, this.translation);
+            addSplitFromGroup(this.rowValues, this.cols.group4, row, this.translation);
 
             if (!row.isEffectivelyBlank())
             {
-                quarter.addRow(row);
+                this.quarter.addRow(row);
             }
 
-            dataRowsProcessed++;
+            this.dataRowsProcessed++;
         }
 
         @Override
@@ -883,7 +883,7 @@ public class LedgerSheetImporter
                 return;
             }
 
-            rowValues.put(col, formattedValue);
+            this.rowValues.put(col, formattedValue);
         }
 
         @Override

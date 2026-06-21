@@ -151,7 +151,7 @@ public class TransactionLine {
      */
     @JsonProperty("lineId")
     public String getLineId() {
-        return lineId;
+        return this.lineId;
     }
 
     /**
@@ -171,7 +171,7 @@ public class TransactionLine {
      */
     @JsonProperty("accountId")
     public String getAccountId() {
-        return accountId;
+        return this.accountId;
     }
 
     /**
@@ -186,7 +186,7 @@ public class TransactionLine {
 
     @JsonProperty("description")
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     @JsonProperty("description")
@@ -201,7 +201,7 @@ public class TransactionLine {
      */
     @JsonProperty("debit")
     public String getDebit() {
-        return debit;
+        return this.debit;
     }
 
     /**
@@ -221,7 +221,7 @@ public class TransactionLine {
      */
     @JsonProperty("credit")
     public String getCredit() {
-        return credit;
+        return this.credit;
     }
 
     /**
@@ -236,7 +236,7 @@ public class TransactionLine {
 
     @JsonProperty("fundId")
     public String getFundId() {
-        return fundId;
+        return this.fundId;
     }
 
     @JsonProperty("fundId")
@@ -246,7 +246,7 @@ public class TransactionLine {
 
     @JsonProperty("budgetId")
     public String getBudgetId() {
-        return budgetId;
+        return this.budgetId;
     }
 
     @JsonProperty("budgetId")
@@ -256,7 +256,7 @@ public class TransactionLine {
 
     @JsonProperty("eventId")
     public String getEventId() {
-        return eventId;
+        return this.eventId;
     }
 
     @JsonProperty("eventId")
@@ -266,7 +266,7 @@ public class TransactionLine {
 
     @JsonProperty("personId")
     public String getPersonId() {
-        return personId;
+        return this.personId;
     }
 
     @JsonProperty("personId")
@@ -276,7 +276,7 @@ public class TransactionLine {
 
     @JsonProperty("documentId")
     public String getDocumentId() {
-        return documentId;
+        return this.documentId;
     }
 
     @JsonProperty("documentId")
@@ -286,7 +286,7 @@ public class TransactionLine {
 
     @JsonProperty("memo")
     public String getMemo() {
-        return memo;
+        return this.memo;
     }
 
     @JsonProperty("memo")
@@ -296,7 +296,7 @@ public class TransactionLine {
 
     @JsonProperty("usedFor")
     public String getUsedFor() {
-        return usedFor;
+        return this.usedFor;
     }
 
     @JsonProperty("usedFor")
@@ -306,7 +306,7 @@ public class TransactionLine {
 
     @JsonProperty("itemNumber")
     public String getItemNumber() {
-        return itemNumber;
+        return this.itemNumber;
     }
 
     @JsonProperty("itemNumber")
@@ -316,7 +316,7 @@ public class TransactionLine {
 
     @JsonProperty("quantity")
     public Integer getQuantity() {
-        return quantity;
+        return this.quantity;
     }
 
     @JsonProperty("quantity")
@@ -326,7 +326,7 @@ public class TransactionLine {
 
     @JsonProperty("tags")
     public Set<String> getTags() {
-        return tags;
+        return this.tags;
     }
 
     @JsonProperty("tags")
@@ -336,7 +336,7 @@ public class TransactionLine {
 
     @JsonProperty("restrictionTag")
     public String getRestrictionTag() {
-        return restrictionTag;
+        return this.restrictionTag;
     }
 
     @JsonProperty("restrictionTag")
@@ -346,7 +346,7 @@ public class TransactionLine {
 
     @JsonProperty("reportSection")
     public String getReportSection() {
-        return reportSection;
+        return this.reportSection;
     }
 
     @JsonProperty("reportSection")
@@ -356,7 +356,7 @@ public class TransactionLine {
 
     @JsonProperty("supplementalRefs")
     public List<SupplementalRef> getSupplementalRefs() {
-        return supplementalRefs;
+        return this.supplementalRefs;
     }
 
     @JsonProperty("supplementalRefs")
@@ -366,7 +366,7 @@ public class TransactionLine {
 
     @JsonProperty("workbookLink")
     public WorkbookLink getWorkbookLink() {
-        return workbookLink;
+        return this.workbookLink;
     }
 
     @JsonProperty("workbookLink")
@@ -376,7 +376,7 @@ public class TransactionLine {
 
     @JsonProperty("extensions")
     public Extensions getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     @JsonProperty("extensions")

@@ -24,7 +24,7 @@ class GenericRecordCrudServiceTest
     @BeforeEach
     void setUp() throws SQLException
     {
-        Database.init(tempDir.resolve("generic-record-crud-db"));
+        Database.init(this.tempDir.resolve("generic-record-crud-db"));
         FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
         new FundRecordRepository().listAll();
@@ -34,7 +34,7 @@ class GenericRecordCrudServiceTest
     @Test
     void supportsUpsertListAndDeleteForImportedFundRecord() throws SQLException
     {
-        int upserted = service.upsert("imported_fund_record", Map.of(
+        int upserted = this.service.upsert("imported_fund_record", Map.of(
             "fund_id", "fund-001",
             "name", "General Fund",
             "restricted", Boolean.FALSE,
@@ -43,14 +43,14 @@ class GenericRecordCrudServiceTest
         ));
         assertEquals(1, upserted);
 
-        List<Map<String, Object>> rows = service.listAll("imported_fund_record");
+        List<Map<String, Object>> rows = this.service.listAll("imported_fund_record");
         assertEquals(1, rows.size());
         Map<String, Object> row = rows.get(0);
         assertTrue(row.containsKey("FUND_ID"));
         assertEquals("fund-001", row.get("FUND_ID"));
 
-        int deleted = service.deleteByPrimaryKey("imported_fund_record", Map.of("fund_id", "fund-001"));
+        int deleted = this.service.deleteByPrimaryKey("imported_fund_record", Map.of("fund_id", "fund-001"));
         assertEquals(1, deleted);
-        assertTrue(service.listAll("imported_fund_record").isEmpty());
+        assertTrue(this.service.listAll("imported_fund_record").isEmpty());
     }
 }

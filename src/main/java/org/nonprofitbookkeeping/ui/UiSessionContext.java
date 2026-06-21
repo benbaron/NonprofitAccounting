@@ -38,122 +38,122 @@ public class UiSessionContext
     private final BooleanProperty sampleCompany = new SimpleBooleanProperty(false);
     private final BooleanProperty populatedCompany = new SimpleBooleanProperty(false);
     private final BooleanProperty newlyCreatedCompany = new SimpleBooleanProperty(false);
-    private final BooleanBinding databaseOpen = Bindings.isNotNull(activeDatabaseBasePath);
-    private final BooleanBinding companyOpen = databaseOpen.and(Bindings.isNotNull(activeCompanyId));
+    private final BooleanBinding databaseOpen = Bindings.isNotNull(this.activeDatabaseBasePath);
+    private final BooleanBinding companyOpen = this.databaseOpen.and(Bindings.isNotNull(this.activeCompanyId));
     private final ObjectBinding<SessionState> sessionState = Bindings.createObjectBinding(this::calculateSessionState,
-        activeDatabaseBasePath, activeCompanyId);
+        this.activeDatabaseBasePath, this.activeCompanyId);
     private final StringBinding sessionDisplayLabel = Bindings.createStringBinding(this::calculateSessionDisplayLabel,
-        activeDatabaseBasePath, activeCompanyId, activeCompanyDisplayLabel);
+        this.activeDatabaseBasePath, this.activeCompanyId, this.activeCompanyDisplayLabel);
 
     public ObjectProperty<Path> activeDatabaseBasePathProperty()
     {
-        return activeDatabaseBasePath;
+        return this.activeDatabaseBasePath;
     }
 
     public Path activeDatabaseBasePath()
     {
-        return activeDatabaseBasePath.get();
+        return this.activeDatabaseBasePath.get();
     }
 
     public ObjectProperty<Long> activeCompanyIdProperty()
     {
-        return activeCompanyId;
+        return this.activeCompanyId;
     }
 
     public Long activeCompanyId()
     {
-        return activeCompanyId.get();
+        return this.activeCompanyId.get();
     }
 
     public ReadOnlyStringProperty activeCompanyDisplayLabelProperty()
     {
-        return activeCompanyDisplayLabel;
+        return this.activeCompanyDisplayLabel;
     }
 
     public String activeCompanyDisplayLabel()
     {
-        return activeCompanyDisplayLabel.get();
+        return this.activeCompanyDisplayLabel.get();
     }
 
     public BooleanBinding databaseOpenProperty()
     {
-        return databaseOpen;
+        return this.databaseOpen;
     }
 
     public boolean isDatabaseOpen()
     {
-        return databaseOpen.get();
+        return this.databaseOpen.get();
     }
 
     public BooleanBinding companyOpenProperty()
     {
-        return companyOpen;
+        return this.companyOpen;
     }
 
     public boolean isCompanyOpen()
     {
-        return companyOpen.get();
+        return this.companyOpen.get();
     }
 
     public ObjectBinding<SessionState> sessionStateProperty()
     {
-        return sessionState;
+        return this.sessionState;
     }
 
     public SessionState sessionState()
     {
-        return sessionState.get();
+        return this.sessionState.get();
     }
 
     public StringBinding sessionDisplayLabelProperty()
     {
-        return sessionDisplayLabel;
+        return this.sessionDisplayLabel;
     }
 
     public String sessionDisplayLabel()
     {
-        return sessionDisplayLabel.get();
+        return this.sessionDisplayLabel.get();
     }
 
     public BooleanProperty sampleCompanyProperty()
     {
-        return sampleCompany;
+        return this.sampleCompany;
     }
 
     public boolean isSampleCompany()
     {
-        return sampleCompany.get();
+        return this.sampleCompany.get();
     }
 
     public BooleanProperty populatedCompanyProperty()
     {
-        return populatedCompany;
+        return this.populatedCompany;
     }
 
     public boolean isPopulatedCompany()
     {
-        return populatedCompany.get();
+        return this.populatedCompany.get();
     }
 
     public BooleanProperty newlyCreatedCompanyProperty()
     {
-        return newlyCreatedCompany;
+        return this.newlyCreatedCompany;
     }
 
     public boolean isNewlyCreatedCompany()
     {
-        return newlyCreatedCompany.get();
+        return this.newlyCreatedCompany.get();
     }
 
     public void openDatabase(Path databaseBasePath)
     {
-        activeDatabaseBasePath.set(databaseBasePath);
+        this.activeDatabaseBasePath.set(databaseBasePath);
         clearCompany();
     }
 
     public void clearDatabase()
     {
-        activeDatabaseBasePath.set(null);
+        this.activeDatabaseBasePath.set(null);
         clearCompany();
     }
 
@@ -164,15 +164,15 @@ public class UiSessionContext
 
     public void openCompany(long companyId, String displayLabel, CompanyMetadata metadata)
     {
-        activeCompanyId.set(companyId);
-        activeCompanyDisplayLabel.set(normalizeDisplayLabel(displayLabel));
+        this.activeCompanyId.set(companyId);
+        this.activeCompanyDisplayLabel.set(normalizeDisplayLabel(displayLabel));
         applyMetadata(metadata == null ? CompanyMetadata.production() : metadata);
     }
 
     public void clearCompany()
     {
-        activeCompanyId.set(null);
-        activeCompanyDisplayLabel.set("No company open");
+        this.activeCompanyId.set(null);
+        this.activeCompanyDisplayLabel.set("No company open");
         applyMetadata(CompanyMetadata.production());
     }
 
@@ -190,18 +190,18 @@ public class UiSessionContext
         Company company = CurrentCompany.getCompany();
         if (CurrentCompany.isOpen() && company != null)
         {
-            activeCompanyId.set(CurrentCompany.getCurrentCompanyId());
-            activeCompanyDisplayLabel.set(normalizeDisplayLabel(company.getName()));
+            this.activeCompanyId.set(CurrentCompany.getCurrentCompanyId());
+            this.activeCompanyDisplayLabel.set(normalizeDisplayLabel(company.getName()));
         }
     }
 
     private SessionState calculateSessionState()
     {
-        if (activeDatabaseBasePath.get() == null)
+        if (this.activeDatabaseBasePath.get() == null)
         {
             return SessionState.NO_DATABASE;
         }
-        return activeCompanyId.get() == null ? SessionState.DATABASE_OPEN_NO_COMPANY : SessionState.COMPANY_OPEN;
+        return this.activeCompanyId.get() == null ? SessionState.DATABASE_OPEN_NO_COMPANY : SessionState.COMPANY_OPEN;
     }
 
     private String calculateSessionDisplayLabel()
@@ -216,9 +216,9 @@ public class UiSessionContext
 
     private void applyMetadata(CompanyMetadata metadata)
     {
-        sampleCompany.set(metadata.sample());
-        populatedCompany.set(metadata.populated());
-        newlyCreatedCompany.set(metadata.newlyCreated());
+        this.sampleCompany.set(metadata.sample());
+        this.populatedCompany.set(metadata.populated());
+        this.newlyCreatedCompany.set(metadata.newlyCreated());
     }
 
     private String normalizeDisplayLabel(String displayLabel)

@@ -29,12 +29,12 @@ public class MonthlyCloseChecklistService
     {
         LocalDate effectiveEnd = periodEnd == null ? LocalDate.now() : periodEnd;
         List<CloseChecklistItem> items = new ArrayList<>();
-        if (!gateway.isDatabaseOpen())
+        if (!this.gateway.isDatabaseOpen())
         {
             return new CloseChecklistState(effectiveEnd, List.of(
                 CloseChecklistItem.blocked("Open database", "Open a database before calculating monthly close readiness.")));
         }
-        if (!gateway.isCompanyOpen())
+        if (!this.gateway.isCompanyOpen())
         {
             return new CloseChecklistState(effectiveEnd, List.of(
                 CloseChecklistItem.blocked("Open company", "Open the branch company before calculating monthly close readiness.")));
@@ -57,7 +57,7 @@ public class MonthlyCloseChecklistService
     {
         try
         {
-            List<String> accounts = gateway.reconcilableAccounts();
+            List<String> accounts = this.gateway.reconcilableAccounts();
             if (accounts.isEmpty())
             {
                 return CloseChecklistItem.notWired("Reconcile bank accounts",
@@ -76,7 +76,7 @@ public class MonthlyCloseChecklistService
     {
         try
         {
-            int count = gateway.undepositedFundsCount();
+            int count = this.gateway.undepositedFundsCount();
             if (count == 0)
             {
                 return CloseChecklistItem.complete("Review undeposited funds", "No undeposited funds items are currently listed.");
@@ -93,7 +93,7 @@ public class MonthlyCloseChecklistService
     {
         try
         {
-            List<FundBalanceRow> rows = gateway.fundBalancesAsOf(periodEnd);
+            List<FundBalanceRow> rows = this.gateway.fundBalancesAsOf(periodEnd);
             if (rows.isEmpty())
             {
                 return CloseChecklistItem.actionRequired("Verify fund balances", "No fund balances were returned as of " + periodEnd + ". Verify funds and postings.");
@@ -111,7 +111,7 @@ public class MonthlyCloseChecklistService
     {
         try
         {
-            int count = gateway.reportCatalogCount();
+            int count = this.gateway.reportCatalogCount();
             if (count == 0)
             {
                 return CloseChecklistItem.notWired("Generate required reports", "The reports workspace returned no report definitions.");
@@ -148,16 +148,16 @@ public class MonthlyCloseChecklistService
         private final AlternateReportsWorkspaceService reportsService = new AlternateReportsWorkspaceService();
 
         DefaultGateway(UiServiceProvider services) { this.services = Objects.requireNonNull(services, "services"); }
-        public boolean isDatabaseOpen() { return services.sessionContext().isDatabaseOpen(); }
-        public boolean isCompanyOpen() { return services.sessionContext().isCompanyOpen(); }
-        public List<String> reconcilableAccounts() { return reconciliationService.listAccounts(); }
-        public int undepositedFundsCount() { return undepositedFundsService.listItems().size(); }
+        public boolean isDatabaseOpen() { return this.services.sessionContext().isDatabaseOpen(); }
+        public boolean isCompanyOpen() { return this.services.sessionContext().isCompanyOpen(); }
+        public List<String> reconcilableAccounts() { return this.reconciliationService.listAccounts(); }
+        public int undepositedFundsCount() { return this.undepositedFundsService.listItems().size(); }
         public List<FundBalanceRow> fundBalancesAsOf(LocalDate periodEnd)
         {
-            FundBalanceService fundBalanceService = services.fundBalance();
+            FundBalanceService fundBalanceService = this.services.fundBalance();
             return fundBalanceService.balancesAsOf(periodEnd);
         }
-        public int reportCatalogCount() { return reportsService.catalog().size(); }
+        public int reportCatalogCount() { return this.reportsService.catalog().size(); }
     }
 
     public record CloseChecklistState(LocalDate periodEnd, List<CloseChecklistItem> items) {}

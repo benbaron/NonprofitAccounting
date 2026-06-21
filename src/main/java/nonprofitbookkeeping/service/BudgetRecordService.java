@@ -25,16 +25,16 @@ public class BudgetRecordService
 
     public void save(BudgetRecord record) throws SQLException
     {
-        repository.upsert(record);
+        this.repository.upsert(record);
     }
 
     public List<BudgetRecord> listAll() throws SQLException
     {
-        return repository.listAll();
+        return this.repository.listAll();
     }
 
     public int delete(String budgetId) throws SQLException
     {
-        return repository.deleteById(budgetId);
+        return this.repository.deleteById(budgetId);
     }
 }

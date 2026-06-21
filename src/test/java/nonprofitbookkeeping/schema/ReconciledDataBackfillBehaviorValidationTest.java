@@ -23,7 +23,7 @@ class ReconciledDataBackfillBehaviorValidationTest
     @Test
     void ensureSchemaBackfillsLegacyJournalRowsAndParsesLegacyDates() throws Exception
     {
-        Database.init(tempDir.resolve("reconciled-data-backfill-behavior"));
+        Database.init(this.tempDir.resolve("reconciled-data-backfill-behavior"));
         Database database = Database.get();
 
         migrateWithFlyway(database, "14");
@@ -68,7 +68,7 @@ class ReconciledDataBackfillBehaviorValidationTest
     @Test
     void flywaySeedsDefaultLegacyChartAndFundBeforeEnsureSchema() throws Exception
     {
-        Database.init(tempDir.resolve("default-chart-fund-flyway-seed"));
+        Database.init(this.tempDir.resolve("default-chart-fund-flyway-seed"));
         Database database = Database.get();
 
         migrateWithFlyway(database);

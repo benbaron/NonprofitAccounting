@@ -28,9 +28,9 @@ class ScheduleEligibilityServiceTest
     @AfterEach
     void tearDown()
     {
-        if (jpa != null)
+        if (this.jpa != null)
         {
-            jpa.close();
+            this.jpa.close();
         }
     }
 
@@ -72,8 +72,8 @@ class ScheduleEligibilityServiceTest
         }
 
         Account account = accountWith(accountId, AccountSubtype.RECEIVABLE);
-        jpa = new Jpa();
-        ScheduleEligibilityService service = new ScheduleEligibilityService(jpa);
+        this.jpa = new Jpa();
+        ScheduleEligibilityService service = new ScheduleEligibilityService(this.jpa);
 
         assertEquals(Set.of("PAYABLE"), service.allowedScheduleKindCodes(account));
     }
@@ -102,8 +102,8 @@ class ScheduleEligibilityServiceTest
         }
 
         Account account = accountWith(accountId, AccountSubtype.PAYABLE);
-        jpa = new Jpa();
-        ScheduleEligibilityService service = new ScheduleEligibilityService(jpa);
+        this.jpa = new Jpa();
+        ScheduleEligibilityService service = new ScheduleEligibilityService(this.jpa);
 
         assertEquals(Set.of("PAYABLE"), service.allowedScheduleKindCodes(account));
     }
@@ -148,15 +148,15 @@ class ScheduleEligibilityServiceTest
         }
 
         Account account = accountWith(accountId, AccountSubtype.INVENTORY);
-        jpa = new Jpa();
-        ScheduleEligibilityService service = new ScheduleEligibilityService(jpa);
+        this.jpa = new Jpa();
+        ScheduleEligibilityService service = new ScheduleEligibilityService(this.jpa);
 
         assertEquals(Set.of("INVENTORY"), service.allowedScheduleKindCodes(account));
     }
 
     private void initializeDatabase(String name) throws Exception
     {
-        Database.init(tempDir.resolve(name));
+        Database.init(this.tempDir.resolve(name));
         FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
     }

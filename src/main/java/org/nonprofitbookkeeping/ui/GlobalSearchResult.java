@@ -13,12 +13,12 @@ public record GlobalSearchResult(SearchResultType type, String title, String sub
 
     public boolean hasRoute()
     {
-        return targetPanelId != null;
+        return this.targetPanelId != null;
     }
 
     @Override
     public String toString()
     {
-        return type + ": " + title + (subtitle.isBlank() ? "" : " — " + subtitle);
+        return this.type + ": " + this.title + (this.subtitle.isBlank() ? "" : " — " + this.subtitle);
     }
 }

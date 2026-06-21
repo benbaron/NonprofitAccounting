@@ -57,7 +57,7 @@ public class UiServiceProvider implements AutoCloseable
 
     public UiSessionContext sessionContext()
     {
-        return sessionContext;
+        return this.sessionContext;
     }
 
     public AccountLookupService accountLookup()
@@ -87,64 +87,64 @@ public class UiServiceProvider implements AutoCloseable
 
     public AlternateDataContextService companyAdministration()
     {
-        if (companyAdministration != null)
+        if (this.companyAdministration != null)
         {
-            return companyAdministration;
+            return this.companyAdministration;
         }
         throw new IllegalStateException("No company administration service was supplied for this UI context.");
     }
 
     public DatabaseAdministrationService databaseAdministration()
     {
-        return databaseAdministration;
+        return this.databaseAdministration;
     }
 
     public ImportExportServices importExport()
     {
-        return importExportServices;
+        return this.importExportServices;
     }
 
     public GlobalSearchService globalSearch()
     {
-        return globalSearchService;
+        return this.globalSearchService;
     }
 
     boolean hasDatabaseServicesForCurrentContext()
     {
-        return bundle != null && Objects.equals(bundleDatabaseBasePath, sessionContext.activeDatabaseBasePath());
+        return this.bundle != null && Objects.equals(this.bundleDatabaseBasePath, this.sessionContext.activeDatabaseBasePath());
     }
 
     void invalidateServices()
     {
-        if (bundle != null)
+        if (this.bundle != null)
         {
-            bundle.jpa().close();
-            bundle = null;
-            bundleDatabaseBasePath = null;
+            this.bundle.jpa().close();
+            this.bundle = null;
+            this.bundleDatabaseBasePath = null;
         }
     }
 
     private ServiceBundle services()
     {
-        Path activeDatabase = sessionContext.activeDatabaseBasePath();
+        Path activeDatabase = this.sessionContext.activeDatabaseBasePath();
         if (activeDatabase == null)
         {
             throw new IllegalStateException("No database is open for the alternate UI session.");
         }
-        if (bundle == null || !Objects.equals(bundleDatabaseBasePath, activeDatabase))
+        if (this.bundle == null || !Objects.equals(this.bundleDatabaseBasePath, activeDatabase))
         {
             invalidateServices();
             Jpa jpa = new Jpa();
-            bundle = new ServiceBundle(
+            this.bundle = new ServiceBundle(
                 jpa,
                 new AccountLookupService(jpa),
                 new FundLookupService(jpa),
                 new FundBalanceService(jpa),
                 new ScheduleEligibilityService(jpa),
                 new DashboardDataBridge(this));
-            bundleDatabaseBasePath = activeDatabase;
+            this.bundleDatabaseBasePath = activeDatabase;
         }
-        return bundle;
+        return this.bundle;
     }
 
     @Override
@@ -171,13 +171,13 @@ public class UiServiceProvider implements AutoCloseable
 
         public DatabaseOpenService.OpenResult openDatabase(Path basePath) throws Exception
         {
-            if (contextService != null)
+            if (this.contextService != null)
             {
-                contextService.openDatabase(basePath);
-                return new DatabaseOpenService.OpenResult(contextService.activeDatabaseBasePath(), null);
+                this.contextService.openDatabase(basePath);
+                return new DatabaseOpenService.OpenResult(this.contextService.activeDatabaseBasePath(), null);
             }
             DatabaseOpenService.OpenResult result = DatabaseOpenService.openDatabase(basePath);
-            sessionContext.openDatabase(result.basePath());
+            this.sessionContext.openDatabase(result.basePath());
             return result;
         }
 
@@ -185,13 +185,13 @@ public class UiServiceProvider implements AutoCloseable
         {
             CurrentCompany.close();
             Database.close();
-            if (contextService != null)
+            if (this.contextService != null)
             {
-                contextService.setActiveDatabaseBasePath(null);
+                this.contextService.setActiveDatabaseBasePath(null);
             }
             else
             {
-                sessionContext.clearDatabase();
+                this.sessionContext.clearDatabase();
             }
         }
     }

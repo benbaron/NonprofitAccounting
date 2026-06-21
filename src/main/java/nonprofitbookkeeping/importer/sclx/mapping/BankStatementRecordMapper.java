@@ -48,7 +48,7 @@ public final class BankStatementRecordMapper {
             ledgerBalance,
             availableBalance,
             JacksonJsonNodeSupport.text(node, "documentId"),
-            JacksonJsonNodeSupport.objectMap(node, "extensions", objectMapper),
+            JacksonJsonNodeSupport.objectMap(node, "extensions", this.objectMapper),
             node == null ? null : node.toString()
         );
     }

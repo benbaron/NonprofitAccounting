@@ -43,17 +43,17 @@ public class AssetRecordService
 
     public void save(AssetRecord record) throws SQLException
     {
-        repository.upsert(record);
+        this.repository.upsert(record);
     }
 
     public List<AssetRecord> listAll() throws SQLException
     {
-        return repository.listAll();
+        return this.repository.listAll();
     }
 
     public int delete(String assetId) throws SQLException
     {
-        return repository.deleteById(assetId);
+        return this.repository.deleteById(assetId);
     }
 
     public List<AssetRegisterRow> listRegisterRows() throws SQLException
@@ -63,7 +63,7 @@ public class AssetRecordService
         try (Connection c = Database.get().getConnection())
         {
             ensureDetailTable(c);
-            for (AssetRecord record : repository.listAll())
+            for (AssetRecord record : this.repository.listAll())
             {
                 rows.add(loadRegisterRow(c, record));
             }
@@ -91,7 +91,7 @@ public class AssetRecordService
             null,
             null,
             Map.of());
-        repository.upsert(record);
+        this.repository.upsert(record);
         try (Connection c = Database.get().getConnection())
         {
             ensureDetailTable(c);
@@ -138,7 +138,7 @@ public class AssetRecordService
                     throw new IllegalArgumentException("Asset detail not found: " + assetId);
                 }
             }
-            AssetRecord record = repository.listAll().stream()
+            AssetRecord record = this.repository.listAll().stream()
                 .filter(r -> assetId.trim().equals(r.assetId()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Asset not found: " + assetId));

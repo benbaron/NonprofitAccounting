@@ -39,7 +39,7 @@ public class Compatibility {
 
     @JsonProperty("minimumReaderVersion")
     public String getMinimumReaderVersion() {
-        return minimumReaderVersion;
+        return this.minimumReaderVersion;
     }
 
     @JsonProperty("minimumReaderVersion")
@@ -49,7 +49,7 @@ public class Compatibility {
 
     @JsonProperty("lossyDowngradeTo")
     public Set<String> getLossyDowngradeTo() {
-        return lossyDowngradeTo;
+        return this.lossyDowngradeTo;
     }
 
     @JsonProperty("lossyDowngradeTo")

@@ -1,7 +1,6 @@
 package org.nonprofitbookkeeping.model;
 
 import jakarta.persistence.*;
-import java.time.*;
 
 
 @Entity
@@ -22,9 +21,9 @@ public class ScheduleKind
     @Column(nullable = false, length = 200)
     private String name;
 
-    public Long getId() { return id; }
-    public String getCode() { return code; }
+    public Long getId() { return this.id; }
+    public String getCode() { return this.code; }
     public void setCode(String code) { this.code = code; }
-    public String getName() { return name; }
+    public String getName() { return this.name; }
     public void setName(String name) { this.name = name; }
 }

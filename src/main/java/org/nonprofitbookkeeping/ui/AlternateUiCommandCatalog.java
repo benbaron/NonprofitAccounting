@@ -100,11 +100,11 @@ class AlternateUiCommandCatalog
         {
             return CommandAvailability.NOT_IMPLEMENTED;
         }
-        if (requiresCompany(label, panelId) && !sessionContext.isCompanyOpen())
+        if (requiresCompany(label, panelId) && !this.sessionContext.isCompanyOpen())
         {
             return CommandAvailability.DISABLED;
         }
-        if (requiresDatabase(label, panelId) && !sessionContext.isDatabaseOpen())
+        if (requiresDatabase(label, panelId) && !this.sessionContext.isDatabaseOpen())
         {
             return CommandAvailability.DISABLED;
         }

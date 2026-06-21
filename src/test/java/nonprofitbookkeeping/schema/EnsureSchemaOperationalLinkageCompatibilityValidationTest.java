@@ -42,7 +42,7 @@ class EnsureSchemaOperationalLinkageCompatibilityValidationTest
     @Test
     void ensureSchemaDoesNotChangeFlywayOwnedOperationalLinkageColumns() throws Exception
     {
-        Database.init(tempDir.resolve("operational-linkage-compatibility"));
+        Database.init(this.tempDir.resolve("operational-linkage-compatibility"));
         Database database = Database.get();
 
         migrateWithFlyway(database);

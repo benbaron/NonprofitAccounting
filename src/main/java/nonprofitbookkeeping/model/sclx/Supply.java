@@ -109,7 +109,7 @@ public class Supply {
      */
     @JsonProperty("supplyId")
     public String getSupplyId() {
-        return supplyId;
+        return this.supplyId;
     }
 
     /**
@@ -124,7 +124,7 @@ public class Supply {
 
     @JsonProperty("itemNumber")
     public String getItemNumber() {
-        return itemNumber;
+        return this.itemNumber;
     }
 
     @JsonProperty("itemNumber")
@@ -134,7 +134,7 @@ public class Supply {
 
     @JsonProperty("dateAcquired")
     public String getDateAcquired() {
-        return dateAcquired;
+        return this.dateAcquired;
     }
 
     @JsonProperty("dateAcquired")
@@ -144,7 +144,7 @@ public class Supply {
 
     @JsonProperty("description")
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     @JsonProperty("description")
@@ -154,7 +154,7 @@ public class Supply {
 
     @JsonProperty("count")
     public Integer getCount() {
-        return count;
+        return this.count;
     }
 
     @JsonProperty("count")
@@ -164,7 +164,7 @@ public class Supply {
 
     @JsonProperty("approxValueTotal")
     public String getApproxValueTotal() {
-        return approxValueTotal;
+        return this.approxValueTotal;
     }
 
     @JsonProperty("approxValueTotal")
@@ -174,7 +174,7 @@ public class Supply {
 
     @JsonProperty("valuePerItem")
     public String getValuePerItem() {
-        return valuePerItem;
+        return this.valuePerItem;
     }
 
     @JsonProperty("valuePerItem")
@@ -184,7 +184,7 @@ public class Supply {
 
     @JsonProperty("guardian")
     public Guardian getGuardian() {
-        return guardian;
+        return this.guardian;
     }
 
     @JsonProperty("guardian")
@@ -194,7 +194,7 @@ public class Supply {
 
     @JsonProperty("guardianshipDetails")
     public GuardianshipDetailsSupply getGuardianshipDetails() {
-        return guardianshipDetails;
+        return this.guardianshipDetails;
     }
 
     @JsonProperty("guardianshipDetails")
@@ -204,7 +204,7 @@ public class Supply {
 
     @JsonProperty("removalDetails")
     public RemovalDetailsSupply getRemovalDetails() {
-        return removalDetails;
+        return this.removalDetails;
     }
 
     @JsonProperty("removalDetails")
@@ -214,7 +214,7 @@ public class Supply {
 
     @JsonProperty("additionalNotes")
     public String getAdditionalNotes() {
-        return additionalNotes;
+        return this.additionalNotes;
     }
 
     @JsonProperty("additionalNotes")
@@ -224,7 +224,7 @@ public class Supply {
 
     @JsonProperty("relatedTransactionIds")
     public Set<String> getRelatedTransactionIds() {
-        return relatedTransactionIds;
+        return this.relatedTransactionIds;
     }
 
     @JsonProperty("relatedTransactionIds")
@@ -234,7 +234,7 @@ public class Supply {
 
     @JsonProperty("relatedLineIds")
     public Set<String> getRelatedLineIds() {
-        return relatedLineIds;
+        return this.relatedLineIds;
     }
 
     @JsonProperty("relatedLineIds")
@@ -244,7 +244,7 @@ public class Supply {
 
     @JsonProperty("extensions")
     public Extensions getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     @JsonProperty("extensions")

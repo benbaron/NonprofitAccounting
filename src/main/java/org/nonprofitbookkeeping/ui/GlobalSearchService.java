@@ -50,7 +50,7 @@ public class GlobalSearchService
     {
         try
         {
-            services.accountLookup().listActivePostingAccounts().stream()
+            this.services.accountLookup().listActivePostingAccounts().stream()
                 .filter(account -> matches(query, account.getCode(), account.getName(), account.getDescription()))
                 .map(account -> new GlobalSearchResult(SearchResultType.ACCOUNT,
                     compact(account.getCode(), account.getName()),
@@ -100,7 +100,7 @@ public class GlobalSearchService
     {
         try
         {
-            services.fundLookup().listActiveFunds().stream()
+            this.services.fundLookup().listActiveFunds().stream()
                 .filter(fund -> matches(query, fund.getCode(), fund.getName(), fund.getRestrictionText()))
                 .map(fund -> new GlobalSearchResult(SearchResultType.FUND, compact(fund.getCode(), fund.getName()),
                     "Active fund" + suffix(fund.getFundType()), AppPanelId.FUNDS,
@@ -157,7 +157,7 @@ public class GlobalSearchService
     {
         try
         {
-            services.companyAdministration().listCompanies().stream()
+            this.services.companyAdministration().listCompanies().stream()
                 .filter(company -> matches(query, String.valueOf(company.id()), company.name()))
                 .map(this::companyResult)
                 .forEach(results::add);

@@ -96,7 +96,7 @@ public class OperationalReconciliationService
 			throw new IllegalArgumentException("bankingRecordId is required");
 		}
 		enforceStatementUnlocked(bankingRecordId);
-		PostingReference ref = postingFacade.post(command);
+		PostingReference ref = this.postingFacade.post(command);
 		try (var c = nonprofitbookkeeping.core.Database.get().getConnection();
 			 var ps = c.prepareStatement("""
 				UPDATE banking_transaction_record

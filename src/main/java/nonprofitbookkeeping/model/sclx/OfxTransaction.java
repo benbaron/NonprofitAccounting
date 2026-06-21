@@ -115,7 +115,7 @@ public class OfxTransaction {
      */
     @JsonProperty("fitId")
     public String getFitId() {
-        return fitId;
+        return this.fitId;
     }
 
     /**
@@ -135,7 +135,7 @@ public class OfxTransaction {
      */
     @JsonProperty("transactionType")
     public String getTransactionType() {
-        return transactionType;
+        return this.transactionType;
     }
 
     /**
@@ -155,7 +155,7 @@ public class OfxTransaction {
      */
     @JsonProperty("datePosted")
     public String getDatePosted() {
-        return datePosted;
+        return this.datePosted;
     }
 
     /**
@@ -170,7 +170,7 @@ public class OfxTransaction {
 
     @JsonProperty("dateUser")
     public String getDateUser() {
-        return dateUser;
+        return this.dateUser;
     }
 
     @JsonProperty("dateUser")
@@ -180,7 +180,7 @@ public class OfxTransaction {
 
     @JsonProperty("dateAvailable")
     public String getDateAvailable() {
-        return dateAvailable;
+        return this.dateAvailable;
     }
 
     @JsonProperty("dateAvailable")
@@ -190,7 +190,7 @@ public class OfxTransaction {
 
     @JsonProperty("checkNumber")
     public String getCheckNumber() {
-        return checkNumber;
+        return this.checkNumber;
     }
 
     @JsonProperty("checkNumber")
@@ -200,7 +200,7 @@ public class OfxTransaction {
 
     @JsonProperty("referenceNumber")
     public String getReferenceNumber() {
-        return referenceNumber;
+        return this.referenceNumber;
     }
 
     @JsonProperty("referenceNumber")
@@ -210,7 +210,7 @@ public class OfxTransaction {
 
     @JsonProperty("name")
     public String getName() {
-        return name;
+        return this.name;
     }
 
     @JsonProperty("name")
@@ -220,7 +220,7 @@ public class OfxTransaction {
 
     @JsonProperty("memo")
     public String getMemo() {
-        return memo;
+        return this.memo;
     }
 
     @JsonProperty("memo")
@@ -230,7 +230,7 @@ public class OfxTransaction {
 
     @JsonProperty("payeeId")
     public String getPayeeId() {
-        return payeeId;
+        return this.payeeId;
     }
 
     @JsonProperty("payeeId")
@@ -240,7 +240,7 @@ public class OfxTransaction {
 
     @JsonProperty("sic")
     public String getSic() {
-        return sic;
+        return this.sic;
     }
 
     @JsonProperty("sic")
@@ -250,7 +250,7 @@ public class OfxTransaction {
 
     @JsonProperty("serverTransactionId")
     public String getServerTransactionId() {
-        return serverTransactionId;
+        return this.serverTransactionId;
     }
 
     @JsonProperty("serverTransactionId")
@@ -260,7 +260,7 @@ public class OfxTransaction {
 
     @JsonProperty("correctFitId")
     public String getCorrectFitId() {
-        return correctFitId;
+        return this.correctFitId;
     }
 
     @JsonProperty("correctFitId")
@@ -270,7 +270,7 @@ public class OfxTransaction {
 
     @JsonProperty("correctAction")
     public String getCorrectAction() {
-        return correctAction;
+        return this.correctAction;
     }
 
     @JsonProperty("correctAction")
@@ -280,7 +280,7 @@ public class OfxTransaction {
 
     @JsonProperty("extensions")
     public Extensions getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     @JsonProperty("extensions")

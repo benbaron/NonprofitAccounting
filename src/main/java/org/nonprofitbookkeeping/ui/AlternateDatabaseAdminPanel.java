@@ -42,7 +42,7 @@ public class AlternateDatabaseAdminPanel implements AppPanel
     @Override
     public Node root()
     {
-        return root;
+        return this.root;
     }
 
     private void build()
@@ -51,32 +51,32 @@ public class AlternateDatabaseAdminPanel implements AppPanel
         title.getStyleClass().add("alternate-panel-title");
         Label subtitle = new Label("Open, import, export/backup, validate, repair/recover, and migrate H2 database files.");
         subtitle.getStyleClass().add("alternate-panel-subtitle");
-        progress.setVisible(false);
-        progress.setManaged(false);
-        status.setEditable(false);
-        status.setPrefRowCount(8);
-        root.setPadding(new Insets(12));
-        root.getStyleClass().add("alternate-content-card");
-        root.getChildren().setAll(title, subtitle,
+        this.progress.setVisible(false);
+        this.progress.setManaged(false);
+        this.status.setEditable(false);
+        this.status.setPrefRowCount(8);
+        this.root.setPadding(new Insets(12));
+        this.root.getStyleClass().add("alternate-content-card");
+        this.root.getChildren().setAll(title, subtitle,
             operationRow("Open Database", "Source database", "", false, "Open", (source, target, backup) -> {
-                DatabaseOpenService.OpenResult opened = service.openDatabase(path(source));
+                DatabaseOpenService.OpenResult opened = this.service.openDatabase(path(source));
                 return new AlternateDatabaseAdminService.AdminResult(path(source), null, null, opened.basePath(), opened.successMessage(), opened, java.util.List.of());
             }),
             operationRow("Close Database", "", "", false, "Close", (source, target, backup) -> {
-                service.closeDatabase();
+                this.service.closeDatabase();
                 return new AlternateDatabaseAdminService.AdminResult(null, null, null, null, "Database context closed.", null, java.util.List.of());
             }),
             operationRow("Import Database", "Source database", "Target database", false, "Import and Open", (source, target, backup) ->
-                service.importDatabase(path(source), path(target), true)),
+                this.service.importDatabase(path(source), path(target), true)),
             operationRow("Export / Backup Database", "Source database (blank = active)", "Backup target", false, "Export", (source, target, backup) ->
-                service.exportDatabase(blankPath(source), path(target), false)),
+                this.service.exportDatabase(blankPath(source), path(target), false)),
             operationRow("Validate Database", "Source database", "", false, "Validate", (source, target, backup) ->
-                service.validateDatabase(path(source))),
+                this.service.validateDatabase(path(source))),
             operationRow("Repair / Recover H2 Database", "Source database", "", true, "Repair", (source, target, backup) ->
-                service.repairDatabase(path(source), backup, true)),
+                this.service.repairDatabase(path(source), backup, true)),
             operationRow("Migrate Schema", "Source database", "Optional SQL result path", true, "Migrate", (source, target, backup) ->
-                service.migrateSchema(path(source), blankPath(target), backup)),
-            new HBox(8, progress), status);
+                this.service.migrateSchema(path(source), blankPath(target), backup)),
+            new HBox(8, this.progress), this.status);
     }
 
     private GridPane operationRow(String label, String sourcePrompt, String targetPrompt, boolean backupConfirmation,
@@ -120,16 +120,16 @@ public class AlternateDatabaseAdminPanel implements AppPanel
 
     private void setBusy(String message)
     {
-        progress.setVisible(true);
-        progress.setManaged(true);
-        status.setText(message);
+        this.progress.setVisible(true);
+        this.progress.setManaged(true);
+        this.status.setText(message);
     }
 
     private void setIdle(String message)
     {
-        progress.setVisible(false);
-        progress.setManaged(false);
-        status.setText(message);
+        this.progress.setVisible(false);
+        this.progress.setManaged(false);
+        this.status.setText(message);
     }
 
     private String describe(AlternateDatabaseAdminService.AdminResult result)

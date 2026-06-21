@@ -52,19 +52,19 @@ public class DepreciationRunsPanel implements AppPanel
     {
         this.lifecycleService = lifecycleService;
         this.processingService = processingService;
-        root.setPadding(new Insets(16));
+        this.root.setPadding(new Insets(16));
         Label title = new Label("Depreciation Runs");
         title.getStyleClass().add("journal-entry-heading");
 
-        notesArea.setPrefRowCount(2);
-        notesArea.setWrapText(true);
+        this.notesArea.setPrefRowCount(2);
+        this.notesArea.setWrapText(true);
 
         GridPane inputs = new GridPane();
         inputs.setHgap(8);
         inputs.setVgap(6);
-        inputs.addRow(0, new Label("Period Start"), periodStartPicker);
-        inputs.addRow(1, new Label("Period End"), periodEndPicker);
-        inputs.addRow(2, new Label("Notes"), notesArea);
+        inputs.addRow(0, new Label("Period Start"), this.periodStartPicker);
+        inputs.addRow(1, new Label("Period End"), this.periodEndPicker);
+        inputs.addRow(2, new Label("Notes"), this.notesArea);
 
         Button run = new Button("Create Draft Run");
         Button calculate = new Button("Calculate + Mark Calculated");
@@ -80,24 +80,24 @@ public class DepreciationRunsPanel implements AppPanel
         delete.setOnAction(evt -> deleteSelectedRun());
         HBox actions = new HBox(8, run, calculate, lock, unlock, delete, preview);
 
-        root.setTop(new VBox(6, title, actions, new Separator()));
-        root.setCenter(new VBox(8, inputs, new Separator(), configureRunsTable(), status));
+        this.root.setTop(new VBox(6, title, actions, new Separator()));
+        this.root.setCenter(new VBox(8, inputs, new Separator(), configureRunsTable(), this.status));
         refreshRuns();
     }
 
     @Override public String title() { return "Depreciation Runs"; }
-    @Override public Node root() { return root; }
+    @Override public Node root() { return this.root; }
 
     private TableView<RunRow> configureRunsTable()
     {
-        runsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        runsTable.getColumns().add(column("Run ID", "runId"));
-        runsTable.getColumns().add(column("Start", "periodStart"));
-        runsTable.getColumns().add(column("End", "periodEnd"));
-        runsTable.getColumns().add(column("Status", "status"));
-        runsTable.getColumns().add(column("Locked", "locked"));
-        runsTable.getColumns().add(column("Last Updated", "lastUpdated"));
-        return runsTable;
+        this.runsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+        this.runsTable.getColumns().add(column("Run ID", "runId"));
+        this.runsTable.getColumns().add(column("Start", "periodStart"));
+        this.runsTable.getColumns().add(column("End", "periodEnd"));
+        this.runsTable.getColumns().add(column("Status", "status"));
+        this.runsTable.getColumns().add(column("Locked", "locked"));
+        this.runsTable.getColumns().add(column("Last Updated", "lastUpdated"));
+        return this.runsTable;
     }
 
     private TableColumn<RunRow, String> column(String title, String property)
@@ -109,21 +109,21 @@ public class DepreciationRunsPanel implements AppPanel
 
     private void createDraftRun()
     {
-        LocalDate periodStart = periodStartPicker.getValue();
-        LocalDate periodEnd = periodEndPicker.getValue();
+        LocalDate periodStart = this.periodStartPicker.getValue();
+        LocalDate periodEnd = this.periodEndPicker.getValue();
         if (periodStart == null || periodEnd == null || periodEnd.isBefore(periodStart))
         {
             showError("Invalid period", "Choose a valid start/end period for the run.");
             return;
         }
         String runId = "ui-run-" + UUID.randomUUID();
-        String notes = notesArea.getText() == null ? "" : notesArea.getText().trim();
+        String notes = this.notesArea.getText() == null ? "" : this.notesArea.getText().trim();
         try
         {
-            lifecycleService.createDraftRun(runId, periodStart, periodEnd, notes.isEmpty() ? "Created from panel" : notes);
-            runsTable.getItems().add(new RunRow(runId, periodStart.toString(), periodEnd.toString(),
+            this.lifecycleService.createDraftRun(runId, periodStart, periodEnd, notes.isEmpty() ? "Created from panel" : notes);
+            this.runsTable.getItems().add(new RunRow(runId, periodStart.toString(), periodEnd.toString(),
                 "DRAFT", "No", nowStamp()));
-            status.setText("Draft run created: " + runId);
+            this.status.setText("Draft run created: " + runId);
         }
         catch (SQLException | RuntimeException ex)
         {
@@ -133,7 +133,7 @@ public class DepreciationRunsPanel implements AppPanel
 
     private void calculateSelectedRun()
     {
-        RunRow row = runsTable.getSelectionModel().getSelectedItem();
+        RunRow row = this.runsTable.getSelectionModel().getSelectedItem();
         if (row == null)
         {
             showError("No run selected", "Select a run first.");
@@ -147,11 +147,11 @@ public class DepreciationRunsPanel implements AppPanel
         try
         {
             List<DepreciationRunProcessingService.PreviewLine> lines =
-                processingService.calculateAndMarkCalculated(row.getRunId(), "ui-user");
+                this.processingService.calculateAndMarkCalculated(row.getRunId(), "ui-user");
             row.setStatus("CALCULATED");
             row.setLastUpdated(nowStamp());
-            runsTable.refresh();
-            status.setText("Calculated " + lines.size() + " asset(s) for run " + row.getRunId());
+            this.runsTable.refresh();
+            this.status.setText("Calculated " + lines.size() + " asset(s) for run " + row.getRunId());
         }
         catch (SQLException | RuntimeException ex)
         {
@@ -161,7 +161,7 @@ public class DepreciationRunsPanel implements AppPanel
 
     private void lockSelectedRun()
     {
-        RunRow row = runsTable.getSelectionModel().getSelectedItem();
+        RunRow row = this.runsTable.getSelectionModel().getSelectedItem();
         if (row == null)
         {
             showError("No run selected", "Select a calculated run first.");
@@ -169,12 +169,12 @@ public class DepreciationRunsPanel implements AppPanel
         }
         try
         {
-            lifecycleService.lockRun(row.getRunId(), "ui-reviewer", "Locked from depreciation panel");
+            this.lifecycleService.lockRun(row.getRunId(), "ui-reviewer", "Locked from depreciation panel");
             row.setLocked("Yes");
             row.setStatus("LOCKED");
             row.setLastUpdated(nowStamp());
-            runsTable.refresh();
-            status.setText("Run locked: " + row.getRunId());
+            this.runsTable.refresh();
+            this.status.setText("Run locked: " + row.getRunId());
         }
         catch (SQLException | RuntimeException ex)
         {
@@ -184,7 +184,7 @@ public class DepreciationRunsPanel implements AppPanel
 
     private void unlockSelectedRun()
     {
-        RunRow row = runsTable.getSelectionModel().getSelectedItem();
+        RunRow row = this.runsTable.getSelectionModel().getSelectedItem();
         if (row == null)
         {
             showError("No run selected", "Select a run to unlock.");
@@ -192,11 +192,11 @@ public class DepreciationRunsPanel implements AppPanel
         }
         try
         {
-            processingService.unlockRun(row.getRunId(), "ui-reviewer", "Unlocked from depreciation panel");
+            this.processingService.unlockRun(row.getRunId(), "ui-reviewer", "Unlocked from depreciation panel");
             row.setLocked("No");
             row.setLastUpdated(nowStamp());
-            runsTable.refresh();
-            status.setText("Run unlocked: " + row.getRunId());
+            this.runsTable.refresh();
+            this.status.setText("Run unlocked: " + row.getRunId());
         }
         catch (SQLException | RuntimeException ex)
         {
@@ -206,7 +206,7 @@ public class DepreciationRunsPanel implements AppPanel
 
     private void deleteSelectedRun()
     {
-        RunRow row = runsTable.getSelectionModel().getSelectedItem();
+        RunRow row = this.runsTable.getSelectionModel().getSelectedItem();
         if (row == null)
         {
             showError("No run selected", "Select a run to delete.");
@@ -232,9 +232,9 @@ public class DepreciationRunsPanel implements AppPanel
 
         try
         {
-            processingService.deleteRun(row.getRunId(), mode, "ui-user");
-            runsTable.getItems().remove(row);
-            status.setText("Deleted run: " + row.getRunId());
+            this.processingService.deleteRun(row.getRunId(), mode, "ui-user");
+            this.runsTable.getItems().remove(row);
+            this.status.setText("Deleted run: " + row.getRunId());
         }
         catch (SQLException | RuntimeException ex)
         {
@@ -244,7 +244,7 @@ public class DepreciationRunsPanel implements AppPanel
 
     private void showPreviewHint()
     {
-        RunRow row = runsTable.getSelectionModel().getSelectedItem();
+        RunRow row = this.runsTable.getSelectionModel().getSelectedItem();
         if (row == null)
         {
             showError("No run selected", "Select a run to preview generated journal details.");
@@ -252,7 +252,7 @@ public class DepreciationRunsPanel implements AppPanel
         }
         try
         {
-            List<DepreciationRunProcessingService.PreviewLine> lines = processingService.journalPreview(row.getRunId());
+            List<DepreciationRunProcessingService.PreviewLine> lines = this.processingService.journalPreview(row.getRunId());
             if (lines.isEmpty())
             {
                 showInfo("Preview Journal", "No depreciation lines are calculated for this run yet.");
@@ -283,8 +283,8 @@ public class DepreciationRunsPanel implements AppPanel
     {
         if (!Database.isInitialized())
         {
-            status.setText("Database not initialized yet. Open/create a company to load runs.");
-            runsTable.getItems().clear();
+            this.status.setText("Database not initialized yet. Open/create a company to load runs.");
+            this.runsTable.getItems().clear();
             return;
         }
         try (java.sql.Connection c = Database.get().getConnection();
@@ -295,10 +295,10 @@ public class DepreciationRunsPanel implements AppPanel
              """);
              java.sql.ResultSet rs = ps.executeQuery())
         {
-            runsTable.getItems().clear();
+            this.runsTable.getItems().clear();
             while (rs.next())
             {
-                runsTable.getItems().add(new RunRow(
+                this.runsTable.getItems().add(new RunRow(
                     rs.getString(1),
                     rs.getDate(2) == null ? "" : rs.getDate(2).toLocalDate().toString(),
                     rs.getDate(3) == null ? "" : rs.getDate(3).toLocalDate().toString(),
@@ -310,7 +310,7 @@ public class DepreciationRunsPanel implements AppPanel
         }
         catch (SQLException ignored)
         {
-            status.setText("Could not load historical runs.");
+            this.status.setText("Could not load historical runs.");
         }
     }
 
@@ -351,12 +351,12 @@ public class DepreciationRunsPanel implements AppPanel
             this.lastUpdated = lastUpdated;
         }
 
-        public String getRunId() { return runId; }
-        public String getPeriodStart() { return periodStart; }
-        public String getPeriodEnd() { return periodEnd; }
-        public String getStatus() { return status; }
-        public String getLocked() { return locked; }
-        public String getLastUpdated() { return lastUpdated; }
+        public String getRunId() { return this.runId; }
+        public String getPeriodStart() { return this.periodStart; }
+        public String getPeriodEnd() { return this.periodEnd; }
+        public String getStatus() { return this.status; }
+        public String getLocked() { return this.locked; }
+        public String getLastUpdated() { return this.lastUpdated; }
         public void setStatus(String status) { this.status = status; }
         public void setLocked(String locked) { this.locked = locked; }
         public void setLastUpdated(String lastUpdated) { this.lastUpdated = lastUpdated; }

@@ -36,17 +36,17 @@ public final class FxAppPanelAdapter<T extends Node> implements AppPanel, AppPan
     @Override
     public String title()
     {
-        return title;
+        return this.title;
     }
 
     @Override
     public Node root()
     {
-        if (node == null)
+        if (this.node == null)
         {
-            node = Objects.requireNonNull(nodeFactory.get(), "nodeFactory returned null");
+            this.node = Objects.requireNonNull(this.nodeFactory.get(), "nodeFactory returned null");
         }
-        return node;
+        return this.node;
     }
 
     @Override
@@ -58,26 +58,26 @@ public final class FxAppPanelAdapter<T extends Node> implements AppPanel, AppPan
     @Override
     public SaveResult save()
     {
-        if (onSave == null)
+        if (this.onSave == null)
         {
-            return SaveResult.unsupported("Save is not supported for " + title + ".");
+            return SaveResult.unsupported("Save is not supported for " + this.title + ".");
         }
-        onSave.accept(node());
-        return SaveResult.saved("Saved " + title + ".");
+        this.onSave.accept(node());
+        return SaveResult.saved("Saved " + this.title + ".");
     }
 
     @Override
     public void onNew()
     {
-        if (onNew != null)
+        if (this.onNew != null)
         {
-            onNew.accept(node());
+            this.onNew.accept(node());
         }
     }
 
     private T node()
     {
         root();
-        return node;
+        return this.node;
     }
 }

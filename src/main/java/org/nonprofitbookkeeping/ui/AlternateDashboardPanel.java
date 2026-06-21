@@ -61,19 +61,19 @@ public class AlternateDashboardPanel implements AppPanel
     @Override
     public Node root()
     {
-        return root;
+        return this.root;
     }
 
     void refresh()
     {
-        grid.getChildren().clear();
+        this.grid.getChildren().clear();
         DashboardDataBridge.DashboardSnapshot snapshot = null;
         String dataStatus = null;
-        if (sessionContext.isDatabaseOpen())
+        if (this.sessionContext.isDatabaseOpen())
         {
             try
             {
-                snapshot = dashboardLoader.load(asOfDate.getValue() == null ? LocalDate.now() : asOfDate.getValue());
+                snapshot = this.dashboardLoader.load(this.asOfDate.getValue() == null ? LocalDate.now() : this.asOfDate.getValue());
             }
             catch (RuntimeException ex)
             {
@@ -90,11 +90,11 @@ public class AlternateDashboardPanel implements AppPanel
         List<String> recent = recentTransactions().stream()
             .map(tx -> safe(tx.getDate()) + " — " + safe(tx.getMemo()))
             .toList();
-        List<AlternateDashboardModel.Card> cards = model.cards(sessionContext, snapshot, dataStatus, unreconciled, undeposited, recent);
+        List<AlternateDashboardModel.Card> cards = this.model.cards(this.sessionContext, snapshot, dataStatus, unreconciled, undeposited, recent);
         int index = 0;
         for (AlternateDashboardModel.Card card : cards)
         {
-            grid.add(card(card.title(), card.value(), card.detail()), index % 3, index / 3);
+            this.grid.add(card(card.title(), card.value(), card.detail()), index % 3, index / 3);
             index++;
         }
     }
@@ -105,11 +105,11 @@ public class AlternateDashboardPanel implements AppPanel
         title.getStyleClass().add("alternate-panel-title");
         Button reload = new Button("Reload");
         reload.setOnAction(e -> refresh());
-        VBox header = new VBox(6, title, new javafx.scene.layout.HBox(8, new Label("As of"), asOfDate, reload));
-        grid.setHgap(12);
-        grid.setVgap(12);
-        root.setPadding(new Insets(12));
-        root.getChildren().setAll(header, new ScrollPane(grid));
+        VBox header = new VBox(6, title, new javafx.scene.layout.HBox(8, new Label("As of"), this.asOfDate, reload));
+        this.grid.setHgap(12);
+        this.grid.setVgap(12);
+        this.root.setPadding(new Insets(12));
+        this.root.getChildren().setAll(header, new ScrollPane(this.grid));
     }
 
     private VBox card(String title, String value, String detail)
@@ -137,7 +137,7 @@ public class AlternateDashboardPanel implements AppPanel
     {
         try
         {
-            return undepositedFundsMetric.count();
+            return this.undepositedFundsMetric.count();
         }
         catch (RuntimeException ex)
         {

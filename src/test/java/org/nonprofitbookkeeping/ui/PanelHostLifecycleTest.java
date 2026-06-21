@@ -186,48 +186,48 @@ class PanelHostLifecycleTest
 
         void markDirty()
         {
-            dirty = true;
+            this.dirty = true;
         }
 
         @Override
         public String title()
         {
-            return title;
+            return this.title;
         }
 
         @Override
         public javafx.scene.Node root()
         {
-            return root;
+            return this.root;
         }
 
         @Override
         public void onSave()
         {
-            if (failSave)
+            if (this.failSave)
             {
                 throw new IllegalStateException("boom");
             }
-            saveCalls++;
-            dirty = false;
+            this.saveCalls++;
+            this.dirty = false;
         }
 
         @Override
         public void onDelete()
         {
-            deleteCalls++;
+            this.deleteCalls++;
         }
 
         @Override
         public void onCancel()
         {
-            cancelCalls++;
+            this.cancelCalls++;
         }
 
         @Override
         public boolean isDirty()
         {
-            return dirty;
+            return this.dirty;
         }
     }
 
@@ -250,7 +250,7 @@ class PanelHostLifecycleTest
         @Override
         public void onSave()
         {
-            saveAttempted = true;
+            this.saveAttempted = true;
             super.onSave();
         }
 

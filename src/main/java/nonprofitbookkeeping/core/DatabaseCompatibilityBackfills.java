@@ -12,7 +12,7 @@ final class DatabaseCompatibilityBackfills
 
     void run(Connection c) throws SQLException
     {
-        legacyTransactionMapBackfill.run(c);
-        reconciledDataBackfill.run(c);
+        this.legacyTransactionMapBackfill.run(c);
+        this.reconciledDataBackfill.run(c);
     }
 }

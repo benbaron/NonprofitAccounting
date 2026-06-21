@@ -25,16 +25,16 @@ public class OtherAssetItemRecordService
 
     public void save(OtherAssetItemRecord record) throws SQLException
     {
-        repository.upsert(record);
+        this.repository.upsert(record);
     }
 
     public List<OtherAssetItemRecord> listAll() throws SQLException
     {
-        return repository.listAll();
+        return this.repository.listAll();
     }
 
     public int delete(String otherAssetItemId) throws SQLException
     {
-        return repository.deleteById(otherAssetItemId);
+        return this.repository.deleteById(otherAssetItemId);
     }
 }

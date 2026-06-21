@@ -45,24 +45,24 @@ public record SclxImportOptions(
         {
             return sclxReference;
         }
-        if (accountImportMode == AccountImportMode.MAPPED)
+        if (this.accountImportMode == AccountImportMode.MAPPED)
         {
-            return accountMapping.getOrDefault(sclxReference, sclxReference);
+            return this.accountMapping.getOrDefault(sclxReference, sclxReference);
         }
         return sclxReference;
     }
 
     public boolean hasCashAccountReference()
     {
-        return cashAccountReference != null && !cashAccountReference.isBlank();
+        return this.cashAccountReference != null && !this.cashAccountReference.isBlank();
     }
 
     public String effectiveImportRunId()
     {
-        if (importRunId == null || importRunId.isBlank())
+        if (this.importRunId == null || this.importRunId.isBlank())
         {
             return "run-" + java.time.Instant.now().toString();
         }
-        return importRunId;
+        return this.importRunId;
     }
 }

@@ -25,16 +25,16 @@ public class DocumentRecordService
 
     public void save(DocumentRecord record) throws SQLException
     {
-        repository.upsert(record);
+        this.repository.upsert(record);
     }
 
     public List<DocumentRecord> listAll() throws SQLException
     {
-        return repository.listAll();
+        return this.repository.listAll();
     }
 
     public int delete(String documentId) throws SQLException
     {
-        return repository.deleteById(documentId);
+        return this.repository.deleteById(documentId);
     }
 }

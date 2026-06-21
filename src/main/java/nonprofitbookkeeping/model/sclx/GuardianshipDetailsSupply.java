@@ -42,7 +42,7 @@ public class GuardianshipDetailsSupply {
 
     @JsonProperty("dateAsOf")
     public String getDateAsOf() {
-        return dateAsOf;
+        return this.dateAsOf;
     }
 
     @JsonProperty("dateAsOf")
@@ -52,7 +52,7 @@ public class GuardianshipDetailsSupply {
 
     @JsonProperty("lastConfirmed")
     public String getLastConfirmed() {
-        return lastConfirmed;
+        return this.lastConfirmed;
     }
 
     @JsonProperty("lastConfirmed")
@@ -62,7 +62,7 @@ public class GuardianshipDetailsSupply {
 
     @JsonProperty("returned")
     public Boolean getReturned() {
-        return returned;
+        return this.returned;
     }
 
     @JsonProperty("returned")
@@ -72,7 +72,7 @@ public class GuardianshipDetailsSupply {
 
     @JsonProperty("notes")
     public String getNotes() {
-        return notes;
+        return this.notes;
     }
 
     @JsonProperty("notes")

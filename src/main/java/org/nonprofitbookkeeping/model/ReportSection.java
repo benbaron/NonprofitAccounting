@@ -1,7 +1,6 @@
 package org.nonprofitbookkeeping.model;
 
 import jakarta.persistence.*;
-import java.time.*;
 
 
 @Entity
@@ -25,11 +24,11 @@ public class ReportSection
     @Column(name = "sort_order", nullable = false)
     private int sortOrder = 0;
 
-    public Long getId() { return id; }
-    public String getName() { return name; }
+    public Long getId() { return this.id; }
+    public String getName() { return this.name; }
     public void setName(String name) { this.name = name; }
-    public ReportType getReportType() { return reportType; }
+    public ReportType getReportType() { return this.reportType; }
     public void setReportType(ReportType reportType) { this.reportType = reportType; }
-    public int getSortOrder() { return sortOrder; }
+    public int getSortOrder() { return this.sortOrder; }
     public void setSortOrder(int sortOrder) { this.sortOrder = sortOrder; }
 }

@@ -21,6 +21,6 @@ public record CommandDescriptor(String label,
 
     public boolean executable()
     {
-        return availability == CommandAvailability.AVAILABLE;
+        return this.availability == CommandAvailability.AVAILABLE;
     }
 }

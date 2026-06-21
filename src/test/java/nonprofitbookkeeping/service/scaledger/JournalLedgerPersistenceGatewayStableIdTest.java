@@ -24,7 +24,7 @@ class JournalLedgerPersistenceGatewayStableIdTest
     @BeforeEach
     void setUp() throws Exception
     {
-        TestDatabase.reset(tempDir);
+        TestDatabase.reset(this.tempDir);
     }
 
     @Test

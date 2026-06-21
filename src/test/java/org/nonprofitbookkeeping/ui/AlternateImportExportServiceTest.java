@@ -47,9 +47,9 @@ class AlternateImportExportServiceTest
     {
         AlternateImportExportService service = new AlternateImportExportService();
 
-        assertTrue(service.validateChartOfAccountsImport(tempDir.resolve("accounts.exe")).hasBlockingErrors());
-        assertTrue(service.validateChartOfAccountsImport(tempDir.resolve("missing.csv")).hasBlockingErrors());
-        Path csv = tempDir.resolve("accounts.csv");
+        assertTrue(service.validateChartOfAccountsImport(this.tempDir.resolve("accounts.exe")).hasBlockingErrors());
+        assertTrue(service.validateChartOfAccountsImport(this.tempDir.resolve("missing.csv")).hasBlockingErrors());
+        Path csv = this.tempDir.resolve("accounts.csv");
         Files.writeString(csv, "account,description\n1000,Cash\n");
 
         assertFalse(service.validateChartOfAccountsImport(csv).hasBlockingErrors());

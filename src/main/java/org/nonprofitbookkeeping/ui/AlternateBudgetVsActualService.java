@@ -32,7 +32,7 @@ class AlternateBudgetVsActualService
     List<BudgetVsActualRow> calculate(LocalDate from, LocalDate to, String fund)
     {
         Map<String, BigDecimal> budget = new LinkedHashMap<>();
-        for (BudgetRecord record : budgetSupplier.get())
+        for (BudgetRecord record : this.budgetSupplier.get())
         {
             if (fund != null && !fund.isBlank() && !fund.equals(record.fundId())) continue;
             for (BudgetRecord.BudgetLineRecord line : record.lines())
@@ -43,7 +43,7 @@ class AlternateBudgetVsActualService
         }
 
         Map<String, BigDecimal> actual = new LinkedHashMap<>();
-        Company company = companyOpenSupplier.getAsBoolean() ? companySupplier.get() : null;
+        Company company = this.companyOpenSupplier.getAsBoolean() ? this.companySupplier.get() : null;
         if (company != null && company.getLedger() != null && company.getLedger().getJournal() != null)
         {
             company.getLedger().getJournal().getJournalTransactions().stream()
@@ -87,6 +87,6 @@ class AlternateBudgetVsActualService
 
     record BudgetVsActualRow(String accountId, BigDecimal budget, BigDecimal actual)
     {
-        BigDecimal variance() { return budget.subtract(actual); }
+        BigDecimal variance() { return this.budget.subtract(this.actual); }
     }
 }

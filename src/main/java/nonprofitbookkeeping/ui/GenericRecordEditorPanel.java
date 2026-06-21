@@ -111,7 +111,7 @@ public class GenericRecordEditorPanel implements AppPanel
         this.schemaService = schemaService;
         this.crudService = crudService;
 
-        root.setPadding(UiSpacing.pageInsets());
+        this.root.setPadding(UiSpacing.pageInsets());
         Label title = new Label(panelTitle);
         title.getStyleClass().add("journal-entry-heading");
 
@@ -120,11 +120,11 @@ public class GenericRecordEditorPanel implements AppPanel
         Button refresh = new Button("Refresh");
         Button save = new Button("Save");
         HBox actions = new HBox(UiSpacing.SECTION_SPACING, add, delete, refresh, save);
-        root.setTop(new VBox(UiSpacing.SECTION_SPACING, title, actions, new Separator()));
+        this.root.setTop(new VBox(UiSpacing.SECTION_SPACING, title, actions, new Separator()));
 
-        table.setEditable(true);
-        table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
-        table.setRowFactory(tv -> new TableRow<>()
+        this.table.setEditable(true);
+        this.table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+        this.table.setRowFactory(tv -> new TableRow<>()
         {
             @Override
             protected void updateItem(Map<String, Object> item, boolean empty)
@@ -135,19 +135,19 @@ public class GenericRecordEditorPanel implements AppPanel
                 {
                     return;
                 }
-                if (pendingNewRows.contains(item))
+                if (GenericRecordEditorPanel.this.pendingNewRows.contains(item))
                 {
                     getStyleClass().add(PENDING_ROW_CLASS);
                 }
             }
         });
-        tableContainer.setContent(table);
-        tableContainer.setFitToWidth(true);
-        tableContainer.setFitToHeight(true);
-        tableContainer.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        tableContainer.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        root.setCenter(tableContainer);
-        root.setBottom(new VBox(new Separator(), status));
+        this.tableContainer.setContent(this.table);
+        this.tableContainer.setFitToWidth(true);
+        this.tableContainer.setFitToHeight(true);
+        this.tableContainer.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        this.tableContainer.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        this.root.setCenter(this.tableContainer);
+        this.root.setBottom(new VBox(new Separator(), this.status));
 
         add.setOnAction(e -> onAddRow());
         delete.setOnAction(e -> onDeleteSelected());
@@ -159,13 +159,13 @@ public class GenericRecordEditorPanel implements AppPanel
     @Override
     public String title()
     {
-        return panelTitle;
+        return this.panelTitle;
     }
 
     @Override
     public Node root()
     {
-        return root;
+        return this.root;
     }
 
     @Override
@@ -174,42 +174,42 @@ public class GenericRecordEditorPanel implements AppPanel
         try
         {
             int saved = 0;
-            for (Map<String, Object> row : table.getItems())
+            for (Map<String, Object> row : this.table.getItems())
             {
-                crudService.upsert(tableName, toTypedRow(row));
+                this.crudService.upsert(this.tableName, toTypedRow(row));
                 saved++;
             }
-            status.setText("Saved " + saved + " row(s)");
+            this.status.setText("Saved " + saved + " row(s)");
             loadFromService();
         }
         catch (IllegalArgumentException ex)
         {
-            status.setText("Validation error: " + ex.getMessage());
+            this.status.setText("Validation error: " + ex.getMessage());
         }
         catch (SQLException | RuntimeException ex)
         {
-            LOG.warn("Generic record save failed for table {}", tableName, ex);
-            status.setText("Failed to save rows: " + ex.getMessage());
+            LOG.warn("Generic record save failed for table {}", this.tableName, ex);
+            this.status.setText("Failed to save rows: " + ex.getMessage());
         }
     }
 
     private void onAddRow()
     {
         Map<String, Object> row = new LinkedHashMap<>();
-        for (TableColumnMetadata column : columns)
+        for (TableColumnMetadata column : this.columns)
         {
             row.put(column.columnName(), null);
         }
-        if (primaryKeyColumn != null && !primaryKeyColumn.isBlank())
+        if (this.primaryKeyColumn != null && !this.primaryKeyColumn.isBlank())
         {
-            row.put(primaryKeyColumn, idSupplier == null ? null : idSupplier.get());
+            row.put(this.primaryKeyColumn, this.idSupplier == null ? null : this.idSupplier.get());
         }
-        table.getItems().add(row);
-        pendingNewRows.add(row);
-        table.refresh();
-        table.getSelectionModel().select(row);
-        table.scrollTo(row);
-        status.setText("Added new unsaved row. Press Save to persist.");
+        this.table.getItems().add(row);
+        this.pendingNewRows.add(row);
+        this.table.refresh();
+        this.table.getSelectionModel().select(row);
+        this.table.scrollTo(row);
+        this.status.setText("Added new unsaved row. Press Save to persist.");
     }
 
     @Override
@@ -226,38 +226,38 @@ public class GenericRecordEditorPanel implements AppPanel
 
     private void onDeleteSelected()
     {
-        Map<String, Object> selected = table.getSelectionModel().getSelectedItem();
+        Map<String, Object> selected = this.table.getSelectionModel().getSelectedItem();
         if (selected == null)
         {
-            status.setText("Select a row to delete.");
+            this.status.setText("Select a row to delete.");
             return;
         }
 
-        if (pendingNewRows.contains(selected))
+        if (this.pendingNewRows.contains(selected))
         {
-            pendingNewRows.remove(selected);
-            table.getItems().remove(selected);
-            table.refresh();
-            status.setText("Removed unsaved row.");
+            this.pendingNewRows.remove(selected);
+            this.table.getItems().remove(selected);
+            this.table.refresh();
+            this.status.setText("Removed unsaved row.");
             return;
         }
 
         try
         {
             Map<String, Object> pk = primaryKeyValues(selected);
-            int deleted = crudService.deleteByPrimaryKey(tableName, pk);
-            table.getItems().remove(selected);
-            table.refresh();
-            status.setText(deleted > 0 ? "Deleted selected row." : "Removed unsaved row.");
+            int deleted = this.crudService.deleteByPrimaryKey(this.tableName, pk);
+            this.table.getItems().remove(selected);
+            this.table.refresh();
+            this.status.setText(deleted > 0 ? "Deleted selected row." : "Removed unsaved row.");
         }
         catch (IllegalArgumentException ex)
         {
-            status.setText("Validation error: " + ex.getMessage());
+            this.status.setText("Validation error: " + ex.getMessage());
         }
         catch (SQLException | RuntimeException ex)
         {
-            LOG.warn("Generic record delete failed for table {}", tableName, ex);
-            status.setText("Failed to delete row: " + ex.getMessage());
+            LOG.warn("Generic record delete failed for table {}", this.tableName, ex);
+            this.status.setText("Failed to delete row: " + ex.getMessage());
         }
     }
 
@@ -265,7 +265,7 @@ public class GenericRecordEditorPanel implements AppPanel
     {
         try
         {
-            this.columns = schemaService.columnsForTable(tableName).stream()
+            this.columns = this.schemaService.columnsForTable(this.tableName).stream()
                 .sorted((left, right) ->
                 {
                     if (left.nullable() != right.nullable())
@@ -276,25 +276,25 @@ public class GenericRecordEditorPanel implements AppPanel
                 })
                 .toList();
             configureColumns();
-            List<Map<String, Object>> rows = new ArrayList<>(crudService.listAll(tableName));
-            pendingNewRows.clear();
-            table.setItems(FXCollections.observableArrayList(rows));
-            table.refresh();
+            List<Map<String, Object>> rows = new ArrayList<>(this.crudService.listAll(this.tableName));
+            this.pendingNewRows.clear();
+            this.table.setItems(FXCollections.observableArrayList(rows));
+            this.table.refresh();
             ensureVerticalScrollBarVisible();
-            status.setText("Loaded " + rows.size() + " row(s)");
+            this.status.setText("Loaded " + rows.size() + " row(s)");
         }
         catch (SQLException | RuntimeException ex)
         {
-            LOG.warn("Generic record load failed for table {}", tableName, ex);
-            status.setText("Failed to load rows: " + ex.getMessage());
+            LOG.warn("Generic record load failed for table {}", this.tableName, ex);
+            this.status.setText("Failed to load rows: " + ex.getMessage());
         }
     }
 
     private void configureColumns()
     {
         captureColumnWidths();
-        table.getColumns().clear();
-        for (TableColumnMetadata column : columns)
+        this.table.getColumns().clear();
+        for (TableColumnMetadata column : this.columns)
         {
             String columnName = column.columnName();
             if (isHiddenColumn(columnName))
@@ -306,7 +306,7 @@ public class GenericRecordEditorPanel implements AppPanel
             TableColumn<Map<String, Object>, String> tableColumn = new TableColumn<>(headerTitle);
             tableColumn.setUserData(columnName);
             tableColumn.setMinWidth(minWidthForTitle(headerTitle));
-            tableColumn.setPrefWidth(selectedColumnWidths.getOrDefault(columnName, tableColumn.getMinWidth()));
+            tableColumn.setPrefWidth(this.selectedColumnWidths.getOrDefault(columnName, tableColumn.getMinWidth()));
             tableColumn.setCellValueFactory(cell -> new SimpleStringProperty(toDisplay(cell.getValue().get(columnName))));
             tableColumn.setCellFactory(col -> isFundNameColumn(columnName) ? new FundNameComboBoxCell(columnName) : new CommitOnFocusLossCell());
             tableColumn.setOnEditCommit(event ->
@@ -314,20 +314,20 @@ public class GenericRecordEditorPanel implements AppPanel
                 Map<String, Object> row = event.getRowValue();
                 String value = event.getNewValue();
                 row.put(columnName, value);
-                status.setText("Updated " + displayTitle + " (pending save)");
+                this.status.setText("Updated " + displayTitle + " (pending save)");
             });
-            table.getColumns().add(tableColumn);
+            this.table.getColumns().add(tableColumn);
         }
     }
 
     private void captureColumnWidths()
     {
-        for (TableColumn<Map<String, Object>, ?> tableColumn : table.getColumns())
+        for (TableColumn<Map<String, Object>, ?> tableColumn : this.table.getColumns())
         {
             Object key = tableColumn.getUserData();
             if (key instanceof String columnName && !columnName.isBlank())
             {
-                selectedColumnWidths.put(columnName, tableColumn.getWidth());
+                this.selectedColumnWidths.put(columnName, tableColumn.getWidth());
             }
         }
     }
@@ -335,7 +335,7 @@ public class GenericRecordEditorPanel implements AppPanel
     private void ensureVerticalScrollBarVisible()
     {
         Platform.runLater(() -> {
-            Node node = table.lookup(".scroll-bar:vertical");
+            Node node = this.table.lookup(".scroll-bar:vertical");
             if (node instanceof ScrollBar scrollBar)
             {
                 scrollBar.setVisible(true);
@@ -350,12 +350,12 @@ public class GenericRecordEditorPanel implements AppPanel
     {
         try
         {
-            fundChoices.setAll(FundNameLookup.listActiveFundNames());
+            this.fundChoices.setAll(FundNameLookup.listActiveFundNames());
         }
         catch (SQLException ex)
         {
-            fundChoices.clear();
-            status.setText("Unable to load fund choices: " + ex.getMessage());
+            this.fundChoices.clear();
+            this.status.setText("Unable to load fund choices: " + ex.getMessage());
         }
     }
 
@@ -387,9 +387,9 @@ public class GenericRecordEditorPanel implements AppPanel
                 super.startEdit();
                 createComboBox();
                 setText(null);
-                setGraphic(comboBox);
-                comboBox.requestFocus();
-                comboBox.show();
+                setGraphic(this.comboBox);
+                this.comboBox.requestFocus();
+                this.comboBox.show();
             }
         }
 
@@ -413,12 +413,12 @@ public class GenericRecordEditorPanel implements AppPanel
             }
             else if (isEditing())
             {
-                if (comboBox != null)
+                if (this.comboBox != null)
                 {
-                    comboBox.setValue(item);
+                    this.comboBox.setValue(item);
                 }
                 setText(null);
-                setGraphic(comboBox);
+                setGraphic(this.comboBox);
                 applyPendingRowTextStyle();
             }
             else
@@ -436,22 +436,22 @@ public class GenericRecordEditorPanel implements AppPanel
             Map<String, Object> row = getTableRow() == null ? null : getTableRow().getItem();
             if (row != null)
             {
-                row.put(columnName, value);
-                status.setText("Updated " + toDisplayTitle(columnName) + " (pending save)");
+                row.put(this.columnName, value);
+                GenericRecordEditorPanel.this.status.setText("Updated " + toDisplayTitle(this.columnName) + " (pending save)");
             }
         }
 
         private void createComboBox()
         {
             refreshFundChoices();
-            comboBox = new ComboBox<>(fundChoices);
-            comboBox.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
-            comboBox.setValue(getItem());
-            comboBox.setOnAction(event -> commitEdit(comboBox.getValue()));
-            comboBox.focusedProperty().addListener((obs, oldValue, hasFocus) -> {
+            this.comboBox = new ComboBox<>(GenericRecordEditorPanel.this.fundChoices);
+            this.comboBox.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
+            this.comboBox.setValue(getItem());
+            this.comboBox.setOnAction(event -> commitEdit(this.comboBox.getValue()));
+            this.comboBox.focusedProperty().addListener((obs, oldValue, hasFocus) -> {
                 if (!hasFocus)
                 {
-                    commitEdit(comboBox.getValue());
+                    commitEdit(this.comboBox.getValue());
                 }
             });
         }
@@ -460,7 +460,7 @@ public class GenericRecordEditorPanel implements AppPanel
         {
             TableRow<Map<String, Object>> row = getTableRow();
             getStyleClass().remove(PENDING_ROW_TEXT_DARK_CLASS);
-            if (row != null && pendingNewRows.contains(row.getItem()))
+            if (row != null && GenericRecordEditorPanel.this.pendingNewRows.contains(row.getItem()))
             {
                 String preference = PreferencesService.getPendingRowTextColorPreference();
                 if (preference == null || preference.isBlank() || "black".equalsIgnoreCase(preference))
@@ -483,9 +483,9 @@ public class GenericRecordEditorPanel implements AppPanel
                 super.startEdit();
                 createTextField();
                 setText(null);
-                setGraphic(textField);
-                textField.selectAll();
-                textField.requestFocus();
+                setGraphic(this.textField);
+                this.textField.selectAll();
+                this.textField.requestFocus();
             }
         }
 
@@ -509,12 +509,12 @@ public class GenericRecordEditorPanel implements AppPanel
             }
             else if (isEditing())
             {
-                if (textField != null)
+                if (this.textField != null)
                 {
-                    textField.setText(item);
+                    this.textField.setText(item);
                 }
                 setText(null);
-                setGraphic(textField);
+                setGraphic(this.textField);
                 applyPendingRowTextStyle();
             }
             else
@@ -527,13 +527,13 @@ public class GenericRecordEditorPanel implements AppPanel
 
         private void createTextField()
         {
-            textField = new TextField(getItem());
-            textField.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
-            textField.setOnAction(event -> commitEdit(textField.getText()));
-            textField.focusedProperty().addListener((obs, oldValue, hasFocus) -> {
+            this.textField = new TextField(getItem());
+            this.textField.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
+            this.textField.setOnAction(event -> commitEdit(this.textField.getText()));
+            this.textField.focusedProperty().addListener((obs, oldValue, hasFocus) -> {
                 if (!hasFocus)
                 {
-                    commitEdit(textField.getText());
+                    commitEdit(this.textField.getText());
                 }
             });
         }
@@ -542,7 +542,7 @@ public class GenericRecordEditorPanel implements AppPanel
         {
             TableRow<Map<String, Object>> row = getTableRow();
             getStyleClass().remove(PENDING_ROW_TEXT_DARK_CLASS);
-            if (row != null && pendingNewRows.contains(row.getItem()))
+            if (row != null && GenericRecordEditorPanel.this.pendingNewRows.contains(row.getItem()))
             {
                 if (isPendingRowTextBlack())
                 {
@@ -563,7 +563,7 @@ public class GenericRecordEditorPanel implements AppPanel
     private Map<String, Object> primaryKeyValues(Map<String, Object> row)
     {
         Map<String, Object> pk = new LinkedHashMap<>();
-        for (TableColumnMetadata column : columns)
+        for (TableColumnMetadata column : this.columns)
         {
             if (column.primaryKey())
             {
@@ -577,7 +577,7 @@ public class GenericRecordEditorPanel implements AppPanel
     private Map<String, Object> toTypedRow(Map<String, Object> row)
     {
         Map<String, Object> typed = new LinkedHashMap<>();
-        for (TableColumnMetadata column : columns)
+        for (TableColumnMetadata column : this.columns)
         {
             Object raw = row.get(column.columnName());
             typed.put(column.columnName(), convertValue(raw, column, toDisplayTitle(column.columnName())));
@@ -694,7 +694,7 @@ public class GenericRecordEditorPanel implements AppPanel
         {
             return false;
         }
-        return hiddenColumnNames.contains(columnName.toLowerCase());
+        return this.hiddenColumnNames.contains(columnName.toLowerCase());
     }
 
     private double minWidthForTitle(String title)

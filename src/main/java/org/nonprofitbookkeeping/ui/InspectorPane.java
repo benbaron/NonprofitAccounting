@@ -20,18 +20,18 @@ public class InspectorPane extends VBox
         setPadding(new Insets(8));
         setSpacing(8);
 
-        title.getStyleClass().add("inspector-title");
-        body.setEditable(false);
-        body.setWrapText(true);
+        this.title.getStyleClass().add("inspector-title");
+        this.body.setEditable(false);
+        this.body.setWrapText(true);
 
-        getChildren().addAll(title, new Separator(), body);
+        getChildren().addAll(this.title, new Separator(), this.body);
         clear();
     }
 
     public void show(String t, String b)
     {
-        title.setText(t);
-        body.setText(b == null ? "" : b);
+        this.title.setText(t);
+        this.body.setText(b == null ? "" : b);
     }
 
     public void clear()

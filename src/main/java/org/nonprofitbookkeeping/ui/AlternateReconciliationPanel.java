@@ -53,7 +53,7 @@ public class AlternateReconciliationPanel implements AppPanel, AppPanel.SaveAwar
     }
 
     @Override public String title() { return "Reconciliation"; }
-    @Override public Node root() { return root; }
+    @Override public Node root() { return this.root; }
 
     private void build()
     {
@@ -62,9 +62,9 @@ public class AlternateReconciliationPanel implements AppPanel, AppPanel.SaveAwar
         Label subtitle = new Label("Review statement activity before posting transactions, then reconcile cleared ledger transactions without legacy panel adapters.");
         subtitle.setWrapText(true);
         subtitle.getStyleClass().add("alternate-panel-subtitle");
-        root.setPadding(new Insets(12));
-        root.getStyleClass().add("alternate-content-card");
-        root.getChildren().setAll(title, subtitle, controls(), table(), totals(), new Separator(), importQueue());
+        this.root.setPadding(new Insets(12));
+        this.root.getStyleClass().add("alternate-content-card");
+        this.root.getChildren().setAll(title, subtitle, controls(), table(), totals(), new Separator(), importQueue());
     }
 
     private GridPane controls()
@@ -72,22 +72,22 @@ public class AlternateReconciliationPanel implements AppPanel, AppPanel.SaveAwar
         GridPane grid = new GridPane();
         grid.setHgap(8);
         grid.setVgap(6);
-        endingBalance.setPromptText("Statement ending balance");
-        accountBox.setOnAction(e -> loadRows());
-        beginningBalance.textProperty().addListener((obs, old, val) -> updateSummary());
-        endingBalance.textProperty().addListener((obs, old, val) -> updateSummary());
+        this.endingBalance.setPromptText("Statement ending balance");
+        this.accountBox.setOnAction(e -> loadRows());
+        this.beginningBalance.textProperty().addListener((obs, old, val) -> updateSummary());
+        this.endingBalance.textProperty().addListener((obs, old, val) -> updateSummary());
         Button reload = new Button("Reload transactions");
         reload.setOnAction(e -> loadRows());
-        grid.addRow(0, new Label("Account"), accountBox, reload);
-        grid.addRow(1, new Label("Statement date"), statementDate);
-        grid.addRow(2, new Label("Beginning balance"), beginningBalance);
-        grid.addRow(3, new Label("Statement ending balance"), endingBalance);
+        grid.addRow(0, new Label("Account"), this.accountBox, reload);
+        grid.addRow(1, new Label("Statement date"), this.statementDate);
+        grid.addRow(2, new Label("Beginning balance"), this.beginningBalance);
+        grid.addRow(3, new Label("Statement ending balance"), this.endingBalance);
         return grid;
     }
 
     private TableView<AlternateReconciliationService.ReconciliationRow> table()
     {
-        TableView<AlternateReconciliationService.ReconciliationRow> table = new TableView<>(rows);
+        TableView<AlternateReconciliationService.ReconciliationRow> table = new TableView<>(this.rows);
         table.setEditable(true);
         TableColumn<AlternateReconciliationService.ReconciliationRow, Boolean> cleared = new TableColumn<>("Cleared/Reconciled");
         cleared.setCellValueFactory(data -> data.getValue().clearedProperty());
@@ -109,8 +109,8 @@ public class AlternateReconciliationPanel implements AppPanel, AppPanel.SaveAwar
     {
         Button save = new Button("Save Reconciliation");
         save.setOnAction(e -> showSaveResult(save()));
-        validation.getStyleClass().add("validation-message");
-        HBox box = new HBox(16, new Label("Cleared total:"), clearedTotal, new Label("Difference:"), difference, save, validation);
+        this.validation.getStyleClass().add("validation-message");
+        HBox box = new HBox(16, new Label("Cleared total:"), this.clearedTotal, new Label("Difference:"), this.difference, save, this.validation);
         updateSummary();
         return box;
     }
@@ -120,56 +120,56 @@ public class AlternateReconciliationPanel implements AppPanel, AppPanel.SaveAwar
         Label heading = new Label("Statement import review queue");
         Label desc = new Label("Supported statement import formats discovered in existing services: OFX, QFX, and QIF. Imports are routed through Import/Export or this banking review queue before any posting to the ledger.");
         desc.setWrapText(true);
-        importReview.setEditable(false);
-        importReview.setPrefRowCount(4);
-        importReview.setText("No statement file selected. Review parsed transactions here before posting; direct import-to-ledger is intentionally not exposed in this native panel.");
+        this.importReview.setEditable(false);
+        this.importReview.setPrefRowCount(4);
+        this.importReview.setText("No statement file selected. Review parsed transactions here before posting; direct import-to-ledger is intentionally not exposed in this native panel.");
         Button route = new Button("Open Import/Export Workspace");
-        route.setOnAction(e -> importReview.setText("Use Import/Export for file selection and validation; return here to reconcile after reviewed transactions are posted."));
-        return new VBox(6, heading, desc, route, importReview);
+        route.setOnAction(e -> this.importReview.setText("Use Import/Export for file selection and validation; return here to reconcile after reviewed transactions are posted."));
+        return new VBox(6, heading, desc, route, this.importReview);
     }
 
     private void refreshAccounts()
     {
-        accountBox.getItems().setAll(service.listAccounts());
-        accountBox.getSelectionModel().selectFirst();
+        this.accountBox.getItems().setAll(this.service.listAccounts());
+        this.accountBox.getSelectionModel().selectFirst();
         loadRows();
     }
 
     private void loadRows()
     {
-        rows.clear();
-        String account = accountBox.getValue();
-        if (account != null) rows.addAll(service.loadRows(account));
-        rows.forEach(row -> row.clearedProperty().addListener((obs, old, val) -> updateSummary()));
+        this.rows.clear();
+        String account = this.accountBox.getValue();
+        if (account != null) this.rows.addAll(this.service.loadRows(account));
+        this.rows.forEach(row -> row.clearedProperty().addListener((obs, old, val) -> updateSummary()));
         updateSummary();
     }
 
     private BigDecimal parsedBeginning()
     {
-        try { return new BigDecimal(beginningBalance.getText().trim()); }
+        try { return new BigDecimal(this.beginningBalance.getText().trim()); }
         catch (Exception ex) { return BigDecimal.ZERO; }
     }
 
     private void updateSummary()
     {
-        AlternateReconciliationService.BalanceParseResult parsed = service.parseEndingBalance(endingBalance.getText());
+        AlternateReconciliationService.BalanceParseResult parsed = this.service.parseEndingBalance(this.endingBalance.getText());
         BigDecimal ending = parsed.valid() ? parsed.balance() : BigDecimal.ZERO;
-        AlternateReconciliationService.ReconciliationSummary summary = service.summarize(parsedBeginning(), ending, rows);
-        clearedTotal.setText(FormatUtils.formatCurrency(summary.clearedTotal()));
-        difference.setText(FormatUtils.formatCurrency(summary.difference()));
-        validation.setText(parsed.valid() ? "" : parsed.message());
+        AlternateReconciliationService.ReconciliationSummary summary = this.service.summarize(parsedBeginning(), ending, this.rows);
+        this.clearedTotal.setText(FormatUtils.formatCurrency(summary.clearedTotal()));
+        this.difference.setText(FormatUtils.formatCurrency(summary.difference()));
+        this.validation.setText(parsed.valid() ? "" : parsed.message());
     }
 
     @Override
     public SaveResult save()
     {
-        SaveResult result = service.save(accountBox.getValue(), statementDate.getValue(), parsedBeginning(), endingBalance.getText(), rows);
+        SaveResult result = this.service.save(this.accountBox.getValue(), this.statementDate.getValue(), parsedBeginning(), this.endingBalance.getText(), this.rows);
         if (result.status() == SaveResult.Status.SAVED) loadRows();
         return result;
     }
 
     private void showSaveResult(SaveResult result)
     {
-        validation.setText(result.message());
+        this.validation.setText(result.message());
     }
 }

@@ -80,7 +80,7 @@ public class Document {
      */
     @JsonProperty("documentId")
     public String getDocumentId() {
-        return documentId;
+        return this.documentId;
     }
 
     /**
@@ -100,7 +100,7 @@ public class Document {
      */
     @JsonProperty("documentType")
     public Document.DocumentType getDocumentType() {
-        return documentType;
+        return this.documentType;
     }
 
     /**
@@ -115,7 +115,7 @@ public class Document {
 
     @JsonProperty("referenceNumber")
     public String getReferenceNumber() {
-        return referenceNumber;
+        return this.referenceNumber;
     }
 
     @JsonProperty("referenceNumber")
@@ -125,7 +125,7 @@ public class Document {
 
     @JsonProperty("documentDate")
     public String getDocumentDate() {
-        return documentDate;
+        return this.documentDate;
     }
 
     @JsonProperty("documentDate")
@@ -135,7 +135,7 @@ public class Document {
 
     @JsonProperty("fileName")
     public String getFileName() {
-        return fileName;
+        return this.fileName;
     }
 
     @JsonProperty("fileName")
@@ -145,7 +145,7 @@ public class Document {
 
     @JsonProperty("notes")
     public String getNotes() {
-        return notes;
+        return this.notes;
     }
 
     @JsonProperty("notes")
@@ -155,7 +155,7 @@ public class Document {
 
     @JsonProperty("extensions")
     public Extensions getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     @JsonProperty("extensions")

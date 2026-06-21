@@ -53,7 +53,7 @@ public class GenerateReportPanelFX extends BorderPane
 			protected void updateItem(String item, boolean empty)
 			{
 				super.updateItem(item, empty);
-				setText(empty || item == null ? null : displayNames.getOrDefault(item, item));
+				setText(empty || item == null ? null : GenerateReportPanelFX.this.displayNames.getOrDefault(item, item));
 			}
 		});
 

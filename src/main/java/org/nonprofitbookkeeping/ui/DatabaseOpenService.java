@@ -49,11 +49,11 @@ public final class DatabaseOpenService
     {
         public String successMessage()
         {
-            String message = "Database ready: " + basePath.toAbsolutePath();
-            if (repairResult != null && !repairResult.backupFiles().isEmpty())
+            String message = "Database ready: " + this.basePath.toAbsolutePath();
+            if (this.repairResult != null && !this.repairResult.backupFiles().isEmpty())
             {
                 message += "\nRecovered from corruption. Backups:\n" +
-                    String.join("\n", repairResult.backupFiles().stream()
+                    String.join("\n", this.repairResult.backupFiles().stream()
                         .map(path -> path.toAbsolutePath().toString())
                         .toList());
             }

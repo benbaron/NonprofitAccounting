@@ -25,16 +25,16 @@ class AccountLookupServiceTest
     @AfterEach
     void tearDown()
     {
-        if (jpa != null)
+        if (this.jpa != null)
         {
-            jpa.close();
+            this.jpa.close();
         }
     }
 
     @Test
     void listActivePostingAccounts_filtersAndSortsByCode() throws Exception
     {
-        Database.init(tempDir.resolve("account-lookup"));
+        Database.init(this.tempDir.resolve("account-lookup"));
         FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
 
@@ -51,8 +51,8 @@ class AccountLookupServiceTest
                 "VALUES ('1100', 1, '1100', 'Active posting B', 'ASSET', 'CASH', 0, 'DEBIT', TRUE, TRUE)");
         }
 
-        jpa = new Jpa();
-        AccountLookupService service = new AccountLookupService(jpa);
+        this.jpa = new Jpa();
+        AccountLookupService service = new AccountLookupService(this.jpa);
 
         List<Account> accounts = service.listActivePostingAccounts();
         assertEquals(List.of("1000", "1100"), accounts.stream().map(Account::getCode).toList());
