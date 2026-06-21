@@ -58,8 +58,8 @@ class SclxImportExportRoundTripTest
             .filter(account -> "acct-1000".equals(account.accountId()))
             .findFirst()
             .orElseThrow();
-        assertEquals("Cash", cash.name());
-        assertEquals("ASSET", cash.type());
+        assertEquals("Cash", cash.Name());
+        assertEquals("ASSET", cash.Type());
     }
 
     @Test
@@ -87,7 +87,7 @@ class SclxImportExportRoundTripTest
             .findFirst()
             .orElseThrow();
 
-        assertEquals("Name changed by app interface", changed.name());
+        assertEquals("Name changed by app interface", changed.Name());
     }
 
     @Test
