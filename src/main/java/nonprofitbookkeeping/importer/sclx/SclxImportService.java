@@ -1,9 +1,11 @@
 package nonprofitbookkeeping.importer.sclx;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.slf4j.Logger;
@@ -14,7 +16,7 @@ import org.slf4j.LoggerFactory;
  *
  * <p>This service performs lightweight structural checks and then streams the
  * staged collections into an {@link SclxImportTarget}. It does not impose a
- * storage model; that choice belongs to NonprofitBookkeeping.
+ * storage model; that choice belongs to NonprofitBookkeeping.</p>
  */
 public class SclxImportService
 {
@@ -44,7 +46,7 @@ public class SclxImportService
 
         log.debug("Starting SCLX import for path={}, runId={}", path, options.effectiveImportRunId());
         String rawSource = readRawSource(path);
-        log.debug("Read raw SCLX source bytes={}, path={}", rawSource.length(), path);
+        log.debug("Read SCLX source bytes={}, path={}", rawSource.length(), path);
         SclxDocument document;
         try
         {
@@ -55,8 +57,9 @@ public class SclxImportService
             log.error("SCLX parse failed for path={}, runId={}: {}", path, options.effectiveImportRunId(), ex.getMessage());
             throw new SclxImportException("Failed to parse SCLX JSON from file: " + path, ex);
         }
-        target.persistRawSource(rawSource, options);
-        log.debug("Persisted raw SCLX source for runId={}", options.effectiveImportRunId());
+
+        // The source file is an interchange artifact, not application data.
+        // Import the typed records only; do not persist the complete raw payload.
         return importDocument(document, target, options);
     }
 
@@ -68,7 +71,7 @@ public class SclxImportService
         }
         catch (IOException ex)
         {
-            throw new SclxImportException("Failed to read raw SCLX source: " + path, ex);
+            throw new SclxImportException("Failed to read SCLX source: " + path, ex);
         }
     }
 
@@ -85,7 +88,10 @@ public class SclxImportService
             document.organization() != null,
             document.reportingPeriod() != null);
         validateEnvelope(document, options);
-        validateLedgerNativePolicy(document, options);
+
+        List<SclxDocument.Transaction> postingTransactions =
+            preparePostingTransactions(normalize(document.transactions(), options), options);
+        validateLedgerNativePolicy(postingTransactions, options);
 
         target.beginImport(document, options);
 
@@ -111,7 +117,7 @@ public class SclxImportService
         target.importCommitteeMemberships(normalize(document.committeeMemberships(), options));
         target.importEvents(normalize(document.events(), options));
         target.importDocuments(normalize(document.documents(), options));
-        target.importTransactions(normalize(document.transactions(), options));
+        target.importTransactions(postingTransactions);
         target.importOutstandingItems(normalize(document.outstandingItems(), options));
         target.importOtherAssetItems(normalize(document.otherAssetItems(), options));
         target.importSupplementalItems(normalize(document.supplementalItems(), options));
@@ -128,8 +134,8 @@ public class SclxImportService
             size(document.people()),
             size(document.events()),
             size(document.documents()),
-            size(document.transactions()),
-            countLines(document.transactions()),
+            postingTransactions.size(),
+            countLines(postingTransactions),
             size(document.outstandingItems()),
             size(document.otherAssetItems()),
             size(document.supplementalItems()),
@@ -151,6 +157,109 @@ public class SclxImportService
         target.completeImport(result);
         log.debug("Completed SCLX import for version={}", result.version());
         return result;
+    }
+
+    private static List<SclxDocument.Transaction> preparePostingTransactions(
+        List<SclxDocument.Transaction> transactions,
+        SclxImportOptions options)
+    {
+        if (transactions == null || transactions.isEmpty())
+        {
+            return List.of();
+        }
+
+        List<SclxDocument.Transaction> prepared = new ArrayList<>();
+        for (SclxDocument.Transaction transaction : transactions)
+        {
+            if (transaction == null)
+            {
+                continue;
+            }
+
+            List<SclxDocument.TransactionLine> sourceLines =
+                normalize(transaction.lines(), options);
+            List<SclxDocument.TransactionLine> postingLines = new ArrayList<>();
+
+            for (SclxDocument.TransactionLine line : sourceLines)
+            {
+                if (line == null)
+                {
+                    continue;
+                }
+                if (isZeroValueLine(line))
+                {
+                    log.warn(
+                        "Skipping zero-value SCLX transaction line transactionId={} lineId={} ledgerRow={}",
+                        transaction.transactionId(),
+                        line.lineId(),
+                        workbookRow(transaction));
+                    continue;
+                }
+                postingLines.add(line);
+            }
+
+            if (postingLines.isEmpty())
+            {
+                log.warn(
+                    "Skipping non-posting SCLX transaction transactionId={} ledgerRow={} description={}",
+                    transaction.transactionId(),
+                    workbookRow(transaction),
+                    transaction.description());
+                continue;
+            }
+
+            if (postingLines.size() == sourceLines.size())
+            {
+                prepared.add(transaction);
+            }
+            else
+            {
+                prepared.add(copyWithLines(transaction, List.copyOf(postingLines)));
+            }
+        }
+        return List.copyOf(prepared);
+    }
+
+    private static boolean isZeroValueLine(SclxDocument.TransactionLine line)
+    {
+        BigDecimal debit = line.debit() == null ? BigDecimal.ZERO : line.debit();
+        BigDecimal credit = line.credit() == null ? BigDecimal.ZERO : line.credit();
+        return debit.signum() == 0 && credit.signum() == 0;
+    }
+
+    private static Integer workbookRow(SclxDocument.Transaction transaction)
+    {
+        return transaction.workbookLink() == null
+            ? null
+            : transaction.workbookLink().ledgerRowIndex();
+    }
+
+    private static SclxDocument.Transaction copyWithLines(
+        SclxDocument.Transaction source,
+        List<SclxDocument.TransactionLine> lines)
+    {
+        return new SclxDocument.Transaction(
+            source.transactionId(),
+            source.transactionDate(),
+            source.postingDate(),
+            source.description(),
+            source.reference(),
+            source.checkNumber(),
+            source.checkNumberId(),
+            source.personId(),
+            source.personDisplayName(),
+            source.personOrBusinessName(),
+            source.status(),
+            source.source(),
+            source.bankTiming(),
+            source.budgetTiming(),
+            source.budgetId(),
+            source.workbookLink(),
+            source.approval(),
+            source.documentIds(),
+            source.eventId(),
+            lines,
+            source.extensions());
     }
 
     private static void validateEnvelope(SclxDocument document, SclxImportOptions options)
@@ -176,11 +285,13 @@ public class SclxImportService
         }
     }
 
-    private static void validateLedgerNativePolicy(SclxDocument document, SclxImportOptions options)
+    private static void validateLedgerNativePolicy(
+        List<SclxDocument.Transaction> transactions,
+        SclxImportOptions options)
     {
         if (!options.allowSingleSidedTransactions())
         {
-            for (SclxDocument.Transaction transaction : normalize(document.transactions(), options))
+            for (SclxDocument.Transaction transaction : transactions)
             {
                 int lineCount = size(transaction.lines());
                 if (lineCount < 2)
