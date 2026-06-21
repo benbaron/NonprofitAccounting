@@ -1,6 +1,3 @@
-/*
- * 
- */
 package org.nonprofitbookkeeping.ui;
 
 import javafx.scene.layout.BorderPane;
@@ -8,9 +5,7 @@ import javafx.scene.layout.BorderPane;
 import java.util.EnumMap;
 import java.util.Map;
 
-/**
- * Represents the PanelHost component in the nonprofit bookkeeping application.
- */
+/** Hosts lazily created application workspaces. */
 public class PanelHost extends BorderPane
 {
     interface PanelFactory
@@ -18,16 +13,10 @@ public class PanelHost extends BorderPane
         AppPanel create(AppPanelId id);
     }
 
-    private final Map<AppPanelId, AppPanel> panels = new EnumMap<>(AppPanelId.class);
+    private final Map<AppPanelId, AppPanel> panels =
+        new EnumMap<>(AppPanelId.class);
     private final PanelFactory panelFactory;
     private AppPanelId activeId;
-
-
-    /**
-     * Show the AppPanel (by ID) Alternate way
-     *
-     * @param id the id
-     */
 
     public PanelHost()
     {
@@ -47,7 +36,7 @@ public class PanelHost extends BorderPane
     public SaveResult show(AppPanelId id)
     {
         SaveResult saveResult = SaveResult.noChanges();
-        if (activeId != null && activeId != id)
+        if (this.activeId != null && this.activeId != id)
         {
             saveResult = prepareActiveForNavigation();
             if (saveResult.failed())
@@ -55,26 +44,26 @@ public class PanelHost extends BorderPane
                 return saveResult;
             }
         }
-        AppPanel panel = panels.computeIfAbsent(id, this::create);
-        activeId = id;
+        AppPanel panel = this.panels.computeIfAbsent(id, this::create);
+        this.activeId = id;
         setCenter(panel.root());
         return saveResult;
     }
 
     public String getActiveTitle()
     {
-        AppPanel p = getActive();
-        return p == null ? "(none)" : p.title();
+        AppPanel panel = getActive();
+        return panel == null ? "(none)" : panel.title();
     }
 
     public SaveResult saveActive()
     {
-        AppPanel p = getActive();
-        if (p == null)
+        AppPanel panel = getActive();
+        if (panel == null)
         {
             return SaveResult.noChanges("No active panel.");
         }
-        if (p instanceof AppPanel.SaveAware saveAware)
+        if (panel instanceof AppPanel.SaveAware saveAware)
         {
             try
             {
@@ -82,23 +71,29 @@ public class PanelHost extends BorderPane
             }
             catch (RuntimeException ex)
             {
-                return SaveResult.failed("Save failed for " + p.title() + ": " + ex.getMessage(), ex);
+                return SaveResult.failed(
+                    "Save failed for " + panel.title() + ": " + ex.getMessage(),
+                    ex);
             }
         }
-        if (!isDirty(p))
+        if (!isDirty(panel))
         {
-            return SaveResult.noChanges("No changes to save for " + p.title() + ".");
+            return SaveResult.noChanges(
+                "No changes to save for " + panel.title() + ".");
         }
         try
         {
-            p.onSave();
-            return SaveResult.saved("Saved " + p.title() + ".");
+            panel.onSave();
+            return SaveResult.saved("Saved " + panel.title() + ".");
         }
         catch (RuntimeException ex)
         {
-            return SaveResult.failed("Save failed for " + p.title() + ": " + ex.getMessage(), ex);
+            return SaveResult.failed(
+                "Save failed for " + panel.title() + ": " + ex.getMessage(),
+                ex);
         }
     }
+
     public SaveResult prepareActiveForNavigation()
     {
         if (!canNavigateAway())
@@ -110,37 +105,75 @@ public class PanelHost extends BorderPane
 
     public boolean isActiveDirty()
     {
-        AppPanel p = getActive();
-        return isDirty(p);
+        return isDirty(getActive());
     }
-    public void newItemActive() { AppPanel p = getActive(); if (p != null) p.onNew(); }
-    public void copySelectionActive() { AppPanel p = getActive(); if (p != null) p.onCopy(); }
-    public void pasteActive() { AppPanel p = getActive(); if (p != null) p.onPaste(); }
-    public void deleteActive() { AppPanel p = getActive(); if (p != null) p.onDelete(); }
-    public void cancelActive() { AppPanel p = getActive(); if (p != null) p.onCancel(); }
 
-    private AppPanel getActive() { return activeId == null ? null : panels.get(activeId); }
+    public void newItemActive()
+    {
+        AppPanel panel = getActive();
+        if (panel != null)
+        {
+            panel.onNew();
+        }
+    }
 
-    /**
-     * Creates the AppPanel (Classic way)
-     *
-     * @param id the id
-     * @return the app panel
-     */
+    public void copySelectionActive()
+    {
+        AppPanel panel = getActive();
+        if (panel != null)
+        {
+            panel.onCopy();
+        }
+    }
+
+    public void pasteActive()
+    {
+        AppPanel panel = getActive();
+        if (panel != null)
+        {
+            panel.onPaste();
+        }
+    }
+
+    public void deleteActive()
+    {
+        AppPanel panel = getActive();
+        if (panel != null)
+        {
+            panel.onDelete();
+        }
+    }
+
+    public void cancelActive()
+    {
+        AppPanel panel = getActive();
+        if (panel != null)
+        {
+            panel.onCancel();
+        }
+    }
+
+    private AppPanel getActive()
+    {
+        return this.activeId == null ? null : this.panels.get(this.activeId);
+    }
+
     private AppPanel create(AppPanelId id)
     {
-        return panelFactory.create(id);
+        return this.panelFactory.create(id);
     }
 
     private boolean canNavigateAway()
     {
-        AppPanel p = getActive();
-        return !(p instanceof NavigationGuardPanel guard) || guard.canNavigateAway();
+        AppPanel panel = getActive();
+        return !(panel instanceof NavigationGuardPanel guard) ||
+            guard.canNavigateAway();
     }
 
-    private boolean isDirty(AppPanel p)
+    private boolean isDirty(AppPanel panel)
     {
-        return p instanceof DirtyAwarePanel dirtyAwarePanel && dirtyAwarePanel.isDirty();
+        return panel instanceof DirtyAwarePanel dirtyAwarePanel &&
+            dirtyAwarePanel.isDirty();
     }
 
     interface DirtyAwarePanel
@@ -159,40 +192,40 @@ public class PanelHost extends BorderPane
 
         public DefaultPanelFactory(UiServiceProvider services)
         {
-            this.services = java.util.Objects.requireNonNull(services, "services");
+            this.services = java.util.Objects.requireNonNull(services,
+                "services");
         }
 
+        @Override
         public AppPanel create(AppPanelId id)
         {
-        return switch (id)
-        {
-            case DASHBOARD -> new AlternateDashboardPanel(services.sessionContext(), services);
-
-            case LEDGER_REGISTER -> new LedgerRegisterPanel();
-            case EVENT_ACCOUNTING -> new EventAccountingPanel(services);
-
-            case SCHEDULES -> new SchedulesPanel(services);
-            case INVENTORY -> new AssetsRegisterPanel("Inventory");
-
-            case BUDGET_EDITOR -> new BudgetEditorPanel();
-            case BUDGET_VS_ACTUAL -> new BudgetVsActualPanel();
-
-            case ASSETS_REGISTER -> new AssetsRegisterPanel();
-            case DEPRECIATION_RUNS -> new DepreciationRunsPanel();
-
-            case REPORT_LIBRARY, REPORTS_WORKSPACE -> new ReportsWorkspacePanel();
-
-            case CHART_OF_ACCOUNTS -> new ChartOfAccountsPanel();
-            case FUNDS -> new FundsPanel();
-            case DONORS -> new DonorManagementPanel();
-            case RECONCILIATION -> new AlternateReconciliationPanel();
-
-            case DATABASE_ADMIN -> new AlternateDatabaseAdminPanel(services);
-            case COMPANY_ADMIN -> new AlternateCompanyAdminPanel(services);
-            case IMPORT_EXPORT -> new AlternateImportExportPanel();
-            case MONTHLY_CLOSE -> new MonthlyCloseChecklistPanel(services);
-            case SETTINGS -> new SettingsPanel(services);
-        };
+            return switch (id)
+            {
+                case DASHBOARD -> new AlternateDashboardPanel(
+                    this.services.sessionContext(), this.services);
+                case LEDGER_REGISTER -> new JournalWorkspacePanel();
+                case EVENT_ACCOUNTING -> new EventAccountingPanel(this.services);
+                case SCHEDULES -> new SchedulesPanel(this.services);
+                case INVENTORY -> new AssetsRegisterPanel("Inventory");
+                case BUDGET_EDITOR -> new BudgetEditorPanel();
+                case BUDGET_VS_ACTUAL -> new BudgetVsActualPanel();
+                case ASSETS_REGISTER -> new AssetsRegisterPanel();
+                case DEPRECIATION_RUNS -> new DepreciationRunsPanel();
+                case REPORT_LIBRARY, REPORTS_WORKSPACE ->
+                    new ReportsWorkspacePanel();
+                case CHART_OF_ACCOUNTS -> new ChartOfAccountsPanel();
+                case FUNDS -> new FundsPanel();
+                case DONORS -> new DonorManagementPanel();
+                case RECONCILIATION -> new AlternateReconciliationPanel();
+                case DATABASE_ADMIN ->
+                    new AlternateDatabaseAdminPanel(this.services);
+                case COMPANY_ADMIN ->
+                    new AlternateCompanyAdminPanel(this.services);
+                case IMPORT_EXPORT -> new AlternateImportExportPanel();
+                case MONTHLY_CLOSE ->
+                    new MonthlyCloseChecklistPanel(this.services);
+                case SETTINGS -> new SettingsPanel(this.services);
+            };
         }
     }
 }
