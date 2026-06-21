@@ -20,4 +20,10 @@ jobs:
           cache: maven
 
       - name: Run unit tests
-        run: mvn test -q
+        shell: bash
+        run: |
+          set -o pipefail
+          if ! mvn test -q > maven-test.log 2>&1; then
+            tail -n 250 maven-test.log
+            exit 1
+          fi
