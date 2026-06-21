@@ -36,22 +36,23 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-/**
- * Ledger register panel backed by persisted journal transactions.
- */
+/** Ledger register panel backed by persisted journal transactions. */
 public class LedgerRegisterPanel implements AppPanel
 {
     private static final int SUBRECORD_PREVIEW_MAX = 80;
 
     private final BorderPane root = new BorderPane();
     private final TableView<LedgerViewRow> txnTable = new TableView<>();
-    private final ObservableList<AccountingTransaction> allTransactions = FXCollections.observableArrayList();
+    private final ObservableList<AccountingTransaction> allTransactions =
+        FXCollections.observableArrayList();
     private final Label status = new Label();
-    private final CompanyDataRepository companyDataRepository = new CompanyDataRepository();
+    private final CompanyDataRepository companyDataRepository =
+        new CompanyDataRepository();
 
+    /** Creates the ledger workspace. */
     public LedgerRegisterPanel()
     {
-        root.setPadding(new Insets(16));
+        this.root.setPadding(new Insets(16));
 
         Label title = new Label("Ledger Register");
         Label range = new Label();
@@ -60,22 +61,25 @@ public class LedgerRegisterPanel implements AppPanel
             DateRangeContext.selectedProperty()));
         title.getStyleClass().add("journal-entry-heading");
 
-        javafx.scene.control.Button refresh = new javafx.scene.control.Button("Refresh");
+        javafx.scene.control.Button refresh =
+            new javafx.scene.control.Button("Refresh");
         HBox actions = new HBox(8, refresh);
-        root.setTop(new VBox(6, title, range, actions, status, new Separator()));
+        this.root.setTop(new VBox(6, title, range, actions, this.status,
+            new Separator()));
 
         buildTable();
-        root.setCenter(txnTable);
+        this.root.setCenter(this.txnTable);
         refresh.setOnAction(e -> loadLiveData());
 
-        txnTable.setRowFactory(tv -> {
+        this.txnTable.setRowFactory(tv -> {
             TableRow<LedgerViewRow> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (row.isEmpty())
                 {
                     return;
                 }
-                if (event.getClickCount() == 2 && event.getButton() == MouseButton.PRIMARY)
+                if (event.getClickCount() == 2 &&
+                    event.getButton() == MouseButton.PRIMARY)
                 {
                     showDetails(row.getItem().transaction());
                 }
@@ -83,7 +87,8 @@ public class LedgerRegisterPanel implements AppPanel
                 {
                     ContextMenu menu = new ContextMenu();
                     MenuItem details = new MenuItem("Show Details");
-                    details.setOnAction(ignored -> showDetails(row.getItem().transaction()));
+                    details.setOnAction(
+                        ignored -> showDetails(row.getItem().transaction()));
                     menu.getItems().add(details);
                     row.setContextMenu(menu);
                 }
@@ -102,29 +107,37 @@ public class LedgerRegisterPanel implements AppPanel
             });
 
         loadLiveData();
-        Integer pendingId = LedgerNavigationContext.getRequestedTransactionId();
-        if (pendingId != null)
+        Integer pending = LedgerNavigationContext.getRequestedTransactionId();
+        if (pending != null)
         {
-            Platform.runLater(() -> handleNavigationRequest(pendingId));
+            Platform.runLater(() -> handleNavigationRequest(pending));
         }
     }
 
     private void buildTable()
     {
-        txnTable.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
-        txnTable.getColumns().add(sizedCol("Date", 140, row -> safe(row.transaction().getDate())));
-        txnTable.getColumns().add(sizedCol("Payee", 220, row -> safe(row.transaction().getToFrom())));
-        txnTable.getColumns().add(sizedCol("Memo", 300, row -> safe(row.transaction().getMemo())));
-        txnTable.getColumns().add(sizedCol("Bank", 180, row -> safe(row.transaction().getBank())));
-        txnTable.getColumns().add(sizedCol("Account", 220,
-            row -> row.entry() == null ? "" : safe(row.entry().getAccountName())));
-        txnTable.getColumns().add(sizedCol("Fund", 180,
-            row -> row.entry() == null ? "" : safe(row.entry().getFundNumber())));
+        this.txnTable.setColumnResizePolicy(
+            TableView.UNCONSTRAINED_RESIZE_POLICY);
+        this.txnTable.getColumns().add(sizedCol("Date", 140,
+            row -> safe(row.transaction().getDate())));
+        this.txnTable.getColumns().add(sizedCol("Payee", 220,
+            row -> safe(row.transaction().getToFrom())));
+        this.txnTable.getColumns().add(sizedCol("Memo", 300,
+            row -> safe(row.transaction().getMemo())));
+        this.txnTable.getColumns().add(sizedCol("Bank", 180,
+            row -> safe(row.transaction().getBank())));
+        this.txnTable.getColumns().add(sizedCol("Account", 220,
+            row -> row.entry() == null ? "" :
+                safe(row.entry().getAccountName())));
+        this.txnTable.getColumns().add(sizedCol("Fund", 180,
+            row -> row.entry() == null ? "" :
+                safe(row.entry().getFundNumber())));
         TableColumn<LedgerViewRow, String> subrecords = subrecordColumn();
         subrecords.setPrefWidth(240);
-        txnTable.getColumns().add(subrecords);
-        txnTable.getColumns().add(sizedCol("Status", 160,
-            row -> row.transaction().isReconciled() ? "Reconciled" : "Unreconciled"));
+        this.txnTable.getColumns().add(subrecords);
+        this.txnTable.getColumns().add(sizedCol("Status", 160,
+            row -> row.transaction().isReconciled() ? "Reconciled" :
+                "Unreconciled"));
     }
 
     private void loadLiveData()
@@ -132,11 +145,12 @@ public class LedgerRegisterPanel implements AppPanel
         try
         {
             List<AccountingTransaction> transactions =
-                companyDataRepository.load().getLedger().getTransactions();
-            allTransactions.setAll(transactions);
+                this.companyDataRepository.load().getLedger().getTransactions();
+            this.allTransactions.setAll(transactions);
             applyDateRangeFilter(DateRangeContext.get());
-            status.setText("Loaded " + transactions.size() + " transaction(s), "
-                + txnTable.getItems().size() + " row(s) from database.");
+            this.status.setText("Loaded " + transactions.size()
+                + " transaction(s), " + this.txnTable.getItems().size()
+                + " row(s) from database.");
         }
         catch (SQLException | IllegalStateException ex)
         {
@@ -144,9 +158,10 @@ public class LedgerRegisterPanel implements AppPanel
             {
                 return;
             }
-            allTransactions.clear();
-            txnTable.getItems().clear();
-            status.setText("Unable to load live ledger data: " + ex.getMessage());
+            this.allTransactions.clear();
+            this.txnTable.getItems().clear();
+            this.status.setText("Unable to load live ledger data: "
+                + ex.getMessage());
         }
     }
 
@@ -157,11 +172,13 @@ public class LedgerRegisterPanel implements AppPanel
         {
             return false;
         }
-        List<AccountingTransaction> transactions = current.getLedger().getTransactions();
-        allTransactions.setAll(transactions);
+        List<AccountingTransaction> transactions =
+            current.getLedger().getTransactions();
+        this.allTransactions.setAll(transactions);
         applyDateRangeFilter(DateRangeContext.get());
-        status.setText("Loaded " + transactions.size() + " transaction(s), "
-            + txnTable.getItems().size() + " row(s) from in-memory journal.");
+        this.status.setText("Loaded " + transactions.size()
+            + " transaction(s), " + this.txnTable.getItems().size()
+            + " row(s) from in-memory journal.");
         return true;
     }
 
@@ -169,7 +186,7 @@ public class LedgerRegisterPanel implements AppPanel
     {
         DateRange effectiveRange = range == null ? DateRange.ALL : range;
         List<LedgerViewRow> rows = new ArrayList<>();
-        for (AccountingTransaction transaction : allTransactions)
+        for (AccountingTransaction transaction : this.allTransactions)
         {
             if (!isWithinRange(transaction.getDate(), effectiveRange))
             {
@@ -177,15 +194,24 @@ public class LedgerRegisterPanel implements AppPanel
             }
             rows.addAll(asLedgerRows(transaction));
         }
-        txnTable.getItems().setAll(rows);
+        this.txnTable.getItems().setAll(rows);
     }
 
+    /**
+     * Shows and selects the first ledger row belonging to the requested
+     * transaction. If the shared date range hides the transaction, the range
+     * is reset to All Dates so the hyperlink always reaches its target.
+     *
+     * @param transactionId transaction identifier to locate
+     * @return {@code true} when a row was selected
+     */
     public boolean selectTransactionById(int transactionId)
     {
         loadLiveData();
         int index = findVisibleTransactionRow(transactionId);
-        if (index < 0 && allTransactions.stream().anyMatch(
-            transaction -> transaction != null && transaction.getId() == transactionId))
+        if (index < 0 && this.allTransactions.stream().anyMatch(
+            transaction -> transaction != null &&
+                transaction.getId() == transactionId))
         {
             DateRangeContext.set(DateRange.ALL);
             applyDateRangeFilter(DateRange.ALL);
@@ -194,14 +220,15 @@ public class LedgerRegisterPanel implements AppPanel
 
         if (index < 0)
         {
-            status.setText("Transaction " + transactionId + " was not found in the ledger register.");
+            this.status.setText("Transaction " + transactionId
+                + " was not found in the ledger register.");
             return false;
         }
 
-        txnTable.getSelectionModel().clearAndSelect(index);
-        txnTable.scrollTo(index);
-        txnTable.requestFocus();
-        status.setText("Selected transaction " + transactionId + ".");
+        this.txnTable.getSelectionModel().clearAndSelect(index);
+        this.txnTable.scrollTo(index);
+        this.txnTable.requestFocus();
+        this.status.setText("Selected transaction " + transactionId + ".");
         return true;
     }
 
@@ -215,11 +242,11 @@ public class LedgerRegisterPanel implements AppPanel
 
     private int findVisibleTransactionRow(int transactionId)
     {
-        for (int index = 0; index < txnTable.getItems().size(); index++)
+        for (int index = 0; index < this.txnTable.getItems().size(); index++)
         {
-            LedgerViewRow row = txnTable.getItems().get(index);
-            if (row != null && row.transaction() != null
-                && row.transaction().getId() == transactionId)
+            LedgerViewRow row = this.txnTable.getItems().get(index);
+            if (row != null && row.transaction() != null &&
+                row.transaction().getId() == transactionId)
             {
                 return index;
             }
@@ -236,11 +263,13 @@ public class LedgerRegisterPanel implements AppPanel
         try
         {
             LocalDate rowDate = LocalDate.parse(dateText);
-            if (range.startInclusive() != null && rowDate.isBefore(range.startInclusive()))
+            if (range.startInclusive() != null &&
+                rowDate.isBefore(range.startInclusive()))
             {
                 return false;
             }
-            if (range.endInclusive() != null && rowDate.isAfter(range.endInclusive()))
+            if (range.endInclusive() != null &&
+                rowDate.isAfter(range.endInclusive()))
             {
                 return false;
             }
@@ -255,12 +284,15 @@ public class LedgerRegisterPanel implements AppPanel
     private TableColumn<LedgerViewRow, String> col(String name,
         java.util.function.Function<LedgerViewRow, String> getter)
     {
-        TableColumn<LedgerViewRow, String> column = new TableColumn<>(name);
-        column.setCellValueFactory(value -> new SimpleStringProperty(getter.apply(value.getValue())));
+        TableColumn<LedgerViewRow, String> column =
+            new TableColumn<>(name);
+        column.setCellValueFactory(value -> new SimpleStringProperty(
+            getter.apply(value.getValue())));
         return column;
     }
 
-    private TableColumn<LedgerViewRow, String> sizedCol(String name, double width,
+    private TableColumn<LedgerViewRow, String> sizedCol(String name,
+        double width,
         java.util.function.Function<LedgerViewRow, String> getter)
     {
         TableColumn<LedgerViewRow, String> column = col(name, getter);
@@ -284,11 +316,13 @@ public class LedgerRegisterPanel implements AppPanel
                     setTooltip(null);
                     return;
                 }
-                LedgerViewRow row = getTableRow() == null ? null : getTableRow().getItem();
-                String fullSummary = row == null ? null : row.subrecordSummary();
+                LedgerViewRow row = getTableRow() == null ? null :
+                    getTableRow().getItem();
+                String fullSummary = row == null ? null :
+                    row.subrecordSummary();
                 setText(item);
-                if (fullSummary == null || fullSummary.isBlank()
-                    || fullSummary.length() <= SUBRECORD_PREVIEW_MAX)
+                if (fullSummary == null || fullSummary.isBlank() ||
+                    fullSummary.length() <= SUBRECORD_PREVIEW_MAX)
                 {
                     setTooltip(null);
                     return;
@@ -305,8 +339,8 @@ public class LedgerRegisterPanel implements AppPanel
             "Date: " + safe(transaction.getDate())
                 + "\nPayee: " + safe(transaction.getToFrom())
                 + "\nMemo: " + safe(transaction.getMemo())
-                + "\nEntries: " + (transaction.getEntries() == null ? 0
-                    : transaction.getEntries().size()));
+                + "\nEntries: " + (transaction.getEntries() == null ? 0 :
+                    transaction.getEntries().size()));
         alert.setHeaderText("Details");
         alert.showAndWait();
     }
@@ -320,7 +354,7 @@ public class LedgerRegisterPanel implements AppPanel
     @Override
     public Node root()
     {
-        return root;
+        return this.root;
     }
 
     @Override
@@ -334,9 +368,11 @@ public class LedgerRegisterPanel implements AppPanel
         return value == null ? "" : value;
     }
 
-    private List<LedgerViewRow> asLedgerRows(AccountingTransaction transaction)
+    private List<LedgerViewRow> asLedgerRows(
+        AccountingTransaction transaction)
     {
-        if (transaction.getEntries() == null || transaction.getEntries().isEmpty())
+        if (transaction.getEntries() == null ||
+            transaction.getEntries().isEmpty())
         {
             return List.of(new LedgerViewRow(transaction, null,
                 buildSubrecordSummary(transaction)));
@@ -350,10 +386,11 @@ public class LedgerRegisterPanel implements AppPanel
         return rows;
     }
 
-    private String buildSubrecordSummary(AccountingTransaction transaction)
+    private String buildSubrecordSummary(
+        AccountingTransaction transaction)
     {
-        if (transaction.getSupplementalLines() == null
-            || transaction.getSupplementalLines().isEmpty())
+        if (transaction.getSupplementalLines() == null ||
+            transaction.getSupplementalLines().isEmpty())
         {
             return "";
         }
@@ -370,19 +407,22 @@ public class LedgerRegisterPanel implements AppPanel
         {
             return null;
         }
-        String kind = line.getKind() == null ? "SUPPLEMENTAL" : line.getKind().name();
+        String kind = line.getKind() == null ? "SUPPLEMENTAL" :
+            line.getKind().name();
         StringBuilder summary = new StringBuilder(kind);
         if (line.getReference() != null && !line.getReference().isBlank())
         {
             summary.append("#").append(line.getReference().trim());
         }
-        if (line.getDescription() != null && !line.getDescription().isBlank())
+        if (line.getDescription() != null &&
+            !line.getDescription().isBlank())
         {
             summary.append(" ").append(line.getDescription().trim());
         }
         if (line.getAmount() != null)
         {
-            summary.append(" $").append(line.getAmount().stripTrailingZeros().toPlainString());
+            summary.append(" $").append(
+                line.getAmount().stripTrailingZeros().toPlainString());
         }
         return summary.toString();
     }
