@@ -12,10 +12,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class SclxImportServiceTest
 {
     @Test
-    void importFilePersistsRawSourceBeforeMapping() throws IOException
+    void importFileDoesNotPersistRawSource() throws IOException
     {
         Path tempFile = Files.createTempFile("sclx-import-service-test", ".json");
-        String rawJson = "{\n  \"format\":\"SCLX\",\n  \"version\":\"1.3\",\n  \"unknown\":\"preserve me\"\n}\n";
+        String rawJson = "{\n  \"format\":\"SCLX\",\n  \"version\":\"1.3\",\n  \"unknown\":\"do not retain me\"\n}\n";
         Files.writeString(tempFile, rawJson);
 
         try
@@ -33,10 +33,82 @@ class SclxImportServiceTest
 
             SclxImportResult result = new SclxImportService().importFile(tempFile, target, options);
 
-            assertEquals("run-raw-001", target.rawRunId);
-            assertEquals(rawJson, target.rawSourceJson);
-            assertTrue(target.rawPersistedBeforeBeginImport);
+            assertNull(target.rawRunId);
+            assertNull(target.rawSourceJson);
+            assertFalse(target.rawPersistedBeforeBeginImport);
+            assertTrue(target.beginImportCalled);
             assertEquals("1.3", result.version());
+        }
+        finally
+        {
+            Files.deleteIfExists(tempFile);
+        }
+    }
+
+    @Test
+    void skipsZeroLinesAndTransactionsWithoutPostingLines() throws IOException
+    {
+        Path tempFile = Files.createTempFile("sclx-zero-line-test", ".json");
+        String rawJson = """
+            {
+              "format":"SCLX",
+              "version":"1.3",
+              "transactions":[
+                {
+                  "transactionId":"zero-only",
+                  "description":"Workbook reference only",
+                  "workbookLink":{"sheetKey":"Ledger","ledgerRowIndex":24},
+                  "lines":[
+                    {
+                      "lineId":"zero-line",
+                      "accountId":"Transfer Out",
+                      "debit":"0.00",
+                      "credit":"0.00"
+                    }
+                  ]
+                },
+                {
+                  "transactionId":"mixed",
+                  "description":"Posting transaction with an empty workbook split",
+                  "lines":[
+                    {
+                      "lineId":"empty-line",
+                      "accountId":"Expense",
+                      "debit":"0.00",
+                      "credit":"0.00"
+                    },
+                    {
+                      "lineId":"posting-line",
+                      "accountId":"Expense",
+                      "debit":"25.00",
+                      "credit":"0.00"
+                    }
+                  ]
+                },
+                {
+                  "transactionId":"header-only",
+                  "description":"Voided workbook row",
+                  "lines":[]
+                }
+              ]
+            }
+            """;
+        Files.writeString(tempFile, rawJson);
+
+        try
+        {
+            RecordingTarget target = new RecordingTarget();
+            SclxImportResult result = new SclxImportService().importFile(
+                tempFile,
+                target,
+                SclxImportOptions.defaults());
+
+            assertEquals(1, target.transactions.size());
+            assertEquals("mixed", target.transactions.get(0).transactionId());
+            assertEquals(1, target.transactions.get(0).lines().size());
+            assertEquals("posting-line", target.transactions.get(0).lines().get(0).lineId());
+            assertEquals(1, result.transactionCount());
+            assertEquals(1, result.transactionLineCount());
         }
         finally
         {
@@ -118,7 +190,15 @@ class SclxImportServiceTest
                   "transactionId":"txn-1",
                   "transactionDate":[2026,5,11],
                   "postingDate":[2026,5,12],
-                  "description":"Sample"
+                  "description":"Sample",
+                  "lines":[
+                    {
+                      "lineId":"line-1",
+                      "accountId":"Expense",
+                      "debit":"10.00",
+                      "credit":"0.00"
+                    }
+                  ]
                 }
               ]
             }

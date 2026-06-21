@@ -32,7 +32,6 @@ public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
 {
     private static final Logger LOGGER =
         LoggerFactory.getLogger(JournalLedgerPersistenceGateway.class);
-
     private static final String SCLX_TRANSACTION_ID_KEY = "sclx.transactionId";
 
     private final JournalRepository journalRepository;
@@ -94,9 +93,14 @@ public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
     }
 
     /**
-     * Removes null and zero-dollar entries before they reach either the legacy
-     * journal table or the canonical txn_split table. A zero-dollar workbook
-     * annotation is not an accounting split.
+     * Assigns a stable database identifier.
+     *
+     * <p>For SCLX imports, the external transaction identifier is already
+     * persisted in {@code transaction_info}. Re-importing the same SCLX
+     * transaction therefore reuses the original journal transaction id and
+     * replaces that transaction's current entries instead of creating a
+     * duplicate. Transactions without an SCLX identifier continue to receive
+     * a newly reserved id.</p>
      */
     private void removeZeroValueEntries(AccountingTransaction transaction)
     {
@@ -181,9 +185,81 @@ public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
 
     private void ensureIdentifiers(AccountingTransaction transaction)
     {
-        if (transaction.getId() <= 0)
+        if (transaction.getId() > 0)
         {
-            transaction.setId(fetchNextTransactionId());
+            return;
+        }
+
+        String sclxTransactionId = transaction.getInfo() == null
+            ? null
+            : transaction.getInfo().get(SCLX_TRANSACTION_ID_KEY);
+        Integer existingId = findExistingSclxTransactionId(sclxTransactionId);
+        if (existingId != null)
+        {
+            transaction.setId(existingId);
+            LOGGER.debug(
+                "Reusing journal transaction id={} for SCLX transactionId={}",
+                existingId,
+                sclxTransactionId);
+            return;
+        }
+
+        transaction.setId(reserveNextTransactionId());
+    }
+
+    private Integer findExistingSclxTransactionId(String sclxTransactionId)
+    {
+        if (sclxTransactionId == null || sclxTransactionId.isBlank())
+        {
+            return null;
+        }
+
+        String sql = """
+            SELECT txn_id
+            FROM transaction_info
+            WHERE k = ? AND v = ?
+            ORDER BY txn_id
+            FETCH FIRST 2 ROWS ONLY
+            """;
+        try (Connection connection = Database.get().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setString(1, SCLX_TRANSACTION_ID_KEY);
+            ps.setString(2, sclxTransactionId.trim());
+            try (ResultSet rs = ps.executeQuery())
+            {
+                if (!rs.next())
+                {
+                    return null;
+                }
+                int firstId = rs.getInt(1);
+                if (rs.next())
+                {
+                    LOGGER.warn(
+                        "Multiple journal transactions map to SCLX transactionId={}; reusing lowest id={}",
+                        sclxTransactionId,
+                        firstId);
+                }
+                return firstId;
+            }
+        }
+        catch (SQLException ex)
+        {
+            throw new IllegalStateException(
+                "Failed to resolve existing SCLX transaction id " + sclxTransactionId,
+                ex);
+        }
+    }
+
+    private int reserveNextTransactionId()
+    {
+        try
+        {
+            return this.journalRepository.reserveNextTransactionId();
+        }
+        catch (SQLException ex)
+        {
+            throw new IllegalStateException("Failed to reserve journal transaction id", ex);
         }
     }
 
@@ -282,8 +358,7 @@ public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
         }
     }
 
-    private Set<String> fetchExistingAccountNumbers(Set<String> accountNumbers)
-        throws SQLException
+    private Set<String> fetchExistingAccountNumbers(Set<String> accountNumbers) throws SQLException
     {
         if (accountNumbers == null || accountNumbers.isEmpty())
         {
@@ -322,21 +397,7 @@ public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
         return existing;
     }
 
-    private int fetchNextTransactionId()
-    {
-        try
-        {
-            return this.journalRepository.reserveNextTransactionId();
-        }
-        catch (SQLException ex)
-        {
-            LOGGER.warn("Failed to reserve next journal transaction id", ex);
-            throw new IllegalStateException("Failed to reserve journal transaction id", ex);
-        }
-    }
-
-    private void ensureAccountsForEntries(AccountingTransaction transaction)
-        throws SQLException
+    private void ensureAccountsForEntries(AccountingTransaction transaction) throws SQLException
     {
         Set<AccountingEntry> entries = transaction.getEntries();
         if (entries == null || entries.isEmpty())

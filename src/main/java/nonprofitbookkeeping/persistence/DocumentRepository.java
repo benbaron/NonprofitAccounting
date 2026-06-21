@@ -10,13 +10,11 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 /**
- * Repository used to persist small named JSON documents in the company H2
- * database.
+ * Simple repository used to persist small JSON documents inside the H2 database.
  *
- * <p>Raw SCLX source documents are deliberately not retained. The imported
- * accounting records and compact import summary are the durable data; keeping
- * a second complete copy of the source file only enlarges the company
- * database.</p>
+ * <p>Complete raw SCLX files are interchange artifacts rather than application
+ * records. Keys under {@code sclx.raw.*} are deliberately discarded and any
+ * legacy raw SCLX documents are removed from the database.</p>
  */
 @ApplicationScoped
 public class DocumentRepository
@@ -27,15 +25,17 @@ public class DocumentRepository
         "SELECT content FROM document WHERE name = ?";
     private static final String DELETE_SQL =
         "DELETE FROM document WHERE name = ?";
+    private static final String DELETE_RAW_SCLX_SQL =
+        "DELETE FROM document WHERE name LIKE 'sclx.raw.%'";
     private static final String SCLX_RAW_PREFIX = "sclx.raw.";
 
     /**
-     * Retained for source compatibility with callers from the earlier
-     * thread-local raw-document implementation. There is now nothing to clear.
+     * Retained for source compatibility with callers from the former
+     * thread-local raw-payload implementation. There is no cache to clear.
      */
     public static void clearThreadScopedEphemeralDocuments()
     {
-        // Raw SCLX documents are not stored in memory or in the database.
+        // Raw SCLX documents are no longer retained.
     }
 
     private static boolean isRawSclxDocument(String name)
@@ -43,10 +43,15 @@ public class DocumentRepository
         return name != null && name.startsWith(SCLX_RAW_PREFIX);
     }
 
+    /**
+     * Stores or replaces the JSON payload associated with the supplied name.
+     * Raw SCLX payload keys are ignored and trigger cleanup of legacy copies.
+     */
     public void upsert(String name, String content) throws SQLException
     {
         if (isRawSclxDocument(name))
         {
+            deleteLegacyRawSclxDocuments();
             return;
         }
 
@@ -59,6 +64,9 @@ public class DocumentRepository
         }
     }
 
+    /**
+     * Retrieves the JSON payload associated with the supplied document name.
+     */
     public Optional<String> find(String name) throws SQLException
     {
         if (isRawSclxDocument(name))
@@ -78,13 +86,18 @@ public class DocumentRepository
                 }
             }
         }
+
         return Optional.empty();
     }
 
+    /**
+     * Removes a stored document.
+     */
     public void delete(String name) throws SQLException
     {
         if (isRawSclxDocument(name))
         {
+            deleteLegacyRawSclxDocuments();
             return;
         }
 
@@ -92,6 +105,15 @@ public class DocumentRepository
              PreparedStatement ps = c.prepareStatement(DELETE_SQL))
         {
             ps.setString(1, name);
+            ps.executeUpdate();
+        }
+    }
+
+    private void deleteLegacyRawSclxDocuments() throws SQLException
+    {
+        try (Connection c = Database.get().getConnection();
+             PreparedStatement ps = c.prepareStatement(DELETE_RAW_SCLX_SQL))
+        {
             ps.executeUpdate();
         }
     }
