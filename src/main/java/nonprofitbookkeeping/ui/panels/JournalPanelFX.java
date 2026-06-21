@@ -33,14 +33,19 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Journal;
 import nonprofitbookkeeping.service.PreferencesService;
+import nonprofitbookkeeping.ui.LedgerNavigationContext;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.util.FormatUtils;
+import org.nonprofitbookkeeping.ui.AppPanelId;
+import org.nonprofitbookkeeping.ui.MainWindow;
 
 /**
  * JavaFX journal panel that displays each accounting transaction as one
@@ -68,21 +73,22 @@ public class JournalPanelFX extends BorderPane
     private JournalPanelCompanyListener companyListener;
     private ToolBar actionToolBar;
 
-    /** Creates a journal panel without an external ledger-navigation callback. */
+    /** Creates a journal panel that uses the owning main window for navigation. */
     public JournalPanelFX()
     {
-        this(id -> { });
+        this(null);
     }
 
     /**
-     * Creates a journal panel.
+     * Creates a journal panel with an optional custom ledger-navigation
+     * callback, primarily for embedding and tests.
      *
      * @param ledgerNavigator callback invoked when a transaction-ID link is
-     *                        selected
+     *                        selected; {@code null} uses the owning main window
      */
     public JournalPanelFX(IntConsumer ledgerNavigator)
     {
-        this.ledgerNavigator = ledgerNavigator == null ? id -> { } : ledgerNavigator;
+        this.ledgerNavigator = ledgerNavigator;
         setPadding(PanelChrome.PANEL_PADDING);
         buildTable();
         setTop(PanelChrome.topSection("Journal"));
@@ -115,12 +121,14 @@ public class JournalPanelFX extends BorderPane
         blockColumn.setSortable(false);
         blockColumn.setReorderable(false);
         blockColumn.setResizable(true);
-        blockColumn.prefWidthProperty().bind(this.table.widthProperty().subtract(18));
+        blockColumn.prefWidthProperty().bind(
+            this.table.widthProperty().subtract(18));
         this.table.getColumns().setAll(blockColumn);
 
         this.table.setRowFactory(tv -> {
             TableRow<AccountingTransaction> row = new TableRow<>();
-            row.setStyle("-fx-background-insets: 0; -fx-border-color: transparent;");
+            row.setStyle(
+                "-fx-background-insets: 0; -fx-border-color: transparent;");
             row.setOnMouseClicked(event -> {
                 if (event.getButton() == MouseButton.PRIMARY &&
                     event.getClickCount() == 2 && !row.isEmpty())
@@ -137,8 +145,8 @@ public class JournalPanelFX extends BorderPane
         GridPane header = createJournalGrid();
         header.getStyleClass().add("journal-block-header");
         header.add(headerLabel("Date", Pos.CENTER_LEFT), 0, 0);
-        header.add(headerLabel("Account Title and Description", Pos.CENTER_LEFT),
-            1, 0);
+        header.add(headerLabel("Account Title and Description",
+            Pos.CENTER_LEFT), 1, 0);
         header.add(headerLabel("Fund", Pos.CENTER_LEFT), 2, 0);
         header.add(headerLabel("Debit", Pos.CENTER_RIGHT), 3, 0);
         header.add(headerLabel("Credit", Pos.CENTER_RIGHT), 4, 0);
@@ -204,7 +212,8 @@ public class JournalPanelFX extends BorderPane
             }
             setGraphic(buildTransactionBlock(transaction, getIndex()));
             setPadding(new Insets(4, 0, TRANSACTION_GAP, 0));
-            setStyle("-fx-border-color: transparent; -fx-background-color: transparent;");
+            setStyle(
+                "-fx-border-color: transparent; -fx-background-color: transparent;");
         }
     }
 
@@ -221,36 +230,40 @@ public class JournalPanelFX extends BorderPane
             grid.add(valueLabel(safe(transaction.getDate()), Pos.CENTER_LEFT),
                 0, row);
             Label noLines = valueLabel("(No posting lines)", Pos.CENTER_LEFT);
-            noLines.setStyle("-fx-font-style: italic; -fx-text-fill: derive(-fx-text-base-color, -30%);");
+            noLines.setStyle(
+                "-fx-font-style: italic; -fx-text-fill: derive(-fx-text-base-color, -30%);");
             grid.add(noLines, 1, row);
             grid.add(transactionLink(transaction, tableIndex), 5, row++);
         }
         else
         {
-            for (int i = 0; i < entries.size(); i++)
+            for (int index = 0; index < entries.size(); index++)
             {
-                AccountingEntry entry = entries.get(i);
-                grid.add(valueLabel(i == 0 ? safe(transaction.getDate()) : "",
-                    Pos.CENTER_LEFT), 0, row);
+                AccountingEntry entry = entries.get(index);
+                grid.add(valueLabel(index == 0 ? safe(transaction.getDate()) :
+                    "", Pos.CENTER_LEFT), 0, row);
 
-                Label account = valueLabel(accountTitle(entry), Pos.CENTER_LEFT);
+                Label account = valueLabel(accountTitle(entry),
+                    Pos.CENTER_LEFT);
                 if (entry.getAccountSide() == AccountSide.CREDIT)
                 {
                     account.setPadding(new Insets(2, 4, 2, CREDIT_INDENT));
                 }
                 grid.add(account, 1, row);
-                grid.add(valueLabel(safe(entry.getFundNumber()), Pos.CENTER_LEFT),
-                    2, row);
+                grid.add(valueLabel(safe(entry.getFundNumber()),
+                    Pos.CENTER_LEFT), 2, row);
 
                 BigDecimal amount = entry.getAmount();
-                grid.add(valueLabel(entry.getAccountSide() == AccountSide.DEBIT
-                    ? FormatUtils.formatCurrency(amount) : "", Pos.CENTER_RIGHT),
-                    3, row);
-                grid.add(valueLabel(entry.getAccountSide() == AccountSide.CREDIT
-                    ? FormatUtils.formatCurrency(amount) : "", Pos.CENTER_RIGHT),
-                    4, row);
+                grid.add(valueLabel(
+                    entry.getAccountSide() == AccountSide.DEBIT
+                        ? FormatUtils.formatCurrency(amount) : "",
+                    Pos.CENTER_RIGHT), 3, row);
+                grid.add(valueLabel(
+                    entry.getAccountSide() == AccountSide.CREDIT
+                        ? FormatUtils.formatCurrency(amount) : "",
+                    Pos.CENTER_RIGHT), 4, row);
 
-                if (i == 0)
+                if (index == 0)
                 {
                     grid.add(transactionLink(transaction, tableIndex), 5, row);
                 }
@@ -263,7 +276,8 @@ public class JournalPanelFX extends BorderPane
             Label note = valueLabel(noteLine, Pos.CENTER_LEFT);
             note.setWrapText(true);
             note.setPadding(new Insets(1, 4, 1, 12));
-            note.setStyle("-fx-font-style: italic; -fx-text-fill: derive(-fx-text-base-color, -18%);");
+            note.setStyle(
+                "-fx-font-style: italic; -fx-text-fill: derive(-fx-text-base-color, -18%);");
             grid.add(note, 1, row, 5, 1);
             row++;
         }
@@ -283,12 +297,41 @@ public class JournalPanelFX extends BorderPane
             {
                 this.table.getSelectionModel().clearAndSelect(tableIndex);
             }
-            this.ledgerNavigator.accept(transaction.getId());
+            navigateToLedger(transaction.getId());
             event.consume();
         });
         link.setTooltip(new javafx.scene.control.Tooltip(
             "Open this transaction in the Ledger Register"));
         return link;
+    }
+
+    private void navigateToLedger(int transactionId)
+    {
+        if (this.ledgerNavigator != null)
+        {
+            this.ledgerNavigator.accept(transactionId);
+            return;
+        }
+
+        LedgerNavigationContext.requestTransaction(transactionId);
+        Window journalWindow = getScene() == null ? null :
+            getScene().getWindow();
+        Window ownerWindow = journalWindow;
+        while (ownerWindow instanceof Stage stage && stage.getOwner() != null)
+        {
+            ownerWindow = stage.getOwner();
+        }
+
+        if (ownerWindow != null && ownerWindow.getScene() != null &&
+            ownerWindow.getScene().getRoot() instanceof MainWindow mainWindow)
+        {
+            if (journalWindow instanceof Stage journalStage &&
+                journalWindow != ownerWindow)
+            {
+                journalStage.close();
+            }
+            mainWindow.openPanel(AppPanelId.LEDGER_REGISTER);
+        }
     }
 
     private Label valueLabel(String text, Pos alignment)
@@ -408,7 +451,8 @@ public class JournalPanelFX extends BorderPane
             ObservableList<AccountingTransaction> selected =
                 this.table.getSelectionModel().getSelectedItems();
             if (selected == null || selected.isEmpty() ||
-                !CurrentCompany.isOpen() || CurrentCompany.getCompany() == null ||
+                !CurrentCompany.isOpen() ||
+                CurrentCompany.getCompany() == null ||
                 CurrentCompany.getCompany().getLedger() == null)
             {
                 return;
@@ -421,9 +465,11 @@ public class JournalPanelFX extends BorderPane
                 return;
             }
 
-            for (AccountingTransaction transaction : new ArrayList<>(selected))
+            for (AccountingTransaction transaction :
+                new ArrayList<>(selected))
             {
-                journal.deleteTransaction(transaction.getBookingDateTimestamp());
+                journal.deleteTransaction(
+                    transaction.getBookingDateTimestamp());
             }
 
             try
@@ -446,7 +492,8 @@ public class JournalPanelFX extends BorderPane
 
     private void openEditor(AccountingTransaction existing)
     {
-        if (!CurrentCompany.isOpen() || CurrentCompany.getCompany() == null ||
+        if (!CurrentCompany.isOpen() ||
+            CurrentCompany.getCompany() == null ||
             CurrentCompany.getCompany().getLedger() == null)
         {
             return;
@@ -459,29 +506,30 @@ public class JournalPanelFX extends BorderPane
             return;
         }
 
-        BorderPane pane = new GeneralJournalEntryPanelFX(existing, transaction -> {
-            if (existing == null)
-            {
-                mainJournal.addTransaction(transaction);
-            }
-            else
-            {
-                mainJournal.updateTransaction(transaction);
-            }
+        BorderPane pane = new GeneralJournalEntryPanelFX(existing,
+            transaction -> {
+                if (existing == null)
+                {
+                    mainJournal.addTransaction(transaction);
+                }
+                else
+                {
+                    mainJournal.updateTransaction(transaction);
+                }
 
-            try
-            {
-                CurrentCompany.persist();
-            }
-            catch (IOException ex)
-            {
-                AlertBox.showError(getScene() == null ? null :
-                    getScene().getWindow(),
-                    "Unable to save the transaction. Please try again.");
-                return;
-            }
-            refreshData();
-        });
+                try
+                {
+                    CurrentCompany.persist();
+                }
+                catch (IOException ex)
+                {
+                    AlertBox.showError(getScene() == null ? null :
+                        getScene().getWindow(),
+                        "Unable to save the transaction. Please try again.");
+                    return;
+                }
+                refreshData();
+            });
 
         Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle(existing == null ? "New Transaction" :
@@ -493,8 +541,10 @@ public class JournalPanelFX extends BorderPane
         Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
         double prefW = Math.min(1200, bounds.getWidth() * 0.92);
         double prefH = Math.min(860, bounds.getHeight() * 0.90);
-        double minW = Math.max(800, Math.min(980, bounds.getWidth() * 0.70));
-        double minH = Math.max(600, Math.min(720, bounds.getHeight() * 0.70));
+        double minW = Math.max(800,
+            Math.min(980, bounds.getWidth() * 0.70));
+        double minH = Math.max(600,
+            Math.min(720, bounds.getHeight() * 0.70));
 
         dialog.getDialogPane().setPrefSize(prefW, prefH);
         dialog.getDialogPane().setMinSize(minW, minH);
@@ -519,7 +569,8 @@ public class JournalPanelFX extends BorderPane
     /** Reloads whole transactions from the current company journal. */
     public void refreshData()
     {
-        if (CurrentCompany.isOpen() && CurrentCompany.getCompany() != null &&
+        if (CurrentCompany.isOpen() &&
+            CurrentCompany.getCompany() != null &&
             CurrentCompany.getCompany().getLedger() != null)
         {
             Journal journal =
