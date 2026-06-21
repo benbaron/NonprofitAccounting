@@ -18,12 +18,13 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SclxImportExportServiceUnitTest
 {
     @Test
-    void importAndExportServicesPreserveRawPayloadAndExposeManifest() throws Exception
+    void importDoesNotRetainRawPayloadAndExporterCanStillReadExplicitExternalRawSource() throws Exception
     {
         String runId = "run-unit-001";
         Path file = Files.createTempFile("sclx-import-export-unit", ".json");
@@ -53,7 +54,7 @@ class SclxImportExportServiceUnitTest
             SclxImportResult result = new SclxImportService().importFile(file, target, options);
 
             assertEquals(runId, target.runId);
-            assertEquals(rawJson, target.rawSourceJson);
+            assertNull(target.rawSourceJson);
             assertEquals("1.3", result.version());
 
             SclxExportService exportService = new SclxExportService(
@@ -94,10 +95,14 @@ class SclxImportExportServiceUnitTest
         public void persistRawSource(String rawSourceJson, SclxImportOptions options)
         {
             this.rawSourceJson = rawSourceJson;
+        }
+
+        @Override
+        public void beginImport(SclxDocument document, SclxImportOptions options)
+        {
             this.runId = options.effectiveImportRunId();
         }
 
-        @Override public void beginImport(SclxDocument document, SclxImportOptions options) {}
         @Override public void importCompatibility(SclxDocument.Compatibility compatibility) {}
         @Override public void importOrganization(SclxDocument.Organization organization) {}
         @Override public void importReportingPeriod(SclxDocument.ReportingPeriod reportingPeriod) {}
