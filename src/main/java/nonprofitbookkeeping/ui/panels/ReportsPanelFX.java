@@ -12,7 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import nonprofitbookkeeping.reports.jasper.runtime.ReportMetadata;
+import nonprofitbookkeeping.reports.ReportMetadata;
 import nonprofitbookkeeping.service.ReportService;
 // Added for listener
 import nonprofitbookkeeping.model.CurrentCompany;
@@ -107,10 +107,23 @@ public class ReportsPanelFX extends BorderPane
 			}
 			
 		});
+		Button workbookReports = new Button("Workbook Reports");
+		workbookReports.setOnAction(e -> openWorkbookReportsDialog());
 		return new ToolBar(new Label("Type:"), typeBox, new Label("From:"),
 			from, new Label("To:"),
-			to, gen);
+			to, gen, new Separator(), workbookReports);
 		
+	}
+	
+	/**
+	 * Opens the semantic JSON workbook-report preview panel.
+	 */
+	private void openWorkbookReportsDialog()
+	{
+		Stage dlg = new Stage();
+		dlg.setTitle("Workbook Reports");
+		dlg.setScene(new Scene(new SemanticReportPreviewPanelFX(), 1100, 760));
+		dlg.showAndWait();
 	}
 	
 	/**

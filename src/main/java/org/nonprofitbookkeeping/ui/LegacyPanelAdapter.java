@@ -16,9 +16,9 @@ public final class LegacyPanelAdapter
 
         Node content();
 
-        default void saveContext()
+        default SaveResult saveContext()
         {
-            // no-op by default
+            return SaveResult.noChanges();
         }
 
         default void onEnter()
@@ -54,9 +54,14 @@ public final class LegacyPanelAdapter
             }
 
             @Override
-            public void saveContext()
+            public SaveResult saveContext()
             {
+                if (legacyPanel instanceof AppPanel.SaveAware saveAware)
+                {
+                    return saveAware.save();
+                }
                 legacyPanel.onSave();
+                return SaveResult.saved("Saved " + legacyPanel.title() + ".");
             }
 
             @Override

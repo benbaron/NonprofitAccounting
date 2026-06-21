@@ -48,6 +48,7 @@ public class NavigationPane extends VBox
 
         TreeItem<NavItem> ledger = group(ops, "Ledger");
         add(ledger, AppPanelId.LEDGER_REGISTER, "Ledger Register");
+        add(ledger, AppPanelId.EVENT_ACCOUNTING, "Event Accounting");
 
         add(ops, AppPanelId.SCHEDULES, "Outstanding / Schedules");
         add(ops, AppPanelId.INVENTORY, "Inventory");
@@ -66,6 +67,7 @@ public class NavigationPane extends VBox
         TreeItem<NavItem> ref = group(root, "Reference");
         add(ref, AppPanelId.CHART_OF_ACCOUNTS, "Chart of Accounts");
         add(ref, AppPanelId.FUNDS, "Funds");
+        add(ref, AppPanelId.DONORS, "Donors");
 
         TreeItem<NavItem> registry = group(root, "Record Services");
         Map<String, TreeItem<NavItem>> registryCategories = new LinkedHashMap<>();
@@ -77,6 +79,14 @@ public class NavigationPane extends VBox
                     registryCategories.computeIfAbsent(binding.category(), c -> group(registry, c));
                 addRecordService(categoryNode, binding);
             });
+
+        TreeItem<NavItem> admin = group(root, "Database & Company");
+        add(admin, AppPanelId.DATABASE_ADMIN, "Database Administration");
+        add(admin, AppPanelId.COMPANY_ADMIN, "Company Administration");
+
+        TreeItem<NavItem> importExport = group(root, "Import/Export");
+        add(importExport, AppPanelId.IMPORT_EXPORT, "Import/Export");
+        add(importExport, AppPanelId.MONTHLY_CLOSE, "Monthly Close Checklist");
 
         TreeItem<NavItem> sys = group(root, "System");
         add(sys, AppPanelId.SETTINGS, "Settings");

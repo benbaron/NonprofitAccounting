@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" output="target/classes" path="src/main/java">
+	<classpathentry excluding="nonprofitbookkeeping/reports/jasper/**/*.java|nonprofitbookkeeping/service/ReportGeneratorLoader.java|nonprofitbookkeeping/ui/actions/SwingReportAction.java|nonprofitbookkeeping/ui/actions/GenerateReportsAction.java|nonprofitbookkeeping/ui/actions/GenerateTrialBalanceAction.java|nonprofitbookkeeping/ui/actions/GenerateBalanceSheetAction.java|nonprofitbookkeeping/ui/actions/GenerateIncomeStatementAction.java|tools/jrxml/**/*.java" kind="src" output="target/classes" path="src/main/java">
 		<attributes>
 			<attribute name="optional" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
@@ -28,7 +28,6 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17">
 		<attributes>
-			<attribute name="module" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>

@@ -4,10 +4,6 @@
 package org.nonprofitbookkeeping.ui;
 
 import javafx.scene.layout.BorderPane;
-import nonprofitbookkeeping.ui.panels.ChartOfAccountsTablePanelFX;
-import nonprofitbookkeeping.ui.panels.JournalPanelFX;
-import nonprofitbookkeeping.ui.panels.ReportsPanelFX;
-import org.nonprofitbookkeeping.ui.panels.DashboardPanelFX;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -35,7 +31,12 @@ public class PanelHost extends BorderPane
 
     public PanelHost()
     {
-        this(new DefaultPanelFactory());
+        this(new DefaultPanelFactory(UiServiceRegistry.provider()));
+    }
+
+    public PanelHost(UiServiceProvider services)
+    {
+        this(new DefaultPanelFactory(services));
     }
 
     PanelHost(PanelFactory panelFactory)
@@ -43,15 +44,21 @@ public class PanelHost extends BorderPane
         this.panelFactory = panelFactory;
     }
 
-    public void show(AppPanelId id)
+    public SaveResult show(AppPanelId id)
     {
+        SaveResult saveResult = SaveResult.noChanges();
         if (activeId != null && activeId != id)
         {
-            saveActive();
+            saveResult = prepareActiveForNavigation();
+            if (saveResult.failed())
+            {
+                return saveResult;
+            }
         }
         AppPanel panel = panels.computeIfAbsent(id, this::create);
         activeId = id;
         setCenter(panel.root());
+        return saveResult;
     }
 
     public String getActiveTitle()
@@ -60,15 +67,57 @@ public class PanelHost extends BorderPane
         return p == null ? "(none)" : p.title();
     }
 
-    public void saveActive() { AppPanel p = getActive(); if (p != null) p.onSave(); }
+    public SaveResult saveActive()
+    {
+        AppPanel p = getActive();
+        if (p == null)
+        {
+            return SaveResult.noChanges("No active panel.");
+        }
+        if (p instanceof AppPanel.SaveAware saveAware)
+        {
+            try
+            {
+                return saveAware.save();
+            }
+            catch (RuntimeException ex)
+            {
+                return SaveResult.failed("Save failed for " + p.title() + ": " + ex.getMessage(), ex);
+            }
+        }
+        if (!isDirty(p))
+        {
+            return SaveResult.noChanges("No changes to save for " + p.title() + ".");
+        }
+        try
+        {
+            p.onSave();
+            return SaveResult.saved("Saved " + p.title() + ".");
+        }
+        catch (RuntimeException ex)
+        {
+            return SaveResult.failed("Save failed for " + p.title() + ": " + ex.getMessage(), ex);
+        }
+    }
+    public SaveResult prepareActiveForNavigation()
+    {
+        if (!canNavigateAway())
+        {
+            return SaveResult.failed("Active panel blocked navigation.", null);
+        }
+        return saveActive();
+    }
+
     public boolean isActiveDirty()
     {
         AppPanel p = getActive();
-        return p instanceof DirtyAwarePanel dirtyAwarePanel && dirtyAwarePanel.isDirty();
+        return isDirty(p);
     }
     public void newItemActive() { AppPanel p = getActive(); if (p != null) p.onNew(); }
     public void copySelectionActive() { AppPanel p = getActive(); if (p != null) p.onCopy(); }
     public void pasteActive() { AppPanel p = getActive(); if (p != null) p.onPaste(); }
+    public void deleteActive() { AppPanel p = getActive(); if (p != null) p.onDelete(); }
+    public void cancelActive() { AppPanel p = getActive(); if (p != null) p.onCancel(); }
 
     private AppPanel getActive() { return activeId == null ? null : panels.get(activeId); }
 
@@ -83,27 +132,47 @@ public class PanelHost extends BorderPane
         return panelFactory.create(id);
     }
 
+    private boolean canNavigateAway()
+    {
+        AppPanel p = getActive();
+        return !(p instanceof NavigationGuardPanel guard) || guard.canNavigateAway();
+    }
+
+    private boolean isDirty(AppPanel p)
+    {
+        return p instanceof DirtyAwarePanel dirtyAwarePanel && dirtyAwarePanel.isDirty();
+    }
+
     interface DirtyAwarePanel
     {
         boolean isDirty();
     }
 
-    private static class DefaultPanelFactory implements PanelFactory
+    interface NavigationGuardPanel
     {
+        boolean canNavigateAway();
+    }
+
+    public static class DefaultPanelFactory implements PanelFactory
+    {
+        private final UiServiceProvider services;
+
+        public DefaultPanelFactory(UiServiceProvider services)
+        {
+            this.services = java.util.Objects.requireNonNull(services, "services");
+        }
+
         public AppPanel create(AppPanelId id)
         {
         return switch (id)
         {
-            case DASHBOARD -> new FxAppPanelAdapter<>("Dashboard", DashboardPanelFX::new,
-                DashboardPanelFX::reloadData,
-                DashboardPanelFX::reloadData);
+            case DASHBOARD -> new AlternateDashboardPanel(services.sessionContext(), services);
 
-            case LEDGER_REGISTER -> new FxAppPanelAdapter<>("Ledger Register", JournalPanelFX::new,
-                JournalPanelFX::refreshData,
-                JournalPanelFX::refreshData);
+            case LEDGER_REGISTER -> new LedgerRegisterPanel();
+            case EVENT_ACCOUNTING -> new EventAccountingPanel(services);
 
-            case SCHEDULES -> new SchedulesPanel();
-            case INVENTORY -> new InventoryPanel();
+            case SCHEDULES -> new SchedulesPanel(services);
+            case INVENTORY -> new AssetsRegisterPanel("Inventory");
 
             case BUDGET_EDITOR -> new BudgetEditorPanel();
             case BUDGET_VS_ACTUAL -> new BudgetVsActualPanel();
@@ -111,13 +180,18 @@ public class PanelHost extends BorderPane
             case ASSETS_REGISTER -> new AssetsRegisterPanel();
             case DEPRECIATION_RUNS -> new DepreciationRunsPanel();
 
-            case REPORT_LIBRARY, REPORTS_WORKSPACE -> new FxAppPanelAdapter<>("Reports", ReportsPanelFX::new);
+            case REPORT_LIBRARY, REPORTS_WORKSPACE -> new ReportsWorkspacePanel();
 
-            case CHART_OF_ACCOUNTS -> new FxAppPanelAdapter<>("Chart of Accounts", ChartOfAccountsTablePanelFX::new,
-                ChartOfAccountsTablePanelFX::refreshData,
-                ChartOfAccountsTablePanelFX::refreshData);
+            case CHART_OF_ACCOUNTS -> new ChartOfAccountsPanel();
             case FUNDS -> new FundsPanel();
-            case SETTINGS -> new SettingsPanel();
+            case DONORS -> new DonorManagementPanel();
+            case RECONCILIATION -> new AlternateReconciliationPanel();
+
+            case DATABASE_ADMIN -> new AlternateDatabaseAdminPanel(services);
+            case COMPANY_ADMIN -> new AlternateCompanyAdminPanel(services);
+            case IMPORT_EXPORT -> new AlternateImportExportPanel();
+            case MONTHLY_CLOSE -> new MonthlyCloseChecklistPanel(services);
+            case SETTINGS -> new SettingsPanel(services);
         };
         }
     }

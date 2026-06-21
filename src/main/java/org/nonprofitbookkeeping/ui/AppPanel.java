@@ -11,7 +11,18 @@ public interface AppPanel
     Node root();
 
     default void onSave() {}
+
+    /**
+     * Optional truthful save lifecycle. Existing panels may continue overriding {@link #onSave()}.
+     */
+    interface SaveAware
+    {
+        SaveResult save();
+    }
+
     default void onNew() {}
     default void onCopy() {}
     default void onPaste() {}
+    default void onDelete() {}
+    default void onCancel() {}
 }

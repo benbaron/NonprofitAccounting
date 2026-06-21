@@ -1,8 +1,6 @@
-
 package nonprofitbookkeeping.persistence;
 
 import jakarta.enterprise.context.ApplicationScoped;
-
 import nonprofitbookkeeping.core.Database;
 
 import java.sql.Connection;
@@ -14,7 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Simple repository used to persist arbitrary JSON payloads inside the H2 database.
+ * Simple repository used to persist small JSON documents inside the H2 database.
  *
  * <p>The legacy implementation wrote a number of small JSON documents to files inside the
  * company directory (for example {@code budgets.json}, {@code sales.json}, etc.).  The new

@@ -69,6 +69,40 @@ class MainWindowAlternateCommandCenterTest
     }
 
     @Test
+    void commandCenterExposesCompleteToolbarActions() throws Exception
+    {
+        CountDownLatch latch = new CountDownLatch(1);
+        Throwable[] error = new Throwable[1];
+
+        Platform.runLater(() -> {
+            try
+            {
+                MainWindowAlternate window = new MainWindowAlternate();
+                List<String> buttonLabels = window.commandCenterActionLabelsForTest();
+
+                assertTrue(buttonLabels.contains("New"));
+                assertTrue(buttonLabels.contains("Save"));
+                assertTrue(buttonLabels.contains("Delete"));
+                assertTrue(buttonLabels.contains("Cancel"));
+            }
+            catch (Throwable t)
+            {
+                error[0] = t;
+            }
+            finally
+            {
+                latch.countDown();
+            }
+        });
+
+        assertTrue(latch.await(20, TimeUnit.SECONDS));
+        if (error[0] != null)
+        {
+            throw new AssertionError("MainWindowAlternate complete toolbar action test failed", error[0]);
+        }
+    }
+
+    @Test
     void bankingActionFailuresSurfaceInspectorMessages() throws Exception
     {
         CountDownLatch latch = new CountDownLatch(1);
@@ -79,11 +113,6 @@ class MainWindowAlternateCommandCenterTest
             {
                 MainWindowAlternate.BankingPanelFactory failingFactory = new MainWindowAlternate.BankingPanelFactory()
                 {
-                    public Node createReconcilePanel()
-                    {
-                        throw new IllegalStateException("reconcile exploded");
-                    }
-
                     public Node createUndepositedFundsPanel()
                     {
                         throw new IllegalStateException("undeposited exploded");
@@ -97,7 +126,7 @@ class MainWindowAlternateCommandCenterTest
 
                 MainWindowAlternate window = new MainWindowAlternate(failingFactory);
                 window.testOpenReconcileAccountsDirect();
-                assertTrue(window.testAlternateStatusText().contains("Reconcile Accounts failed: reconcile exploded"));
+                assertTrue(window.testAlternateStatusText().contains("Native reconciliation workspace opened"));
 
                 window.testOpenUndepositedFundsDirect();
                 assertTrue(window.testAlternateStatusText().contains("Undeposited Funds failed: undeposited exploded"));
@@ -118,7 +147,7 @@ class MainWindowAlternateCommandCenterTest
         assertTrue(latch.await(20, TimeUnit.SECONDS));
         if (error[0] != null)
         {
-            throw new AssertionError("MainWindowAlternate banking failure feedback test failed", error[0]);
+            throw new AssertionError("MainWindowAlternate banking feedback test failed", error[0]);
         }
     }
 
@@ -212,6 +241,44 @@ class MainWindowAlternateCommandCenterTest
         if (error[0] != null)
         {
             throw new AssertionError("MainWindowAlternate header continuity regression test failed", error[0]);
+        }
+    }
+
+    @Test
+    void iconRailUsesStyleClassesTooltipsAndAccessibleLabels() throws Exception
+    {
+        CountDownLatch latch = new CountDownLatch(1);
+        Throwable[] error = new Throwable[1];
+
+        Platform.runLater(() -> {
+            try
+            {
+                MainWindowAlternate window = new MainWindowAlternate();
+
+                assertEquals(List.of("Profile", "Dashboard", "Search", "Command Center", "Settings"),
+                    window.testIconRailAccessibleLabels());
+                assertEquals(List.of("Profile", "Dashboard", "Search", "Command Center", "Settings"),
+                    window.testIconRailTooltipLabels());
+                assertTrue(window.testIconRailButtonStyleClasses().contains("alternate-icon-rail-button"));
+                assertTrue(window.testShellSurfaceStyleClasses().contains("alternate-shell-root"));
+                assertTrue(window.testShellSurfaceStyleClasses().contains("alternate-workspace-surface"));
+                assertTrue(window.testShellSurfaceStyleClasses().contains("alternate-shell-title"));
+                assertTrue(window.testShellSurfaceStyleClasses().contains("alternate-shell-subtitle"));
+            }
+            catch (Throwable t)
+            {
+                error[0] = t;
+            }
+            finally
+            {
+                latch.countDown();
+            }
+        });
+
+        assertTrue(latch.await(20, TimeUnit.SECONDS));
+        if (error[0] != null)
+        {
+            throw new AssertionError("MainWindowAlternate icon rail styling/accessibility test failed", error[0]);
         }
     }
 

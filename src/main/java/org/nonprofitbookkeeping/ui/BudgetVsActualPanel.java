@@ -13,9 +13,11 @@ import javafx.scene.layout.VBox;
  */
 public class BudgetVsActualPanel implements AppPanel
 {
+    static final String NO_SERVICE_DATA_MESSAGE = "No service-backed data source is wired for this panel yet.";
+
     private final BorderPane root = new BorderPane();
     private final TreeTableView<Row> table = new TreeTableView<>();
-    private final Label status = new Label("Run report to refresh values");
+    private final Label status = new Label(NO_SERVICE_DATA_MESSAGE);
 
     public BudgetVsActualPanel()
     {
@@ -35,6 +37,7 @@ public class BudgetVsActualPanel implements AppPanel
         table.getColumns().add(col("Actual", Row::actual));
         table.getColumns().add(col("Variance", Row::variance));
         table.setShowRoot(false);
+        table.setPlaceholder(new Label(NO_SERVICE_DATA_MESSAGE));
         root.setCenter(table);
         root.setBottom(new VBox(new Separator(), status));
 
@@ -55,19 +58,8 @@ public class BudgetVsActualPanel implements AppPanel
     private void runReport()
     {
         TreeItem<Row> rootItem = new TreeItem<>(new Row("All", "", "", ""));
-
-        TreeItem<Row> admin = new TreeItem<>(new Row("Administration", "5700.00", "5850.00", "-150.00"));
-        admin.getChildren().add(new TreeItem<>(new Row("Office Rent", "4800.00", "4800.00", "0.00")));
-        admin.getChildren().add(new TreeItem<>(new Row("Utilities", "900.00", "1050.00", "-150.00")));
-
-        TreeItem<Row> programs = new TreeItem<>(new Row("Programs", "6200.00", "5900.00", "300.00"));
-        programs.getChildren().add(new TreeItem<>(new Row("Program Supplies", "3500.00", "3200.00", "300.00")));
-        programs.getChildren().add(new TreeItem<>(new Row("Volunteer Meals", "2700.00", "2700.00", "0.00")));
-
-        rootItem.getChildren().setAll(admin, programs);
         table.setRoot(rootItem);
-        setExpandedOnChildren(true);
-        status.setText("Grouped report generated for " + DateRangeContext.get());
+        status.setText(NO_SERVICE_DATA_MESSAGE + " Date range: " + DateRangeContext.get() + ".");
     }
 
     private void setExpandedOnChildren(boolean expanded)

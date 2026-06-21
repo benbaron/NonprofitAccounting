@@ -1,6 +1,8 @@
 package nonprofitbookkeeping;
 
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.core.FlywayMigrationRunner;
+import nonprofitbookkeeping.persistence.DocumentRepository;
 
 import java.nio.file.Path;
 import java.sql.Connection;
@@ -13,8 +15,10 @@ public final class TestDatabase {
     }
 
     public static void reset(Path tempDir) throws SQLException {
+        DocumentRepository.clearThreadScopedEphemeralDocuments();
         Path dbFile = tempDir.resolve("test-db");
         Database.init(dbFile);
+        FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
         try (Connection connection = Database.get().getConnection();
              Statement statement = connection.createStatement()) {

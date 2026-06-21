@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.io.TempDir;
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.core.FlywayMigrationRunner;
 
 class CompanyPersistenceTest {
 
@@ -17,6 +18,7 @@ class CompanyPersistenceTest {
     void accountsPersistAndReloadWithParentLinks() throws Exception {
         Path dbPath = this.tempDir.resolve("company-db");
         Database.init(dbPath);
+        FlywayMigrationRunner.migrateCurrentDatabaseIfEnabled();
         Database.get().ensureSchema();
 
         Company company = new Company();

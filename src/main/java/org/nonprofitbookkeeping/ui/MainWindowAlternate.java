@@ -4,16 +4,13 @@ import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.chart.AreaChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
@@ -21,6 +18,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TitledPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -35,37 +33,21 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import nonprofitbookkeeping.ui.actions.ExcelTemplateReportActionFX;
-import nonprofitbookkeeping.ui.actions.GenerateIncomeStatementAction;
-import nonprofitbookkeeping.ui.actions.GenerateBalanceSheetAction;
-import nonprofitbookkeeping.ui.actions.GenerateTrialBalanceAction;
-import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.tools.H2SchemaMigrator;
 import nonprofitbookkeeping.ui.panels.HelpPanelFX;
-import nonprofitbookkeeping.ui.panels.LedgerReconcilePanelFX;
-import nonprofitbookkeeping.service.ReconciliationService;
 import nonprofitbookkeeping.service.UndepositedFundsService;
 import nonprofitbookkeeping.service.DocumentStorageService;
-import nonprofitbookkeeping.model.Company;
-import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.ui.panels.UndepositedFundsPanelFX;
 import nonprofitbookkeeping.ui.panels.DocumentsPanelFX;
-import nonprofitbookkeeping.ui.panels.DonorsPanelFX;
-import nonprofitbookkeeping.ui.panels.DonationsPanelFX;
-import nonprofitbookkeeping.ui.panels.GrantsPanelFX;
 import nonprofitbookkeeping.ui.panels.JournalEntryWorkspaceFX;
-import nonprofitbookkeeping.service.DonorService;
-import nonprofitbookkeeping.service.GrantsService;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.prefs.Preferences;
 
@@ -85,16 +67,18 @@ import org.nonprofitbookkeeping.ui.routing.WorkspaceRouter;
 public class MainWindowAlternate extends BorderPane
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(MainWindowAlternate.class);
+    static final String NO_SERVICE_DATA_MESSAGE =
+        "No service-backed data source is wired for this panel yet.";
     private static final Map<String, Color> SURFACE_COLORS = Map.of(
         "Slate", Color.web("#eef1f8"),
         "Warm", Color.web("#f7f2ee"),
         "Cool", Color.web("#edf5f9"));
 
-    private final PanelHost panelHost = new PanelHost();
+    private final PanelHost panelHost;
     private final NavigationPane nav =
         new NavigationPane(this::openPanel, this::openInspectorForSelection, this::openRecordServicePanel);
     private final Label alternateStatus = new Label("Select an item to see context details.");
-    private final VBox dashboardCanvas = new VBox();
+    private final AlternateDashboardPanel alternateDashboardPanel;
     private final StackPane workspaceSurface = new StackPane();
     private final VBox alternateSettingsPane = new VBox();
     private final StackPane alternateContentPane = new StackPane();
@@ -108,10 +92,13 @@ public class MainWindowAlternate extends BorderPane
     private final TitledPane importToolsPane = new TitledPane();
     private final WorkspaceRouter workspaceRouter = new WorkspaceRouter();
     private final BankingPanelFactory bankingPanelFactory;
-    private final AlternateDataContextService contextService = new AlternateDataContextService();
+    private final AlternateDataContextService contextService;
+    private final UiSessionContext sessionContext;
     private final Label headerTitle = new Label("Dashboard");
     private final Label headerSubtitle = new Label("No company open");
     private final AlternateNavigationModel navigationModel = new AlternateNavigationModel();
+    private final AlternateUiCommandCatalog commandCatalog;
+    private final UiServiceProvider uiServices;
     private final List<Button> iconRailButtons = new ArrayList<>();
     private LegacyPanelAdapter.AdaptedPanel activeAdaptedPanel;
     private AppPanelId activePanelId = AppPanelId.DASHBOARD;
@@ -121,8 +108,6 @@ public class MainWindowAlternate extends BorderPane
 
     interface BankingPanelFactory
     {
-        Node createReconcilePanel();
-
         Node createUndepositedFundsPanel();
 
         Node createDocumentsPanel();
@@ -130,11 +115,6 @@ public class MainWindowAlternate extends BorderPane
 
     static class DefaultBankingPanelFactory implements BankingPanelFactory
     {
-        public Node createReconcilePanel()
-        {
-            return new LedgerReconcilePanelFX(new ReconciliationService());
-        }
-
         public Node createUndepositedFundsPanel()
         {
             return new UndepositedFundsPanelFX(new UndepositedFundsService());
@@ -153,45 +133,65 @@ public class MainWindowAlternate extends BorderPane
 
     MainWindowAlternate(BankingPanelFactory bankingPanelFactory)
     {
+        this(bankingPanelFactory, new AlternateDataContextService());
+    }
+
+    MainWindowAlternate(BankingPanelFactory bankingPanelFactory, AlternateDataContextService contextService)
+    {
         this.bankingPanelFactory = bankingPanelFactory;
+        this.contextService = contextService;
+        this.sessionContext = contextService.sessionContext();
+        this.uiServices = new UiServiceProvider(contextService);
+        this.panelHost = new PanelHost(this.uiServices);
+        this.alternateDashboardPanel = new AlternateDashboardPanel(this.sessionContext, this.uiServices);
+        this.commandCatalog = new AlternateUiCommandCatalog(this.sessionContext);
+        this.sessionContext.companyOpenProperty().addListener((obs, oldValue, newValue) -> {
+            refreshIconBarState();
+            rebuildNavigationButtons();
+        });
+        this.sessionContext.databaseOpenProperty().addListener((obs, oldValue, newValue) -> rebuildNavigationButtons());
         setTop(buildHeader());
         setCenter(buildWorkspace());
         setLeft(buildIconRail());
         setPadding(new Insets(10));
+        getStyleClass().add("alternate-shell-root");
         setBackground(new Background(new BackgroundFill(SURFACE_COLORS.get("Slate"), CornerRadii.EMPTY, Insets.EMPTY)));
         openPanel(AppPanelId.DASHBOARD);
     }
 
     private Node buildIconRail()
     {
-        iconRailButtons.clear();
-        iconRailButtons.add(iconButton("◉", this::openProfilePage));
-        iconRailButtons.add(iconButton("⌂", () -> openPanel(AppPanelId.DASHBOARD)));
-        iconRailButtons.add(iconButton("⌕", this::openSearchPage));
-        iconRailButtons.add(iconButton("☰", this::openCommandCenter));
-        iconRailButtons.add(iconButton("⚙", () -> openPanel(AppPanelId.SETTINGS)));
-        VBox rail = new VBox(14, iconRailButtons.toArray(Button[]::new));
+        this.iconRailButtons.clear();
+        this.iconRailButtons.add(iconButton("◉", "Profile", this::openProfilePage));
+        this.iconRailButtons.add(iconButton("⌂", "Dashboard", () -> openPanel(AppPanelId.DASHBOARD)));
+        this.iconRailButtons.add(iconButton("⌕", "Search", this::openSearchPage));
+        this.iconRailButtons.add(iconButton("☰", "Command Center", this::openCommandCenter));
+        this.iconRailButtons.add(iconButton("⚙", "Settings", () -> openPanel(AppPanelId.SETTINGS)));
+        VBox rail = new VBox(14, this.iconRailButtons.toArray(Button[]::new));
         rail.setPadding(new Insets(14, 8, 14, 8));
-        rail.setStyle("-fx-background-color: #1f2431; -fx-background-radius: 14;");
+        rail.getStyleClass().add("alternate-icon-rail");
         refreshIconBarState();
         return rail;
     }
 
-    private Button iconButton(String text, Runnable action)
+    private Button iconButton(String text, String label, Runnable action)
     {
         Button button = new Button(text);
         button.setMinSize(46, 46);
         button.setOnAction(e -> action.run());
-        button.setStyle("-fx-background-color: #2c3347; -fx-text-fill: white; -fx-background-radius: 12; -fx-font-size: 20px;");
+        button.getStyleClass().add("alternate-icon-rail-button");
+        button.setTooltip(new Tooltip(label));
+        button.setAccessibleText(label);
         return button;
     }
 
     private Node buildHeader()
     {
-        headerTitle.setStyle("-fx-font-size: 22px; -fx-font-weight: 700;");
-        headerSubtitle.setStyle("-fx-text-fill: #5c6482;");
+        this.headerTitle.getStyleClass().add("alternate-shell-title");
+        this.headerSubtitle.getStyleClass().add("alternate-shell-subtitle");
+        this.headerSubtitle.textProperty().bind(this.sessionContext.sessionDisplayLabelProperty());
 
-        VBox heading = new VBox(2, headerTitle, headerSubtitle);
+        VBox heading = new VBox(2, this.headerTitle, this.headerSubtitle);
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
@@ -209,41 +209,38 @@ public class MainWindowAlternate extends BorderPane
     {
         VBox leftNav = buildLeftNavigation();
 
-        dashboardCanvas.getChildren().setAll(buildDashboardCards());
-        dashboardCanvas.setSpacing(12);
+        this.panelHost.setVisible(false);
+        this.panelHost.setManaged(false);
 
-        panelHost.setVisible(false);
-        panelHost.setManaged(false);
+        this.alternateSettingsPane.setVisible(false);
+        this.alternateSettingsPane.setManaged(false);
+        this.alternateContentPane.setVisible(false);
+        this.alternateContentPane.setManaged(false);
+        this.workspaceSurface.getChildren().setAll(this.alternateDashboardPanel.root(), this.alternateSettingsPane, this.alternateContentPane, this.panelHost);
+        StackPane.setMargin(this.alternateDashboardPanel.root(), new Insets(8));
+        StackPane.setMargin(this.panelHost, new Insets(8));
+        HBox.setHgrow(this.workspaceSurface, Priority.ALWAYS);
+        this.workspaceSurface.getStyleClass().add("alternate-workspace-surface");
 
-        alternateSettingsPane.setVisible(false);
-        alternateSettingsPane.setManaged(false);
-        alternateContentPane.setVisible(false);
-        alternateContentPane.setManaged(false);
-        workspaceSurface.getChildren().setAll(dashboardCanvas, alternateSettingsPane, alternateContentPane, panelHost);
-        StackPane.setMargin(dashboardCanvas, new Insets(8));
-        StackPane.setMargin(panelHost, new Insets(8));
-        HBox.setHgrow(workspaceSurface, Priority.ALWAYS);
-        workspaceSurface.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 18;");
-
-        HBox body = new HBox(12, leftNav, workspaceSurface);
+        HBox body = new HBox(12, leftNav, this.workspaceSurface);
         body.setAlignment(Pos.TOP_LEFT);
         return body;
     }
 
     private VBox buildLeftNavigation()
     {
-        importToolsPane.setText("Import & Tools");
-        importToolsPane.setContent(new VBox(6,
+        this.importToolsPane.setText("Import & Tools");
+        this.importToolsPane.setContent(new VBox(6,
             navButton("Assets Register", AppPanelId.ASSETS_REGISTER),
             navButton("Budget vs Actual", AppPanelId.BUDGET_VS_ACTUAL),
             navButton("Depreciation", AppPanelId.DEPRECIATION_RUNS)));
-        importToolsPane.setExpanded(false);
+        this.importToolsPane.setExpanded(false);
         rebuildNavigationButtons();
 
-        VBox wrapper = new VBox(10, new Label("Navigation"), navButtons, importToolsPane);
+        VBox wrapper = new VBox(10, new Label("Navigation"), this.navButtons, this.importToolsPane);
         wrapper.setPadding(new Insets(12));
         wrapper.setMinWidth(240);
-        wrapper.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 16;");
+        wrapper.getStyleClass().add("alternate-left-navigation");
         return wrapper;
     }
 
@@ -264,64 +261,6 @@ public class MainWindowAlternate extends BorderPane
         return button;
     }
 
-    private Node buildDashboardCards()
-    {
-        GridPane grid = new GridPane();
-        grid.setHgap(12);
-        grid.setVgap(12);
-        grid.add(buildCard("Receivables", "$11,230", "+8.2%"), 0, 0);
-        grid.add(buildCard("Payables", "$5,830", "-1.1%"), 1, 0);
-        grid.add(buildCard("Profit & Loss", "$23,009", "+14.5%"), 2, 0);
-        grid.add(buildChartCard(), 0, 1, 2, 1);
-        grid.add(buildBalancesCard(), 2, 1);
-        return new ScrollPane(grid);
-    }
-
-    private VBox buildCard(String title, String value, String delta)
-    {
-        Label t = new Label(title);
-        Label v = new Label(value);
-        v.setStyle("-fx-font-size: 20px; -fx-font-weight: 700;");
-        Label d = new Label(delta);
-        d.setStyle("-fx-text-fill: #5962cc;");
-        VBox box = new VBox(8, t, v, d);
-        box.setPadding(new Insets(12));
-        box.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
-        return box;
-    }
-
-    private VBox buildChartCard()
-    {
-        CategoryAxis xAxis = new CategoryAxis();
-        NumberAxis yAxis = new NumberAxis();
-        AreaChart<String, Number> chart = new AreaChart<>(xAxis, yAxis);
-        chart.setLegendVisible(false);
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.getData().add(new XYChart.Data<>("Jan", 9));
-        series.getData().add(new XYChart.Data<>("Feb", 12));
-        series.getData().add(new XYChart.Data<>("Mar", 11));
-        series.getData().add(new XYChart.Data<>("Apr", 15));
-        chart.getData().add(series);
-
-        VBox box = new VBox(8, new Label("Cash Flow"), chart);
-        box.setPadding(new Insets(12));
-        box.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
-        return box;
-    }
-
-    private VBox buildBalancesCard()
-    {
-        VBox list = new VBox(6,
-            new Label("Operating  ·  $12,004"),
-            new Label("Payroll      ·  $3,420"),
-            new Label("Savings      ·  $7,230"),
-            new Label("Undeposited  ·  $980"));
-        VBox box = new VBox(8, new Label("Account Balances"), new Separator(), list);
-        box.setPadding(new Insets(12));
-        box.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
-        return box;
-    }
-
     private VBox buildAlternateSettingsPane()
     {
         ChoiceBox<String> backgroundChoice = new ChoiceBox<>(FXCollections.observableArrayList(SURFACE_COLORS.keySet()));
@@ -334,9 +273,9 @@ public class MainWindowAlternate extends BorderPane
         ChoiceBox<String> roundingChoice = new ChoiceBox<>(FXCollections.observableArrayList("Soft", "Rounded", "Sharp"));
         roundingChoice.setValue("Rounded");
 
-        alternateStatus.setWrapText(true);
+        this.alternateStatus.setWrapText(true);
 
-        alternateSettingsPane.getChildren().setAll(
+        this.alternateSettingsPane.getChildren().setAll(
             new Label("Alternate View Settings"),
             new Separator(),
             new Label("Background"),
@@ -344,13 +283,13 @@ public class MainWindowAlternate extends BorderPane
             new Label("Card Corners"),
             roundingChoice,
             new Label("Status"),
-            alternateStatus,
+            this.alternateStatus,
             new Separator(),
-            new Label("Custom Fields / Localization / Expenses / Bank placeholders added in alternate templates."));
-        alternateSettingsPane.setSpacing(8);
-        alternateSettingsPane.setPadding(new Insets(12));
-        alternateSettingsPane.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
-        return alternateSettingsPane;
+            new Label("Custom fields, localization, expenses, and bank settings are not wired yet."));
+        this.alternateSettingsPane.setSpacing(8);
+        this.alternateSettingsPane.setPadding(new Insets(12));
+        this.alternateSettingsPane.getStyleClass().add("alternate-content-card");
+        return this.alternateSettingsPane;
     }
 
 
@@ -359,12 +298,12 @@ public class MainWindowAlternate extends BorderPane
     {
         TextField dbPath = new TextField();
         dbPath.setPromptText("/path/to/file.mv.db");
-        Path activeDatabaseBasePath = contextService.activeDatabaseBasePath();
+        Path activeDatabaseBasePath = this.contextService.activeDatabaseBasePath();
         if (activeDatabaseBasePath != null)
         {
             dbPath.setText(activeDatabaseBasePath.toString());
         }
-        ListView<String> recent = new ListView<>(FXCollections.observableArrayList(contextService.recentDatabasePaths()));
+        ListView<String> recent = new ListView<>(FXCollections.observableArrayList(this.contextService.recentDatabasePaths()));
         recent.setPrefHeight(120);
         Button browse = new Button("Browse...");
         Button open = new Button("Open Database");
@@ -393,15 +332,15 @@ public class MainWindowAlternate extends BorderPane
             String value = dbPath.getText();
             if (value == null || value.isBlank())
             {
-                alternateStatus.setText("No database selected.");
+                this.alternateStatus.setText("No database selected.");
                 state.setText("No database selected.");
                 return;
             }
             try
             {
-                contextService.openDatabase(Paths.get(value.trim()));
+                this.contextService.openDatabase(Paths.get(value.trim()));
                 String openedMessage = "Database opened: " + value.trim();
-                alternateStatus.setText(openedMessage);
+                this.alternateStatus.setText(openedMessage);
                 state.setText(openedMessage);
                 refreshHeaderLabels();
                 rebuildNavigationButtons();
@@ -409,14 +348,14 @@ public class MainWindowAlternate extends BorderPane
             catch (Exception ex)
             {
                 String failedMessage = "Failed to open database: " + ex.getMessage();
-                alternateStatus.setText(failedMessage);
+                this.alternateStatus.setText(failedMessage);
                 state.setText(failedMessage);
             }
         });
-        databaseSelectorPane.getChildren().setAll(new Label("Open Database (.mv.db/.db)"), new HBox(8, dbPath, browse), new Label("Recent Databases"), recent, open, state);
-        databaseSelectorPane.setPadding(new Insets(12));
-        databaseSelectorPane.setSpacing(10);
-        return databaseSelectorPane;
+        this.databaseSelectorPane.getChildren().setAll(new Label("Open Database (.mv.db/.db)"), new HBox(8, dbPath, browse), new Label("Recent Databases"), recent, open, state);
+        this.databaseSelectorPane.setPadding(new Insets(12));
+        this.databaseSelectorPane.setSpacing(10);
+        return this.databaseSelectorPane;
     }
 
     private VBox buildCompanySelectorPane()
@@ -424,14 +363,14 @@ public class MainWindowAlternate extends BorderPane
         Map<String, Long> companiesByName = new LinkedHashMap<>();
         try
         {
-            for (var record : contextService.listCompanies())
+            for (var record : this.contextService.listCompanies())
             {
                 companiesByName.put(record.name() + " (ID: " + record.id() + ")", record.id());
             }
         }
         catch (Exception ex)
         {
-            alternateStatus.setText("Failed to load companies: " + ex.getMessage());
+            this.alternateStatus.setText("Failed to load companies: " + ex.getMessage());
         }
 
         ComboBox<String> companies = new ComboBox<>(FXCollections.observableArrayList(companiesByName.keySet()));
@@ -444,7 +383,7 @@ public class MainWindowAlternate extends BorderPane
         try
         {
             Map<Long, String> labelsById = companiesByName.entrySet().stream().collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
-            recent.setItems(FXCollections.observableArrayList(contextService.recentCompanies().stream()
+            recent.setItems(FXCollections.observableArrayList(this.contextService.recentCompanies().stream()
                 .map(choice -> labelsById.getOrDefault(choice.id(), choice.label()))
                 .toList()));
         }
@@ -474,15 +413,15 @@ public class MainWindowAlternate extends BorderPane
             Long companyId = companiesByName.get(selected);
             if (companyId == null)
             {
-                alternateStatus.setText("No company selected.");
+                this.alternateStatus.setText("No company selected.");
                 state.setText("No company selected.");
                 return;
             }
             try
             {
-                contextService.openCompany(companyId, selected);
+                this.contextService.openCompany(companyId, selected);
                 String openedMessage = "Company opened: " + selected;
-                alternateStatus.setText(openedMessage);
+                this.alternateStatus.setText(openedMessage);
                 state.setText(openedMessage);
                 refreshHeaderLabels();
                 rebuildNavigationButtons();
@@ -490,111 +429,145 @@ public class MainWindowAlternate extends BorderPane
             catch (Exception ex)
             {
                 String failedMessage = "Failed to open company: " + ex.getMessage();
-                alternateStatus.setText(failedMessage);
+                this.alternateStatus.setText(failedMessage);
                 state.setText(failedMessage);
             }
         });
-        companySelectorPane.getChildren().setAll(new Label("Open Company"), companies, new Label("Recent Companies"), recent, open, state);
-        companySelectorPane.setPadding(new Insets(12));
-        companySelectorPane.setSpacing(10);
-        return companySelectorPane;
+        this.companySelectorPane.getChildren().setAll(new Label("Open Company"), companies, new Label("Recent Companies"), recent, open, state);
+        this.companySelectorPane.setPadding(new Insets(12));
+        this.companySelectorPane.setSpacing(10);
+        return this.companySelectorPane;
     }
 
     private VBox buildProfilePane()
     {
         Label title = new Label("User Profile");
-        title.setStyle("-fx-font-size: 18px; -fx-font-weight: 700;");
-        profilePane.getChildren().setAll(
+        title.getStyleClass().add("alternate-panel-title");
+        this.profilePane.getChildren().setAll(
             title,
             new Separator(),
-            new Label("Signed in user"),
-            new Label("Role: Accountant"),
+            new Label("No signed-in user service is wired yet."),
+            new Label("No role or permissions service is wired yet."),
             new Label("Preferences and account details will be wired in a later phase."));
-        profilePane.setPadding(new Insets(12));
-        profilePane.setSpacing(10);
-        profilePane.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
-        return profilePane;
+        this.profilePane.setPadding(new Insets(12));
+        this.profilePane.setSpacing(10);
+        this.profilePane.getStyleClass().add("alternate-content-card");
+        return this.profilePane;
     }
 
     private VBox buildSearchPane()
     {
         TextField query = new TextField();
-        query.setPromptText("Search accounts, transactions, reports...");
+        query.setPromptText("Search accounts, transactions, funds, donors, reports, companies...");
         Button search = new Button("Search");
+        Button openSelected = new Button("Open Selected Result");
         Label status = new Label("Enter a query to search.");
-        search.setOnAction(e -> status.setText(executeSearchQuery(query.getText())));
-        searchPane.getChildren().setAll(
+        ListView<GlobalSearchResult> results = new ListView<>();
+        results.setPlaceholder(new Label("No search results."));
+        results.setCellFactory(list -> new ListCell<>()
+        {
+            @Override
+            protected void updateItem(GlobalSearchResult item, boolean empty)
+            {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.type() + " • " + item.title()
+                    + (item.subtitle().isBlank() ? "" : "\n" + item.subtitle()));
+            }
+        });
+        Runnable execute = () -> executeSearchQuery(query.getText(), results, status);
+        search.setOnAction(e -> execute.run());
+        openSelected.setOnAction(e -> openSearchResult(results.getSelectionModel().getSelectedItem()));
+        query.setOnAction(e -> execute.run());
+        results.setOnMouseClicked(e -> {
+            if (e.getClickCount() >= 2)
+            {
+                openSearchResult(results.getSelectionModel().getSelectedItem());
+            }
+        });
+        results.setOnKeyPressed(e -> {
+            if (e.getCode() == javafx.scene.input.KeyCode.ENTER)
+            {
+                openSearchResult(results.getSelectionModel().getSelectedItem());
+            }
+        });
+        this.searchPane.getChildren().setAll(
             new Label("Search"),
             new Separator(),
             query,
             search,
-            status);
-        searchPane.setPadding(new Insets(12));
-        searchPane.setSpacing(10);
-        searchPane.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
-        return searchPane;
+            openSelected,
+            status,
+            results);
+        VBox.setVgrow(results, Priority.ALWAYS);
+        this.searchPane.setPadding(new Insets(12));
+        this.searchPane.setSpacing(10);
+        this.searchPane.getStyleClass().add("alternate-content-card");
+        return this.searchPane;
     }
 
 
+
+    private AlternateUiCommandActions commandActions()
+    {
+        Runnable openDatabaseAdministration = () -> openPanel(AppPanelId.DATABASE_ADMIN);
+        return new AlternateUiCommandActions(
+            openDatabaseAdministration,
+            openDatabaseAdministration,
+            openDatabaseAdministration,
+            openDatabaseAdministration,
+            notImplementedAction("Create Company"),
+            notImplementedAction("Destroy/Delete Company"),
+            notImplementedAction("Populate Company"),
+            notImplementedAction("Create Sample Company"),
+            this::openCompanySelector,
+            () -> openPanel(AppPanelId.IMPORT_EXPORT),
+            () -> openPanel(AppPanelId.IMPORT_EXPORT),
+            () -> openPanel(AppPanelId.IMPORT_EXPORT),
+            () -> openPanel(AppPanelId.MONTHLY_CLOSE),
+            () -> openPanel(AppPanelId.CHART_OF_ACCOUNTS),
+            () -> openPanel(AppPanelId.LEDGER_REGISTER),
+            () -> openPanel(AppPanelId.INVENTORY),
+            () -> openPanel(AppPanelId.REPORTS_WORKSPACE),
+            this::runNewAction,
+            this::runSaveAction,
+            this::runDeleteAction,
+            this::runCancelAction,
+            this::openSearchPage,
+            this::openReportsScheduleDirect,
+            this::openDonorsDirect,
+            () -> openPanel(AppPanelId.FUNDS),
+            () -> openPanel(AppPanelId.RECONCILIATION),
+            this::openUndepositedFundsDirect,
+            this::openDocumentsDirect,
+            this::openHelpHint);
+    }
+
     private VBox buildCommandCenterPane()
     {
-        VBox fileGroup = new VBox(6,
-            new Label("File"),
-            actionButton("Open Database", this::openDatabaseSelector),
-            actionButton("H2 Recovery Tool", this::openH2RecoveryTool),
-            actionButton("Open Company", this::openCompanySelector));
-
-        VBox runGroup = new VBox(6,
-            new Label("Run"),
-            actionButton("Chart of Accounts", () -> openPanel(AppPanelId.CHART_OF_ACCOUNTS)),
-            actionButton("Journal", () -> openPanel(AppPanelId.LEDGER_REGISTER)),
-            actionButton("Inventory", () -> openPanel(AppPanelId.INVENTORY)),
-            actionButton("Reports Workspace", () -> openPanel(AppPanelId.REPORTS_WORKSPACE)));
-
-        VBox reportActions = new VBox(6,
-            new Label("Reports actions"),
-            actionButton("Print Income Statement", this::printIncomeStatementDirect),
-            actionButton("Print Balance Sheet", this::printBalanceSheetDirect),
-            actionButton("Print Trial Balance", this::printTrialBalanceDirect),
-            actionButton("Export", this::openReportsWorkspaceWithExportHint),
-            actionButton("Schedule", this::openReportsScheduleDirect));
-
-        Button newButton = actionButton("New", this::runNewAction);
-        Button saveButton = actionButton("Save", this::runSaveAction);
-        boolean panelCommandAvailable = hasActivePanelCommandTarget();
-        newButton.setDisable(!panelCommandAvailable);
-        saveButton.setDisable(!panelCommandAvailable);
-
-        VBox quickActions = new VBox(6,
-            new Label("Toolbar-style actions"),
-            newButton,
-            saveButton,
-            actionButton("Find", this::openSearchPage),
-            actionButton("Journal", () -> openPanel(AppPanelId.LEDGER_REGISTER)));
-
-        VBox fundraisingGroup = new VBox(6,
-            new Label("Fundraising"),
-            actionButton("Donors", this::openDonorsDirect),
-            actionButton("Donations", this::openDonationsDirect),
-            actionButton("Grants", this::openGrantsDirect),
-            actionButton("Funds", () -> openPanel(AppPanelId.FUNDS)));
-
-        VBox bankingGroup = new VBox(6,
-            new Label("Banking"),
-            actionButton("Reconcile Accounts", this::openReconcileAccountsDirect),
-            actionButton("Undeposited Funds", this::openUndepositedFundsDirect),
-            actionButton("Documents & Attachments", this::openDocumentsDirect),
-            actionButton("Account Activity", () -> openPanel(AppPanelId.LEDGER_REGISTER)),
-            actionButton("Transactions", () -> openPanel(AppPanelId.LEDGER_REGISTER)));
-
-        VBox helpGroup = new VBox(6,
-            new Label("Help"),
-            actionButton("Help Center", this::openHelpHint));
-
-        VBox pane = new VBox(10, new Label("Command Center"), new Separator(), fileGroup, new Separator(), runGroup, new Separator(), reportActions, new Separator(), quickActions, new Separator(), fundraisingGroup, new Separator(), bankingGroup, new Separator(), helpGroup);
+        VBox pane = new VBox(10, new Label("Command Center"), new Separator());
+        String currentCategory = null;
+        VBox group = null;
+        for (CommandDescriptor command : this.commandCatalog.commands(commandActions()))
+        {
+            if (!command.category().equals(currentCategory))
+            {
+                if (group != null)
+                {
+                    pane.getChildren().add(group);
+                    pane.getChildren().add(new Separator());
+                }
+                currentCategory = command.category();
+                group = new VBox(6, new Label(currentCategory));
+            }
+            group.getChildren().add(actionButton(command));
+        }
+        if (group != null)
+        {
+            pane.getChildren().add(group);
+        }
         pane.setPadding(new Insets(12));
         pane.setSpacing(10);
-        pane.setStyle("-fx-background-color: #f7f8fe; -fx-background-radius: 14;");
+        pane.getStyleClass().add("alternate-content-card");
         return pane;
     }
 
@@ -609,65 +582,7 @@ public class MainWindowAlternate extends BorderPane
     }
 
 
-    private void printIncomeStatementDirect()
-    {
-        try
-        {
-            new GenerateIncomeStatementAction(new ReportService()).actionPerformed(null);
-            openInspectorForSelection("Reports", "Printed Income Statement.");
-        }
-        catch (Exception ex)
-        {
-            openInspectorForSelection("Reports", "Income Statement print failed: " + ex.getMessage());
-        }
-    }
-
-    private void printBalanceSheetDirect()
-    {
-        try
-        {
-            new GenerateBalanceSheetAction(new ReportService()).actionPerformed(null);
-            openInspectorForSelection("Reports", "Printed Balance Sheet.");
-        }
-        catch (Exception ex)
-        {
-            openInspectorForSelection("Reports", "Balance Sheet print failed: " + ex.getMessage());
-        }
-    }
-
-    private void printTrialBalanceDirect()
-    {
-        try
-        {
-            new GenerateTrialBalanceAction(new ReportService()).actionPerformed(null);
-            openInspectorForSelection("Reports", "Printed Trial Balance.");
-        }
-        catch (Exception ex)
-        {
-            openInspectorForSelection("Reports", "Trial Balance print failed: " + ex.getMessage());
-        }
-    }
-
-    private void openReportsWorkspaceWithExportHint()
-    {
-        Stage owner = getOwningStage();
-        if (owner == null)
-        {
-            openInspectorForSelection("Reports", "Export action requires an active window; open Reports workspace and try again.");
-            return;
-        }
-        try
-        {
-            new ExcelTemplateReportActionFX(owner).handle(null);
-            openInspectorForSelection("Reports", "Export action launched via Excel template report workflow.");
-        }
-        catch (Exception ex)
-        {
-            openInspectorForSelection("Reports", "Export action failed: " + ex.getMessage());
-        }
-    }
-
-    private void openReportsScheduleDirect()
+    void openReportsScheduleDirect()
     {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Schedule Report");
@@ -705,9 +620,9 @@ public class MainWindowAlternate extends BorderPane
 
     private void saveScheduledReport(String entry)
     {
-        String existing = alternatePreferences.get(SCHEDULED_REPORTS_KEY, "");
+        String existing = this.alternatePreferences.get(SCHEDULED_REPORTS_KEY, "");
         String updated = existing == null || existing.isBlank() ? entry : entry + "\n" + existing;
-        alternatePreferences.put(SCHEDULED_REPORTS_KEY, updated);
+        this.alternatePreferences.put(SCHEDULED_REPORTS_KEY, updated);
     }
 
     void saveScheduledReportForTest(String entry)
@@ -717,42 +632,43 @@ public class MainWindowAlternate extends BorderPane
 
     void clearScheduledReportsForTest()
     {
-        alternatePreferences.remove(SCHEDULED_REPORTS_KEY);
+        this.alternatePreferences.remove(SCHEDULED_REPORTS_KEY);
     }
 
     String scheduledReportsSnapshotForTest()
     {
-        return alternatePreferences.get(SCHEDULED_REPORTS_KEY, "");
+        return this.alternatePreferences.get(SCHEDULED_REPORTS_KEY, "");
     }
 
-    void triggerReportExportActionForTest()
+
+
+
+    Runnable notImplementedAction(String label)
     {
-        openReportsWorkspaceWithExportHint();
+        return () -> openInspectorForSelection("Not implemented", label + " is not implemented in the alternate UI yet.");
+    }
+
+    List<CommandDescriptor> commandDescriptorsForTest()
+    {
+        return this.commandCatalog.commands(commandActions());
     }
 
     String alternateStatusTextForTest()
     {
-        return alternateStatus.getText();
+        return this.alternateStatus.getText();
     }
 
-    private void openReconcileAccountsDirect()
+    void openReconcileAccountsDirect()
+    {
+        openPanel(AppPanelId.RECONCILIATION);
+        openInspectorForSelection("Banking", "Native reconciliation workspace opened in alternate shell.");
+    }
+
+    void openUndepositedFundsDirect()
     {
         try
         {
-            showAlternatePane(bankingPanelFactory.createReconcilePanel());
-            openInspectorForSelection("Banking", "Reconcile Accounts opened in alternate shell.");
-        }
-        catch (Exception ex)
-        {
-            openInspectorForSelection("Banking", "Reconcile Accounts failed: " + ex.getMessage());
-        }
-    }
-
-    private void openUndepositedFundsDirect()
-    {
-        try
-        {
-            showAlternatePane(bankingPanelFactory.createUndepositedFundsPanel());
+            showAlternatePane(this.bankingPanelFactory.createUndepositedFundsPanel());
             openInspectorForSelection("Banking", "Undeposited Funds opened in alternate shell.");
         }
         catch (Exception ex)
@@ -761,11 +677,11 @@ public class MainWindowAlternate extends BorderPane
         }
     }
 
-    private void openDocumentsDirect()
+    void openDocumentsDirect()
     {
         try
         {
-            showAlternatePane(bankingPanelFactory.createDocumentsPanel());
+            showAlternatePane(this.bankingPanelFactory.createDocumentsPanel());
             openInspectorForSelection("Banking", "Documents & Attachments opened in alternate shell.");
         }
         catch (Exception ex)
@@ -774,30 +690,17 @@ public class MainWindowAlternate extends BorderPane
         }
     }
 
-    private void openHelpHint()
+    void openHelpHint()
     {
         Stage owner = getOwningStage();
         showAlternatePane(new HelpPanelFX(owner));
         openInspectorForSelection("Help", "Help content opened in alternate shell.");
     }
 
-    private void openDonorsDirect()
+    void openDonorsDirect()
     {
-        showAlternatePane(new DonorsPanelFX(new DonorService(), null));
-        openInspectorForSelection("Fundraising", "Donors panel opened in alternate shell.");
-    }
-
-    private void openDonationsDirect()
-    {
-        Stage owner = getOwningStage();
-        showAlternatePane(new DonationsPanelFX(owner));
-        openInspectorForSelection("Fundraising", "Donations panel opened in alternate shell.");
-    }
-
-    private void openGrantsDirect()
-    {
-        showAlternatePane(new GrantsPanelFX(new GrantsService()));
-        openInspectorForSelection("Fundraising", "Grants panel opened in alternate shell.");
+        openPanel(AppPanelId.DONORS);
+        openInspectorForSelection("Fundraising", "Native donors workspace opened in alternate shell.");
     }
 
     private Stage getOwningStage()
@@ -805,38 +708,102 @@ public class MainWindowAlternate extends BorderPane
         return getScene() != null && getScene().getWindow() instanceof Stage stage ? stage : null;
     }
 
-    private void runNewAction()
+    void runNewAction()
     {
         if (!hasActivePanelCommandTarget())
         {
             openInspectorForSelection("Command", "New is unavailable until a panel-host workspace is active.");
             return;
         }
-        panelHost.newItemActive();
-        openInspectorForSelection("Command", "New action sent to active workspace panel: " + panelHost.getActiveTitle());
+        this.panelHost.newItemActive();
+        openInspectorForSelection("Command", "New action sent to active workspace panel: " + this.panelHost.getActiveTitle());
     }
 
-    private void runSaveAction()
+    void runSaveAction()
     {
         if (!hasActivePanelCommandTarget())
         {
             openInspectorForSelection("Command", "Save is unavailable until a panel-host workspace is active.");
             return;
         }
-        panelHost.saveActive();
-        openInspectorForSelection("Command", "Save action sent to active workspace panel: " + panelHost.getActiveTitle());
+        SaveResult result = this.panelHost.saveActive();
+        openInspectorForSelection("Command", saveMessageFor(this.panelHost.getActiveTitle(), result));
+    }
+
+    void runDeleteAction()
+    {
+        if (!hasActivePanelCommandTarget())
+        {
+            openInspectorForSelection("Command", "Delete is unavailable until a panel-host workspace is active.");
+            return;
+        }
+        this.panelHost.deleteActive();
+        openInspectorForSelection("Command", "Delete action sent to active workspace panel: " + this.panelHost.getActiveTitle());
+    }
+
+    void runCancelAction()
+    {
+        if (!hasActivePanelCommandTarget())
+        {
+            openInspectorForSelection("Command", "Cancel is unavailable until a panel-host workspace is active.");
+            return;
+        }
+        this.panelHost.cancelActive();
+        openInspectorForSelection("Command", "Cancel action sent to active workspace panel: " + this.panelHost.getActiveTitle());
+    }
+
+    private String saveMessageFor(String title, SaveResult result)
+    {
+        return switch (result.status())
+        {
+            case SAVED -> "Saved active workspace panel: " + title;
+            case NO_CHANGES -> "No changes to save for active workspace panel: " + title;
+            case UNSUPPORTED -> "Save is not supported for active workspace panel: " + title;
+            case FAILED -> result.message();
+        };
+    }
+
+    private String navigationSaveMessage(String title, SaveResult result)
+    {
+        return switch (result.status())
+        {
+            case SAVED -> "Saved changes before leaving " + title + ".";
+            case NO_CHANGES -> "No changes to save before leaving " + title + ".";
+            case UNSUPPORTED -> "No save performed before leaving " + title + ": " + result.message();
+            case FAILED -> "Cannot leave " + title + ": " + result.message();
+        };
     }
 
     private boolean hasActivePanelCommandTarget()
     {
-        return workspaceRouter.decide(activePanelId).isPanelHost();
+        return this.workspaceRouter.decide(this.activePanelId).isPanelHost();
     }
 
     private Button actionButton(String label, Runnable action)
     {
-        Button button = new Button(label);
+        return actionButton(new CommandDescriptor(label, "Ad hoc", action, CommandAvailability.AVAILABLE, "", null));
+    }
+
+    private Button actionButton(CommandDescriptor command)
+    {
+        Button button = new Button(command.label());
         button.setMaxWidth(Double.MAX_VALUE);
-        button.setOnAction(e -> action.run());
+        button.setDisable(!command.executable());
+        if (!command.disabledReason().isBlank())
+        {
+            button.setTooltip(new Tooltip(command.disabledReason()));
+            button.setAccessibleHelp(command.disabledReason());
+        }
+        button.setOnAction(e -> {
+            if (command.executable())
+            {
+                command.action().run();
+            }
+            else
+            {
+                openInspectorForSelection(command.category(), command.disabledReason());
+            }
+        });
         return button;
     }
 
@@ -845,7 +812,7 @@ public class MainWindowAlternate extends BorderPane
         showAlternatePane(buildProfilePane());
     }
 
-    private void openSearchPage()
+    void openSearchPage()
     {
         showAlternatePane(buildSearchPane());
     }
@@ -855,12 +822,12 @@ public class MainWindowAlternate extends BorderPane
         showAlternatePane(buildCommandCenterPane());
     }
 
-    private void openDatabaseSelector()
+    void openDatabaseSelector()
     {
         showAlternatePane(buildDatabaseSelectorPane());
     }
 
-    private void openH2RecoveryTool()
+    void openH2RecoveryTool()
     {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Select Corrupted H2 Database to Recover");
@@ -872,7 +839,7 @@ public class MainWindowAlternate extends BorderPane
         {
             return;
         }
-        Path basePath = contextService.normalizeH2Base(selected.toPath());
+        Path basePath = this.contextService.normalizeH2Base(selected.toPath());
         try
         {
             H2SchemaMigrator.RepairResult repairResult = H2SchemaMigrator.repairCorruptedDatabase(basePath);
@@ -889,7 +856,7 @@ public class MainWindowAlternate extends BorderPane
         }
     }
 
-    private void openCompanySelector()
+    void openCompanySelector()
     {
         showAlternatePane(buildCompanySelectorPane());
     }
@@ -897,26 +864,43 @@ public class MainWindowAlternate extends BorderPane
 
     private void showAlternatePane(Node content)
     {
-        dashboardCanvas.setVisible(false);
-        dashboardCanvas.setManaged(false);
-        alternateSettingsPane.setVisible(false);
-        alternateSettingsPane.setManaged(false);
-        panelHost.setVisible(false);
-        panelHost.setManaged(false);
-        alternateContentPane.setVisible(true);
-        alternateContentPane.setManaged(true);
-        alternateContentPane.getChildren().setAll(content);
+        this.alternateDashboardPanel.root().setVisible(false);
+        this.alternateDashboardPanel.root().setManaged(false);
+        this.alternateSettingsPane.setVisible(false);
+        this.alternateSettingsPane.setManaged(false);
+        this.panelHost.setVisible(false);
+        this.panelHost.setManaged(false);
+        this.alternateContentPane.setVisible(true);
+        this.alternateContentPane.setManaged(true);
+        this.alternateContentPane.getChildren().setAll(content);
     }
 
-    private String executeSearchQuery(String value)
+    private void executeSearchQuery(String value, ListView<GlobalSearchResult> results, Label status)
     {
+        results.getItems().clear();
         if (value == null || value.isBlank())
         {
-            return "Enter a query to search.";
+            status.setText("Enter a query to search.");
+            return;
         }
-        String query = value.trim();
-        openInspectorForSelection("Search", "Query staged for shared command surface:\n" + query);
-        return "Query staged for shared command surface: " + query;
+        List<GlobalSearchResult> hits = this.uiServices.globalSearch().search(value);
+        results.getItems().setAll(hits);
+        String message = hits.isEmpty() ? "No results for: " + value.trim() : hits.size() + " result(s) for: " + value.trim();
+        status.setText(message);
+        openInspectorForSelection("Search", message);
+    }
+
+    private void openSearchResult(GlobalSearchResult result)
+    {
+        if (result == null)
+        {
+            return;
+        }
+        if (result.hasRoute())
+        {
+            openPanel(result.targetPanelId());
+        }
+        openInspectorForSelection(result.type() + ": " + result.title(), result.targetDescription());
     }
 
     /**
@@ -924,37 +908,42 @@ public class MainWindowAlternate extends BorderPane
      *
      * @param id the id
      */
-    private void openPanel(AppPanelId id)
+    void openPanel(AppPanelId id)
     {
         if (id == AppPanelId.REPORT_LIBRARY)
         {
             id = AppPanelId.REPORTS_WORKSPACE;
         }
-        if (activePanelId != id)
+        if (this.activePanelId != id)
         {
-            String saveMessage = panelHost.isActiveDirty()
-                ? "Unsaved changes detected. Saving state before leaving " + panelTitle(activePanelId) + "..."
-                : "Saving state before leaving " + panelTitle(activePanelId) + "...";
-            alternateStatus.setText(saveMessage);
-            dismissActiveContext();
+            SaveResult result = dismissActiveContext();
+            this.alternateStatus.setText(navigationSaveMessage(panelTitle(this.activePanelId), result));
+            if (result.failed())
+            {
+                return;
+            }
         }
-        activePanelId = id;
+        this.activePanelId = id;
         refreshHeaderLabels();
         rebuildNavigationButtons();
-        WorkspaceRouteDecision decision = workspaceRouter.decide(id);
+        WorkspaceRouteDecision decision = this.workspaceRouter.decide(id);
 
         boolean dashboard = decision.isDashboard();
         boolean alternateCustomPane = decision.isAlternateCustomPane();
         boolean panelHostBackedPanel = decision.isPanelHost();
 
-        dashboardCanvas.setVisible(dashboard);
-        dashboardCanvas.setManaged(dashboard);
-        alternateSettingsPane.setVisible(id == AppPanelId.SETTINGS);
-        alternateSettingsPane.setManaged(id == AppPanelId.SETTINGS);
-        alternateContentPane.setVisible(alternateCustomPane && id != AppPanelId.SETTINGS);
-        alternateContentPane.setManaged(alternateCustomPane && id != AppPanelId.SETTINGS);
-        panelHost.setVisible(panelHostBackedPanel);
-        panelHost.setManaged(panelHostBackedPanel);
+        this.alternateDashboardPanel.root().setVisible(dashboard);
+        this.alternateDashboardPanel.root().setManaged(dashboard);
+        if (dashboard)
+        {
+            this.alternateDashboardPanel.refresh();
+        }
+        this.alternateSettingsPane.setVisible(id == AppPanelId.SETTINGS);
+        this.alternateSettingsPane.setManaged(id == AppPanelId.SETTINGS);
+        this.alternateContentPane.setVisible(alternateCustomPane && id != AppPanelId.SETTINGS);
+        this.alternateContentPane.setManaged(alternateCustomPane && id != AppPanelId.SETTINGS);
+        this.panelHost.setVisible(panelHostBackedPanel);
+        this.panelHost.setManaged(panelHostBackedPanel);
 
         if (id == AppPanelId.SETTINGS)
         {
@@ -968,25 +957,34 @@ public class MainWindowAlternate extends BorderPane
         {
             buildAlternateSchedulesPane();
         }
+        else if (id == AppPanelId.COMPANY_ADMIN)
+        {
+            this.alternateContentPane.getChildren().setAll(buildCompanySelectorPane());
+        }
         else if (alternateCustomPane)
         {
-            alternateContentPane.getChildren().setAll(new Label("Template pending"));
+            this.alternateContentPane.getChildren().setAll(new Label("Template pending"));
         }
         else if (panelHostBackedPanel)
         {
-            panelHost.show(id);
-            activeAdaptedPanel = null;
+            SaveResult switchResult = this.panelHost.show(id);
+            if (switchResult.failed())
+            {
+                this.alternateStatus.setText(navigationSaveMessage(panelTitle(this.activePanelId), switchResult));
+                return;
+            }
+            this.activeAdaptedPanel = null;
             LOGGER.debug("Panel strategy {} ({}) for {}", PanelAdaptationPlan.strategyFor(id), PanelAdaptationPlan.phaseFor(id), id);
         }
-        nav.highlight(id);
+        this.nav.highlight(id);
     }
 
     private void buildAlternateBudgetEditorPane()
     {
         Label title = new Label("Budget Editor");
-        title.setStyle("-fx-font-size: 18px; -fx-font-weight: 700;");
+        title.getStyleClass().add("alternate-panel-title");
         Label subtitle = new Label("Native-first budget workspace using journal-style entry flow.");
-        subtitle.setStyle("-fx-text-fill: #5c6482;");
+        subtitle.getStyleClass().add("alternate-panel-subtitle");
         Node body;
         try
         {
@@ -997,38 +995,38 @@ public class MainWindowAlternate extends BorderPane
         catch (IllegalStateException missingContext)
         {
             Label contextRequired = new Label("Open a company to use the budget editor.");
-            contextRequired.setStyle("-fx-text-fill: #8a4f4f;");
+            contextRequired.getStyleClass().addAll("alternate-panel-banner", "alternate-panel-warning-banner");
             body = contextRequired;
         }
         VBox content = new VBox(8, title, subtitle, body);
         content.setPadding(new Insets(8));
-        alternateBudgetPane.setCenter(content);
-        alternateContentPane.getChildren().setAll(alternateBudgetPane);
+        this.alternateBudgetPane.setCenter(content);
+        this.alternateContentPane.getChildren().setAll(this.alternateBudgetPane);
     }
 
     private void buildAlternateSchedulesPane()
     {
         Label title = new Label("Schedules");
-        title.setStyle("-fx-font-size: 18px; -fx-font-weight: 700;");
+        title.getStyleClass().add("alternate-panel-title");
         Label subtitle = new Label("Scheduled reports and recurring tasks.");
-        subtitle.setStyle("-fx-text-fill: #5c6482;");
+        subtitle.getStyleClass().add("alternate-panel-subtitle");
         ListView<String> schedules = new ListView<>();
-        schedules.getItems().setAll(alternatePreferences.get(SCHEDULED_REPORTS_KEY, "")
+        schedules.getItems().setAll(this.alternatePreferences.get(SCHEDULED_REPORTS_KEY, "")
             .lines()
             .filter(line -> line != null && !line.isBlank())
             .toList());
         Button createSchedule = new Button("Create Schedule");
         createSchedule.setOnAction(e -> openReportsScheduleDirect());
-        alternateSchedulesPane.getChildren().setAll(title, subtitle, createSchedule, schedules);
-        alternateSchedulesPane.setPadding(new Insets(8));
+        this.alternateSchedulesPane.getChildren().setAll(title, subtitle, createSchedule, schedules);
+        this.alternateSchedulesPane.setPadding(new Insets(8));
         VBox.setVgrow(schedules, Priority.ALWAYS);
-        alternateContentPane.getChildren().setAll(alternateSchedulesPane);
+        this.alternateContentPane.getChildren().setAll(this.alternateSchedulesPane);
     }
 
     private void refreshIconBarState()
     {
-        boolean companyLoaded = contextService.isCompanyOpen();
-        for (Button iconButton : iconRailButtons)
+        boolean companyLoaded = this.sessionContext.isCompanyOpen();
+        for (Button iconButton : this.iconRailButtons)
         {
             iconButton.setDisable(!companyLoaded);
             iconButton.setOpacity(companyLoaded ? 1.0 : 0.55);
@@ -1037,52 +1035,52 @@ public class MainWindowAlternate extends BorderPane
 
     private void rebuildNavigationButtons()
     {
-        navButtons.getChildren().clear();
-        boolean databaseOpen = contextService.isDatabaseOpen();
-        boolean companyOpen = contextService.isCompanyOpen();
+        this.navButtons.getChildren().clear();
+        boolean databaseOpen = this.sessionContext.isDatabaseOpen();
+        boolean companyOpen = this.sessionContext.isCompanyOpen();
 
         if (!databaseOpen)
         {
-            navButtons.getChildren().addAll(
+            this.navButtons.getChildren().addAll(
                 navActionButton("🗄  Open Database", this::openDatabaseSelector),
                 navButton("⚙  Settings", AppPanelId.SETTINGS));
-            importToolsPane.setVisible(false);
-            importToolsPane.setManaged(false);
+            this.importToolsPane.setVisible(false);
+            this.importToolsPane.setManaged(false);
             return;
         }
         if (!companyOpen)
         {
-            navButtons.getChildren().addAll(
+            this.navButtons.getChildren().addAll(
                 navActionButton("🗄  Open Database", this::openDatabaseSelector),
                 navActionButton("🏢  Open Company", this::openCompanySelector),
                 navButton("⚙  Settings", AppPanelId.SETTINGS));
-            importToolsPane.setVisible(false);
-            importToolsPane.setManaged(false);
+            this.importToolsPane.setVisible(false);
+            this.importToolsPane.setManaged(false);
             return;
         }
 
-        AppPanelId parentPanel = navigationModel.parentPanelFor(activePanelId);
-        navButtons.getChildren().addAll(
+        AppPanelId parentPanel = this.navigationModel.parentPanelFor(this.activePanelId);
+        this.navButtons.getChildren().addAll(
             navButton("⌂  " + panelTitle(parentPanel), parentPanel));
 
-        for (AppPanelId child : navigationModel.subPanelsFor(parentPanel))
+        for (AppPanelId child : this.navigationModel.subPanelsFor(parentPanel))
         {
-            navButtons.getChildren().add(navButton("↳  " + panelTitle(child), child));
+            this.navButtons.getChildren().add(navButton("↳  " + panelTitle(child), child));
         }
 
-        navButtons.getChildren().addAll(
+        this.navButtons.getChildren().addAll(
             navButton("⚙  Settings", AppPanelId.SETTINGS),
             navActionButton("🗄  Open Database", this::openDatabaseSelector),
             navActionButton("🏢  Open Company", this::openCompanySelector));
-        importToolsPane.setVisible(true);
-        importToolsPane.setManaged(true);
+        this.importToolsPane.setVisible(true);
+        this.importToolsPane.setManaged(true);
         activateLeftToolbarButtons();
     }
 
 
     private void activateLeftToolbarButtons()
     {
-        navButtons.getChildren().stream()
+        this.navButtons.getChildren().stream()
             .filter(Button.class::isInstance)
             .map(Button.class::cast)
             .forEach(button ->
@@ -1091,7 +1089,7 @@ public class MainWindowAlternate extends BorderPane
                 button.setOpacity(1.0);
             });
 
-        if (importToolsPane.getContent() instanceof VBox toolsContent)
+        if (this.importToolsPane.getContent() instanceof VBox toolsContent)
         {
             toolsContent.getChildren().stream()
                 .filter(Button.class::isInstance)
@@ -1106,19 +1104,8 @@ public class MainWindowAlternate extends BorderPane
 
     private void refreshHeaderLabels()
     {
-        headerTitle.setText(panelTitle(activePanelId));
-        headerSubtitle.setText(activeCompanyName());
+        this.headerTitle.setText(panelTitle(this.activePanelId));
         refreshIconBarState();
-    }
-
-    private String activeCompanyName()
-    {
-        Company company = CurrentCompany.getCompany();
-        if (CurrentCompany.isOpen() && company != null && company.getName() != null && !company.getName().isBlank())
-        {
-            return company.getName();
-        }
-        return contextService.activeCompanyDisplayLabel();
     }
 
     private String panelTitle(AppPanelId panelId)
@@ -1130,6 +1117,11 @@ public class MainWindowAlternate extends BorderPane
             case LEDGER_REGISTER -> "Journal";
             case INVENTORY -> "Inventory";
             case FUNDS -> "Funds";
+            case DONORS -> "Donors";
+            case DATABASE_ADMIN -> "Database Administration";
+            case COMPANY_ADMIN -> "Company Administration";
+            case IMPORT_EXPORT -> "Import/Export";
+            case RECONCILIATION -> "Reconciliation";
             case REPORTS_WORKSPACE -> "Reports Library";
             case SCHEDULES -> "Schedules";
             case BUDGET_EDITOR -> "Budget";
@@ -1140,33 +1132,42 @@ public class MainWindowAlternate extends BorderPane
 
     private void openInspectorForSelection(String title, String body)
     {
-        alternateStatus.setText(title + "\n" + body);
+        this.alternateStatus.setText(title + "\n" + body);
     }
 
-    private void dismissActiveContext()
+    private SaveResult dismissActiveContext()
     {
-        if (activeAdaptedPanel != null)
+        if (this.activeAdaptedPanel != null)
         {
-            activeAdaptedPanel.onLeave();
-            activeAdaptedPanel.saveContext();
-            activeAdaptedPanel = null;
+            this.activeAdaptedPanel.onLeave();
+            SaveResult result = this.activeAdaptedPanel.saveContext();
+            if (!result.failed())
+            {
+                this.activeAdaptedPanel = null;
+            }
+            return result;
         }
-        panelHost.saveActive();
+        return this.panelHost.prepareActiveForNavigation();
     }
 
     private void openRecordServicePanel(nonprofitbookkeeping.ui.RecordServicePanelRegistry.PanelBinding binding)
     {
-        dismissActiveContext();
+        SaveResult dismissResult = dismissActiveContext();
+        if (dismissResult.failed())
+        {
+            this.alternateStatus.setText(navigationSaveMessage(panelTitle(this.activePanelId), dismissResult));
+            return;
+        }
         if (binding.workspacePanelId() != null)
         {
             openPanel(binding.workspacePanelId());
             return;
         }
         AppPanel panel = binding.panelFactory().get();
-        activeAdaptedPanel = LegacyPanelAdapter.from(panel);
+        this.activeAdaptedPanel = LegacyPanelAdapter.from(panel);
         openInspectorForSelection(binding.displayName(), panel.title() + " opened in alternate shell.");
-        activeAdaptedPanel.onEnter();
-        showAlternatePane(activeAdaptedPanel.content());
+        this.activeAdaptedPanel.onEnter();
+        showAlternatePane(this.activeAdaptedPanel.content());
     }
 
     void testOpenReconcileAccountsDirect()
@@ -1187,12 +1188,12 @@ public class MainWindowAlternate extends BorderPane
 
     String testAlternateStatusText()
     {
-        return alternateStatus.getText();
+        return this.alternateStatus.getText();
     }
 
     void testClearScheduledReports()
     {
-        alternatePreferences.remove(SCHEDULED_REPORTS_KEY);
+        this.alternatePreferences.remove(SCHEDULED_REPORTS_KEY);
     }
 
     void testSaveScheduledReport(String entry)
@@ -1202,7 +1203,7 @@ public class MainWindowAlternate extends BorderPane
 
     String testScheduledReportsValue()
     {
-        return alternatePreferences.get(SCHEDULED_REPORTS_KEY, "");
+        return this.alternatePreferences.get(SCHEDULED_REPORTS_KEY, "");
     }
 
     void testOpenPanel(AppPanelId id)
@@ -1212,7 +1213,7 @@ public class MainWindowAlternate extends BorderPane
 
     List<String> testNavigationButtonLabels()
     {
-        return navButtons.getChildren().stream()
+        return this.navButtons.getChildren().stream()
             .filter(Button.class::isInstance)
             .map(Button.class::cast)
             .map(Button::getText)
@@ -1221,19 +1222,49 @@ public class MainWindowAlternate extends BorderPane
 
     String testHeaderTitle()
     {
-        return headerTitle.getText();
+        return this.headerTitle.getText();
     }
 
     String testHeaderSubtitle()
     {
-        return headerSubtitle.getText();
+        return this.headerSubtitle.getText();
     }
 
     List<Boolean> testIconRailDisabledStates()
     {
-        return iconRailButtons.stream()
+        return this.iconRailButtons.stream()
             .map(Button::isDisable)
             .toList();
+    }
+
+    List<String> testIconRailAccessibleLabels()
+    {
+        return this.iconRailButtons.stream()
+            .map(Button::getAccessibleText)
+            .toList();
+    }
+
+    List<String> testIconRailTooltipLabels()
+    {
+        return this.iconRailButtons.stream()
+            .map(button -> button.getTooltip() == null ? null : button.getTooltip().getText())
+            .toList();
+    }
+
+    List<String> testIconRailButtonStyleClasses()
+    {
+        return this.iconRailButtons.stream()
+            .flatMap(button -> button.getStyleClass().stream())
+            .toList();
+    }
+
+    List<String> testShellSurfaceStyleClasses()
+    {
+        return List.of(
+            getStyleClass().contains("alternate-shell-root") ? "alternate-shell-root" : "",
+            this.workspaceSurface.getStyleClass().contains("alternate-workspace-surface") ? "alternate-workspace-surface" : "",
+            this.headerTitle.getStyleClass().contains("alternate-shell-title") ? "alternate-shell-title" : "",
+            this.headerSubtitle.getStyleClass().contains("alternate-shell-subtitle") ? "alternate-shell-subtitle" : "");
     }
 
 }

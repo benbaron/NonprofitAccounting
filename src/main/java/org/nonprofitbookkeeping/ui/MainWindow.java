@@ -12,7 +12,6 @@ import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.service.DocumentStorageService;
 import nonprofitbookkeeping.service.DonorService;
 import nonprofitbookkeeping.service.FundAccountingService;
-import nonprofitbookkeeping.service.GrantsService;
 import nonprofitbookkeeping.service.InventoryService;
 import nonprofitbookkeeping.service.LegacyNpbkImportService;
 import nonprofitbookkeeping.service.ReconciliationService;
@@ -24,7 +23,6 @@ import nonprofitbookkeeping.tools.H2ScriptCompanyExporter;
 import nonprofitbookkeeping.tools.H2ScriptCompanyImporter;
 import nonprofitbookkeeping.tools.H2SchemaMigrator;
 import nonprofitbookkeeping.ui.RecordServicePanelRegistry;
-import nonprofitbookkeeping.ui.actions.ExcelTemplateReportActionFX;
 import nonprofitbookkeeping.ui.actions.ExportCoaXlsxActionFX;
 import nonprofitbookkeeping.ui.actions.ExportFileActionFX;
 import nonprofitbookkeeping.ui.actions.ImportCoaXlsxActionFX;
@@ -37,11 +35,9 @@ import nonprofitbookkeeping.ui.actions.scaledger.ImportFromOutlandsLedgerActionF
 import nonprofitbookkeeping.ui.actions.scaledger.SaveModifiedCopyActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.LoadXlsmTableActionFX;
 import nonprofitbookkeeping.ui.panels.SqlQueryPanelFX;
-import nonprofitbookkeeping.ui.panels.DonationsPanelFX;
 import nonprofitbookkeeping.ui.panels.DonorsPanelFX;
 import nonprofitbookkeeping.ui.panels.DocumentsPanelFX;
 import nonprofitbookkeeping.ui.panels.FundsPanelFX;
-import nonprofitbookkeeping.ui.panels.GrantsPanelFX;
 import nonprofitbookkeeping.ui.panels.HelpPanelFX;
 import nonprofitbookkeeping.ui.panels.InventoryPanelFX;
 import nonprofitbookkeeping.ui.panels.JournalPanelFX;
@@ -75,7 +71,6 @@ public class MainWindow extends BorderPane
     private final DocumentStorageService documentStorageService = new DocumentStorageService();
     private final FundAccountingService fundAccountingService = new FundAccountingService();
     private final DonorService donorService = new DonorService();
-    private final GrantsService grantsService = new GrantsService();
     private final UndepositedFundsService undepositedFundsService = new UndepositedFundsService();
     private final SalesService salesService = new SalesService();
     private final SettingsService settingsService = new SettingsService();
@@ -162,14 +157,12 @@ public class MainWindow extends BorderPane
                 () -> showLegacyPanel("Undeposited Funds", new UndepositedFundsPanelFX(undepositedFundsService))),
             item("Sales & COGS", null,
                 () -> showLegacyPanel("Sales & COGS", new SalesAndCOGPanelFX(salesService, null))),
+
             new SeparatorMenuItem(),
             item("Documents & Attachments", null,
                 () -> showLegacyPanel("Documents", new DocumentsPanelFX(documentStorageService))),
             item("Inventory & Depreciation", null,
-                () -> showLegacyPanel("Inventory", new InventoryPanelFX(inventoryService, null))),
-            new SeparatorMenuItem(),
-            item("Generate Excel Template Report...", null,
-                () -> new ExcelTemplateReportActionFX(getOwningStage()).handle(null))
+                () -> showLegacyPanel("Inventory", new InventoryPanelFX(inventoryService, null)))
         );
 
         Menu database = new Menu("Database");
@@ -204,10 +197,6 @@ public class MainWindow extends BorderPane
         fundraising.getItems().addAll(
             item("Donors", null,
                 () -> showLegacyPanel("Donors", new DonorsPanelFX(donorService, null))),
-            item("Donations", null,
-                () -> showLegacyPanel("Donations", new DonationsPanelFX(getOwningStage()))),
-            item("Grants", null,
-                () -> showLegacyPanel("Grants", new GrantsPanelFX(grantsService))),
             item("Funds & Fund Accounting", null,
                 () -> showLegacyPanel("Funds", new FundsPanelFX(fundAccountingService, null)))
         );
@@ -415,29 +404,8 @@ public class MainWindow extends BorderPane
         Path basePath = normalizeH2Base(selectedFile.toPath());
         try
         {
-            Database.init(basePath);
-            H2SchemaMigrator.RepairResult repairResult = null;
-            try
-            {
-                Database.get().ensureSchema();
-            }
-            catch (SQLException ex)
-            {
-                if (!H2ScriptCompanyExporter.isFileCorruption(ex))
-                {
-                    throw ex;
-                }
-                repairResult = H2SchemaMigrator.repairCorruptedDatabase(basePath);
-            }
-            String message = "Database ready: " + basePath.toAbsolutePath();
-            if (repairResult != null && !repairResult.backupFiles().isEmpty())
-            {
-                message += "\nRecovered from corruption. Backups:\n" +
-                    String.join("\n", repairResult.backupFiles().stream()
-                        .map(path -> path.toAbsolutePath().toString())
-                        .toList());
-            }
-            info(message);
+            DatabaseOpenService.OpenResult result = DatabaseOpenService.openDatabase(basePath);
+            info(result.successMessage());
         }
         catch (Exception ex)
         {

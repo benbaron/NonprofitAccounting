@@ -14,6 +14,7 @@ import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.records.AssetItemType;
 import nonprofitbookkeeping.model.records.AssetRecord;
 import nonprofitbookkeeping.service.AssetRecordService;
@@ -77,7 +78,7 @@ public class AssetsRegisterPanel implements AppPanel
 	private void configureTable()
 	{
 		this.table.setEditable(true);
-		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+		this.table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
 		this.table.getColumns().setAll(
 			col("Asset ID", AssetRow::assetIdProperty, AssetRow::setAssetId),
 			col("Acquired", AssetRow::dateAcquiredProperty, AssetRow::setDateAcquired),
@@ -93,15 +94,33 @@ public class AssetsRegisterPanel implements AppPanel
 		java.util.function.BiConsumer<AssetRow, String> setter)
 	{
 		TableColumn<AssetRow, String> col = new TableColumn<>(name);
+		col.setPrefWidth(defaultColumnWidth(name));
+		col.setMinWidth(90);
 		col.setCellValueFactory(v -> propertyGetter.apply(v.getValue()));
 		col.setCellFactory(c -> new FocusCommitTextFieldTableCell<>());
 		col.setOnEditCommit(event -> setter.accept(event.getRowValue(), event.getNewValue()));
 		return col;
 	}
 
+	private double defaultColumnWidth(String name)
+	{
+		return switch (name)
+		{
+			case "Asset ID" -> 220;
+			case "Acquired" -> 150;
+			case "Description" -> 360;
+			case "Count" -> 120;
+			case "Approx Value" -> 180;
+			case "Accum Depreciation" -> 220;
+			default -> 160;
+		};
+	}
+
 	private TableColumn<AssetRow, AssetItemType> itemTypeCol(String name)
 	{
 		TableColumn<AssetRow, AssetItemType> col = new TableColumn<>(name);
+		col.setPrefWidth(220);
+		col.setMinWidth(90);
 		col.setCellValueFactory(v -> v.getValue().itemTypeProperty());
 		col.setCellFactory(column -> {
 			ComboBoxTableCell<AssetRow, AssetItemType> cell = new ComboBoxTableCell<>();
@@ -128,6 +147,12 @@ public class AssetsRegisterPanel implements AppPanel
 
 	private void loadFromService()
 	{
+		if (!Database.isInitialized())
+		{
+			this.table.getItems().clear();
+			this.status.setText("Database not initialized yet. Open or create a company to load assets.");
+			return;
+		}
 		try
 		{
 			this.table.setItems(FXCollections.observableArrayList(
@@ -158,6 +183,11 @@ public class AssetsRegisterPanel implements AppPanel
 	@Override
 	public void onSave()
 	{
+		if (!Database.isInitialized())
+		{
+			this.status.setText("Open or create a company before saving assets.");
+			return;
+		}
 		try
 		{
 			List<AssetRecord> recordsToSave = new ArrayList<>();
@@ -182,12 +212,30 @@ public class AssetsRegisterPanel implements AppPanel
 		}
 	}
 
+	@Override
+	public void onDelete()
+	{
+		onDeleteSelected();
+	}
+
+	@Override
+	public void onCancel()
+	{
+		loadFromService();
+	}
+
 	private void onDeleteSelected()
 	{
 		AssetRow selected = this.table.getSelectionModel().getSelectedItem();
 		if (selected == null)
 		{
 			this.status.setText("Select a row to delete.");
+			return;
+		}
+		if (!Database.isInitialized())
+		{
+			this.table.getItems().remove(selected);
+			this.status.setText("Removed unsaved row.");
 			return;
 		}
 		try

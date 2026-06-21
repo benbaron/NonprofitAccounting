@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -196,7 +197,6 @@ public class RunScopedSclxExportService
 
         Map<String, Object> exportMetadata = new LinkedHashMap<>();
         exportMetadata.put("runId", runId);
-        exportMetadata.put("exportedAt", OffsetDateTime.now(ZoneOffset.UTC).toString());
         if (!runId.isBlank())
         {
             exportMetadata.putAll(loadImportSummary(runId));

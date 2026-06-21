@@ -6,6 +6,7 @@ public enum AppPanelId
     DASHBOARD,
 
     LEDGER_REGISTER,
+    EVENT_ACCOUNTING,
 
     SCHEDULES,
     INVENTORY,
@@ -25,5 +26,12 @@ public enum AppPanelId
 
     CHART_OF_ACCOUNTS,
     FUNDS,
+    DONORS,
+
+    RECONCILIATION,
+    DATABASE_ADMIN,
+    COMPANY_ADMIN,
+    IMPORT_EXPORT,
+    MONTHLY_CLOSE,
     SETTINGS
 }

@@ -7,7 +7,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -26,6 +29,7 @@ public class BudgetEditorPanel implements AppPanel
 	private final BudgetWorkspaceStore store;
 	private final TableView<BudgetRow> table = new TableView<>();
 	private final Label status = new Label("Ready");
+	private final ObservableList<String> fundChoices = FXCollections.observableArrayList();
 
 	/**
 	 * Creates the budget editor panel.
@@ -50,26 +54,31 @@ public class BudgetEditorPanel implements AppPanel
 
 		this.root.setTop(new VBox(6, title, actions, new Separator()));
 		this.table.setEditable(true);
-		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+		this.table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
 		TableColumn<BudgetRow, String> account = new TableColumn<>("Account");
+		account.setPrefWidth(420);
 		account.setCellValueFactory(v -> new ReadOnlyStringWrapper(v.getValue().account()));
 		account.setCellFactory(TextFieldTableCell.forTableColumn());
 		account.setOnEditCommit(event ->
 			this.table.getItems().set(event.getTablePosition().getRow(),
 				event.getRowValue().withAccount(event.getNewValue())));
 		TableColumn<BudgetRow, String> fund = new TableColumn<>("Fund");
+		fund.setPrefWidth(420);
 		fund.setCellValueFactory(v -> new ReadOnlyStringWrapper(v.getValue().fund()));
-		fund.setCellFactory(TextFieldTableCell.forTableColumn());
+		fund.setCellFactory(ComboBoxTableCell.forTableColumn(this.fundChoices));
+		fund.setOnEditStart(event -> refreshFundChoices());
 		fund.setOnEditCommit(event ->
 			this.table.getItems().set(event.getTablePosition().getRow(),
 				event.getRowValue().withFund(event.getNewValue())));
 		TableColumn<BudgetRow, String> period = new TableColumn<>("Period");
+		period.setPrefWidth(320);
 		period.setCellValueFactory(v -> new ReadOnlyStringWrapper(v.getValue().period()));
 		period.setCellFactory(TextFieldTableCell.forTableColumn());
 		period.setOnEditCommit(event ->
 			this.table.getItems().set(event.getTablePosition().getRow(),
 				event.getRowValue().withPeriod(event.getNewValue())));
 		TableColumn<BudgetRow, String> amount = new TableColumn<>("Budget Amount");
+		amount.setPrefWidth(260);
 		amount.setCellValueFactory(v -> new ReadOnlyStringWrapper(v.getValue().amount()));
 		amount.setCellFactory(TextFieldTableCell.forTableColumn());
 		amount.setOnEditCommit(event ->
@@ -81,7 +90,10 @@ public class BudgetEditorPanel implements AppPanel
 		this.root.setCenter(this.table);
 		this.root.setBottom(new VBox(new Separator(), this.status));
 
-		add.setOnAction(e -> this.table.getItems().add(new BudgetRow("", "", "", "0.00")));
+		add.setOnAction(e -> {
+			refreshFundChoices();
+			this.table.getItems().add(new BudgetRow("", defaultFundChoice(), "", "0.00"));
+		});
 		delete.setOnAction(e -> onDeleteSelected());
 		refresh.setOnAction(e -> loadRows());
 		save.setOnAction(e -> onSave());
@@ -115,9 +127,10 @@ public class BudgetEditorPanel implements AppPanel
 
 	private void loadRows()
 	{
+		refreshFundChoices();
 		if (!Database.isInitialized())
 		{
-			this.table.getItems().setAll(new BudgetRow("", "General", "", "0.00"));
+			this.table.getItems().setAll(new BudgetRow("", defaultFundChoice(), "", "0.00"));
 			this.status.setText("Database not initialized. Open/Create H2 DB and open a company, then press Refresh.");
 			return;
 		}
@@ -126,14 +139,45 @@ public class BudgetEditorPanel implements AppPanel
 			this.table.getItems().setAll(this.store.loadEditorRows());
 			if (this.table.getItems().isEmpty())
 			{
-				this.table.getItems().add(new BudgetRow("", "General", "", "0.00"));
+				this.table.getItems().add(new BudgetRow("", defaultFundChoice(), "", "0.00"));
 			}
 		}
 		catch (RuntimeException | SQLException ex)
 		{
-			this.table.getItems().setAll(new BudgetRow("", "General", "", "0.00"));
+			this.table.getItems().setAll(new BudgetRow("", defaultFundChoice(), "", "0.00"));
 			this.status.setText("Load failed: " + ex.getMessage());
 		}
+	}
+
+	private void refreshFundChoices()
+	{
+		try
+		{
+			this.fundChoices.setAll(FundNameLookup.listActiveFundNames());
+		}
+		catch (SQLException ex)
+		{
+			this.fundChoices.clear();
+			this.status.setText("Unable to load fund choices: " + ex.getMessage());
+		}
+	}
+
+	private String defaultFundChoice()
+	{
+		return this.fundChoices.isEmpty() ? "" : this.fundChoices.get(0);
+	}
+
+	@Override
+	public void onDelete()
+	{
+		onDeleteSelected();
+	}
+
+	@Override
+	public void onCancel()
+	{
+		this.table.getSelectionModel().clearSelection();
+		this.status.setText("Cancelled budget edit and cleared the selection.");
 	}
 
 	private void onDeleteSelected()

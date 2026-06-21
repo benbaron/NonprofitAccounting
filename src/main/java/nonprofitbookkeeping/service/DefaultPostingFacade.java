@@ -1,11 +1,15 @@
 package nonprofitbookkeeping.service;
 
+import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.persistence.JournalRepository;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -110,9 +114,26 @@ public class DefaultPostingFacade implements PostingFacade
         info.putIfAbsent("idempotency_key", command.idempotencyKey());
     }
 
-    private PostingReference referenceFor(int txnId)
+    private PostingReference referenceFor(int txnId) throws SQLException
     {
-        return new PostingReference(txnId, "journal_transaction:" + txnId);
+        return new PostingReference(txnId, canonicalRefFor(txnId));
+    }
+
+    private String canonicalRefFor(int txnId) throws SQLException
+    {
+        try (Connection c = Database.get().getConnection();
+             PreparedStatement ps = c.prepareStatement("SELECT id FROM txn WHERE id = ?"))
+        {
+            ps.setInt(1, txnId);
+            try (ResultSet rs = ps.executeQuery())
+            {
+                if (rs.next())
+                {
+                    return "txn:" + rs.getLong(1);
+                }
+            }
+        }
+        return "journal_transaction:" + txnId;
     }
 
     private static AccountingTransaction copyWithReversedEntries(AccountingTransaction source,

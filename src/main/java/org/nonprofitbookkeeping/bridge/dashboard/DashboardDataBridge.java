@@ -1,21 +1,39 @@
 package org.nonprofitbookkeeping.bridge.dashboard;
 
-import org.nonprofitbookkeeping.service.FundBalanceRow;
-import org.nonprofitbookkeeping.ui.UiServiceRegistry;
-
 import java.time.LocalDate;
 import java.util.List;
 
-/**
- * Local bridge layer for imported dashboard package wiring.
- */
+import org.nonprofitbookkeeping.service.FundBalanceRow;
+import org.nonprofitbookkeeping.ui.UiServiceProvider;
+import org.nonprofitbookkeeping.ui.UiServiceRegistry;
+
+/** Loads dashboard aggregates through the active alternate UI service provider. */
 public class DashboardDataBridge
 {
+    private final UiServiceProvider services;
+
+    @Deprecated(forRemoval = false)
+    public DashboardDataBridge()
+    {
+        this(UiServiceRegistry.provider());
+    }
+
+    public DashboardDataBridge(UiServiceProvider services)
+    {
+        this.services = services;
+    }
+
     public DashboardSnapshot load()
     {
-        List<FundBalanceRow> rows = UiServiceRegistry.fundBalance().balancesAsOf(LocalDate.now());
-        int accountCount = UiServiceRegistry.accountLookup().listActivePostingAccounts().size();
-        int fundCount = UiServiceRegistry.fundLookup().listActiveFunds().size();
+        return load(LocalDate.now());
+    }
+
+    public DashboardSnapshot load(LocalDate asOf)
+    {
+        LocalDate effectiveAsOf = asOf == null ? LocalDate.now() : asOf;
+        List<FundBalanceRow> rows = services.fundBalance().balancesAsOf(effectiveAsOf);
+        int accountCount = services.accountLookup().listActivePostingAccounts().size();
+        int fundCount = services.fundLookup().listActiveFunds().size();
         return new DashboardSnapshot(rows, accountCount, fundCount);
     }
 

@@ -1,15 +1,10 @@
 package org.nonprofitbookkeeping.ui;
 
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.beans.property.SimpleStringProperty;
 
 import org.nonprofitbookkeeping.model.Account;
@@ -21,17 +16,14 @@ import java.util.List;
  */
 public class ChartOfAccountsPanel implements AppPanel
 {
-    private final BorderPane root = new BorderPane();
+    private final AlternatePanelScaffold root = new AlternatePanelScaffold("Chart of Accounts");
     private final TableView<Account> table = new TableView<>();
     private final Label status = new Label();
     private Button refresh;
 
     public ChartOfAccountsPanel()
     {
-        this.root.setPadding(new Insets(8));
-
-        Label title = new Label("Chart of Accounts");
-        title.getStyleClass().add("panel-title");
+        this.root.setSubtitle("Review active posting accounts for the current company context.");
 
         Button add = new Button("+ Add");
         add.setOnAction(e -> onNew());
@@ -39,10 +31,9 @@ public class ChartOfAccountsPanel implements AppPanel
         this.refresh = new Button("Refresh");
         this.refresh.setOnAction(e -> reload());
 
-        HBox actions = new HBox(8, add, this.refresh);
-        VBox header = new VBox(6, title, actions, this.status, new Separator());
-
-        this.root.setTop(header);
+        this.root.setPrimaryActions(List.of(add));
+        this.root.setSecondaryActions(List.of(this.refresh));
+        this.root.setFooter(this.status);
 
         TableColumn<Account, String> code = new TableColumn<>("Code");
         code.setCellValueFactory(v -> new SimpleStringProperty(v.getValue().getCode()));
@@ -57,8 +48,8 @@ public class ChartOfAccountsPanel implements AppPanel
         subtype.setCellValueFactory(v -> new SimpleStringProperty(String.valueOf(v.getValue().getSubtype())));
 
         this.table.getColumns().addAll(code, name, type, subtype);
-        this.table.setPlaceholder(new Label("No accounts found. Run the seed command to create starter data."));
-        this.root.setCenter(this.table);
+        this.table.setPlaceholder(new Label("No service-backed accounts are available for the active context."));
+        this.root.setContent(this.table);
 
         reload();
     }
@@ -74,17 +65,28 @@ public class ChartOfAccountsPanel implements AppPanel
     private void reload()
     {
         this.refresh.setDisable(true);
+        this.root.showLoading("Loading accounts...");
         this.status.setText("Loading accounts...");
 
         UiAsync.run("coa-load",
             () -> UiServiceRegistry.accountLookup().listActivePostingAccounts(),
             rows -> {
             this.table.getItems().setAll(rows);
+            if (rows.isEmpty())
+            {
+                this.root.showEmpty("No service-backed accounts are available for the active context.");
+            }
+            else
+            {
+                this.root.showContent();
+            }
             this.status.setText("Loaded " + rows.size() + " posting account(s).");
             this.refresh.setDisable(false);
             },
             ex -> {
-            this.status.setText("Failed to load accounts: " + UiErrors.safeMessage(ex));
+            String message = "Failed to load accounts: " + UiErrors.safeMessage(ex);
+            this.root.showError(message);
+            this.status.setText(message);
             this.refresh.setDisable(false);
             });
     }

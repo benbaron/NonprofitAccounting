@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "npbk-semantic-report-1",
+  "templateId": "BalanceStmt",
+  "type": "sectionReport",
+  "title": "Balance Statement",
+  "subtitle": "SCA workbook-modeled report form",
+  "sourceSheet": "BalanceStmt",
+  "sections": [
+    {
+      "title": "I. Assets",
+      "rows": [
+        { "type": "valueRow", "line": "I", "label": "Total Assets", "valueKey": "balanceStmt.totalAssets", "format": "currency", "sourceCell": "BalanceStmt!H24", "emphasis": true },
+        { "type": "spacer" },
+        { "type": "staticRow", "line": "I.a", "label": "Undep. & non-interest cash", "note": "Mapped through Chart of Accounts / report sections" },
+        { "type": "staticRow", "line": "I.b", "label": "Cash earning interest", "note": "Mapped through Chart of Accounts / report sections" },
+        { "type": "staticRow", "line": "I.c", "label": "Receivables", "note": "Mapped through supplemental schedules" },
+        { "type": "staticRow", "line": "I.d", "label": "Inventory / supplies", "note": "Inventory model; supplies fold into inventory" },
+        { "type": "staticRow", "line": "I.h", "label": "Prepaid expenses", "note": "Mapped through supplemental schedules" }
+      ]
+    },
+    {
+      "title": "II. Liabilities",
+      "rows": [
+        { "type": "valueRow", "line": "II", "label": "Total Liabilities", "valueKey": "balanceStmt.totalLiabilities", "format": "currency", "sourceCell": "BalanceStmt!H34", "emphasis": true },
+        { "type": "staticRow", "line": "II.b", "label": "Deferred Revenue", "note": "Mapped through supplemental schedules" },
+        { "type": "staticRow", "line": "II.c", "label": "Payables", "note": "Mapped through supplemental schedules" }
+      ]
+    },
+    {
+      "title": "III. Net Assets",
+      "rows": [
+        { "type": "valueRow", "line": "III", "label": "Total Net Assets", "valueKey": "balanceStmt.totalNetAssets", "format": "currency", "sourceCell": "BalanceStmt!H39", "emphasis": true },
+        { "type": "valueRow", "line": "", "label": "Total Liabilities and Net Assets", "valueKey": "balanceStmt.totalLiabilitiesAndNetAssets", "format": "currency", "sourceCell": "BalanceStmt!H40", "emphasis": true },
+        { "type": "valueRow", "line": "", "label": "Balance Check", "valueKey": "balanceStmt.balanceCheck", "format": "currency", "sourceCell": "BalanceStmt!H41", "emphasis": true }
+      ]
+    }
+  ]
+}
