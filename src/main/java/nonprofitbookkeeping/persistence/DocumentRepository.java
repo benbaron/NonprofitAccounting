@@ -1,138 +1,98 @@
-
 package nonprofitbookkeeping.persistence;
 
 import jakarta.enterprise.context.ApplicationScoped;
-
 import nonprofitbookkeeping.core.Database;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 /**
- * Simple repository used to persist arbitrary JSON payloads inside the H2 database.
+ * Repository used to persist small named JSON documents in the company H2
+ * database.
  *
- * <p>The legacy implementation wrote a number of small JSON documents to files inside the
- * company directory (for example {@code budgets.json}, {@code sales.json}, etc.).  The new
- * persistence model stores those JSON payloads in the {@code document} table so that the
- * information lives inside the database and participates in regular database backups.</p>
- *
- * <p>Raw SCLX import payloads are intentionally excluded from database persistence. They are
- * kept in thread-local memory until explicitly cleared so follow-up exports in the same
- * workflow can reproduce the source bytes without bloating the {@code document} table or
- * the underlying H2 file.</p>
+ * <p>Raw SCLX source documents are deliberately not retained. The imported
+ * accounting records and compact import summary are the durable data; keeping
+ * a second complete copy of the source file only enlarges the company
+ * database.</p>
  */
 @ApplicationScoped
 public class DocumentRepository
 {
-	private static final String UPSERT_SQL =
-		"MERGE INTO document(name, content) KEY(name) VALUES (?, ?)";
-	private static final String SELECT_SQL =
-		"SELECT content FROM document WHERE name = ?";
-	private static final String DELETE_SQL =
-		"DELETE FROM document WHERE name = ?";
-	private static final String SCLX_RAW_PREFIX = "sclx.raw.";
-	private static final ThreadLocal<Map<String, String>> EPHEMERAL_SCLX_RAW_DOCUMENTS =
-		ThreadLocal.withInitial(HashMap::new);
-	
-	/**
-	 * Clears any thread-scoped raw SCLX payloads cached for the current import run.
-	 */
-	public static void clearThreadScopedEphemeralDocuments()
-	{
-		EPHEMERAL_SCLX_RAW_DOCUMENTS.remove();
-	}
-	
-	private static boolean isEphemeralSclxRawDocument(String name)
-	{
-		return name != null && name.startsWith(SCLX_RAW_PREFIX);
-	}
-	
-	/**
-	 * Stores or replaces the JSON payload associated with the supplied document name.
-	 *
-	 * @param name    logical name of the document (e.g. {@code budgets})
-	 * @param content JSON payload to persist
-	 * @throws SQLException if the database update fails
-	 */
-	public void upsert(String name, String content) throws SQLException
-	{
-		if (isEphemeralSclxRawDocument(name))
-		{
-			EPHEMERAL_SCLX_RAW_DOCUMENTS.get().put(name, content);
-			return;
-		}
-		
-		try (Connection c = Database.get().getConnection();
-			PreparedStatement ps = c.prepareStatement(UPSERT_SQL))
-		{
-			ps.setString(1, name);
-			ps.setString(2, content);
-			ps.executeUpdate();
-		}
-		
-	}
-	
-	/**
-	 * Retrieves the JSON payload associated with the supplied document name.
-	 *
-	 * @param name logical document name
-	 * @return an {@link Optional} containing the payload, or empty when no document is stored
-	 * @throws SQLException if the database query fails
-	 */
-	public Optional<String> find(String name) throws SQLException
-	{
-		if (isEphemeralSclxRawDocument(name))
-		{
-			return Optional.ofNullable(EPHEMERAL_SCLX_RAW_DOCUMENTS.get().get(name));
-		}
-		
-		try (Connection c = Database.get().getConnection();
-			PreparedStatement ps = c.prepareStatement(SELECT_SQL))
-		{
-			ps.setString(1, name);
-			
-			try (ResultSet rs = ps.executeQuery())
-			{
-				
-				if (rs.next())
-				{
-					return Optional.ofNullable(rs.getString(1));
-				}
-				
-			}
-			
-		}
-		
-		return Optional.empty();
-		
-	}
-	
-	/**
-	 * Removes a stored document.
-	 *
-	 * @param name logical document name
-	 * @throws SQLException if the delete fails
-	 */
-	public void delete(String name) throws SQLException
-	{
-		if (isEphemeralSclxRawDocument(name))
-		{
-			EPHEMERAL_SCLX_RAW_DOCUMENTS.get().remove(name);
-			return;
-		}
-		
-		try (Connection c = Database.get().getConnection();
-			PreparedStatement ps = c.prepareStatement(DELETE_SQL))
-		{
-			ps.setString(1, name);
-			ps.executeUpdate();
-		}
-		
-	}
-	
+    private static final String UPSERT_SQL =
+        "MERGE INTO document(name, content) KEY(name) VALUES (?, ?)";
+    private static final String SELECT_SQL =
+        "SELECT content FROM document WHERE name = ?";
+    private static final String DELETE_SQL =
+        "DELETE FROM document WHERE name = ?";
+    private static final String SCLX_RAW_PREFIX = "sclx.raw.";
+
+    /**
+     * Retained for source compatibility with callers from the earlier
+     * thread-local raw-document implementation. There is now nothing to clear.
+     */
+    public static void clearThreadScopedEphemeralDocuments()
+    {
+        // Raw SCLX documents are not stored in memory or in the database.
+    }
+
+    private static boolean isRawSclxDocument(String name)
+    {
+        return name != null && name.startsWith(SCLX_RAW_PREFIX);
+    }
+
+    public void upsert(String name, String content) throws SQLException
+    {
+        if (isRawSclxDocument(name))
+        {
+            return;
+        }
+
+        try (Connection c = Database.get().getConnection();
+             PreparedStatement ps = c.prepareStatement(UPSERT_SQL))
+        {
+            ps.setString(1, name);
+            ps.setString(2, content);
+            ps.executeUpdate();
+        }
+    }
+
+    public Optional<String> find(String name) throws SQLException
+    {
+        if (isRawSclxDocument(name))
+        {
+            return Optional.empty();
+        }
+
+        try (Connection c = Database.get().getConnection();
+             PreparedStatement ps = c.prepareStatement(SELECT_SQL))
+        {
+            ps.setString(1, name);
+            try (ResultSet rs = ps.executeQuery())
+            {
+                if (rs.next())
+                {
+                    return Optional.ofNullable(rs.getString(1));
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    public void delete(String name) throws SQLException
+    {
+        if (isRawSclxDocument(name))
+        {
+            return;
+        }
+
+        try (Connection c = Database.get().getConnection();
+             PreparedStatement ps = c.prepareStatement(DELETE_SQL))
+        {
+            ps.setString(1, name);
+            ps.executeUpdate();
+        }
+    }
 }
