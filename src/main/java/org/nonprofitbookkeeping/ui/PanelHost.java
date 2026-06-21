@@ -22,6 +22,13 @@ public class PanelHost extends BorderPane
     private final PanelFactory panelFactory;
     private AppPanelId activeId;
 
+
+    /**
+     * Show the AppPanel (by ID) Alternate way
+     *
+     * @param id the id
+     */
+
     public PanelHost()
     {
         this(new DefaultPanelFactory(UiServiceRegistry.provider()));
@@ -60,17 +67,6 @@ public class PanelHost extends BorderPane
         return p == null ? "(none)" : p.title();
     }
 
-    /**
-     * Returns the currently displayed panel for targeted cross-panel
-     * navigation.
-     *
-     * @return active panel, or {@code null} if no panel is active
-     */
-    public AppPanel getActivePanel()
-    {
-        return getActive();
-    }
-
     public SaveResult saveActive()
     {
         AppPanel p = getActive();
@@ -103,7 +99,6 @@ public class PanelHost extends BorderPane
             return SaveResult.failed("Save failed for " + p.title() + ": " + ex.getMessage(), ex);
         }
     }
-
     public SaveResult prepareActiveForNavigation()
     {
         if (!canNavigateAway())
@@ -118,42 +113,20 @@ public class PanelHost extends BorderPane
         AppPanel p = getActive();
         return isDirty(p);
     }
+    public void newItemActive() { AppPanel p = getActive(); if (p != null) p.onNew(); }
+    public void copySelectionActive() { AppPanel p = getActive(); if (p != null) p.onCopy(); }
+    public void pasteActive() { AppPanel p = getActive(); if (p != null) p.onPaste(); }
+    public void deleteActive() { AppPanel p = getActive(); if (p != null) p.onDelete(); }
+    public void cancelActive() { AppPanel p = getActive(); if (p != null) p.onCancel(); }
 
-    public void newItemActive()
-    {
-        AppPanel p = getActive();
-        if (p != null) p.onNew();
-    }
+    private AppPanel getActive() { return activeId == null ? null : panels.get(activeId); }
 
-    public void copySelectionActive()
-    {
-        AppPanel p = getActive();
-        if (p != null) p.onCopy();
-    }
-
-    public void pasteActive()
-    {
-        AppPanel p = getActive();
-        if (p != null) p.onPaste();
-    }
-
-    public void deleteActive()
-    {
-        AppPanel p = getActive();
-        if (p != null) p.onDelete();
-    }
-
-    public void cancelActive()
-    {
-        AppPanel p = getActive();
-        if (p != null) p.onCancel();
-    }
-
-    private AppPanel getActive()
-    {
-        return activeId == null ? null : panels.get(activeId);
-    }
-
+    /**
+     * Creates the AppPanel (Classic way)
+     *
+     * @param id the id
+     * @return the app panel
+     */
     private AppPanel create(AppPanelId id)
     {
         return panelFactory.create(id);
@@ -191,28 +164,35 @@ public class PanelHost extends BorderPane
 
         public AppPanel create(AppPanelId id)
         {
-            return switch (id)
-            {
-                case DASHBOARD -> new AlternateDashboardPanel(services.sessionContext(), services);
-                case LEDGER_REGISTER -> new LedgerRegisterPanel();
-                case EVENT_ACCOUNTING -> new EventAccountingPanel(services);
-                case SCHEDULES -> new SchedulesPanel(services);
-                case INVENTORY -> new AssetsRegisterPanel("Inventory");
-                case BUDGET_EDITOR -> new BudgetEditorPanel();
-                case BUDGET_VS_ACTUAL -> new BudgetVsActualPanel();
-                case ASSETS_REGISTER -> new AssetsRegisterPanel();
-                case DEPRECIATION_RUNS -> new DepreciationRunsPanel();
-                case REPORT_LIBRARY, REPORTS_WORKSPACE -> new ReportsWorkspacePanel();
-                case CHART_OF_ACCOUNTS -> new ChartOfAccountsPanel();
-                case FUNDS -> new FundsPanel();
-                case DONORS -> new DonorManagementPanel();
-                case RECONCILIATION -> new AlternateReconciliationPanel();
-                case DATABASE_ADMIN -> new AlternateDatabaseAdminPanel(services);
-                case COMPANY_ADMIN -> new AlternateCompanyAdminPanel(services);
-                case IMPORT_EXPORT -> new AlternateImportExportPanel();
-                case MONTHLY_CLOSE -> new MonthlyCloseChecklistPanel(services);
-                case SETTINGS -> new SettingsPanel(services);
-            };
+        return switch (id)
+        {
+            case DASHBOARD -> new AlternateDashboardPanel(services.sessionContext(), services);
+
+            case LEDGER_REGISTER -> new LedgerRegisterPanel();
+            case EVENT_ACCOUNTING -> new EventAccountingPanel(services);
+
+            case SCHEDULES -> new SchedulesPanel(services);
+            case INVENTORY -> new AssetsRegisterPanel("Inventory");
+
+            case BUDGET_EDITOR -> new BudgetEditorPanel();
+            case BUDGET_VS_ACTUAL -> new BudgetVsActualPanel();
+
+            case ASSETS_REGISTER -> new AssetsRegisterPanel();
+            case DEPRECIATION_RUNS -> new DepreciationRunsPanel();
+
+            case REPORT_LIBRARY, REPORTS_WORKSPACE -> new ReportsWorkspacePanel();
+
+            case CHART_OF_ACCOUNTS -> new ChartOfAccountsPanel();
+            case FUNDS -> new FundsPanel();
+            case DONORS -> new DonorManagementPanel();
+            case RECONCILIATION -> new AlternateReconciliationPanel();
+
+            case DATABASE_ADMIN -> new AlternateDatabaseAdminPanel(services);
+            case COMPANY_ADMIN -> new AlternateCompanyAdminPanel(services);
+            case IMPORT_EXPORT -> new AlternateImportExportPanel();
+            case MONTHLY_CLOSE -> new MonthlyCloseChecklistPanel(services);
+            case SETTINGS -> new SettingsPanel(services);
+        };
         }
     }
 }
