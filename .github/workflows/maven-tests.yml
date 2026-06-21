@@ -20,13 +20,4 @@ jobs:
           cache: maven
 
       - name: Run unit tests
-        shell: bash
-        run: mvn test -q > maven-test.log 2>&1
-
-      - name: Upload Maven failure log
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: maven-test-log
-          path: maven-test.log
-          if-no-files-found: error
+        run: mvn test -q
