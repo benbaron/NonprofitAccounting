@@ -153,11 +153,11 @@ public class PanelHost extends BorderPane
         boolean canNavigateAway();
     }
 
-    static class DefaultPanelFactory implements PanelFactory
+    public static class DefaultPanelFactory implements PanelFactory
     {
         private final UiServiceProvider services;
 
-        DefaultPanelFactory(UiServiceProvider services)
+        public DefaultPanelFactory(UiServiceProvider services)
         {
             this.services = java.util.Objects.requireNonNull(services, "services");
         }

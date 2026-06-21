@@ -1,4 +1,4 @@
-package org.nonprofitbookkeeping.ui;
+package nonprofitbookkeeping.guard;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -16,6 +16,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.nonprofitbookkeeping.ui.AppPanel;
+import org.nonprofitbookkeeping.ui.AppPanelId;
+import org.nonprofitbookkeeping.ui.PanelHost;
+import org.nonprofitbookkeeping.ui.UiServiceProvider;
+import org.nonprofitbookkeeping.ui.UiSessionContext;
 
 import javafx.application.Platform;
 import javafx.scene.Node;
