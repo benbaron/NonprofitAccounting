@@ -1,8 +1,6 @@
-
 package nonprofitbookkeeping.persistence;
 
 import jakarta.enterprise.context.ApplicationScoped;
-
 import nonprofitbookkeeping.core.Database;
 
 import java.sql.Connection;
@@ -14,7 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Simple repository used to persist arbitrary JSON payloads inside the H2 database.
+ * Simple repository used to persist small JSON documents inside the H2 database.
  *
  * <p>The legacy implementation wrote a number of small JSON documents to files inside the
  * company directory (for example {@code budgets.json}, {@code sales.json}, etc.).  The new
@@ -22,9 +20,8 @@ import java.util.Optional;
  * information lives inside the database and participates in regular database backups.</p>
  *
  * <p>Raw SCLX import payloads are intentionally excluded from database persistence. They are
- * kept in thread-local memory until explicitly cleared so follow-up exports in the same
- * workflow can reproduce the source bytes without bloating the {@code document} table or
- * the underlying H2 file.</p>
+ * only kept in thread-local memory for the duration of an import run so that large source JSON
+ * blobs do not bloat the {@code document} table or the underlying H2 file.</p>
  */
 @ApplicationScoped
 public class DocumentRepository

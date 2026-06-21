@@ -158,6 +158,18 @@ final class CanonicalJournalSyncAdapter
                 {
                     continue;
                 }
+
+                BigDecimal amountSigned = signedAmount(entry);
+                if (amountSigned.signum() == 0)
+                {
+                    log.warn(
+                        "Skipping zero-value txn_split insert txnId={} accountToken='{}' entryAccountName='{}'",
+                        txn.getId(),
+                        entry.getAccountNumber(),
+                        entry.getAccountName());
+                    continue;
+                }
+
                 Long accountId = resolveAccountId(c, entry.getAccountNumber(), accountCache);
                 if (accountId == null)
                 {
@@ -179,7 +191,7 @@ final class CanonicalJournalSyncAdapter
                 ins.setInt(1, txn.getId());
                 ins.setLong(2, accountId);
                 ins.setLong(3, fundId);
-                ins.setBigDecimal(4, signedAmount(entry));
+                ins.setBigDecimal(4, amountSigned);
                 ins.setString(5, entry.getAccountName());
                 ins.addBatch();
             }

@@ -39,7 +39,7 @@ class RunScopedSclxExportServiceIntegrationTest
     }
 
     @Test
-    void exportByRunId_prefersPreservedRawPayload() throws SQLException
+    void exportByRunId_assemblesBecauseRawPayloadIsNotRetained() throws SQLException
     {
         SclxDocument source = sampleDocumentWithRootExtension();
 
@@ -56,7 +56,9 @@ class RunScopedSclxExportServiceIntegrationTest
         SclxDocument exported = exportService.exportByRunId(RUN_ID);
 
         assertNotNull(exported.extensions());
-        assertEquals("raw-preserved", exported.extensions().get("sourceMarker"));
+        assertNull(exported.extensions().get("sourceMarker"));
+        assertFalse(exported.chartOfAccounts().isEmpty());
+        assertFalse(exported.transactions().isEmpty());
         @SuppressWarnings("unchecked")
         Map<String, Object> metadata = (Map<String, Object>) exported.extensions().get("exportMetadata");
         assertNotNull(metadata);
