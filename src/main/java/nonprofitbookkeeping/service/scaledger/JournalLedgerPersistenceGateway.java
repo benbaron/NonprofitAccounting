@@ -13,10 +13,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -25,49 +23,30 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * JDBC-backed implementation that stores transactions using
  * {@link JournalRepository}.
  */
 public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
 {
-    
-    /** The Constant LOGGER. */
     private static final Logger LOGGER =
         LoggerFactory.getLogger(JournalLedgerPersistenceGateway.class);
+    private static final String SCLX_TRANSACTION_ID_KEY = "sclx.transactionId";
 
-    /** The journal repository. */
     private final JournalRepository journalRepository;
-    
-    /** The account repository. */
     private final AccountRepository accountRepository;
 
-    /**
-     * Instantiates a new journal ledger persistence gateway.
-     */
     public JournalLedgerPersistenceGateway()
     {
         this(new JournalRepository());
     }
 
-    /**
-     * Instantiates a new journal ledger persistence gateway.
-     *
-     * @param journalRepository the journal repository
-     */
     public JournalLedgerPersistenceGateway(JournalRepository journalRepository)
     {
         this.journalRepository = journalRepository;
         this.accountRepository = new AccountRepository();
     }
 
-    /**
-     * Override @see nonprofitbookkeeping.ui.actions.scaledger.LedgerPersistenceGateway#saveTransactionWithEntries(nonprofitbookkeeping.model.AccountingTransaction)
-     *
-     * @param transaction the transaction
-     * @return the accounting transaction
-     */
     @Override
     public AccountingTransaction saveTransactionWithEntries(AccountingTransaction transaction)
     {
@@ -108,23 +87,95 @@ public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
     }
 
     /**
-     * Ensure identifiers.
+     * Assigns a stable database identifier.
      *
-     * @param transaction the transaction
+     * <p>For SCLX imports, the external transaction identifier is already
+     * persisted in {@code transaction_info}. Re-importing the same SCLX
+     * transaction therefore reuses the original journal transaction id and
+     * replaces that transaction's current entries instead of creating a
+     * duplicate. Transactions without an SCLX identifier continue to receive
+     * a newly reserved id.</p>
      */
     private void ensureIdentifiers(AccountingTransaction transaction)
     {
-        if (transaction.getId() <= 0)
+        if (transaction.getId() > 0)
         {
-            transaction.setId(fetchNextTransactionId());
+            return;
+        }
+
+        String sclxTransactionId = transaction.getInfo() == null
+            ? null
+            : transaction.getInfo().get(SCLX_TRANSACTION_ID_KEY);
+        Integer existingId = findExistingSclxTransactionId(sclxTransactionId);
+        if (existingId != null)
+        {
+            transaction.setId(existingId);
+            LOGGER.debug(
+                "Reusing journal transaction id={} for SCLX transactionId={}",
+                existingId,
+                sclxTransactionId);
+            return;
+        }
+
+        transaction.setId(reserveNextTransactionId());
+    }
+
+    private Integer findExistingSclxTransactionId(String sclxTransactionId)
+    {
+        if (sclxTransactionId == null || sclxTransactionId.isBlank())
+        {
+            return null;
+        }
+
+        String sql = """
+            SELECT txn_id
+            FROM transaction_info
+            WHERE k = ? AND v = ?
+            ORDER BY txn_id
+            FETCH FIRST 2 ROWS ONLY
+            """;
+        try (Connection connection = Database.get().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setString(1, SCLX_TRANSACTION_ID_KEY);
+            ps.setString(2, sclxTransactionId.trim());
+            try (ResultSet rs = ps.executeQuery())
+            {
+                if (!rs.next())
+                {
+                    return null;
+                }
+                int firstId = rs.getInt(1);
+                if (rs.next())
+                {
+                    LOGGER.warn(
+                        "Multiple journal transactions map to SCLX transactionId={}; reusing lowest id={}",
+                        sclxTransactionId,
+                        firstId);
+                }
+                return firstId;
+            }
+        }
+        catch (SQLException ex)
+        {
+            throw new IllegalStateException(
+                "Failed to resolve existing SCLX transaction id " + sclxTransactionId,
+                ex);
         }
     }
 
-    /**
-     * Ensure entry back references.
-     *
-     * @param transaction the transaction
-     */
+    private int reserveNextTransactionId()
+    {
+        try
+        {
+            return this.journalRepository.reserveNextTransactionId();
+        }
+        catch (SQLException ex)
+        {
+            throw new IllegalStateException("Failed to reserve journal transaction id", ex);
+        }
+    }
+
     private void ensureEntryBackReferences(AccountingTransaction transaction)
     {
         Set<AccountingEntry> entries = transaction.getEntries();
@@ -151,15 +202,10 @@ public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
         Map<String, String> info = transaction.getInfo();
         if (info == null)
         {
-            transaction.setInfo(new java.util.LinkedHashMap<>());
+            transaction.setInfo(new LinkedHashMap<>());
         }
     }
 
-    /**
-     * Ensure accounts exist.
-     *
-     * @param transaction the transaction
-     */
     private void ensureAccountsExist(AccountingTransaction transaction)
     {
         Set<AccountingEntry> entries = transaction.getEntries();
@@ -236,13 +282,6 @@ public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
         }
     }
 
-    /**
-     * Fetch existing account numbers.
-     *
-     * @param accountNumbers the account numbers
-     * @return the sets the
-     * @throws SQLException the SQL exception
-     */
     private Set<String> fetchExistingAccountNumbers(Set<String> accountNumbers) throws SQLException
     {
         if (accountNumbers == null || accountNumbers.isEmpty())
@@ -284,35 +323,6 @@ public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
         return existing;
     }
 
-    /**
-     * Fetch next transaction id.
-     *
-     * @return the int
-     */
-    private int fetchNextTransactionId()
-    {
-        try (Connection connection = Database.get().getConnection();
-             PreparedStatement ps = connection.prepareStatement("SELECT COALESCE(MAX(id), 0) + 1 FROM journal_transaction");
-             ResultSet rs = ps.executeQuery())
-        {
-            if (rs.next())
-            {
-                return rs.getInt(1);
-            }
-        }
-        catch (SQLException ex)
-        {
-            LOGGER.warn("Failed to fetch next journal transaction id", ex);
-        }
-        return 1;
-    }
-
-    /**
-     * Ensure accounts for entries.
-     *
-     * @param transaction the transaction
-     * @throws SQLException the SQL exception
-     */
     private void ensureAccountsForEntries(AccountingTransaction transaction) throws SQLException
     {
         Set<AccountingEntry> entries = transaction.getEntries();
