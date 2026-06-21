@@ -9,20 +9,21 @@ import java.net.URL;
 /**
  * Launcher for the newer {@code org.nonprofitbookkeeping.ui} JavaFX UI systems.
  *
- * <p>Status: live through {@code org.nonprofitbookkeeping.ui.FxMain}. This
- * class selects between {@link MainWindowAlternate}, the default
- * dashboard-first UI, and {@link MainWindow}, the classic menu-bar UI, using
- * the {@code npbk.ui.variant} system property.</p>
+ * <p>The classic {@link MainWindow} shell remains the default because it is the
+ * canonical menu/navigation/panel-host UI. Set {@code npbk.ui.variant} to
+ * {@code alternate} to launch the dashboard-first candidate shell.</p>
  */
 public class MainApp extends Application
 {
     @Override
     public void start(Stage stage)
     {
-        String uiVariant = System.getProperty("npbk.ui.variant", "alternate").trim().toLowerCase();
+        String uiVariant = System.getProperty("npbk.ui.variant", "classic")
+            .trim().toLowerCase();
         boolean alternate = "alternate".equals(uiVariant);
-        javafx.scene.Parent root = alternate ? new MainWindowAlternate() : new MainWindow();
-        root = new MainWindowAlternate();
+        javafx.scene.Parent root = alternate
+            ? new MainWindowAlternate()
+            : new MainWindow();
         Scene scene = new Scene(root, 1200, 800);
 
         addStylesheet(scene, "/themes/light.css");
