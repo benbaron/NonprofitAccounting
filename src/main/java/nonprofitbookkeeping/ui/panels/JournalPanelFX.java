@@ -2,20 +2,26 @@ package nonprofitbookkeeping.ui.panels;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.IntConsumer;
 
-import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBase;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Hyperlink;
@@ -25,7 +31,9 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
@@ -40,6 +48,7 @@ import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Journal;
+import nonprofitbookkeeping.model.supplemental.TxnSupplementalLineBase;
 import nonprofitbookkeeping.service.PreferencesService;
 import nonprofitbookkeeping.ui.LedgerNavigationContext;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
@@ -48,28 +57,54 @@ import org.nonprofitbookkeeping.ui.AppPanelId;
 import org.nonprofitbookkeeping.ui.MainWindow;
 
 /**
- * JavaFX journal panel that displays each accounting transaction as one
- * selectable journal-entry block.
+ * Displays one selectable and sortable journal-entry group per accounting
+ * transaction.
  *
- * <p>Each block contains all debit/credit lines, followed by transaction-wide
- * memo/reference information. Selection, editing, and deletion continue to
- * operate on whole transactions rather than individual posting lines.</p>
+ * <p>Every transaction row contains all posting lines in stored order. Header
+ * fields that apply to the transaction as a whole are rendered as note lines
+ * beneath those postings. Selection, sorting, editing, and deletion therefore
+ * operate on complete transactions rather than individual debit or credit
+ * lines.</p>
  */
 public class JournalPanelFX extends BorderPane
 {
-    private static final double DATE_WIDTH = 105;
-    private static final double FUND_WIDTH = 155;
-    private static final double AMOUNT_WIDTH = 125;
-    private static final double ID_WIDTH = 95;
+    private static final double DATE_WIDTH = 120;
+    private static final double ACCOUNT_WIDTH = 680;
+    private static final double FUND_WIDTH = 210;
+    private static final double CLEARED_WIDTH = 140;
+    private static final double AMOUNT_WIDTH = 130;
+    private static final double ID_WIDTH = 110;
+    private static final double SUPPLEMENTAL_WIDTH = 150;
+    private static final double CONTENT_WIDTH =
+        DATE_WIDTH + ACCOUNT_WIDTH + FUND_WIDTH + CLEARED_WIDTH +
+        (2 * AMOUNT_WIDTH) + ID_WIDTH + SUPPLEMENTAL_WIDTH + 80;
     private static final double CREDIT_INDENT = 28;
     private static final double TRANSACTION_GAP = 18;
+
+    private enum SortKey
+    {
+        DATE,
+        ACCOUNT,
+        FUND,
+        CLEARED,
+        DEBIT,
+        CREDIT,
+        TRANSACTION_ID,
+        SUPPLEMENTAL
+    }
 
     private final ObservableList<AccountingTransaction> rows =
         FXCollections.observableArrayList();
     private final TableView<AccountingTransaction> table =
         new TableView<>(this.rows);
     private final IntConsumer ledgerNavigator;
+    private final Map<SortKey, Label> sortHeaders =
+        new EnumMap<>(SortKey.class);
+    private final Map<SortKey, String> sortHeaderTitles =
+        new EnumMap<>(SortKey.class);
 
+    private SortKey activeSortKey;
+    private boolean sortAscending = true;
     private JournalPanelCompanyListener companyListener;
     private ToolBar actionToolBar;
 
@@ -105,33 +140,38 @@ public class JournalPanelFX extends BorderPane
     /** Builds the one-row-per-transaction journal display. */
     private void buildTable()
     {
-        this.table.setColumnResizePolicy(
-            TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+        this.table.getStyleClass().add("journal-transaction-table");
+        this.table.setFixedCellSize(-1);
+        this.table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
         this.table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         this.table.setPlaceholder(new Label(
             "No journal transactions to display or no company is open."));
-        this.table.setStyle("-fx-table-cell-border-color: transparent;");
+        this.table.setStyle(
+            "-fx-fixed-cell-size: -1; -fx-table-cell-border-color: transparent;");
 
         TableColumn<AccountingTransaction, AccountingTransaction> blockColumn =
             new TableColumn<>();
         blockColumn.setGraphic(buildHeader());
         blockColumn.setCellValueFactory(
-            value -> new ReadOnlyObjectWrapper<>(value.getValue()));
+            value -> new javafx.beans.property.ReadOnlyObjectWrapper<>(
+                value.getValue()));
         blockColumn.setCellFactory(ignored -> new TransactionBlockCell());
         blockColumn.setSortable(false);
         blockColumn.setReorderable(false);
         blockColumn.setResizable(true);
-        blockColumn.prefWidthProperty().bind(
-            this.table.widthProperty().subtract(18));
+        blockColumn.setMinWidth(CONTENT_WIDTH);
+        blockColumn.setPrefWidth(CONTENT_WIDTH);
         this.table.getColumns().setAll(blockColumn);
 
         this.table.setRowFactory(tv -> {
             TableRow<AccountingTransaction> row = new TableRow<>();
+            row.getStyleClass().add("journal-transaction-row");
             row.setStyle(
                 "-fx-background-insets: 0; -fx-border-color: transparent;");
             row.setOnMouseClicked(event -> {
                 if (event.getButton() == MouseButton.PRIMARY &&
-                    event.getClickCount() == 2 && !row.isEmpty())
+                    event.getClickCount() == 2 && !row.isEmpty() &&
+                    !isInteractiveTarget(event.getTarget()))
                 {
                     openEditor(row.getItem());
                 }
@@ -140,27 +180,176 @@ public class JournalPanelFX extends BorderPane
         });
     }
 
+    private boolean isInteractiveTarget(Object target)
+    {
+        Node node = target instanceof Node ? (Node) target : null;
+        while (node != null)
+        {
+            if (node instanceof ButtonBase || node instanceof TextField)
+            {
+                return true;
+            }
+            node = node.getParent();
+        }
+        return false;
+    }
+
     private Node buildHeader()
     {
         GridPane header = createJournalGrid();
         header.getStyleClass().add("journal-block-header");
-        header.add(headerLabel("Date", Pos.CENTER_LEFT), 0, 0);
-        header.add(headerLabel("Account Title and Description",
-            Pos.CENTER_LEFT), 1, 0);
-        header.add(headerLabel("Fund", Pos.CENTER_LEFT), 2, 0);
-        header.add(headerLabel("Debit", Pos.CENTER_RIGHT), 3, 0);
-        header.add(headerLabel("Credit", Pos.CENTER_RIGHT), 4, 0);
-        header.add(headerLabel("Transaction ID", Pos.CENTER_LEFT), 5, 0);
+        header.add(sortHeader("Date", SortKey.DATE, Pos.CENTER_LEFT), 0, 0);
+        header.add(sortHeader("Account Title and Description",
+            SortKey.ACCOUNT, Pos.CENTER_LEFT), 1, 0);
+        header.add(sortHeader("Fund", SortKey.FUND, Pos.CENTER_LEFT), 2, 0);
+        header.add(sortHeader("Cleared", SortKey.CLEARED,
+            Pos.CENTER_LEFT), 3, 0);
+        header.add(sortHeader("Debit", SortKey.DEBIT,
+            Pos.CENTER_RIGHT), 4, 0);
+        header.add(sortHeader("Credit", SortKey.CREDIT,
+            Pos.CENTER_RIGHT), 5, 0);
+        header.add(sortHeader("Transaction ID", SortKey.TRANSACTION_ID,
+            Pos.CENTER_LEFT), 6, 0);
+        header.add(sortHeader("Supplemental", SortKey.SUPPLEMENTAL,
+            Pos.CENTER_LEFT), 7, 0);
         return header;
     }
 
-    private Label headerLabel(String text, Pos alignment)
+    private Label sortHeader(String title, SortKey key, Pos alignment)
     {
-        Label label = new Label(text);
+        Label label = new Label(title);
         label.setMaxWidth(Double.MAX_VALUE);
         label.setAlignment(alignment);
-        label.setStyle("-fx-font-weight: bold; -fx-padding: 4 6 4 6;");
+        label.setPadding(new Insets(4, 6, 4, 6));
+        label.setCursor(Cursor.HAND);
+        label.setStyle("-fx-font-weight: bold;");
+        label.setTooltip(new Tooltip(
+            "Sort complete journal transactions by " + title));
+        label.setOnMouseClicked(event -> sortBy(key));
+        this.sortHeaders.put(key, label);
+        this.sortHeaderTitles.put(key, title);
         return label;
+    }
+
+    private void sortBy(SortKey key)
+    {
+        if (this.activeSortKey == key)
+        {
+            this.sortAscending = !this.sortAscending;
+        }
+        else
+        {
+            this.activeSortKey = key;
+            this.sortAscending = true;
+        }
+        applyActiveSort();
+    }
+
+    private void applyActiveSort()
+    {
+        if (this.activeSortKey == null)
+        {
+            return;
+        }
+
+        Comparator<AccountingTransaction> comparator =
+            comparatorFor(this.activeSortKey);
+        if (!this.sortAscending)
+        {
+            comparator = comparator.reversed();
+        }
+        FXCollections.sort(this.rows,
+            comparator.thenComparingInt(AccountingTransaction::getId));
+        updateSortHeaders();
+        this.table.refresh();
+    }
+
+    private void updateSortHeaders()
+    {
+        for (Map.Entry<SortKey, Label> item : this.sortHeaders.entrySet())
+        {
+            String title = this.sortHeaderTitles.get(item.getKey());
+            if (item.getKey() == this.activeSortKey)
+            {
+                title += this.sortAscending ? " ▲" : " ▼";
+            }
+            item.getValue().setText(title);
+        }
+    }
+
+    private Comparator<AccountingTransaction> comparatorFor(SortKey key)
+    {
+        return switch (key)
+        {
+            case DATE -> (left, right) ->
+                compareDates(left.getDate(), right.getDate());
+            case ACCOUNT -> Comparator.comparing(
+                this::firstAccountTitle,
+                Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER));
+            case FUND -> Comparator.comparing(
+                this::firstFund,
+                Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER));
+            case CLEARED -> Comparator.comparing(
+                this::clearedStatus,
+                Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER));
+            case DEBIT -> Comparator.comparing(
+                AccountingTransaction::getDebit,
+                Comparator.nullsLast(BigDecimal::compareTo));
+            case CREDIT -> Comparator.comparing(
+                AccountingTransaction::getCredit,
+                Comparator.nullsLast(BigDecimal::compareTo));
+            case TRANSACTION_ID ->
+                Comparator.comparingInt(AccountingTransaction::getId);
+            case SUPPLEMENTAL -> Comparator.comparingInt(
+                transaction -> transaction.getSupplementalLines().size());
+        };
+    }
+
+    private int compareDates(String left, String right)
+    {
+        LocalDate leftDate = parseDate(left);
+        LocalDate rightDate = parseDate(right);
+        if (leftDate != null && rightDate != null)
+        {
+            return leftDate.compareTo(rightDate);
+        }
+        if (leftDate != null)
+        {
+            return -1;
+        }
+        if (rightDate != null)
+        {
+            return 1;
+        }
+        return safe(left).compareToIgnoreCase(safe(right));
+    }
+
+    private LocalDate parseDate(String value)
+    {
+        if (value == null || value.isBlank())
+        {
+            return null;
+        }
+        try
+        {
+            return LocalDate.parse(value);
+        }
+        catch (DateTimeParseException ex)
+        {
+            return null;
+        }
+    }
+
+    private String firstAccountTitle(AccountingTransaction transaction)
+    {
+        List<AccountingEntry> entries = orderedEntries(transaction);
+        return entries.isEmpty() ? "" : accountTitle(entries.get(0));
+    }
+
+    private String firstFund(AccountingTransaction transaction)
+    {
+        List<AccountingEntry> entries = orderedEntries(transaction);
+        return entries.isEmpty() ? "" : safe(entries.get(0).getFundNumber());
     }
 
     private GridPane createJournalGrid()
@@ -168,13 +357,17 @@ public class JournalPanelFX extends BorderPane
         GridPane grid = new GridPane();
         grid.setHgap(8);
         grid.setVgap(3);
+        grid.setMinWidth(CONTENT_WIDTH);
+        grid.setPrefWidth(CONTENT_WIDTH);
         grid.getColumnConstraints().setAll(
             fixedColumn(DATE_WIDTH),
-            growingColumn(),
+            fixedColumn(ACCOUNT_WIDTH),
             fixedColumn(FUND_WIDTH),
+            fixedColumn(CLEARED_WIDTH),
             fixedColumn(AMOUNT_WIDTH),
             fixedColumn(AMOUNT_WIDTH),
-            fixedColumn(ID_WIDTH));
+            fixedColumn(ID_WIDTH),
+            fixedColumn(SUPPLEMENTAL_WIDTH));
         return grid;
     }
 
@@ -182,16 +375,6 @@ public class JournalPanelFX extends BorderPane
     {
         ColumnConstraints column = new ColumnConstraints(width, width, width);
         column.setHgrow(Priority.NEVER);
-        return column;
-    }
-
-    private ColumnConstraints growingColumn()
-    {
-        ColumnConstraints column = new ColumnConstraints();
-        column.setMinWidth(240);
-        column.setPrefWidth(420);
-        column.setHgrow(Priority.ALWAYS);
-        column.setFillWidth(true);
         return column;
     }
 
@@ -233,15 +416,24 @@ public class JournalPanelFX extends BorderPane
             noLines.setStyle(
                 "-fx-font-style: italic; -fx-text-fill: derive(-fx-text-base-color, -30%);");
             grid.add(noLines, 1, row);
-            grid.add(transactionLink(transaction, tableIndex), 5, row++);
+            grid.add(valueLabel(clearedStatus(transaction), Pos.CENTER_LEFT),
+                3, row);
+            grid.add(transactionLink(transaction, tableIndex), 6, row);
+            Node supplemental = supplementalButton(transaction, tableIndex);
+            if (supplemental != null)
+            {
+                grid.add(supplemental, 7, row);
+            }
+            row++;
         }
         else
         {
             for (int index = 0; index < entries.size(); index++)
             {
                 AccountingEntry entry = entries.get(index);
-                grid.add(valueLabel(index == 0 ? safe(transaction.getDate()) :
-                    "", Pos.CENTER_LEFT), 0, row);
+                grid.add(valueLabel(index == 0
+                    ? safe(transaction.getDate()) : "", Pos.CENTER_LEFT),
+                    0, row);
 
                 Label account = valueLabel(accountTitle(entry),
                     Pos.CENTER_LEFT);
@@ -257,15 +449,30 @@ public class JournalPanelFX extends BorderPane
                 grid.add(valueLabel(
                     entry.getAccountSide() == AccountSide.DEBIT
                         ? FormatUtils.formatCurrency(amount) : "",
-                    Pos.CENTER_RIGHT), 3, row);
+                    Pos.CENTER_RIGHT), 4, row);
                 grid.add(valueLabel(
                     entry.getAccountSide() == AccountSide.CREDIT
                         ? FormatUtils.formatCurrency(amount) : "",
-                    Pos.CENTER_RIGHT), 4, row);
+                    Pos.CENTER_RIGHT), 5, row);
 
                 if (index == 0)
                 {
-                    grid.add(transactionLink(transaction, tableIndex), 5, row);
+                    Label cleared = valueLabel(clearedStatus(transaction),
+                        Pos.CENTER_LEFT);
+                    String bankTiming = safe(transaction.getClearBank());
+                    if (!bankTiming.isBlank())
+                    {
+                        cleared.setTooltip(new Tooltip(
+                            "Bank timing: " + bankTiming));
+                    }
+                    grid.add(cleared, 3, row);
+                    grid.add(transactionLink(transaction, tableIndex), 6, row);
+                    Node supplemental =
+                        supplementalButton(transaction, tableIndex);
+                    if (supplemental != null)
+                    {
+                        grid.add(supplemental, 7, row);
+                    }
                 }
                 row++;
             }
@@ -274,17 +481,31 @@ public class JournalPanelFX extends BorderPane
         for (String noteLine : transactionNoteLines(transaction))
         {
             Label note = valueLabel(noteLine, Pos.CENTER_LEFT);
-            note.setWrapText(true);
+            note.setWrapText(false);
             note.setPadding(new Insets(1, 4, 1, 12));
             note.setStyle(
                 "-fx-font-style: italic; -fx-text-fill: derive(-fx-text-base-color, -18%);");
-            grid.add(note, 1, row, 5, 1);
+            grid.add(note, 1, row, 7, 1);
             row++;
         }
 
         VBox wrapper = new VBox(grid);
         wrapper.setFillWidth(true);
+        wrapper.setMinWidth(CONTENT_WIDTH);
+        wrapper.setPrefWidth(CONTENT_WIDTH);
         return wrapper;
+    }
+
+    private String clearedStatus(AccountingTransaction transaction)
+    {
+        boolean bankEntry = transaction.isReconciled() ||
+            !safe(transaction.getBank()).isBlank() ||
+            !safe(transaction.getClearBank()).isBlank();
+        if (!bankEntry)
+        {
+            return "";
+        }
+        return transaction.isReconciled() ? "Reconciled" : "Uncleared";
     }
 
     private Hyperlink transactionLink(AccountingTransaction transaction,
@@ -293,16 +514,114 @@ public class JournalPanelFX extends BorderPane
         Hyperlink link = new Hyperlink(String.valueOf(transaction.getId()));
         link.setPadding(new Insets(2, 4, 2, 4));
         link.setOnAction(event -> {
-            if (tableIndex >= 0 && tableIndex < this.table.getItems().size())
-            {
-                this.table.getSelectionModel().clearAndSelect(tableIndex);
-            }
+            selectTransaction(tableIndex);
             navigateToLedger(transaction.getId());
             event.consume();
         });
-        link.setTooltip(new javafx.scene.control.Tooltip(
+        link.setTooltip(new Tooltip(
             "Open this transaction in the Ledger Register"));
         return link;
+    }
+
+    private Node supplementalButton(AccountingTransaction transaction,
+        int tableIndex)
+    {
+        int count = transaction.getSupplementalLines().size();
+        if (count == 0)
+        {
+            return null;
+        }
+
+        Button button = new Button("Schedules (" + count + ")");
+        button.setMaxWidth(Double.MAX_VALUE);
+        button.setTooltip(new Tooltip(
+            "View supplemental schedules for this transaction"));
+        button.setOnAction(event -> {
+            selectTransaction(tableIndex);
+            showSupplementalDetails(transaction);
+            event.consume();
+        });
+        return button;
+    }
+
+    private void selectTransaction(int tableIndex)
+    {
+        if (tableIndex >= 0 && tableIndex < this.table.getItems().size())
+        {
+            this.table.getSelectionModel().clearAndSelect(tableIndex);
+        }
+    }
+
+    private void showSupplementalDetails(AccountingTransaction transaction)
+    {
+        List<TxnSupplementalLineBase> supplemental =
+            transaction.getSupplementalLines();
+        if (supplemental.isEmpty())
+        {
+            return;
+        }
+
+        TableView<TxnSupplementalLineBase> details =
+            new TableView<>(FXCollections.observableArrayList(supplemental));
+        details.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+        details.getColumns().addAll(
+            supplementalColumn("Schedule", 130,
+                line -> line.getKind() == null ? "" :
+                    line.getKind().toString()),
+            supplementalColumn("Reference", 120,
+                line -> safe(line.getReference())),
+            supplementalColumn("Description", 260,
+                line -> safe(line.getDescription())),
+            supplementalColumn("Amount", 120,
+                line -> line.getAmount() == null ? "" :
+                    FormatUtils.formatCurrency(line.getAmount())),
+            supplementalColumn("Dates", 190, this::supplementalDates),
+            supplementalColumn("Notes", 260,
+                line -> safe(line.getNotes())));
+        details.setPrefHeight(360);
+
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("Supplemental Schedules — Transaction " +
+            transaction.getId());
+        dialog.getDialogPane().setContent(details);
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        dialog.getDialogPane().setPrefSize(1000, 450);
+        dialog.setResizable(true);
+        if (getScene() != null && getScene().getWindow() != null)
+        {
+            dialog.initOwner(getScene().getWindow());
+        }
+        dialog.showAndWait();
+    }
+
+    private TableColumn<TxnSupplementalLineBase, String> supplementalColumn(
+        String title, double width,
+        java.util.function.Function<TxnSupplementalLineBase, String> getter)
+    {
+        TableColumn<TxnSupplementalLineBase, String> column =
+            new TableColumn<>(title);
+        column.setCellValueFactory(value ->
+            new ReadOnlyStringWrapper(getter.apply(value.getValue())));
+        column.setPrefWidth(width);
+        return column;
+    }
+
+    private String supplementalDates(TxnSupplementalLineBase line)
+    {
+        List<String> dates = new ArrayList<>();
+        if (line.getDueDate() != null)
+        {
+            dates.add("Due " + line.getDueDate());
+        }
+        if (line.getStartDate() != null)
+        {
+            dates.add("From " + line.getStartDate());
+        }
+        if (line.getEndDate() != null)
+        {
+            dates.add("To " + line.getEndDate());
+        }
+        return String.join(" · ", dates);
     }
 
     private void navigateToLedger(int transactionId)
@@ -578,6 +897,7 @@ public class JournalPanelFX extends BorderPane
             if (journal != null)
             {
                 this.rows.setAll(journal.getJournalTransactions());
+                applyActiveSort();
                 this.table.refresh();
                 return;
             }
