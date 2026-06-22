@@ -32,7 +32,7 @@ class SclxImportServiceCoordinatorTest
         DocumentRepository repository = new DocumentRepository();
         String key = "sclx.raw.coordinator-test";
         repository.upsert(key, "temporary payload");
-        assertTrue(repository.find(key).isPresent());
+        assertTrue(repository.find(key).isEmpty());
 
         CountingTarget target = new CountingTarget()
         {

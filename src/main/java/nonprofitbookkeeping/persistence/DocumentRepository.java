@@ -7,8 +7,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -20,8 +18,8 @@ import java.util.Optional;
  * information lives inside the database and participates in regular database backups.</p>
  *
  * <p>Raw SCLX import payloads are intentionally excluded from database persistence. They are
- * only kept in thread-local memory for the duration of an import run so that large source JSON
- * blobs do not bloat the {@code document} table or the underlying H2 file.</p>
+ * not retained so that large source JSON blobs do not bloat the {@code document} table or the
+ * underlying H2 file.</p>
  */
 @ApplicationScoped
 public class DocumentRepository
@@ -32,16 +30,17 @@ public class DocumentRepository
 		"SELECT content FROM document WHERE name = ?";
 	private static final String DELETE_SQL =
 		"DELETE FROM document WHERE name = ?";
+	private static final String DELETE_SCLX_RAW_SQL =
+		"DELETE FROM document WHERE name LIKE ?";
 	private static final String SCLX_RAW_PREFIX = "sclx.raw.";
-	private static final ThreadLocal<Map<String, String>> EPHEMERAL_SCLX_RAW_DOCUMENTS =
-		ThreadLocal.withInitial(HashMap::new);
 	
 	/**
-	 * Clears any thread-scoped raw SCLX payloads cached for the current import run.
+	 * Preserved for import-lifecycle callers; raw SCLX payloads are no longer
+	 * cached or persisted.
 	 */
 	public static void clearThreadScopedEphemeralDocuments()
 	{
-		EPHEMERAL_SCLX_RAW_DOCUMENTS.remove();
+		// Raw SCLX payloads are intentionally not cached or persisted.
 	}
 	
 	private static boolean isEphemeralSclxRawDocument(String name)
@@ -60,7 +59,7 @@ public class DocumentRepository
 	{
 		if (isEphemeralSclxRawDocument(name))
 		{
-			EPHEMERAL_SCLX_RAW_DOCUMENTS.get().put(name, content);
+			deleteLegacySclxRawDocuments();
 			return;
 		}
 		
@@ -85,7 +84,7 @@ public class DocumentRepository
 	{
 		if (isEphemeralSclxRawDocument(name))
 		{
-			return Optional.ofNullable(EPHEMERAL_SCLX_RAW_DOCUMENTS.get().get(name));
+			return Optional.empty();
 		}
 		
 		try (Connection c = Database.get().getConnection();
@@ -119,7 +118,7 @@ public class DocumentRepository
 	{
 		if (isEphemeralSclxRawDocument(name))
 		{
-			EPHEMERAL_SCLX_RAW_DOCUMENTS.get().remove(name);
+			deleteLegacySclxRawDocuments();
 			return;
 		}
 		
@@ -130,6 +129,35 @@ public class DocumentRepository
 			ps.executeUpdate();
 		}
 		
+	}
+
+	private void deleteLegacySclxRawDocuments() throws SQLException
+	{
+		try (Connection c = Database.get().getConnection();
+			PreparedStatement ps = c.prepareStatement(DELETE_SCLX_RAW_SQL))
+		{
+			ps.setString(1, SCLX_RAW_PREFIX + "%");
+			ps.executeUpdate();
+		}
+		catch (SQLException ex)
+		{
+			String message = ex.getMessage();
+			if ("42S04".equals(ex.getSQLState())
+				|| (message != null
+					&& message.contains("Table \"DOCUMENT\" not found")))
+			{
+				return;
+			}
+			throw ex;
+		}
+		catch (IllegalStateException ex)
+		{
+			if ("Database not initialized".equals(ex.getMessage()))
+			{
+				return;
+			}
+			throw ex;
+		}
 	}
 	
 }
