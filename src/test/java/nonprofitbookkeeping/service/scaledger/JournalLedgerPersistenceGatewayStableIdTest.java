@@ -2,12 +2,15 @@ package nonprofitbookkeeping.service.scaledger;
 
 import nonprofitbookkeeping.TestDatabase;
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.model.AccountSide;
+import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -49,7 +52,10 @@ class JournalLedgerPersistenceGatewayStableIdTest
         AccountingTransaction transaction = new AccountingTransaction();
         transaction.setDate("2026-01-03");
         transaction.setMemo(memo);
-        transaction.setEntries(new LinkedHashSet<>());
+        LinkedHashSet<AccountingEntry> entries = new LinkedHashSet<>();
+        entries.add(new AccountingEntry(new BigDecimal("25.00"), "1000", AccountSide.DEBIT));
+        entries.add(new AccountingEntry(new BigDecimal("25.00"), "4000", AccountSide.CREDIT));
+        transaction.setEntries(entries);
         LinkedHashMap<String, String> info = new LinkedHashMap<>();
         info.put("sclx.transactionId", sclxId);
         transaction.setInfo(info);
