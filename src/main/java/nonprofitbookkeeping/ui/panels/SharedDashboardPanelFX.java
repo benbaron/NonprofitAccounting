@@ -9,8 +9,6 @@ import java.util.stream.Collectors;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.collections.FXCollections;
-import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -28,7 +26,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TitledPane;
-import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -108,7 +105,8 @@ public class SharedDashboardPanelFX extends BorderPane
         setPadding(PanelChrome.PANEL_PADDING);
 
         this.companyName.getStyleClass().add("company-indicator");
-        this.companyName.setStyle("-fx-font-size: 1.4em; -fx-font-weight: bold;");
+        this.companyName.setStyle(
+            "-fx-font-size: 1.4em; -fx-font-weight: bold;");
         Button refresh = new Button("Reload");
         refresh.setOnAction(event -> reloadData());
 
@@ -132,9 +130,8 @@ public class SharedDashboardPanelFX extends BorderPane
             new Label("Recent transactions"), this.recentLimit,
             refresh);
         controls.setAlignment(Pos.CENTER_LEFT);
-        VBox header = PanelChrome.topSection("Dashboard",
-            this.companyName, this.periodLabel, controls, this.status);
-        setTop(header);
+        setTop(PanelChrome.topSection("Dashboard",
+            this.companyName, this.periodLabel, controls, this.status));
 
         this.cards.setHgap(10);
         this.cards.setVgap(10);
@@ -342,38 +339,7 @@ public class SharedDashboardPanelFX extends BorderPane
         });
     }
 
-    private TableCell<FundBalanceRow, BigDecimal> currencyCell()
-    {
-        return new TableCell<>()
-        {
-            @Override
-            protected void updateItem(BigDecimal value, boolean empty)
-            {
-                super.updateItem(value, empty);
-                setText(empty || value == null ? null :
-                    FormatUtils.formatCurrency(value));
-                setAlignment(Pos.CENTER_RIGHT);
-            }
-        };
-    }
-
-    private TableCell<AccountingTransaction, BigDecimal>
-        transactionCurrencyCell()
-    {
-        return new TableCell<>()
-        {
-            @Override
-            protected void updateItem(BigDecimal value, boolean empty)
-            {
-                super.updateItem(value, empty);
-                setText(empty || value == null ? null :
-                    FormatUtils.formatCurrency(value));
-                setAlignment(Pos.CENTER_RIGHT);
-            }
-        };
-    }
-
-    private <S> TableCell<S, BigDecimal> currencyCellGeneric()
+    private <S> TableCell<S, BigDecimal> currencyCell()
     {
         return new TableCell<>()
         {
@@ -455,21 +421,6 @@ public class SharedDashboardPanelFX extends BorderPane
             dialog.initOwner(getScene().getWindow());
         }
         dialog.showAndWait();
-    }
-
-    private <S> TableCell<S, BigDecimal> currencyCell()
-    {
-        return new TableCell<>()
-        {
-            @Override
-            protected void updateItem(BigDecimal value, boolean empty)
-            {
-                super.updateItem(value, empty);
-                setText(empty || value == null ? null :
-                    FormatUtils.formatCurrency(value));
-                setAlignment(Pos.CENTER_RIGHT);
-            }
-        };
     }
 
     private String safe(String value)
