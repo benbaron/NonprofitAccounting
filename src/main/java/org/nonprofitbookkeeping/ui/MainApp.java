@@ -20,7 +20,8 @@ public class MainApp extends Application
     {
         String uiVariant = System.getProperty("npbk.ui.variant", "classic")
             .trim().toLowerCase();
-        boolean alternate = "alternate".equals(uiVariant);
+//        boolean alternate = "alternate".equals(uiVariant);
+        boolean alternate = true;
         javafx.scene.Parent root = alternate
             ? new MainWindowAlternate()
             : new MainWindow();
