@@ -1,6 +1,7 @@
 package org.nonprofitbookkeeping.service;
 
 import org.nonprofitbookkeeping.persistence.Jpa;
+import org.nonprofitbookkeeping.model.FundType;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -11,21 +12,16 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Queries fund balances by summing signed split amounts “as of” a date.
- *
- * IMPORTANT:
- * This query sums *all* splits regardless of account type. You can refine it to
- * include only selected account types (e.g., cash-only, balance-sheet only, etc.)
- * once you decide which “headline fund balance” you want to show users.
- */
+/** Queries fund balances by summing signed split amounts as of a date. */
 @ApplicationScoped
 public class FundBalanceService
 {
     @Inject
     private Jpa jpa;
 
-    public FundBalanceService() {}
+    public FundBalanceService()
+    {
+    }
 
     public FundBalanceService(Jpa jpa)
     {
@@ -37,20 +33,25 @@ public class FundBalanceService
         try (EntityManager em = this.jpa.em())
         {
             List<Object[]> rows = em.createQuery(
-                "select f.code, f.name, coalesce(sum(s.amountSigned), 0) " +
-                "from TxnSplit s " +
-                "join s.txn t " +
-                "join s.fund f " +
-                "where t.txnDate <= :asOf " +
-                "group by f.code, f.name " +
-                "order by f.code", Object[].class)
+                "select f.code, f.name, f.fundType, " +
+                    "coalesce(sum(s.amountSigned), 0) " +
+                    "from TxnSplit s " +
+                    "join s.txn t " +
+                    "join s.fund f " +
+                    "where t.txnDate <= :asOf " +
+                    "group by f.code, f.name, f.fundType " +
+                    "order by f.code", Object[].class)
                 .setParameter("asOf", asOf)
                 .getResultList();
 
             List<FundBalanceRow> out = new ArrayList<>();
-            for (Object[] r : rows)
+            for (Object[] row : rows)
             {
-                out.add(new FundBalanceRow((String) r[0], (String) r[1], (BigDecimal) r[2]));
+                out.add(new FundBalanceRow(
+                    (String) row[0],
+                    (String) row[1],
+                    (FundType) row[2],
+                    (BigDecimal) row[3]));
             }
             return out;
         }
