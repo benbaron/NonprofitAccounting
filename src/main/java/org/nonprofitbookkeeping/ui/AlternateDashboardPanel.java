@@ -2,12 +2,16 @@ package org.nonprofitbookkeeping.ui;
 
 import javafx.application.Platform;
 import javafx.scene.Node;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.stage.Window;
+import nonprofitbookkeeping.service.UndepositedFundsService;
 import nonprofitbookkeeping.ui.LedgerNavigationContext;
 import nonprofitbookkeeping.ui.panels.DashboardNavigation;
 import nonprofitbookkeeping.ui.panels.SharedDashboardPanelFX;
+import nonprofitbookkeeping.ui.panels.UndepositedFundsPanelFX;
 
-/** New-shell adapter for the shared dashboard surface. */
+/** Panel-host adapter for the shared dashboard surface. */
 public class AlternateDashboardPanel implements AppPanel
 {
     static final String EMPTY_STATE = AlternateDashboardModel.EMPTY_STATE;
@@ -82,13 +86,8 @@ public class AlternateDashboardPanel implements AppPanel
             @Override
             public void openUndepositedFunds()
             {
-                Platform.runLater(() -> {
-                    MainWindowAlternate shell = findShell();
-                    if (shell != null)
-                    {
-                        shell.openUndepositedFundsDirect();
-                    }
-                });
+                Platform.runLater(
+                    AlternateDashboardPanel.this::showUndepositedFunds);
             }
 
             @Override
@@ -100,27 +99,46 @@ public class AlternateDashboardPanel implements AppPanel
 
             private void open(AppPanelId panelId)
             {
-                Platform.runLater(() -> {
-                    MainWindowAlternate shell = findShell();
-                    if (shell != null)
-                    {
-                        shell.openPanel(panelId);
-                    }
-                });
+                Platform.runLater(() -> openInOwningShell(panelId));
             }
         };
     }
 
-    private MainWindowAlternate findShell()
+    private void openInOwningShell(AppPanelId panelId)
     {
         for (Window window : Window.getWindows())
         {
-            if (window.isShowing() && window.getScene() != null &&
-                window.getScene().getRoot() instanceof MainWindowAlternate shell)
+            if (!window.isShowing() || window.getScene() == null)
             {
-                return shell;
+                continue;
+            }
+            if (window.getScene().getRoot() instanceof MainWindowAlternate shell)
+            {
+                shell.openPanel(panelId);
+                return;
+            }
+            if (window.getScene().getRoot() instanceof MainWindow shell)
+            {
+                shell.openPanel(panelId);
+                return;
             }
         }
-        return null;
+    }
+
+    private void showUndepositedFunds()
+    {
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("Undeposited Funds");
+        dialog.getDialogPane().setContent(new UndepositedFundsPanelFX(
+            new UndepositedFundsService()));
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        dialog.getDialogPane().setPrefSize(1000, 700);
+        dialog.setResizable(true);
+        if (this.dashboard.getScene() != null &&
+            this.dashboard.getScene().getWindow() != null)
+        {
+            dialog.initOwner(this.dashboard.getScene().getWindow());
+        }
+        dialog.showAndWait();
     }
 }
