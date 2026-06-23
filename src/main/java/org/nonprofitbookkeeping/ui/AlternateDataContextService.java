@@ -171,22 +171,41 @@ public class AlternateDataContextService
         }
         try
         {
-            Map<Long, String> currentLabels = new LinkedHashMap<>();
-            for (CompanyRecord record : this.companyRepository.listCompanies())
-            {
-                currentLabels.put(record.id(),
-                    record.name() + " (ID: " + record.id() + ")");
-            }
-            return stored.stream()
-                .filter(choice -> currentLabels.containsKey(choice.id()))
-                .map(choice -> new RecentCompanyChoice(choice.id(),
-                    currentLabels.get(choice.id())))
-                .toList();
+            return normalizeRecentCompanies(stored,
+                this.companyRepository.listCompanies());
         }
         catch (SQLException ex)
         {
             return stored;
         }
+    }
+
+    static List<RecentCompanyChoice> normalizeRecentCompanies(
+        List<RecentCompanyChoice> stored,
+        List<CompanyRecord> currentCompanies)
+    {
+        if (stored == null || stored.isEmpty())
+        {
+            return List.of();
+        }
+        Map<Long, String> currentLabels = new LinkedHashMap<>();
+        if (currentCompanies != null)
+        {
+            for (CompanyRecord record : currentCompanies)
+            {
+                if (record != null)
+                {
+                    currentLabels.put(record.id(),
+                        record.name() + " (ID: " + record.id() + ")");
+                }
+            }
+        }
+        return stored.stream()
+            .filter(choice -> choice != null &&
+                currentLabels.containsKey(choice.id()))
+            .map(choice -> new RecentCompanyChoice(choice.id(),
+                currentLabels.get(choice.id())))
+            .toList();
     }
 
     Path normalizeH2Base(Path filePath)
