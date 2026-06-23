@@ -24,6 +24,8 @@ public class PreferencesService
         "pendingRowTextColor";
     private static final String JOURNAL_STORED_LINE_ORDER_KEY =
         "journalPreserveStoredLineOrder";
+    private static final String DASHBOARD_RECENT_LIMIT_KEY =
+        "dashboardRecentTransactionLimit";
 
     private static final Properties props = new Properties();
     private static final Path configPath = Paths.get(
@@ -165,6 +167,29 @@ public class PreferencesService
     {
         props.setProperty(JOURNAL_STORED_LINE_ORDER_KEY,
             Boolean.toString(preserved));
+        save();
+    }
+
+    /** Returns the dashboard recent-transaction limit, defaulting to 10. */
+    public static int getDashboardRecentTransactionLimit()
+    {
+        String value = props.getProperty(DASHBOARD_RECENT_LIMIT_KEY, "10");
+        try
+        {
+            return Math.max(1, Math.min(100, Integer.parseInt(value)));
+        }
+        catch (NumberFormatException ex)
+        {
+            return 10;
+        }
+    }
+
+    /** Stores the dashboard recent-transaction limit. */
+    public static void setDashboardRecentTransactionLimit(int limit)
+    {
+        int normalized = Math.max(1, Math.min(100, limit));
+        props.setProperty(DASHBOARD_RECENT_LIMIT_KEY,
+            Integer.toString(normalized));
         save();
     }
 

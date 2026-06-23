@@ -142,15 +142,18 @@ class WorkspacePanelInteractionTest
     }
 
     @Test
-    void mainWindowAlternateDashboardUsesEmptyStatesInsteadOfDemoValues() throws Exception
+    void mainWindowAlternateDashboardUsesSharedEmptyStateWithoutDemoValues() throws Exception
     {
         runOnFxThread(() -> {
             MainWindowAlternate window = new MainWindowAlternate();
 
             String renderedText = collectLabels(window);
 
-            assertTrue(renderedText.contains(MainWindowAlternate.NO_SERVICE_DATA_MESSAGE));
-            assertFalse(renderedText.contains("$"));
+            assertTrue(renderedText.contains(
+                "Open a company to load dashboard data."));
+            assertFalse(renderedText.contains("$11,230"));
+            assertFalse(renderedText.contains("$5,830"));
+            assertFalse(renderedText.contains("$23,009"));
             assertFalse(renderedText.contains("Role: Accountant"));
             assertFalse(renderedText.contains("Signed in user"));
         });
