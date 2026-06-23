@@ -16,6 +16,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Separator;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Background;
@@ -45,7 +46,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.prefs.Preferences;
@@ -74,8 +74,6 @@ public class MainWindowAlternate extends BorderPane
         "Cool", Color.web("#edf5f9"));
 
     private final PanelHost panelHost;
-    private final NavigationPane nav =
-        new NavigationPane(this::openPanel, this::openInspectorForSelection, this::openRecordServicePanel);
     private final Label alternateStatus = new Label("Select an item to see context details.");
     private final AlternateDashboardPanel alternateDashboardPanel;
     private final StackPane workspaceSurface = new StackPane();
@@ -88,6 +86,7 @@ public class MainWindowAlternate extends BorderPane
     private final VBox profilePane = new VBox();
     private final VBox searchPane = new VBox();
     private final VBox navButtons = new VBox(6);
+    private final SplitPane workspaceSplitPane = new SplitPane();
     private final TitledPane importToolsPane = new TitledPane();
     private final WorkspaceRouter workspaceRouter = new WorkspaceRouter();
     private final BankingPanelFactory bankingPanelFactory;
@@ -98,7 +97,6 @@ public class MainWindowAlternate extends BorderPane
     private final AlternateNavigationModel navigationModel = new AlternateNavigationModel();
     private final AlternateUiCommandCatalog commandCatalog;
     private final UiServiceProvider uiServices;
-    private final List<Button> iconRailButtons = new ArrayList<>();
     private LegacyPanelAdapter.AdaptedPanel activeAdaptedPanel;
     private AppPanelId activePanelId = AppPanelId.DASHBOARD;
     private static final String SCHEDULED_REPORTS_KEY = "alternate.scheduled.reports";
@@ -144,44 +142,14 @@ public class MainWindowAlternate extends BorderPane
         this.panelHost = new PanelHost(this.uiServices);
         this.alternateDashboardPanel = new AlternateDashboardPanel(this.sessionContext, this.uiServices);
         this.commandCatalog = new AlternateUiCommandCatalog(this.sessionContext);
-        this.sessionContext.companyOpenProperty().addListener((obs, oldValue, newValue) -> {
-            refreshIconBarState();
-            rebuildNavigationButtons();
-        });
+        this.sessionContext.companyOpenProperty().addListener((obs, oldValue, newValue) -> rebuildNavigationButtons());
         this.sessionContext.databaseOpenProperty().addListener((obs, oldValue, newValue) -> rebuildNavigationButtons());
         setTop(buildHeader());
         setCenter(buildWorkspace());
-        setLeft(buildIconRail());
         setPadding(new Insets(10));
         getStyleClass().add("alternate-shell-root");
         setBackground(new Background(new BackgroundFill(SURFACE_COLORS.get("Slate"), CornerRadii.EMPTY, Insets.EMPTY)));
         openPanel(AppPanelId.DASHBOARD);
-    }
-
-    private Node buildIconRail()
-    {
-        this.iconRailButtons.clear();
-        this.iconRailButtons.add(iconButton("◉", "Profile", this::openProfilePage));
-        this.iconRailButtons.add(iconButton("⌂", "Dashboard", () -> openPanel(AppPanelId.DASHBOARD)));
-        this.iconRailButtons.add(iconButton("⌕", "Search", this::openSearchPage));
-        this.iconRailButtons.add(iconButton("☰", "Command Center", this::openCommandCenter));
-        this.iconRailButtons.add(iconButton("⚙", "Settings", () -> openPanel(AppPanelId.SETTINGS)));
-        VBox rail = new VBox(14, this.iconRailButtons.toArray(Button[]::new));
-        rail.setPadding(new Insets(14, 8, 14, 8));
-        rail.getStyleClass().add("alternate-icon-rail");
-        refreshIconBarState();
-        return rail;
-    }
-
-    private Button iconButton(String text, String label, Runnable action)
-    {
-        Button button = new Button(text);
-        button.setMinSize(46, 46);
-        button.setOnAction(e -> action.run());
-        button.getStyleClass().add("alternate-icon-rail-button");
-        button.setTooltip(new Tooltip(label));
-        button.setAccessibleText(label);
-        return button;
     }
 
     private Node buildHeader()
@@ -221,9 +189,10 @@ public class MainWindowAlternate extends BorderPane
         HBox.setHgrow(this.workspaceSurface, Priority.ALWAYS);
         this.workspaceSurface.getStyleClass().add("alternate-workspace-surface");
 
-        HBox body = new HBox(12, leftNav, this.workspaceSurface);
-        body.setAlignment(Pos.TOP_LEFT);
-        return body;
+        this.workspaceSplitPane.getItems().setAll(leftNav, this.workspaceSurface);
+        this.workspaceSplitPane.setDividerPositions(0.25);
+        this.workspaceSplitPane.getStyleClass().add("alternate-workspace-split");
+        return this.workspaceSplitPane;
     }
 
     private VBox buildLeftNavigation()
@@ -236,7 +205,14 @@ public class MainWindowAlternate extends BorderPane
         this.importToolsPane.setExpanded(false);
         rebuildNavigationButtons();
 
-        VBox wrapper = new VBox(10, new Label("Navigation"), this.navButtons, this.importToolsPane);
+        VBox quickActions = new VBox(6,
+            navActionButton("◉  Profile", this::openProfilePage),
+            navButton("⌂  Dashboard", AppPanelId.DASHBOARD),
+            navActionButton("⌕  Search", this::openSearchPage),
+            navActionButton("☰  Command Center", this::openCommandCenter));
+        quickActions.getStyleClass().add("alternate-left-navigation-actions");
+
+        VBox wrapper = new VBox(10, new Label("Navigation"), quickActions, new Separator(), this.navButtons, this.importToolsPane);
         wrapper.setPadding(new Insets(12));
         wrapper.setMinWidth(240);
         wrapper.getStyleClass().add("alternate-left-navigation");
@@ -975,7 +951,6 @@ public class MainWindowAlternate extends BorderPane
             this.activeAdaptedPanel = null;
             LOGGER.debug("Panel strategy {} ({}) for {}", PanelAdaptationPlan.strategyFor(id), PanelAdaptationPlan.phaseFor(id), id);
         }
-        this.nav.highlight(id);
     }
 
     private void buildAlternateBudgetEditorPane()
@@ -1020,16 +995,6 @@ public class MainWindowAlternate extends BorderPane
         this.alternateSchedulesPane.setPadding(new Insets(8));
         VBox.setVgrow(schedules, Priority.ALWAYS);
         this.alternateContentPane.getChildren().setAll(this.alternateSchedulesPane);
-    }
-
-    private void refreshIconBarState()
-    {
-        boolean companyLoaded = this.sessionContext.isCompanyOpen();
-        for (Button iconButton : this.iconRailButtons)
-        {
-            iconButton.setDisable(!companyLoaded);
-            iconButton.setOpacity(companyLoaded ? 1.0 : 0.55);
-        }
     }
 
     private void rebuildNavigationButtons()
@@ -1104,7 +1069,6 @@ public class MainWindowAlternate extends BorderPane
     private void refreshHeaderLabels()
     {
         this.headerTitle.setText(panelTitle(this.activePanelId));
-        refreshIconBarState();
     }
 
     private String panelTitle(AppPanelId panelId)
@@ -1229,34 +1193,6 @@ public class MainWindowAlternate extends BorderPane
         return this.headerSubtitle.getText();
     }
 
-    List<Boolean> testIconRailDisabledStates()
-    {
-        return this.iconRailButtons.stream()
-            .map(Button::isDisable)
-            .toList();
-    }
-
-    List<String> testIconRailAccessibleLabels()
-    {
-        return this.iconRailButtons.stream()
-            .map(Button::getAccessibleText)
-            .toList();
-    }
-
-    List<String> testIconRailTooltipLabels()
-    {
-        return this.iconRailButtons.stream()
-            .map(button -> button.getTooltip() == null ? null : button.getTooltip().getText())
-            .toList();
-    }
-
-    List<String> testIconRailButtonStyleClasses()
-    {
-        return this.iconRailButtons.stream()
-            .flatMap(button -> button.getStyleClass().stream())
-            .toList();
-    }
-
     List<String> testShellSurfaceStyleClasses()
     {
         return List.of(
@@ -1264,6 +1200,19 @@ public class MainWindowAlternate extends BorderPane
             this.workspaceSurface.getStyleClass().contains("alternate-workspace-surface") ? "alternate-workspace-surface" : "",
             this.headerTitle.getStyleClass().contains("alternate-shell-title") ? "alternate-shell-title" : "",
             this.headerSubtitle.getStyleClass().contains("alternate-shell-subtitle") ? "alternate-shell-subtitle" : "");
+    }
+
+
+    boolean testHasIconRail()
+    {
+        return getLeft() != null;
+    }
+
+    boolean testWorkspaceUsesSplitPane()
+    {
+        return getCenter() == this.workspaceSplitPane
+            && this.workspaceSplitPane.getItems().size() == 2
+            && this.workspaceSplitPane.getItems().get(1) == this.workspaceSurface;
     }
 
 }
