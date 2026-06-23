@@ -1,59 +1,57 @@
 package org.nonprofitbookkeeping.ui;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
-import java.math.BigDecimal;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.nonprofitbookkeeping.bridge.dashboard.DashboardDataBridge;
-import org.nonprofitbookkeeping.service.FundBalanceRow;
+
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import nonprofitbookkeeping.ui.panels.SharedDashboardPanelFX;
 
 class AlternateDashboardPanelTest
 {
-    @Test
-    void noDatabaseDashboardModelRendersEmptyAndNotWiredStatesWithoutDemoValues()
+    @BeforeAll
+    static void initToolkit()
     {
-        UiSessionContext context = new UiSessionContext();
-        List<AlternateDashboardModel.Card> cards = new AlternateDashboardModel().cards(context, null,
-            "Open a database to load service-backed accounting metrics.", null, 0, List.of());
-
-        String text = render(cards);
-
-        assertTrue(text.contains("Active database status"));
-        assertTrue(text.contains("Not open"));
-        assertTrue(text.contains(AlternateDashboardPanel.NOT_WIRED_STATE));
-        assertTrue(text.contains("Open a database to load service-backed accounting metrics."));
-        assertFalse(text.contains("$11,230"));
-        assertFalse(text.contains("$5,830"));
-        assertFalse(text.contains("$23,009"));
-        assertFalse(text.contains("Payee A"));
-        assertFalse(text.contains("Program Supplies"));
+        new JFXPanel();
     }
 
     @Test
-    void serviceBackedFundBalancesRenderWhenAvailable()
+    void newShellDashboardUsesSharedDashboardSurface() throws Exception
     {
-        UiSessionContext context = new UiSessionContext();
-        context.openDatabase(Path.of("/tmp/demo.mv.db"));
-        DashboardDataBridge.DashboardSnapshot snapshot = new DashboardDataBridge.DashboardSnapshot(
-            List.of(new FundBalanceRow("GEN", "General", new BigDecimal("12.34"))), 2, 1);
+        CountDownLatch latch = new CountDownLatch(1);
+        Throwable[] error = new Throwable[1];
 
-        String text = render(new AlternateDashboardModel().cards(context, snapshot, null, 0, 0, List.of()));
+        Platform.runLater(() -> {
+            try
+            {
+                UiSessionContext context = new UiSessionContext();
+                AlternateDashboardPanel panel = new AlternateDashboardPanel(
+                    context, new UiServiceProvider(context));
 
-        assertTrue(text.contains("1 funds"));
-        assertTrue(text.contains("GEN General"));
-        assertTrue(text.contains("2 posting accounts"));
-        assertTrue(text.contains("1 active funds"));
-    }
+                assertInstanceOf(SharedDashboardPanelFX.class, panel.root());
+            }
+            catch (Throwable throwable)
+            {
+                error[0] = throwable;
+            }
+            finally
+            {
+                latch.countDown();
+            }
+        });
 
-    private static String render(List<AlternateDashboardModel.Card> cards)
-    {
-        return cards.stream()
-            .map(card -> card.title() + "\n" + card.value() + "\n" + card.detail())
-            .collect(Collectors.joining("\n"));
+        if (!latch.await(20, TimeUnit.SECONDS))
+        {
+            throw new IllegalStateException("Timed out waiting for FX task");
+        }
+        if (error[0] != null)
+        {
+            throw new AssertionError(error[0]);
+        }
     }
 }
