@@ -1,5 +1,6 @@
 package nonprofitbookkeeping.ui.panels.skeletons;
 
+import nonprofitbookkeeping.ui.panels.ClassicDashboardNavigation;
 import nonprofitbookkeeping.ui.panels.DashboardNavigation;
 import nonprofitbookkeeping.ui.panels.SharedDashboardPanelFX;
 
@@ -13,7 +14,7 @@ public class SkeletonDashboardPanel extends SharedDashboardPanelFX
 {
     public SkeletonDashboardPanel()
     {
-        super();
+        super(new ClassicDashboardNavigation());
     }
 
     public SkeletonDashboardPanel(DashboardNavigation navigation)
