@@ -242,7 +242,7 @@ class MainWindowAlternateCommandCenterTest
     }
 
     @Test
-    void iconRailUsesStyleClassesTooltipsAndAccessibleLabels() throws Exception
+    void alternateShellUsesTwoPaneResizableWorkspace() throws Exception
     {
         CountDownLatch latch = new CountDownLatch(1);
         Throwable[] error = new Throwable[1];
@@ -252,11 +252,8 @@ class MainWindowAlternateCommandCenterTest
             {
                 MainWindowAlternate window = new MainWindowAlternate();
 
-                assertEquals(List.of("Profile", "Dashboard", "Search", "Command Center", "Settings"),
-                    window.testIconRailAccessibleLabels());
-                assertEquals(List.of("Profile", "Dashboard", "Search", "Command Center", "Settings"),
-                    window.testIconRailTooltipLabels());
-                assertTrue(window.testIconRailButtonStyleClasses().contains("alternate-icon-rail-button"));
+                assertTrue(!window.testHasIconRail());
+                assertTrue(window.testWorkspaceUsesSplitPane());
                 assertTrue(window.testShellSurfaceStyleClasses().contains("alternate-shell-root"));
                 assertTrue(window.testShellSurfaceStyleClasses().contains("alternate-workspace-surface"));
                 assertTrue(window.testShellSurfaceStyleClasses().contains("alternate-shell-title"));
@@ -275,7 +272,7 @@ class MainWindowAlternateCommandCenterTest
         assertTrue(latch.await(20, TimeUnit.SECONDS));
         if (error[0] != null)
         {
-            throw new AssertionError("MainWindowAlternate icon rail styling/accessibility test failed", error[0]);
+            throw new AssertionError("MainWindowAlternate two-pane workspace test failed", error[0]);
         }
     }
 
