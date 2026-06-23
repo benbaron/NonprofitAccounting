@@ -164,41 +164,47 @@ public class SharedDashboardPanelFX extends BorderPane
     private void populateCards(DashboardSnapshot snapshot)
     {
         this.cards.getChildren().setAll(
-            card("Cash and Bank", snapshot.cashAndBank(),
+            moneyCard("Cash and Bank", snapshot.cashAndBank(),
                 this.navigation::openCashAndBank),
-            card("Total Assets", snapshot.totalAssets(),
+            moneyCard("Total Assets", snapshot.totalAssets(),
                 this.navigation::openLedger),
-            card("Total Liabilities", snapshot.totalLiabilities(),
+            moneyCard("Total Liabilities", snapshot.totalLiabilities(),
                 this.navigation::openLedger),
-            card("Unrestricted Net Assets",
+            moneyCard("Unrestricted Net Assets",
                 snapshot.unrestrictedNetAssets(), this.navigation::openFunds),
-            card("Restricted Net Assets", snapshot.restrictedNetAssets(),
+            moneyCard("Restricted Net Assets", snapshot.restrictedNetAssets(),
                 this.navigation::openFunds),
-            card("Current-Period Income", snapshot.periodIncome(),
+            moneyCard("Current-Period Income", snapshot.periodIncome(),
                 this.navigation::openReports),
-            card("Current-Period Expenses", snapshot.periodExpenses(),
+            moneyCard("Current-Period Expenses", snapshot.periodExpenses(),
                 this.navigation::openReports),
-            card("Current-Period Surplus/Deficit",
+            moneyCard("Current-Period Surplus/Deficit",
                 snapshot.periodSurplus(), this.navigation::openReports),
-            card("Unreconciled",
+            moneyCard("Unreconciled",
                 snapshot.unreconciledAmount(),
                 snapshot.unreconciledCount() + " transaction(s)",
                 this.navigation::openReconciliation),
-            card("Undeposited Funds",
-                BigDecimal.valueOf(snapshot.undepositedCount()),
-                snapshot.undepositedCount() + " item(s)",
+            textCard("Undeposited Funds",
+                snapshot.undepositedCount() + " item(s)", "",
                 this.navigation::openUndepositedFunds));
     }
 
-    private Button card(String title, BigDecimal value, Runnable action)
+    private Button moneyCard(String title, BigDecimal value, Runnable action)
     {
-        return card(title, value, "", action);
+        return moneyCard(title, value, "", action);
     }
 
-    private Button card(String title, BigDecimal value, String detail,
+    private Button moneyCard(String title, BigDecimal value, String detail,
         Runnable action)
     {
-        String text = title + "\n" + FormatUtils.formatCurrency(value);
+        return textCard(title, FormatUtils.formatCurrency(value), detail,
+            action);
+    }
+
+    private Button textCard(String title, String value, String detail,
+        Runnable action)
+    {
+        String text = title + "\n" + value;
         if (detail != null && !detail.isBlank())
         {
             text += "\n" + detail;
