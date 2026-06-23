@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountType;
@@ -23,7 +24,9 @@ import nonprofitbookkeeping.model.CompanyProfileModel;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Ledger;
 import org.nonprofitbookkeeping.model.FundType;
+import org.nonprofitbookkeeping.persistence.Jpa;
 import org.nonprofitbookkeeping.service.FundBalanceRow;
+import org.nonprofitbookkeeping.service.FundBalanceService;
 import org.nonprofitbookkeeping.ui.UiServiceRegistry;
 
 /** Builds the common dashboard snapshot used by both UI shells. */
@@ -132,15 +135,8 @@ public class DashboardService
 
         UnreconciledSummary unreconciled = unreconciledSummary(effectiveAsOf);
         int undeposited = undepositedCount();
-        List<AccountingTransaction> recent = transactions.stream()
-            .filter(transaction -> {
-                LocalDate date = parseDate(transaction.getDate());
-                return date == null || !date.isAfter(effectiveAsOf);
-            })
-            .sorted(Comparator.comparingInt(AccountingTransaction::getId)
-                .reversed())
-            .limit(effectiveLimit)
-            .toList();
+        List<AccountingTransaction> recent = recentTransactions(
+            transactions, effectiveAsOf, effectiveLimit);
 
         String companyName = company.getName();
         if (companyName == null || companyName.isBlank())
@@ -166,6 +162,27 @@ public class DashboardService
             fundBalances,
             recent,
             "Dashboard updated through " + effectiveAsOf + ".");
+    }
+
+    /** Returns recent transactions by descending stable transaction ID. */
+    List<AccountingTransaction> recentTransactions(
+        List<AccountingTransaction> transactions, LocalDate asOf, int limit)
+    {
+        if (transactions == null || transactions.isEmpty())
+        {
+            return List.of();
+        }
+        int effectiveLimit = Math.max(1, Math.min(100, limit));
+        return transactions.stream()
+            .filter(transaction -> transaction != null)
+            .filter(transaction -> {
+                LocalDate date = parseDate(transaction.getDate());
+                return date == null || !date.isAfter(asOf);
+            })
+            .sorted(Comparator.comparingInt(AccountingTransaction::getId)
+                .reversed())
+            .limit(effectiveLimit)
+            .toList();
     }
 
     private DashboardSnapshot emptySnapshot(LocalDate asOf, String status)
@@ -250,9 +267,29 @@ public class DashboardService
         {
             return UiServiceRegistry.fundBalance().balancesAsOf(asOf);
         }
-        catch (RuntimeException ex)
+        catch (RuntimeException contextFailure)
         {
-            return List.of();
+            if (!Database.isInitialized())
+            {
+                return List.of();
+            }
+            Jpa jpa = null;
+            try
+            {
+                jpa = new Jpa();
+                return new FundBalanceService(jpa).balancesAsOf(asOf);
+            }
+            catch (RuntimeException directFailure)
+            {
+                return List.of();
+            }
+            finally
+            {
+                if (jpa != null)
+                {
+                    jpa.close();
+                }
+            }
         }
     }
 
