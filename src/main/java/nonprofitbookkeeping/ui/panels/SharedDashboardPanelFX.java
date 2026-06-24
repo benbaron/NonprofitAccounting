@@ -28,7 +28,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import nonprofitbookkeeping.model.AccountingEntry;
@@ -156,68 +155,72 @@ public class SharedDashboardPanelFX extends BorderPane
         SplitPane tables = new SplitPane(funds, recent);
         tables.setOrientation(Orientation.VERTICAL);
         tables.setDividerPositions(0.43);
-        VBox center = new VBox(10, cardScroll, tables);
-        VBox.setVgrow(tables, Priority.ALWAYS);
-        setCenter(center);
+
+        SplitPane dashboardSections = new SplitPane(cardScroll, tables);
+        dashboardSections.setOrientation(Orientation.VERTICAL);
+        dashboardSections.setDividerPositions(0.34);
+        setCenter(dashboardSections);
     }
 
     private void populateCards(DashboardSnapshot snapshot)
     {
         this.cards.getChildren().setAll(
-            moneyCard("Cash and Bank", snapshot.cashAndBank(),
-                this.navigation::openCashAndBank),
-            moneyCard("Total Assets", snapshot.totalAssets(),
-                this.navigation::openLedger),
-            moneyCard("Total Liabilities", snapshot.totalLiabilities(),
-                this.navigation::openLedger),
+            moneyCard("Cash and Bank", snapshot.cashAndBank()),
+            moneyCard("Total Assets", snapshot.totalAssets()),
+            moneyCard("Total Liabilities", snapshot.totalLiabilities()),
             moneyCard("Unrestricted Net Assets",
-                snapshot.unrestrictedNetAssets(), this.navigation::openFunds),
-            moneyCard("Restricted Net Assets", snapshot.restrictedNetAssets(),
-                this.navigation::openFunds),
-            moneyCard("Current-Period Income", snapshot.periodIncome(),
-                this.navigation::openReports),
-            moneyCard("Current-Period Expenses", snapshot.periodExpenses(),
-                this.navigation::openReports),
+                snapshot.unrestrictedNetAssets()),
+            moneyCard("Restricted Net Assets", snapshot.restrictedNetAssets()),
+            moneyCard("Current-Period Income", snapshot.periodIncome()),
+            moneyCard("Current-Period Expenses", snapshot.periodExpenses()),
             moneyCard("Current-Period Surplus/Deficit",
-                snapshot.periodSurplus(), this.navigation::openReports),
+                snapshot.periodSurplus()),
             moneyCard("Unreconciled",
                 snapshot.unreconciledAmount(),
-                snapshot.unreconciledCount() + " transaction(s)",
-                this.navigation::openReconciliation),
+                snapshot.unreconciledCount() + " transaction(s)"),
             textCard("Undeposited Funds",
-                snapshot.undepositedCount() + " item(s)", "",
-                this.navigation::openUndepositedFunds));
+                snapshot.undepositedCount() + " item(s)", ""));
     }
 
-    private Button moneyCard(String title, BigDecimal value, Runnable action)
+    private VBox moneyCard(String title, BigDecimal value)
     {
-        return moneyCard(title, value, "", action);
+        return moneyCard(title, value, "");
     }
 
-    private Button moneyCard(String title, BigDecimal value, String detail,
-        Runnable action)
+    private VBox moneyCard(String title, BigDecimal value, String detail)
     {
-        return textCard(title, FormatUtils.formatCurrency(value), detail,
-            action);
+        return textCard(title, FormatUtils.formatCurrency(value), detail);
     }
 
-    private Button textCard(String title, String value, String detail,
-        Runnable action)
+    private VBox textCard(String title, String value, String detail)
     {
-        String text = title + "\n" + value;
+        Label titleLabel = new Label(title);
+        titleLabel.setWrapText(true);
+        titleLabel.setStyle("-fx-font-weight: bold;");
+
+        Label valueLabel = new Label(value);
+        valueLabel.setWrapText(true);
+        valueLabel.setStyle("-fx-font-size: 1.25em;");
+
+        VBox card = new VBox(4, titleLabel, valueLabel);
         if (detail != null && !detail.isBlank())
         {
-            text += "\n" + detail;
+            Label detailLabel = new Label(detail);
+            detailLabel.setWrapText(true);
+            card.getChildren().add(detailLabel);
         }
-        Button button = new Button(text);
-        button.setWrapText(true);
-        button.setAlignment(Pos.TOP_LEFT);
-        button.setMinSize(230, 88);
-        button.setPrefSize(250, 96);
-        button.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        button.getStyleClass().add("dashboard-metric-card");
-        button.setOnAction(event -> action.run());
-        return button;
+        card.setAlignment(Pos.TOP_LEFT);
+        card.setMinSize(230, 88);
+        card.setPrefSize(250, 96);
+        card.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        card.getStyleClass().add("dashboard-metric-card");
+        card.setStyle(
+            "-fx-background-color: -fx-control-inner-background; " +
+            "-fx-border-color: -fx-box-border; " +
+            "-fx-border-radius: 4; " +
+            "-fx-background-radius: 4; " +
+            "-fx-padding: 10;");
+        return card;
     }
 
     private void buildFundTable()
