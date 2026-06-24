@@ -53,7 +53,7 @@ final class AlternateNavigationCustomizer
         Label navigationTitle = new Label("Navigation");
         navigationTitle.getStyleClass().add("alternate-navigation-title");
 
-        VBox primary = new VBox(6,
+        VBox primary = group(
             navButton("◉", "Profile", () -> fire(originalProfile, window,
                 AppPanelId.DASHBOARD, journal)),
             navButton("⌂", "Dashboard", () -> openPanel(window,
@@ -69,7 +69,7 @@ final class AlternateNavigationCustomizer
                 journal)));
         primary.getStyleClass().add("alternate-navigation-primary");
 
-        VBox accountingButtons = new VBox(6,
+        VBox accountingButtons = group(
             navButton("▥", "Chart of Accounts", () -> openPanel(window,
                 AppPanelId.CHART_OF_ACCOUNTS, journal)),
             navButton("✎", "Journal", () -> showJournal(window, workspace,
@@ -79,7 +79,7 @@ final class AlternateNavigationCustomizer
         TitledPane accounting = section("▤", "Accounting",
             accountingButtons, true);
 
-        VBox utilityButtons = new VBox(6,
+        VBox utilityButtons = group(
             navButton("▣", "Open Database", () -> {
                 hideJournal(journal);
                 window.openDatabaseSelector();
@@ -114,6 +114,13 @@ final class AlternateNavigationCustomizer
                 navigation.getWidth() < COLLAPSE_THRESHOLD));
     }
 
+    private static VBox group(Node... children)
+    {
+        VBox group = new VBox(6, children);
+        group.setMinWidth(0);
+        return group;
+    }
+
     private static JournalPanelFX createJournalWorkspace(
         MainWindowAlternate window, StackPane workspace)
     {
@@ -121,29 +128,17 @@ final class AlternateNavigationCustomizer
         {
             return null;
         }
-        JournalPanelFX journal = new JournalPanelFX(transactionId -> {
+        JournalPanelFX[] holder = new JournalPanelFX[1];
+        holder[0] = new JournalPanelFX(transactionId -> {
             LedgerNavigationContext.requestTransaction(transactionId);
-            hideJournal(journalPlaceholder(workspace));
+            hideJournal(holder[0]);
             window.openPanel(AppPanelId.LEDGER_REGISTER);
         });
-        journal.setVisible(false);
-        journal.setManaged(false);
-        StackPane.setMargin(journal, new Insets(8));
-        workspace.getChildren().add(journal);
-        return journal;
-    }
-
-    /**
-     * Finds the custom Journal panel without capturing an incompletely
-     * initialized local variable in its own navigation callback.
-     */
-    private static JournalPanelFX journalPlaceholder(StackPane workspace)
-    {
-        return workspace.getChildren().stream()
-            .filter(JournalPanelFX.class::isInstance)
-            .map(JournalPanelFX.class::cast)
-            .findFirst()
-            .orElse(null);
+        holder[0].setVisible(false);
+        holder[0].setManaged(false);
+        StackPane.setMargin(holder[0], new Insets(8));
+        workspace.getChildren().add(holder[0]);
+        return holder[0];
     }
 
     private static void showJournal(MainWindowAlternate window,
@@ -181,15 +176,33 @@ final class AlternateNavigationCustomizer
 
     private static void setShellTitle(MainWindowAlternate window, String title)
     {
-        if (!(window.getTop() instanceof javafx.scene.layout.HBox header))
+        Label label = findStyledLabel(window.getTop(),
+            "alternate-shell-title");
+        if (label != null)
         {
-            return;
+            label.setText(title);
         }
-        header.lookupAll(".alternate-shell-title").stream()
-            .filter(Label.class::isInstance)
-            .map(Label.class::cast)
-            .findFirst()
-            .ifPresent(label -> label.setText(title));
+    }
+
+    private static Label findStyledLabel(Node node, String styleClass)
+    {
+        if (node instanceof Label label &&
+            label.getStyleClass().contains(styleClass))
+        {
+            return label;
+        }
+        if (node instanceof javafx.scene.Parent parent)
+        {
+            for (Node child : parent.getChildrenUnmodifiable())
+            {
+                Label result = findStyledLabel(child, styleClass);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+        }
+        return null;
     }
 
     private static void fire(Button original, MainWindowAlternate window,
@@ -209,6 +222,7 @@ final class AlternateNavigationCustomizer
     private static Button navButton(String icon, String title, Runnable action)
     {
         Button button = new Button(icon + "  " + title);
+        button.setMinWidth(0);
         button.setMaxWidth(Double.MAX_VALUE);
         button.setAlignment(Pos.CENTER_LEFT);
         button.setTooltip(new Tooltip(title));
@@ -223,6 +237,7 @@ final class AlternateNavigationCustomizer
         boolean expanded)
     {
         TitledPane pane = new TitledPane(title, content);
+        pane.setMinWidth(0);
         pane.setExpanded(expanded);
         pane.setAnimated(false);
         pane.setTooltip(new Tooltip(title));
@@ -245,10 +260,14 @@ final class AlternateNavigationCustomizer
 
         for (Button button : collectButtons(navigation))
         {
-            String icon = String.valueOf(button.getProperties().get(
-                ICON_PROPERTY));
-            String title = String.valueOf(button.getProperties().get(
-                TITLE_PROPERTY));
+            Object iconValue = button.getProperties().get(ICON_PROPERTY);
+            Object titleValue = button.getProperties().get(TITLE_PROPERTY);
+            if (iconValue == null || titleValue == null)
+            {
+                continue;
+            }
+            String icon = iconValue.toString();
+            String title = titleValue.toString();
             button.setText(collapsed ? icon : icon + "  " + title);
             button.setAlignment(collapsed ? Pos.CENTER : Pos.CENTER_LEFT);
             button.setTooltip(new Tooltip(title));
@@ -256,10 +275,14 @@ final class AlternateNavigationCustomizer
 
         for (TitledPane pane : collectSections(navigation))
         {
-            String icon = String.valueOf(pane.getProperties().get(
-                ICON_PROPERTY));
-            String title = String.valueOf(pane.getProperties().get(
-                TITLE_PROPERTY));
+            Object iconValue = pane.getProperties().get(ICON_PROPERTY);
+            Object titleValue = pane.getProperties().get(TITLE_PROPERTY);
+            if (iconValue == null || titleValue == null)
+            {
+                continue;
+            }
+            String icon = iconValue.toString();
+            String title = titleValue.toString();
             pane.setText(collapsed ? icon : title);
             pane.setTooltip(new Tooltip(title));
         }
@@ -293,7 +316,8 @@ final class AlternateNavigationCustomizer
                 collect(child, type, result);
             }
         }
-        if (node instanceof TitledPane pane && pane.getContent() != null)
+        if (node instanceof TitledPane pane && pane.getContent() != null &&
+            !pane.getChildrenUnmodifiable().contains(pane.getContent()))
         {
             collect(pane.getContent(), type, result);
         }
