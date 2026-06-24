@@ -54,6 +54,7 @@ public class MainApp extends Application
     /**
      * Removes the unused global period/range controls from the alternate UI
      * while preserving its title, active-company subtitle, and flexible spacer.
+     * The dashboard retains its own As-of date control.
      */
     static void removeAlternateHeaderRangeControls(
         MainWindowAlternate alternateWindow)
