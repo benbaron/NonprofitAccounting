@@ -4,6 +4,8 @@ import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 import javafx.stage.Window;
 import nonprofitbookkeeping.service.UndepositedFundsService;
 import nonprofitbookkeeping.ui.LedgerNavigationContext;
@@ -30,6 +32,7 @@ public class AlternateDashboardPanel implements AppPanel
     {
         this.dashboard = new SharedDashboardPanelFX(
             navigation == null ? defaultNavigation() : navigation);
+        removeRedundantIdentityHeader();
     }
 
     @Override
@@ -47,6 +50,18 @@ public class AlternateDashboardPanel implements AppPanel
     void refresh()
     {
         this.dashboard.reloadData();
+    }
+
+    private void removeRedundantIdentityHeader()
+    {
+        if (!(this.dashboard.getTop() instanceof VBox header))
+        {
+            return;
+        }
+        header.getChildren().removeIf(node ->
+            node instanceof Label label &&
+                ("Dashboard".equals(label.getText()) ||
+                    label.getStyleClass().contains("company-indicator")));
     }
 
     private DashboardNavigation defaultNavigation()

@@ -15,6 +15,7 @@ import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.geometry.Orientation;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.TilePane;
@@ -30,7 +31,7 @@ class AlternateDashboardPanelTest
     }
 
     @Test
-    void newShellDashboardUsesSharedReadOnlyResizableSurface()
+    void newShellDashboardUsesCompactReadOnlyResizableSurface()
         throws Exception
     {
         CountDownLatch latch = new CountDownLatch(1);
@@ -45,6 +46,16 @@ class AlternateDashboardPanelTest
 
                 SharedDashboardPanelFX dashboard = assertInstanceOf(
                     SharedDashboardPanelFX.class, panel.root());
+                VBox dashboardHeader = assertInstanceOf(VBox.class,
+                    dashboard.getTop());
+                assertFalse(dashboardHeader.getChildren().stream()
+                    .filter(Label.class::isInstance)
+                    .map(Label.class::cast)
+                    .anyMatch(label ->
+                        "Dashboard".equals(label.getText()) ||
+                            label.getStyleClass().contains(
+                                "company-indicator")));
+
                 SplitPane dashboardSections = assertInstanceOf(
                     SplitPane.class, dashboard.getCenter());
                 assertEquals(Orientation.VERTICAL,

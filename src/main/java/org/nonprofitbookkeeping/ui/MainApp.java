@@ -30,6 +30,7 @@ public class MainApp extends Application
         {
             MainWindowAlternate alternateWindow = new MainWindowAlternate();
             removeAlternateHeaderRangeControls(alternateWindow);
+            AlternateNavigationCustomizer.apply(alternateWindow);
             root = alternateWindow;
         }
         else
