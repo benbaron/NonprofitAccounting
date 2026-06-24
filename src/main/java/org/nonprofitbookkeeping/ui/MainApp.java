@@ -53,7 +53,7 @@ public class MainApp extends Application
 
     /**
      * Removes the unused global period/range controls from the alternate UI
-     * while preserving its title and active-company subtitle.
+     * while preserving its title, active-company subtitle, and flexible spacer.
      */
     static void removeAlternateHeaderRangeControls(
         MainWindowAlternate alternateWindow)
