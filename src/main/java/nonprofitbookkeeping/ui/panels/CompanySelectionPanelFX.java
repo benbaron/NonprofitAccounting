@@ -3,6 +3,7 @@ package nonprofitbookkeeping.ui.panels;
 import java.util.function.Consumer;
 
 import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.service.LenientCompanyManagementService;
 
 /**
  * Classic-shell compatibility wrapper for the shared company-management
@@ -20,7 +21,7 @@ public class CompanySelectionPanelFX extends CompanyManagementPanelFX
 
     public CompanySelectionPanelFX()
     {
-        super();
+        super(new LenientCompanyManagementService());
     }
 
     public CompanySelectionPanelFX(OnCompanyOpenedHandler handler)
