@@ -3,6 +3,7 @@ package nonprofitbookkeeping.ui.panels;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Consumer;
@@ -14,7 +15,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -22,7 +22,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Dialog;
-import javafx.scene.control.FileChooser;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
@@ -37,6 +36,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.Company;
@@ -48,9 +48,10 @@ import nonprofitbookkeeping.service.CompanyManagementService.CompanyPreview;
 import nonprofitbookkeeping.service.PreferencesService;
 import nonprofitbookkeeping.util.FormatUtils;
 
-/** Shared company selection and administration workspace for both UI shells. */
+/** Shared company-selection and administration workspace for both UI shells. */
 public class SharedCompanyManagementPanelFX extends BorderPane
 {
+    /** Shell-specific operations used by the shared workspace. */
     public interface Host
     {
         String activeDatabaseLabel();
@@ -67,19 +68,19 @@ public class SharedCompanyManagementPanelFX extends BorderPane
 
     private final CompanyManagementService service;
     private final Host host;
-    private final ObservableList<CompanyRecord> source =
+    private final ObservableList<CompanyRecord> companies =
         FXCollections.observableArrayList();
     private final FilteredList<CompanyRecord> filtered =
-        new FilteredList<>(this.source);
+        new FilteredList<>(this.companies);
     private final TableView<CompanyRecord> table = new TableView<>();
     private final TextArea preview = new TextArea();
     private final TextField search = new TextField();
     private final CheckBox showArchived = new CheckBox("Show archived");
-    private final Label databaseLabel = new Label();
+    private final Label database = new Label();
     private final Label status = new Label();
-    private final ChoiceBox<String> startupBehavior = new ChoiceBox<>();
-    private Consumer<Company> companyOpened = company -> { };
-    private Consumer<String> errorHandler = message -> { };
+    private final ChoiceBox<String> startup = new ChoiceBox<>();
+    private Consumer<Company> onCompanyOpened = company -> { };
+    private Consumer<String> onError = message -> { };
     private boolean startupApplied;
 
     public SharedCompanyManagementPanelFX()
@@ -93,24 +94,24 @@ public class SharedCompanyManagementPanelFX extends BorderPane
         this.service = service;
         this.host = host;
         setPadding(PanelChrome.PANEL_PADDING);
-        build();
+        buildUi();
         refreshCompanyList();
     }
 
     public void setOnCompanyOpened(Consumer<Company> handler)
     {
-        this.companyOpened = handler == null ? company -> { } : handler;
+        this.onCompanyOpened = handler == null ? company -> { } : handler;
     }
 
     public void setOnError(Consumer<String> handler)
     {
-        this.errorHandler = handler == null ? message -> { } : handler;
+        this.onError = handler == null ? message -> { } : handler;
     }
 
     public void refreshCompanyList()
     {
-        this.databaseLabel.setText(this.host.activeDatabaseLabel());
-        this.source.clear();
+        this.database.setText(this.host.activeDatabaseLabel());
+        this.companies.clear();
         if (!Database.isInitialized())
         {
             this.preview.setText("Open a database to manage companies.");
@@ -119,10 +120,11 @@ public class SharedCompanyManagementPanelFX extends BorderPane
         }
         try
         {
-            this.source.setAll(this.service.listCompanies());
+            this.companies.setAll(this.service.listCompanies());
             applyFilter();
             applyStartupSelection();
-            setStatus("Loaded " + this.source.size() + " companies.", false);
+            setStatus("Loaded " + this.companies.size() + " companies.",
+                false);
         }
         catch (Exception ex)
         {
@@ -130,36 +132,32 @@ public class SharedCompanyManagementPanelFX extends BorderPane
         }
     }
 
-    private void build()
+    private void buildUi()
     {
-        this.databaseLabel.setMaxWidth(Double.MAX_VALUE);
-        Button switchDatabase = new Button("Switch Database…");
-        switchDatabase.setOnAction(event -> switchDatabase());
-
-        this.startupBehavior.getItems().addAll(
+        this.startup.getItems().setAll(
             PreferencesService.COMPANY_STARTUP_PRESELECT,
             PreferencesService.COMPANY_STARTUP_OPEN,
             PreferencesService.COMPANY_STARTUP_NONE);
-        this.startupBehavior.setValue(
-            PreferencesService.getCompanyStartupBehavior());
-        this.startupBehavior.valueProperty().addListener(
-            (obs, oldValue, newValue) ->
-                PreferencesService.setCompanyStartupBehavior(newValue));
+        this.startup.setValue(PreferencesService.getCompanyStartupBehavior());
+        this.startup.valueProperty().addListener((obs, oldValue, newValue) ->
+            PreferencesService.setCompanyStartupBehavior(newValue));
 
-        HBox database = new HBox(8, new Label("Database:"),
-            this.databaseLabel, switchDatabase, new Label("Startup:"),
-            this.startupBehavior);
-        HBox.setHgrow(this.databaseLabel, Priority.ALWAYS);
+        Button switchDatabase = new Button("Switch Database…");
+        switchDatabase.setOnAction(event -> switchDatabase());
+        this.database.setMaxWidth(Double.MAX_VALUE);
+        HBox databaseRow = new HBox(8, new Label("Database:"), this.database,
+            switchDatabase, new Label("Startup:"), this.startup);
+        HBox.setHgrow(this.database, Priority.ALWAYS);
 
         this.search.setPromptText("Search company name, ID, or status");
         this.search.textProperty().addListener((obs, oldValue, newValue) ->
             applyFilter());
         this.showArchived.selectedProperty().addListener(
             (obs, oldValue, newValue) -> applyFilter());
-        HBox filters = new HBox(8, new Label("Search:"), this.search,
+        HBox filterRow = new HBox(8, new Label("Search:"), this.search,
             this.showArchived);
         HBox.setHgrow(this.search, Priority.ALWAYS);
-        setTop(new VBox(8, database, filters));
+        setTop(new VBox(8, databaseRow, filterRow));
 
         buildTable();
         this.preview.setEditable(false);
@@ -168,25 +166,18 @@ public class SharedCompanyManagementPanelFX extends BorderPane
         split.setDividerPositions(0.62);
         setCenter(split);
 
-        Button open = new Button("Open");
-        open.setOnAction(event -> openSelected());
-        Button create = new Button("Create Company…");
-        create.setOnAction(event -> editCompany(null));
-        Button edit = new Button("Edit Company…");
-        edit.setOnAction(event -> editSelected());
-        Button archive = new Button("Archive / Restore");
-        archive.setOnAction(event -> archiveSelected());
-        Button backup = new Button("Export Backup…");
-        backup.setOnAction(event -> exportSelected(false));
-        Button backupDelete = new Button("Export Backup and Delete…");
-        backupDelete.setOnAction(event -> exportSelected(true));
-        Button delete = new Button("Delete…");
-        delete.setOnAction(event -> deleteSelected(false));
-        Button developer = new Button("Developer Tools…");
-        developer.setOnAction(event -> this.host.openDeveloperTools(owner()));
-        Button refresh = new Button("Refresh");
-        refresh.setOnAction(event -> refreshCompanyList());
-
+        Button open = button("Open", this::openSelected);
+        Button create = button("Create Company…", () -> editCompany(null));
+        Button edit = button("Edit Company…", this::editSelected);
+        Button archive = button("Archive / Restore", this::archiveSelected);
+        Button backup = button("Export Backup…",
+            () -> exportSelected(false));
+        Button backupDelete = button("Export Backup and Delete…",
+            () -> exportSelected(true));
+        Button delete = button("Delete…", () -> deleteSelected(false));
+        Button developer = button("Developer Tools…",
+            () -> this.host.openDeveloperTools(owner()));
+        Button refresh = button("Refresh", this::refreshCompanyList);
         HBox actions = new HBox(8, open, create, edit, archive, backup,
             backupDelete, delete, developer, refresh);
         actions.setPadding(new Insets(10, 0, 0, 0));
@@ -196,34 +187,18 @@ public class SharedCompanyManagementPanelFX extends BorderPane
 
     private void buildTable()
     {
-        TableColumn<CompanyRecord, String> name =
-            new TableColumn<>("Company Name");
-        name.setCellValueFactory(value -> new ReadOnlyStringWrapper(
-            value.getValue().name()));
-        name.setPrefWidth(270);
-
+        TableColumn<CompanyRecord, String> name = textColumn("Company Name",
+            270, CompanyRecord::name);
         TableColumn<CompanyRecord, Number> id = new TableColumn<>("ID");
-        id.setCellValueFactory(value -> new ReadOnlyLongWrapper(
-            value.getValue().id()));
+        id.setCellValueFactory(value ->
+            new ReadOnlyLongWrapper(value.getValue().id()));
         id.setPrefWidth(80);
-
-        TableColumn<CompanyRecord, String> updated =
-            new TableColumn<>("Last Updated");
-        updated.setCellValueFactory(value -> new ReadOnlyStringWrapper(
-            format(value.getValue().updatedAt())));
-        updated.setPrefWidth(190);
-
-        TableColumn<CompanyRecord, String> opened =
-            new TableColumn<>("Last Opened");
-        opened.setCellValueFactory(value -> new ReadOnlyStringWrapper(
-            format(value.getValue().lastOpenedAt())));
-        opened.setPrefWidth(190);
-
-        TableColumn<CompanyRecord, String> state =
-            new TableColumn<>("Status");
-        state.setCellValueFactory(value -> new ReadOnlyStringWrapper(
-            statusFor(value.getValue())));
-        state.setPrefWidth(110);
+        TableColumn<CompanyRecord, String> updated = textColumn("Last Updated",
+            190, record -> format(record.updatedAt()));
+        TableColumn<CompanyRecord, String> opened = textColumn("Last Opened",
+            190, record -> format(record.lastOpenedAt()));
+        TableColumn<CompanyRecord, String> state = textColumn("Status", 110,
+            this::statusFor);
 
         this.table.getColumns().setAll(name, id, updated, opened, state);
         this.table.setItems(this.filtered);
@@ -251,19 +226,25 @@ public class SharedCompanyManagementPanelFX extends BorderPane
         });
     }
 
+    private TableColumn<CompanyRecord, String> textColumn(String title,
+        double width, java.util.function.Function<CompanyRecord, String> value)
+    {
+        TableColumn<CompanyRecord, String> column = new TableColumn<>(title);
+        column.setCellValueFactory(cell -> new ReadOnlyStringWrapper(
+            value.apply(cell.getValue())));
+        column.setPrefWidth(width);
+        return column;
+    }
+
     private ContextMenu contextMenu(CompanyRecord record)
     {
-        MenuItem open = new MenuItem("Open");
-        open.setOnAction(event -> open(record));
-        MenuItem edit = new MenuItem("Edit…");
-        edit.setOnAction(event -> editCompany(record));
-        MenuItem archive = new MenuItem(record.archived() ? "Restore" :
-            "Archive");
-        archive.setOnAction(event -> archive(record));
-        MenuItem backup = new MenuItem("Export Backup…");
-        backup.setOnAction(event -> export(record, false));
-        MenuItem delete = new MenuItem("Delete…");
-        delete.setOnAction(event -> delete(record, false));
+        MenuItem open = item("Open", () -> open(record));
+        MenuItem edit = item("Edit…", () -> editCompany(record));
+        MenuItem archive = item(record.archived() ? "Restore" : "Archive",
+            () -> archive(record));
+        MenuItem backup = item("Export Backup…",
+            () -> export(record, false));
+        MenuItem delete = item("Delete…", () -> delete(record, false));
         return new ContextMenu(open, edit, archive, backup, delete);
     }
 
@@ -271,20 +252,12 @@ public class SharedCompanyManagementPanelFX extends BorderPane
     {
         String needle = this.search.getText() == null ? "" :
             this.search.getText().trim().toLowerCase();
-        this.filtered.setPredicate(record -> {
-            if (record == null)
-            {
-                return false;
-            }
-            if (record.archived() && !this.showArchived.isSelected())
-            {
-                return false;
-            }
-            return needle.isEmpty() ||
+        this.filtered.setPredicate(record -> record != null &&
+            (!record.archived() || this.showArchived.isSelected()) &&
+            (needle.isEmpty() ||
                 record.name().toLowerCase().contains(needle) ||
                 Long.toString(record.id()).contains(needle) ||
-                statusFor(record).toLowerCase().contains(needle);
-        });
+                statusFor(record).toLowerCase().contains(needle)));
     }
 
     private void applyStartupSelection()
@@ -300,16 +273,15 @@ public class SharedCompanyManagementPanelFX extends BorderPane
             return;
         }
         Long lastId = PreferencesService.getLastUsedCompanyId();
-        CompanyRecord record = lastId == null ? null : this.source.stream()
-            .filter(item -> item.id() == lastId && !item.archived())
+        CompanyRecord last = lastId == null ? null : this.companies.stream()
+            .filter(record -> record.id() == lastId && !record.archived())
             .findFirst().orElse(null);
-        if (record != null)
+        if (last != null)
         {
-            this.table.getSelectionModel().select(record);
-            this.table.scrollTo(record);
+            select(last.id());
             if (PreferencesService.COMPANY_STARTUP_OPEN.equals(behavior))
             {
-                Platform.runLater(() -> open(record));
+                Platform.runLater(() -> open(last));
             }
         }
         else if (!this.filtered.isEmpty())
@@ -329,44 +301,43 @@ public class SharedCompanyManagementPanelFX extends BorderPane
         {
             CompanyPreview value = this.service.preview(record);
             CompanyProfileModel profile = value.profile();
-            StringBuilder text = new StringBuilder();
-            text.append("Company: ").append(record.name()).append('\n');
-            text.append("ID: ").append(record.id()).append('\n');
-            text.append("Status: ").append(statusFor(record)).append("\n\n");
+            StringBuilder text = new StringBuilder()
+                .append("Company: ").append(record.name()).append('\n')
+                .append("ID: ").append(record.id()).append('\n')
+                .append("Status: ").append(statusFor(record)).append("\n\n");
             if (profile != null)
             {
                 text.append("Legal structure: ")
-                    .append(safe(profile.getLegalStructure())).append('\n');
-                text.append("Fiscal year start: ")
-                    .append(safe(profile.getFiscalYearStart())).append('\n');
-                text.append("Base currency: ")
-                    .append(safe(profile.getBaseCurrency())).append('\n');
-                text.append("Default bank account: ")
-                    .append(safe(profile.getDefaultBankAccount())).append('\n');
-                text.append("Chart template: ")
-                    .append(safe(profile.getChartOfAccountsType())).append('\n');
-                text.append("Fund accounting: ")
-                    .append(profile.isEnableFundAccounting()).append('\n');
-                text.append("Inventory: ")
-                    .append(profile.isEnableInventory()).append('\n');
-                text.append("Multi-currency: ")
+                    .append(display(profile.getLegalStructure())).append('\n')
+                    .append("Fiscal year start: ")
+                    .append(display(profile.getFiscalYearStart())).append('\n')
+                    .append("Base currency: ")
+                    .append(display(profile.getBaseCurrency())).append('\n')
+                    .append("Default bank account: ")
+                    .append(display(profile.getDefaultBankAccount())).append('\n')
+                    .append("Chart template: ")
+                    .append(display(profile.getChartOfAccountsType())).append('\n')
+                    .append("Fund accounting: ")
+                    .append(profile.isEnableFundAccounting()).append('\n')
+                    .append("Inventory: ")
+                    .append(profile.isEnableInventory()).append('\n')
+                    .append("Multi-currency: ")
                     .append(profile.isEnableMultiCurrency()).append("\n\n");
             }
-            text.append("Accounts: ").append(value.accountCount()).append('\n');
-            text.append("Funds referenced: ").append(value.fundCount()).append('\n');
-            text.append("Transactions: ").append(value.transactionCount())
-                .append('\n');
-            text.append("Transaction range: ")
+            text.append("Accounts: ").append(value.accountCount()).append('\n')
+                .append("Funds referenced: ").append(value.fundCount()).append('\n')
+                .append("Transactions: ").append(value.transactionCount())
+                .append('\n')
+                .append("Transaction range: ")
                 .append(value.earliestTransaction() == null ? "—" :
-                    value.earliestTransaction())
-                .append(" to ")
+                    value.earliestTransaction()).append(" to ")
                 .append(value.latestTransaction() == null ? "—" :
-                    value.latestTransaction()).append('\n');
-            text.append("Last updated: ").append(format(record.updatedAt()))
-                .append('\n');
-            text.append("Last opened: ").append(format(record.lastOpenedAt()))
-                .append('\n');
-            text.append("Database: ").append(this.host.activeDatabaseLabel())
+                    value.latestTransaction()).append('\n')
+                .append("Last updated: ").append(format(record.updatedAt()))
+                .append('\n')
+                .append("Last opened: ").append(format(record.lastOpenedAt()))
+                .append('\n')
+                .append("Database: ").append(this.host.activeDatabaseLabel())
                 .append('\n');
             if (!value.warnings().isEmpty())
             {
@@ -399,13 +370,15 @@ public class SharedCompanyManagementPanelFX extends BorderPane
 
     private void openSelected()
     {
-        CompanyRecord selected = this.table.getSelectionModel().getSelectedItem();
-        if (selected == null)
+        CompanyRecord record = selected();
+        if (record == null)
         {
             setStatus("Select a company first.", true);
-            return;
         }
-        open(selected);
+        else
+        {
+            open(record);
+        }
     }
 
     private void open(CompanyRecord record)
@@ -421,12 +394,12 @@ public class SharedCompanyManagementPanelFX extends BorderPane
             this.service.markOpened(record.id());
             PreferencesService.setLastUsedCompanyId(record.id());
             Company company = this.service.load(record.id());
-            if (company.getCompanyProfileModel() != null)
+            CompanyProfileModel profile = company.getCompanyProfileModel();
+            if (profile != null)
             {
-                FormatUtils.configureLocale(null,
-                    company.getCompanyProfileModel().getBaseCurrency());
+                FormatUtils.configureLocale(null, profile.getBaseCurrency());
             }
-            this.companyOpened.accept(company);
+            this.onCompanyOpened.accept(company);
             refreshCompanyList();
             select(record.id());
             setStatus("Opened company: " + record.name(), false);
@@ -439,7 +412,7 @@ public class SharedCompanyManagementPanelFX extends BorderPane
 
     private void editSelected()
     {
-        editCompany(this.table.getSelectionModel().getSelectedItem());
+        editCompany(selected());
     }
 
     private void editCompany(CompanyRecord record)
@@ -451,24 +424,8 @@ public class SharedCompanyManagementPanelFX extends BorderPane
             Dialog<Void> dialog = new Dialog<>();
             dialog.setTitle(record == null ? "Create Company" :
                 "Edit Company");
-            CompanyProfileWizardFX wizard = new CompanyProfileWizardFX(
-                company, profile -> {
-                    try
-                    {
-                        long id = this.service.save(
-                            record == null ? null : record.id(), profile);
-                        dialog.setResult(null);
-                        dialog.close();
-                        refreshCompanyList();
-                        select(id);
-                        setStatus((record == null ? "Created" : "Updated") +
-                            " company: " + profile.getCompanyName(), false);
-                    }
-                    catch (Exception ex)
-                    {
-                        fail("Unable to save company", ex);
-                    }
-                });
+            CompanyProfileWizardFX wizard = new CompanyProfileWizardFX(company,
+                profile -> saveFromWizard(dialog, record, profile));
             dialog.getDialogPane().setContent(wizard);
             dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
             dialog.getDialogPane().setPrefSize(820, 620);
@@ -485,26 +442,43 @@ public class SharedCompanyManagementPanelFX extends BorderPane
         }
     }
 
+    private void saveFromWizard(Dialog<Void> dialog, CompanyRecord record,
+        CompanyProfileModel profile)
+    {
+        try
+        {
+            long id = this.service.save(record == null ? null : record.id(),
+                profile);
+            dialog.close();
+            refreshCompanyList();
+            select(id);
+            setStatus((record == null ? "Created" : "Updated") +
+                " company: " + profile.getCompanyName(), false);
+        }
+        catch (Exception ex)
+        {
+            fail("Unable to save company", ex);
+        }
+    }
+
     private void archiveSelected()
     {
-        CompanyRecord record = this.table.getSelectionModel().getSelectedItem();
-        if (record == null)
+        CompanyRecord record = selected();
+        if (record != null)
+        {
+            archive(record);
+        }
+        else
         {
             setStatus("Select a company first.", true);
-            return;
         }
-        archive(record);
     }
 
     private void archive(CompanyRecord record)
     {
         try
         {
-            if (this.host.activeCompanyId() != null &&
-                this.host.activeCompanyId() == record.id())
-            {
-                this.host.closeActiveCompany();
-            }
+            closeIfActive(record.id());
             this.service.setArchived(record.id(), !record.archived());
             refreshCompanyList();
             setStatus((record.archived() ? "Restored " : "Archived ") +
@@ -518,21 +492,23 @@ public class SharedCompanyManagementPanelFX extends BorderPane
 
     private void exportSelected(boolean deleteAfter)
     {
-        CompanyRecord record = this.table.getSelectionModel().getSelectedItem();
-        if (record == null)
+        CompanyRecord record = selected();
+        if (record != null)
+        {
+            export(record, deleteAfter);
+        }
+        else
         {
             setStatus("Select a company first.", true);
-            return;
         }
-        export(record, deleteAfter);
     }
 
     private void export(CompanyRecord record, boolean deleteAfter)
     {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Export Company Backup");
-        chooser.setInitialFileName(record.name().replaceAll("[^A-Za-z0-9._-]",
-            "_") + ".npbk-company");
+        chooser.setInitialFileName(record.name().replaceAll(
+            "[^A-Za-z0-9._-]", "_") + ".npbk-company");
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(
             "Company Backup", "*.npbk-company"));
         File destination = chooser.showSaveDialog(owner());
@@ -558,13 +534,15 @@ public class SharedCompanyManagementPanelFX extends BorderPane
 
     private void deleteSelected(boolean backupAlreadyExported)
     {
-        CompanyRecord record = this.table.getSelectionModel().getSelectedItem();
-        if (record == null)
+        CompanyRecord record = selected();
+        if (record != null)
+        {
+            delete(record, backupAlreadyExported);
+        }
+        else
         {
             setStatus("Select a company first.", true);
-            return;
         }
-        delete(record, backupAlreadyExported);
     }
 
     private void delete(CompanyRecord record, boolean backupAlreadyExported)
@@ -573,33 +551,25 @@ public class SharedCompanyManagementPanelFX extends BorderPane
         dialog.setTitle("Delete Company");
         dialog.setHeaderText("Delete " + record.name() + " (ID " +
             record.id() + ")");
-        TextField typed = new TextField();
-        typed.setPromptText("Type company name exactly");
+        TextField typedName = new TextField();
+        typedName.setPromptText("Type company name exactly");
         CheckBox backup = new CheckBox(
             "I have exported or otherwise backed up this company.");
         backup.setSelected(backupAlreadyExported);
         CheckBox understand = new CheckBox(
             "I understand this permanently removes the company row.");
-        GridPane content = new GridPane();
-        content.setHgap(8);
-        content.setVgap(8);
-        content.addRow(0, new Label("Company:"), new Label(record.name()));
-        content.addRow(1, new Label("ID:"), new Label(
+        GridPane grid = new GridPane();
+        grid.setHgap(8);
+        grid.setVgap(8);
+        grid.addRow(0, new Label("Company:"), new Label(record.name()));
+        grid.addRow(1, new Label("ID:"), new Label(
             Long.toString(record.id())));
-        try
-        {
-            content.addRow(2, new Label("Transactions:"), new Label(
-                Integer.toString(this.service.preview(record)
-                    .transactionCount())));
-        }
-        catch (Exception ignored)
-        {
-            content.addRow(2, new Label("Transactions:"), new Label("Unknown"));
-        }
-        content.addRow(3, new Label("Confirm name:"), typed);
-        content.add(backup, 1, 4);
-        content.add(understand, 1, 5);
-        dialog.getDialogPane().setContent(content);
+        grid.addRow(2, new Label("Transactions:"), new Label(
+            transactionCount(record)));
+        grid.addRow(3, new Label("Confirm name:"), typedName);
+        grid.add(backup, 1, 4);
+        grid.add(understand, 1, 5);
+        dialog.getDialogPane().setContent(grid);
         ButtonType deleteType = new ButtonType("Delete Permanently",
             ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(deleteType,
@@ -612,7 +582,7 @@ public class SharedCompanyManagementPanelFX extends BorderPane
         {
             return;
         }
-        if (!record.name().equals(typed.getText()) ||
+        if (!record.name().equals(typedName.getText()) ||
             !backup.isSelected() || !understand.isSelected())
         {
             setStatus("Deletion confirmation was incomplete.", true);
@@ -620,11 +590,7 @@ public class SharedCompanyManagementPanelFX extends BorderPane
         }
         try
         {
-            if (this.host.activeCompanyId() != null &&
-                this.host.activeCompanyId() == record.id())
-            {
-                this.host.closeActiveCompany();
-            }
+            closeIfActive(record.id());
             this.service.delete(record.id());
             refreshCompanyList();
             setStatus("Deleted company: " + record.name(), false);
@@ -635,9 +601,36 @@ public class SharedCompanyManagementPanelFX extends BorderPane
         }
     }
 
+    private void closeIfActive(long id)
+    {
+        Long activeId = this.host.activeCompanyId();
+        if (activeId != null && activeId == id)
+        {
+            this.host.closeActiveCompany();
+        }
+    }
+
+    private String transactionCount(CompanyRecord record)
+    {
+        try
+        {
+            return Integer.toString(this.service.preview(record)
+                .transactionCount());
+        }
+        catch (Exception ex)
+        {
+            return "Unknown";
+        }
+    }
+
+    private CompanyRecord selected()
+    {
+        return this.table.getSelectionModel().getSelectedItem();
+    }
+
     private void select(long id)
     {
-        this.source.stream().filter(record -> record.id() == id)
+        this.companies.stream().filter(record -> record.id() == id)
             .findFirst().ifPresent(record -> {
                 this.table.getSelectionModel().select(record);
                 this.table.scrollTo(record);
@@ -654,11 +647,6 @@ public class SharedCompanyManagementPanelFX extends BorderPane
         return record.status();
     }
 
-    private Window owner()
-    {
-        return getScene() == null ? null : getScene().getWindow();
-    }
-
     private void setStatus(String message, boolean error)
     {
         this.status.setText(message == null ? "" : message);
@@ -670,15 +658,34 @@ public class SharedCompanyManagementPanelFX extends BorderPane
     {
         String message = operation + ": " + ex.getMessage();
         setStatus(message, true);
-        this.errorHandler.accept(message);
+        this.onError.accept(message);
     }
 
-    private static String format(java.time.Instant instant)
+    private Window owner()
+    {
+        return getScene() == null ? null : getScene().getWindow();
+    }
+
+    private static Button button(String text, Runnable action)
+    {
+        Button button = new Button(text);
+        button.setOnAction(event -> action.run());
+        return button;
+    }
+
+    private static MenuItem item(String text, Runnable action)
+    {
+        MenuItem item = new MenuItem(text);
+        item.setOnAction(event -> action.run());
+        return item;
+    }
+
+    private static String format(Instant instant)
     {
         return instant == null ? "Never" : TIME_FORMAT.format(instant);
     }
 
-    private static String safe(String value)
+    private static String display(String value)
     {
         return value == null || value.isBlank() ? "—" : value;
     }
