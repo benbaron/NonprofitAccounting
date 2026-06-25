@@ -51,7 +51,6 @@ import nonprofitbookkeeping.util.FormatUtils;
 /** Shared company-selection and administration workspace for both UI shells. */
 public class SharedCompanyManagementPanelFX extends BorderPane
 {
-    /** Shell-specific operations used by the shared workspace. */
     public interface Host
     {
         String activeDatabaseLabel();
@@ -142,8 +141,7 @@ public class SharedCompanyManagementPanelFX extends BorderPane
         this.startup.valueProperty().addListener((obs, oldValue, newValue) ->
             PreferencesService.setCompanyStartupBehavior(newValue));
 
-        Button switchDatabase = new Button("Switch Database…");
-        switchDatabase.setOnAction(event -> switchDatabase());
+        Button switchDatabase = button("Switch Database…", this::switchDatabase);
         this.database.setMaxWidth(Double.MAX_VALUE);
         HBox databaseRow = new HBox(8, new Label("Database:"), this.database,
             switchDatabase, new Label("Startup:"), this.startup);
@@ -166,20 +164,17 @@ public class SharedCompanyManagementPanelFX extends BorderPane
         split.setDividerPositions(0.62);
         setCenter(split);
 
-        Button open = button("Open", this::openSelected);
-        Button create = button("Create Company…", () -> editCompany(null));
-        Button edit = button("Edit Company…", this::editSelected);
-        Button archive = button("Archive / Restore", this::archiveSelected);
-        Button backup = button("Export Backup…",
-            () -> exportSelected(false));
-        Button backupDelete = button("Export Backup and Delete…",
-            () -> exportSelected(true));
-        Button delete = button("Delete…", () -> deleteSelected(false));
-        Button developer = button("Developer Tools…",
-            () -> this.host.openDeveloperTools(owner()));
-        Button refresh = button("Refresh", this::refreshCompanyList);
-        HBox actions = new HBox(8, open, create, edit, archive, backup,
-            backupDelete, delete, developer, refresh);
+        HBox actions = new HBox(8,
+            button("Open", this::openSelected),
+            button("Create Company…", () -> editCompany(null)),
+            button("Edit Company…", this::editSelected),
+            button("Archive / Restore", this::archiveSelected),
+            button("Export Backup…", () -> exportSelected(false)),
+            button("Export Backup and Delete…", () -> exportSelected(true)),
+            button("Delete…", () -> deleteSelected(false)),
+            button("Developer Tools…",
+                () -> this.host.openDeveloperTools(owner())),
+            button("Refresh", this::refreshCompanyList));
         actions.setPadding(new Insets(10, 0, 0, 0));
         this.status.setPadding(new Insets(6, 0, 0, 0));
         setBottom(new VBox(actions, this.status));
@@ -199,7 +194,6 @@ public class SharedCompanyManagementPanelFX extends BorderPane
             190, record -> format(record.lastOpenedAt()));
         TableColumn<CompanyRecord, String> state = textColumn("Status", 110,
             this::statusFor);
-
         this.table.getColumns().setAll(name, id, updated, opened, state);
         this.table.setItems(this.filtered);
         this.table.setPlaceholder(new Label("No companies match the filter."));
@@ -238,14 +232,13 @@ public class SharedCompanyManagementPanelFX extends BorderPane
 
     private ContextMenu contextMenu(CompanyRecord record)
     {
-        MenuItem open = item("Open", () -> open(record));
-        MenuItem edit = item("Edit…", () -> editCompany(record));
-        MenuItem archive = item(record.archived() ? "Restore" : "Archive",
-            () -> archive(record));
-        MenuItem backup = item("Export Backup…",
-            () -> export(record, false));
-        MenuItem delete = item("Delete…", () -> delete(record, false));
-        return new ContextMenu(open, edit, archive, backup, delete);
+        return new ContextMenu(
+            item("Open", () -> open(record)),
+            item("Edit…", () -> editCompany(record)),
+            item(record.archived() ? "Restore" : "Archive",
+                () -> archive(record)),
+            item("Export Backup…", () -> export(record, false)),
+            item("Delete…", () -> delete(record, false)));
     }
 
     private void applyFilter()
@@ -305,25 +298,7 @@ public class SharedCompanyManagementPanelFX extends BorderPane
                 .append("Company: ").append(record.name()).append('\n')
                 .append("ID: ").append(record.id()).append('\n')
                 .append("Status: ").append(statusFor(record)).append("\n\n");
-            if (profile != null)
-            {
-                text.append("Legal structure: ")
-                    .append(display(profile.getLegalStructure())).append('\n')
-                    .append("Fiscal year start: ")
-                    .append(display(profile.getFiscalYearStart())).append('\n')
-                    .append("Base currency: ")
-                    .append(display(profile.getBaseCurrency())).append('\n')
-                    .append("Default bank account: ")
-                    .append(display(profile.getDefaultBankAccount())).append('\n')
-                    .append("Chart template: ")
-                    .append(display(profile.getChartOfAccountsType())).append('\n')
-                    .append("Fund accounting: ")
-                    .append(profile.isEnableFundAccounting()).append('\n')
-                    .append("Inventory: ")
-                    .append(profile.isEnableInventory()).append('\n')
-                    .append("Multi-currency: ")
-                    .append(profile.isEnableMultiCurrency()).append("\n\n");
-            }
+            appendProfile(text, profile);
             text.append("Accounts: ").append(value.accountCount()).append('\n')
                 .append("Funds referenced: ").append(value.fundCount()).append('\n')
                 .append("Transactions: ").append(value.transactionCount())
@@ -352,6 +327,31 @@ public class SharedCompanyManagementPanelFX extends BorderPane
             this.preview.setText("Unable to preview company: " +
                 ex.getMessage());
         }
+    }
+
+    private static void appendProfile(StringBuilder text,
+        CompanyProfileModel profile)
+    {
+        if (profile == null)
+        {
+            return;
+        }
+        text.append("Legal structure: ")
+            .append(display(profile.getLegalStructure())).append('\n')
+            .append("Fiscal year start: ")
+            .append(display(profile.getFiscalYearStart())).append('\n')
+            .append("Base currency: ")
+            .append(display(profile.getBaseCurrency())).append('\n')
+            .append("Default bank account: ")
+            .append(display(profile.getDefaultBankAccount())).append('\n')
+            .append("Chart template: ")
+            .append(display(profile.getChartOfAccountsType())).append('\n')
+            .append("Fund accounting: ")
+            .append(profile.isEnableFundAccounting()).append('\n')
+            .append("Inventory: ").append(profile.isEnableInventory())
+            .append('\n')
+            .append("Multi-currency: ")
+            .append(profile.isEnableMultiCurrency()).append("\n\n");
     }
 
     private void switchDatabase()
@@ -464,13 +464,13 @@ public class SharedCompanyManagementPanelFX extends BorderPane
     private void archiveSelected()
     {
         CompanyRecord record = selected();
-        if (record != null)
+        if (record == null)
         {
-            archive(record);
+            setStatus("Select a company first.", true);
         }
         else
         {
-            setStatus("Select a company first.", true);
+            archive(record);
         }
     }
 
@@ -493,13 +493,13 @@ public class SharedCompanyManagementPanelFX extends BorderPane
     private void exportSelected(boolean deleteAfter)
     {
         CompanyRecord record = selected();
-        if (record != null)
+        if (record == null)
         {
-            export(record, deleteAfter);
+            setStatus("Select a company first.", true);
         }
         else
         {
-            setStatus("Select a company first.", true);
+            export(record, deleteAfter);
         }
     }
 
@@ -535,13 +535,13 @@ public class SharedCompanyManagementPanelFX extends BorderPane
     private void deleteSelected(boolean backupAlreadyExported)
     {
         CompanyRecord record = selected();
-        if (record != null)
+        if (record == null)
         {
-            delete(record, backupAlreadyExported);
+            setStatus("Select a company first.", true);
         }
         else
         {
-            setStatus("Select a company first.", true);
+            delete(record, backupAlreadyExported);
         }
     }
 
@@ -549,8 +549,8 @@ public class SharedCompanyManagementPanelFX extends BorderPane
     {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Delete Company");
-        dialog.setHeaderText("Delete " + record.name() + " (ID " +
-            record.id() + ")");
+        dialog.getDialogPane().setHeaderText("Delete " + record.name() +
+            " (ID " + record.id() + ")");
         TextField typedName = new TextField();
         typedName.setPromptText("Type company name exactly");
         CheckBox backup = new CheckBox(
@@ -640,11 +640,8 @@ public class SharedCompanyManagementPanelFX extends BorderPane
     private String statusFor(CompanyRecord record)
     {
         Long activeId = this.host.activeCompanyId();
-        if (activeId != null && activeId == record.id())
-        {
-            return "Open";
-        }
-        return record.status();
+        return activeId != null && activeId == record.id() ? "Open" :
+            record.status();
     }
 
     private void setStatus(String message, boolean error)
@@ -728,14 +725,8 @@ public class SharedCompanyManagementPanelFX extends BorderPane
             CurrentCompany.loadFromPersistent(id);
         }
 
-        @Override
-        public void closeActiveCompany()
-        {
-            CurrentCompany.close();
-        }
-
-        @Override
-        public Long activeCompanyId()
+        @Override public void closeActiveCompany() { CurrentCompany.close(); }
+        @Override public Long activeCompanyId()
         {
             return CurrentCompany.getCurrentCompanyId();
         }
