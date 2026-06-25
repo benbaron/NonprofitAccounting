@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.Currency;
 import java.util.List;
-import java.util.Locale;
 import java.util.function.Consumer;
 
 import javafx.geometry.Insets;
@@ -21,6 +20,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import nonprofitbookkeeping.model.AccountType;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CompanyProfileModel;
 import nonprofitbookkeeping.service.CompanyManagementService;
@@ -91,7 +91,8 @@ public class CompanyProfileWizardFX extends BorderPane
         {
             company.getChartOfAccounts().getAccounts().stream()
                 .filter(account -> account != null &&
-                    account.getAccountNumber() != null)
+                    account.getAccountNumber() != null &&
+                    isBankType(account.getAccountType()))
                 .map(account -> account.getAccountNumber())
                 .distinct()
                 .sorted()
@@ -109,6 +110,12 @@ public class CompanyProfileWizardFX extends BorderPane
                 this.defaultBank.setValue("1000");
             }
         });
+    }
+
+    private static boolean isBankType(AccountType type)
+    {
+        return type == AccountType.BANK || type == AccountType.CASH ||
+            type == AccountType.CHECKING || type == AccountType.MONEYMKRT;
     }
 
     private void prefill(Company company)
@@ -141,13 +148,9 @@ public class CompanyProfileWizardFX extends BorderPane
         }
         this.chartTemplate.setValue(nonblank(profile.getChartOfAccountsType(),
             CompanyManagementService.TEMPLATE_SCA));
-        if (profile.getDefaultBankAccount() != null &&
-            !this.defaultBank.getItems().contains(
-                profile.getDefaultBankAccount()))
-        {
-            this.defaultBank.getItems().add(profile.getDefaultBankAccount());
-        }
-        this.defaultBank.setValue(profile.getDefaultBankAccount());
+        String configuredBank = profile.getDefaultBankAccount();
+        this.defaultBank.setValue(this.defaultBank.getItems().contains(
+            configuredBank) ? configuredBank : null);
         this.fundAccounting.setSelected(profile.isEnableFundAccounting());
         this.inventory.setSelected(profile.isEnableInventory());
         this.multiCurrency.setSelected(profile.isEnableMultiCurrency());
