@@ -1,22 +1,24 @@
 package nonprofitbookkeeping.service;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.MonthDay;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Currency;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 
 import nonprofitbookkeeping.core.ChartOfAccountsBuilder;
 import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountType;
+import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CompanyProfileModel;
@@ -101,8 +103,7 @@ public class CompanyManagementService
         CompanyProfileModel profile = company.getCompanyProfileModel();
         int accountCount = company.getChartOfAccounts() == null ? 0 :
             company.getChartOfAccounts().getAccounts().size();
-        int fundCount = company.getFunds() == null ? 0 :
-            company.getFunds().size();
+        int fundCount = countFunds(company);
         List<AccountingTransaction> transactions = company.getLedger() == null ||
             company.getLedger().getJournal() == null ? List.of() :
             company.getLedger().getJournal().getJournalTransactions();
@@ -153,6 +154,42 @@ public class CompanyManagementService
             TEMPLATE_EMPTY);
     }
 
+    private int countFunds(Company company)
+    {
+        Set<String> funds = new HashSet<>();
+        if (company.getChartOfAccounts() != null)
+        {
+            for (Account account : company.getChartOfAccounts().getAccounts())
+            {
+                if (account != null && account.getAssociatedFundIds() != null)
+                {
+                    funds.addAll(account.getAssociatedFundIds());
+                }
+            }
+        }
+        if (company.getLedger() != null &&
+            company.getLedger().getJournal() != null)
+        {
+            for (AccountingTransaction transaction :
+                company.getLedger().getJournal().getJournalTransactions())
+            {
+                if (transaction.getEntries() == null)
+                {
+                    continue;
+                }
+                for (AccountingEntry entry : transaction.getEntries())
+                {
+                    if (entry != null && entry.getFundNumber() != null &&
+                        !entry.getFundNumber().isBlank())
+                    {
+                        funds.add(entry.getFundNumber());
+                    }
+                }
+            }
+        }
+        return funds.size();
+    }
+
     private void applyTemplate(Company company, String template)
     {
         String normalized = template == null ? TEMPLATE_EMPTY : template;
@@ -192,6 +229,43 @@ public class CompanyManagementService
                 .addAccount("5000", "Expense", AccountSide.DEBIT);
         }
         company.setChartOfAccounts(builder.build());
+        assignTemplateTypes(company);
+    }
+
+    private void assignTemplateTypes(Company company)
+    {
+        for (Account account : company.getChartOfAccounts().getAccounts())
+        {
+            String number = account.getAccountNumber();
+            if ("1000".equals(number))
+            {
+                account.setAccountType(AccountType.CHECKING);
+            }
+            else if ("1010".equals(number))
+            {
+                account.setAccountType(AccountType.CASH);
+            }
+            else if (number.startsWith("2"))
+            {
+                account.setAccountType(AccountType.LIABILITY);
+            }
+            else if (number.startsWith("3"))
+            {
+                account.setAccountType(AccountType.EQUITY);
+            }
+            else if (number.startsWith("4"))
+            {
+                account.setAccountType(AccountType.INCOME);
+            }
+            else if (number.startsWith("5"))
+            {
+                account.setAccountType(AccountType.EXPENSE);
+            }
+            else
+            {
+                account.setAccountType(AccountType.ASSET);
+            }
+        }
     }
 
     private void normalizeDefaultBank(Company company,
