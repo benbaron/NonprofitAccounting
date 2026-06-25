@@ -9,9 +9,11 @@ import java.time.MonthDay;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Currency;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 
 import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.Account;
@@ -144,14 +146,13 @@ public class CompanyManagementService
         {
             profile = new CompanyProfileModel();
         }
-        ChartTemplate template = parseTemplate(profile.getChartOfAccountsType());
         return new CompanyDefinition(
             value(profile.getCompanyName()),
             value(profile.getLegalStructure()),
             defaultIfBlank(profile.getFiscalYearStart(), "01-01"),
             defaultIfBlank(profile.getBaseCurrency(), "USD"),
             parseDate(profile.getStartingBalanceDate(), LocalDate.now()),
-            template,
+            parseTemplate(profile.getChartOfAccountsType()),
             profile.isEnableFundAccounting(),
             profile.isEnableInventory(),
             profile.isEnableMultiCurrency(),
@@ -165,7 +166,8 @@ public class CompanyManagementService
         validateDefinition(definition, null);
         ensureUniqueName(definition.companyName(), null);
         Company company = new Company();
-        applyDefinition(company, definition, true);
+        applyDefinition(company, definition,
+            definition.chartTemplate() != ChartTemplate.EMPTY);
         return this.repository.save(null, company);
     }
 
@@ -176,11 +178,20 @@ public class CompanyManagementService
         Company company = this.repository.load(companyId);
         validateDefinition(definition, company);
         ensureUniqueName(definition.companyName(), companyId);
-        applyDefinition(company, definition, false);
+
+        ChartTemplate existingTemplate = parseTemplate(
+            company.getCompanyProfileModel() == null ? "" :
+                company.getCompanyProfileModel().getChartOfAccountsType());
+        boolean rebuildTemplate = transactionCount(company) == 0 &&
+            definition.chartTemplate() != ChartTemplate.EMPTY &&
+            (accountCount(company) == 0 ||
+                definition.chartTemplate() != existingTemplate);
+        applyDefinition(company, definition, rebuildTemplate);
         this.repository.save(companyId, company);
+
         if (Objects.equals(CurrentCompany.getCurrentCompanyId(), companyId))
         {
-            CurrentCompany.forceCompanyLoad(companyId, company);
+            CurrentCompany.loadFromPersistent(companyId);
         }
     }
 
@@ -192,13 +203,13 @@ public class CompanyManagementService
             throw new IllegalStateException(
                 "Restore the archived company before opening it.");
         }
-        Company company = this.repository.load(companyId);
-        validateNormativeConfiguration(company);
-        CurrentCompany.forceCompanyLoad(companyId, company);
-        CurrentCompany.markCompanyOpen();
+
+        Company stored = this.repository.load(companyId);
+        validateNormativeConfiguration(stored);
+        CurrentCompany.loadFromPersistent(companyId);
         PreferencesService.setLastUsedCompanyId(companyId);
         CompanyUiMetadataStore.setLastOpened(companyId, Instant.now());
-        return company;
+        return CurrentCompany.getCompany();
     }
 
     public void setArchived(long companyId, boolean archived)
@@ -256,12 +267,10 @@ public class CompanyManagementService
     public long createDeterministicSampleCompany()
         throws SQLException, IOException
     {
-        CompanyDefinition definition = new CompanyDefinition(
+        return create(new CompanyDefinition(
             "Sample Nonprofit Company", "Non-Profit", "01-01", "USD",
             LocalDate.of(2026, 1, 1), ChartTemplate.STANDARD_NONPROFIT,
-            true, false, false, "1000");
-        ensureUniqueName(definition.companyName(), null);
-        return create(definition);
+            true, false, false, "1000"));
     }
 
     public void validateNormativeConfiguration(Company company)
@@ -294,7 +303,7 @@ public class CompanyManagementService
             profile == null ? "" : value(profile.getDefaultBankAccount()),
             profile != null && profile.isEnableFundAccounting(),
             accountCount(company),
-            company.getFunds() == null ? 0 : company.getFunds().size(),
+            fundCount(company),
             transactionCount(company),
             dates.isEmpty() ? null : dates.get(0),
             dates.isEmpty() ? null : dates.get(dates.size() - 1),
@@ -303,7 +312,7 @@ public class CompanyManagementService
     }
 
     private void applyDefinition(Company company, CompanyDefinition definition,
-        boolean applyTemplate)
+        boolean rebuildTemplate)
     {
         CompanyProfileModel profile = company.getCompanyProfileModel();
         if (profile == null)
@@ -322,11 +331,12 @@ public class CompanyManagementService
         profile.setEnableInventory(definition.enableInventory());
         profile.setEnableMultiCurrency(definition.enableMultiCurrency());
 
-        if (applyTemplate && definition.chartTemplate() != ChartTemplate.EMPTY)
+        if (rebuildTemplate)
         {
             company.setChartOfAccounts(buildTemplate(definition.chartTemplate()));
         }
-        profile.setDefaultBankAccount(value(definition.defaultBankAccount()).trim());
+        profile.setDefaultBankAccount(
+            value(definition.defaultBankAccount()).trim());
         validateDefaultBankAccount(company, profile.getDefaultBankAccount());
     }
 
@@ -348,7 +358,7 @@ public class CompanyManagementService
             addAccount(chart, "5000", "Program and Event Expense",
                 AccountType.EXPENSE, AccountSide.DEBIT);
         }
-        else
+        else if (template == ChartTemplate.STANDARD_NONPROFIT)
         {
             addAccount(chart, "1000", "Operating Checking", AccountType.BANK,
                 AccountSide.DEBIT);
@@ -419,13 +429,16 @@ public class CompanyManagementService
             throw new IllegalArgumentException(
                 "A default bank account is required for this template.");
         }
-        if (existing != null && definition.chartTemplate() !=
-            parseTemplate(existing.getCompanyProfileModel() == null ? "" :
-                existing.getCompanyProfileModel().getChartOfAccountsType()) &&
-            transactionCount(existing) > 0)
+        if (existing != null && transactionCount(existing) > 0)
         {
-            throw new IllegalArgumentException(
-                "The chart template cannot be changed after transactions exist.");
+            ChartTemplate existingTemplate = parseTemplate(
+                existing.getCompanyProfileModel() == null ? "" :
+                    existing.getCompanyProfileModel().getChartOfAccountsType());
+            if (definition.chartTemplate() != existingTemplate)
+            {
+                throw new IllegalArgumentException(
+                    "The chart template cannot be changed after transactions exist.");
+            }
         }
     }
 
@@ -518,11 +531,11 @@ public class CompanyManagementService
         }
     }
 
-    private ChartTemplate parseTemplate(String value)
+    private ChartTemplate parseTemplate(String text)
     {
         for (ChartTemplate template : ChartTemplate.values())
         {
-            if (template.toString().equalsIgnoreCase(value(value)))
+            if (template.toString().equalsIgnoreCase(value(text)))
             {
                 return template;
             }
@@ -533,8 +546,8 @@ public class CompanyManagementService
     private List<LocalDate> transactionDates(Company company)
     {
         List<LocalDate> result = new ArrayList<>();
-        if (company.getLedger() == null || company.getLedger().getTransactions()
-            == null)
+        if (company.getLedger() == null ||
+            company.getLedger().getTransactions() == null)
         {
             return result;
         }
@@ -545,7 +558,7 @@ public class CompanyManagementService
             }
             catch (DateTimeParseException | NullPointerException ex)
             {
-                // Invalid legacy dates are reported elsewhere and omitted here.
+                // Invalid legacy dates are omitted from the summary range.
             }
         });
         result.sort(LocalDate::compareTo);
@@ -556,6 +569,24 @@ public class CompanyManagementService
     {
         return company.getChartOfAccounts() == null ? 0 :
             company.getChartOfAccounts().getAccounts().size();
+    }
+
+    private int fundCount(Company company)
+    {
+        if (company.getChartOfAccounts() == null)
+        {
+            return 0;
+        }
+        Set<String> fundIds = new HashSet<>();
+        for (Account account : company.getChartOfAccounts().getAccounts())
+        {
+            if (account != null && account.getAssociatedFundIds() != null)
+            {
+                fundIds.addAll(account.getAssociatedFundIds());
+            }
+        }
+        fundIds.removeIf(id -> id == null || id.isBlank());
+        return fundIds.size();
     }
 
     private int transactionCount(Company company)
@@ -573,11 +604,11 @@ public class CompanyManagementService
             profile.getCompanyName();
     }
 
-    private LocalDate parseDate(String value, LocalDate fallback)
+    private LocalDate parseDate(String text, LocalDate fallback)
     {
         try
         {
-            return LocalDate.parse(value);
+            return LocalDate.parse(text);
         }
         catch (RuntimeException ex)
         {
@@ -585,19 +616,19 @@ public class CompanyManagementService
         }
     }
 
-    private String defaultIfBlank(String value, String fallback)
+    private String defaultIfBlank(String text, String fallback)
     {
-        return blank(value) ? fallback : value;
+        return blank(text) ? fallback : text;
     }
 
-    private static String value(String value)
+    private static String value(String text)
     {
-        return value == null ? "" : value;
+        return text == null ? "" : text;
     }
 
-    private static boolean blank(String value)
+    private static boolean blank(String text)
     {
-        return value == null || value.isBlank();
+        return text == null || text.isBlank();
     }
 
     private void requireDatabase()
