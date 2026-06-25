@@ -12,14 +12,22 @@ import nonprofitbookkeeping.service.CompanyManagementService;
 import nonprofitbookkeeping.ui.panels.DeveloperToolsPanelFX;
 import nonprofitbookkeeping.ui.panels.SharedCompanyManagementPanelFX;
 
-/** New-shell adapter for the shared company management workspace. */
+/** Panel-host adapter for the shared company management workspace. */
 public class AlternateCompanyAdminPanel implements AppPanel
 {
     private final SharedCompanyManagementPanelFX panel;
 
     public AlternateCompanyAdminPanel(UiServiceProvider provider)
     {
-        AlternateDataContextService context = provider.companyAdministration();
+        AlternateDataContextService context;
+        try
+        {
+            context = provider.companyAdministration();
+        }
+        catch (IllegalStateException ex)
+        {
+            context = new AlternateDataContextService();
+        }
         this.panel = new SharedCompanyManagementPanelFX(
             new CompanyManagementService(), new AlternateHost(context));
     }
