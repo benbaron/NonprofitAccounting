@@ -17,10 +17,7 @@ import javafx.scene.layout.VBox;
 import nonprofitbookkeeping.ui.LedgerNavigationContext;
 import nonprofitbookkeeping.ui.panels.JournalPanelFX;
 
-/**
- * Replaces the alternate shell's generated navigation with a stable,
- * user-ordered, collapsible navigation rail.
- */
+/** Stable, ordered, collapsible navigation rail for the alternate shell. */
 final class AlternateNavigationCustomizer
 {
     private static final double COLLAPSE_THRESHOLD = 125.0;
@@ -44,10 +41,8 @@ final class AlternateNavigationCustomizer
         Button originalProfile = findButton(originalNavigation, "Profile");
         Button originalCommandCenter = findButton(originalNavigation,
             "Command Center");
-
         StackPane workspace = splitPane.getItems().get(1) instanceof StackPane
-            ? (StackPane) splitPane.getItems().get(1)
-            : null;
+            ? (StackPane) splitPane.getItems().get(1) : null;
         JournalPanelFX journal = createJournalWorkspace(window, workspace);
 
         Label navigationTitle = new Label("Navigation");
@@ -67,7 +62,6 @@ final class AlternateNavigationCustomizer
             navButton("☰", "Command Center", () -> fire(
                 originalCommandCenter, window, AppPanelId.DASHBOARD,
                 journal)));
-        primary.getStyleClass().add("alternate-navigation-primary");
 
         VBox accountingButtons = group(
             navButton("▥", "Chart of Accounts", () -> openPanel(window,
@@ -84,10 +78,8 @@ final class AlternateNavigationCustomizer
                 hideJournal(journal);
                 window.openDatabaseSelector();
             }),
-            navButton("▦", "Open Company", () -> {
-                hideJournal(journal);
-                window.openCompanySelector();
-            }),
+            navButton("▦", "Open Company", () -> openPanel(window,
+                AppPanelId.COMPANY_ADMIN, journal)),
             navButton("⌘", "Import & Tools", () -> openPanel(window,
                 AppPanelId.IMPORT_EXPORT, journal)));
         TitledPane utilities = section("⋮", "Utilities",
@@ -105,7 +97,6 @@ final class AlternateNavigationCustomizer
         splitPane.getItems().set(0, navigation);
         splitPane.setDividerPositions(0.25);
         SplitPane.setResizableWithParent(navigation, true);
-
         navigation.widthProperty().addListener((obs, oldWidth, newWidth) ->
             applyCollapsedState(navigation,
                 newWidth.doubleValue() < COLLAPSE_THRESHOLD));
@@ -257,7 +248,6 @@ final class AlternateNavigationCustomizer
         }
         navigation.setPadding(collapsed ? new Insets(8, 4, 8, 4) :
             new Insets(12));
-
         for (Button button : collectButtons(navigation))
         {
             Object iconValue = button.getProperties().get(ICON_PROPERTY);
@@ -272,7 +262,6 @@ final class AlternateNavigationCustomizer
             button.setAlignment(collapsed ? Pos.CENTER : Pos.CENTER_LEFT);
             button.setTooltip(new Tooltip(title));
         }
-
         for (TitledPane pane : collectSections(navigation))
         {
             Object iconValue = pane.getProperties().get(ICON_PROPERTY);
@@ -281,10 +270,9 @@ final class AlternateNavigationCustomizer
             {
                 continue;
             }
-            String icon = iconValue.toString();
-            String title = titleValue.toString();
-            pane.setText(collapsed ? icon : title);
-            pane.setTooltip(new Tooltip(title));
+            pane.setText(collapsed ? iconValue.toString() :
+                titleValue.toString());
+            pane.setTooltip(new Tooltip(titleValue.toString()));
         }
     }
 
@@ -328,7 +316,6 @@ final class AlternateNavigationCustomizer
         return collectButtons(root).stream()
             .filter(button -> button.getText() != null &&
                 button.getText().contains(title))
-            .findFirst()
-            .orElse(null);
+            .findFirst().orElse(null);
     }
 }
