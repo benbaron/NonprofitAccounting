@@ -9,11 +9,13 @@ import java.util.Map;
 import java.util.prefs.Preferences;
 
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.persistence.CompanyRepository;
 import nonprofitbookkeeping.persistence.CompanyRepository.CompanyRecord;
 import nonprofitbookkeeping.preferences.PreferencesManager;
 import nonprofitbookkeeping.service.PreferencesService;
+import nonprofitbookkeeping.util.FormatUtils;
 
 /** Shared data-context operations used by alternate shell DB/company selectors. */
 public class AlternateDataContextService
@@ -148,6 +150,21 @@ public class AlternateDataContextService
         throws IOException
     {
         CurrentCompany.loadFromPersistent(companyId);
+        try
+        {
+            this.companyRepository.markOpened(companyId);
+        }
+        catch (SQLException ex)
+        {
+            throw new IOException("Unable to update company last-opened time",
+                ex);
+        }
+        Company company = CurrentCompany.getCompany();
+        if (company != null && company.getCompanyProfileModel() != null)
+        {
+            FormatUtils.configureLocale(null,
+                company.getCompanyProfileModel().getBaseCurrency());
+        }
         transitionCompanyContext(companyId, companyLabel);
     }
 
@@ -156,11 +173,6 @@ public class AlternateDataContextService
         return this.recentsStore.recentDatabasePaths();
     }
 
-    /**
-     * Returns recent companies with labels normalized from the currently open
-     * database. This prevents stale display text from breaking selection-to-ID
-     * resolution in the new UI.
-     */
     public List<RecentCompanyChoice> recentCompanies()
     {
         List<RecentCompanyChoice> stored =
