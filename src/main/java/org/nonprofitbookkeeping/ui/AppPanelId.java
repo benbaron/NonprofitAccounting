@@ -32,6 +32,7 @@ public enum AppPanelId
     DATABASE_ADMIN,
     COMPANY_ADMIN,
     IMPORT_EXPORT,
+    DEVELOPER_TOOLS,
     MONTHLY_CLOSE,
     SETTINGS
 }

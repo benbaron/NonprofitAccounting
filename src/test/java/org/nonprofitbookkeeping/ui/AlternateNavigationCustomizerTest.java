@@ -63,8 +63,7 @@ class AlternateNavigationCustomizerTest
                 assertEquals(List.of(
                     "Chart of Accounts",
                     "Journal",
-                    "Ledger"),
-                    accessibleTitles(accounting.getContent()));
+                    "Ledger"), accessibleTitles(accounting.getContent()));
 
                 TitledPane utilities = assertInstanceOf(TitledPane.class,
                     navigation.getChildren().get(3));
@@ -72,7 +71,8 @@ class AlternateNavigationCustomizerTest
                 assertEquals(List.of(
                     "Open Database",
                     "Open Company",
-                    "Import & Tools"),
+                    "Import & Tools",
+                    "Developer Tools"),
                     accessibleTitles(utilities.getContent()));
 
                 assertEquals(1, countTitle(navigation, "Dashboard"));
