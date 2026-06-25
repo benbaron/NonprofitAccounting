@@ -89,7 +89,9 @@ final class AlternateNavigationCustomizer
                 window.openCompanySelector();
             }),
             navButton("⌘", "Import & Tools", () -> openPanel(window,
-                AppPanelId.IMPORT_EXPORT, journal)));
+                AppPanelId.IMPORT_EXPORT, journal)),
+            navButton("⚒", "Developer Tools", () -> openPanel(window,
+                AppPanelId.DEVELOPER_TOOLS, journal)));
         TitledPane utilities = section("⋮", "Utilities",
             utilityButtons, true);
 
