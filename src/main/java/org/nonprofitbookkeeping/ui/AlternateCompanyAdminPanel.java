@@ -3,6 +3,7 @@ package org.nonprofitbookkeeping.ui;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.stage.Window;
+import nonprofitbookkeeping.service.LenientCompanyManagementService;
 import nonprofitbookkeeping.service.PreferencesService;
 import nonprofitbookkeeping.ui.panels.CompanyManagementPanelFX;
 
@@ -13,7 +14,8 @@ public class AlternateCompanyAdminPanel implements AppPanel
 
     public AlternateCompanyAdminPanel(UiServiceProvider provider)
     {
-        this.panel = new CompanyManagementPanelFX();
+        this.panel = new CompanyManagementPanelFX(
+            new LenientCompanyManagementService());
         this.panel.setOnCompanyOpened(company -> {
             Long id = PreferencesService.getLastUsedCompanyId();
             if (id != null)
