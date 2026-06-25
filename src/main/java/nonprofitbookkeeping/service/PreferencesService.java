@@ -8,13 +8,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
-/**
- * Manages application preferences, such as default directories and last used
- * files. Preferences are stored in a properties file under the user's home
- * directory and are globally accessible to UI components.
- */
+/** Stores application preferences in the user's configuration directory. */
 public class PreferencesService
 {
+    public static final String COMPANY_STARTUP_PRESELECT = "Preselect last company";
+    public static final String COMPANY_STARTUP_OPEN = "Open last company automatically";
+    public static final String COMPANY_STARTUP_NONE = "No automatic selection";
+
     private static final String PREFS_FILE_NAME = "preferences.properties";
     private static final String DEFAULT_DIR_KEY = "defaultCompanyDir";
     private static final String LAST_FILE_KEY = "lastUsedCompanyFile";
@@ -26,6 +26,8 @@ public class PreferencesService
         "journalPreserveStoredLineOrder";
     private static final String DASHBOARD_RECENT_LIMIT_KEY =
         "dashboardRecentTransactionLimit";
+    private static final String COMPANY_STARTUP_BEHAVIOR_KEY =
+        "companyStartupBehavior";
 
     private static final Properties props = new Properties();
     private static final Path configPath = Paths.get(
@@ -113,6 +115,30 @@ public class PreferencesService
         save();
     }
 
+    public static String getCompanyStartupBehavior()
+    {
+        String value = props.getProperty(COMPANY_STARTUP_BEHAVIOR_KEY,
+            COMPANY_STARTUP_PRESELECT);
+        if (!COMPANY_STARTUP_OPEN.equals(value) &&
+            !COMPANY_STARTUP_NONE.equals(value))
+        {
+            return COMPANY_STARTUP_PRESELECT;
+        }
+        return value;
+    }
+
+    public static void setCompanyStartupBehavior(String value)
+    {
+        String normalized = value;
+        if (!COMPANY_STARTUP_OPEN.equals(normalized) &&
+            !COMPANY_STARTUP_NONE.equals(normalized))
+        {
+            normalized = COMPANY_STARTUP_PRESELECT;
+        }
+        props.setProperty(COMPANY_STARTUP_BEHAVIOR_KEY, normalized);
+        save();
+    }
+
     public static String getThemePreference()
     {
         return props.getProperty(THEME_KEY, "System");
@@ -149,20 +175,12 @@ public class PreferencesService
         save();
     }
 
-    /**
-     * Returns whether journal transaction lines should retain their stored
-     * debit/credit order. The default is {@code true}.
-     */
     public static boolean isJournalStoredLineOrderPreserved()
     {
         return Boolean.parseBoolean(
             props.getProperty(JOURNAL_STORED_LINE_ORDER_KEY, "true"));
     }
 
-    /**
-     * Sets whether journal lines retain stored order. When false, journal
-     * displays may group debit lines before credit lines.
-     */
     public static void setJournalStoredLineOrderPreserved(boolean preserved)
     {
         props.setProperty(JOURNAL_STORED_LINE_ORDER_KEY,
@@ -170,7 +188,6 @@ public class PreferencesService
         save();
     }
 
-    /** Returns the dashboard recent-transaction limit, defaulting to 10. */
     public static int getDashboardRecentTransactionLimit()
     {
         String value = props.getProperty(DASHBOARD_RECENT_LIMIT_KEY, "10");
@@ -184,7 +201,6 @@ public class PreferencesService
         }
     }
 
-    /** Stores the dashboard recent-transaction limit. */
     public static void setDashboardRecentTransactionLimit(int limit)
     {
         int normalized = Math.max(1, Math.min(100, limit));
