@@ -57,14 +57,24 @@ final class CommandCenterLayoutCustomizer
                 .map(Button.class::cast)
                 .toList();
             group.getChildren().removeAll(buttons);
-            VBox actions = new VBox(6);
-            actions.getChildren().addAll(buttons);
 
-            TitledPane section = new TitledPane(title, actions);
-            section.setAnimated(false);
-            section.setExpanded(!"Database".equals(title) &&
-                !"Company".equals(title));
-            sections.getChildren().add(section);
+            if (AlternateUiCommandCatalog.DATABASE_COMPANY.equals(title))
+            {
+                List<Button> databaseButtons = buttons.stream()
+                    .filter(button -> !isCompanyCommand(button))
+                    .toList();
+                List<Button> companyButtons = buttons.stream()
+                    .filter(CommandCenterLayoutCustomizer::isCompanyCommand)
+                    .toList();
+                sections.getChildren().add(section("Database",
+                    databaseButtons, false));
+                sections.getChildren().add(section("Company",
+                    companyButtons, false));
+            }
+            else
+            {
+                sections.getChildren().add(section(title, buttons, true));
+            }
         }
 
         ScrollPane scroll = new ScrollPane(sections);
@@ -81,6 +91,23 @@ final class CommandCenterLayoutCustomizer
         commandCenter.getChildren().setAll(heading);
         commandCenter.getChildren().add(scroll);
         commandCenter.getProperties().put(CUSTOMIZED_KEY, Boolean.TRUE);
+    }
+
+    private static TitledPane section(String title, List<Button> buttons,
+        boolean expanded)
+    {
+        VBox actions = new VBox(6);
+        actions.getChildren().addAll(buttons);
+        TitledPane section = new TitledPane(title, actions);
+        section.setAnimated(false);
+        section.setExpanded(expanded);
+        return section;
+    }
+
+    private static boolean isCompanyCommand(Button button)
+    {
+        String text = button.getText();
+        return text != null && text.toLowerCase().contains("company");
     }
 
     private static VBox findCommandCenter(Node node)
