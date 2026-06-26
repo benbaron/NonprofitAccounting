@@ -52,10 +52,14 @@ final class CommandCenterLayoutCustomizer
                 .findFirst()
                 .orElse("Commands");
 
-            VBox actions = new VBox(6);
-            group.getChildren().stream()
+            List<Button> buttons = group.getChildren().stream()
                 .filter(Button.class::isInstance)
-                .forEach(actions.getChildren()::add);
+                .map(Button.class::cast)
+                .toList();
+            group.getChildren().removeAll(buttons);
+            VBox actions = new VBox(6);
+            actions.getChildren().addAll(buttons);
+
             TitledPane section = new TitledPane(title, actions);
             section.setAnimated(false);
             section.setExpanded(!"Database".equals(title) &&
