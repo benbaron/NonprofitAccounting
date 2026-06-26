@@ -2,8 +2,10 @@ package nonprofitbookkeeping.ui.panels;
 
 import java.util.function.Consumer;
 
+import javafx.application.Platform;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.service.LenientCompanyManagementService;
+import nonprofitbookkeeping.ui.MainApplicationView;
 
 /**
  * Classic-shell compatibility wrapper for the shared company-management
@@ -22,6 +24,18 @@ public class CompanySelectionPanelFX extends CompanyManagementPanelFX
     public CompanySelectionPanelFX()
     {
         super(new LenientCompanyManagementService());
+        parentProperty().addListener((observable, oldParent, newParent) -> {
+            if (newParent instanceof MainApplicationView mainView)
+            {
+                Platform.runLater(() -> {
+                    if (mainView.getCenter() == this)
+                    {
+                        mainView.showPanel(
+                            MainApplicationView.PanelType.DASHBOARD);
+                    }
+                });
+            }
+        });
     }
 
     public CompanySelectionPanelFX(OnCompanyOpenedHandler handler)
