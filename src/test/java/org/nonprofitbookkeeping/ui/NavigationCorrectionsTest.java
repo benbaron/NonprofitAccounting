@@ -1,5 +1,6 @@
 package org.nonprofitbookkeeping.ui;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -37,10 +38,10 @@ class NavigationCorrectionsTest
             {
                 MainWindowAlternate window = new MainWindowAlternate();
                 AlternateNavigationCustomizer.apply(window);
-                AlternateShellNavigationPatch.apply(window);
 
                 Button companies = findButton(window, "Companies");
                 assertNotNull(companies);
+                assertNotNull(findButton(window, "Open Company"));
 
                 Button commandCenter = findButton(window, "Command Center");
                 assertNotNull(commandCenter);
@@ -50,8 +51,15 @@ class NavigationCorrectionsTest
                     try
                     {
                         assertNotNull(find(window, ScrollPane.class));
-                        assertTrue(hasTitledPane(window, "Database"));
-                        assertTrue(hasTitledPane(window, "Company"));
+                        TitledPane database = find(window, TitledPane.class,
+                            "Database");
+                        TitledPane company = find(window, TitledPane.class,
+                            "Company");
+                        assertNotNull(database);
+                        assertNotNull(company);
+                        assertFalse(database.isExpanded());
+                        assertFalse(company.isExpanded());
+                        assertTrue(hasExpandedNonAdministrativeSection(window));
                     }
                     catch (Throwable throwable)
                     {
@@ -77,10 +85,33 @@ class NavigationCorrectionsTest
         }
     }
 
-    private static boolean hasTitledPane(Node root, String title)
+    private static boolean hasExpandedNonAdministrativeSection(Node root)
     {
-        TitledPane pane = find(root, TitledPane.class, title);
-        return pane != null;
+        if (root instanceof TitledPane pane && pane.isExpanded() &&
+            !"Database".equals(pane.getText()) &&
+            !"Company".equals(pane.getText()))
+        {
+            return true;
+        }
+        if (root instanceof Parent parent)
+        {
+            for (Node child : parent.getChildrenUnmodifiable())
+            {
+                if (hasExpandedNonAdministrativeSection(child))
+                {
+                    return true;
+                }
+            }
+        }
+        if (root instanceof ScrollPane pane && pane.getContent() != null)
+        {
+            return hasExpandedNonAdministrativeSection(pane.getContent());
+        }
+        if (root instanceof TitledPane pane && pane.getContent() != null)
+        {
+            return hasExpandedNonAdministrativeSection(pane.getContent());
+        }
+        return false;
     }
 
     private static Button findButton(Node root, String text)
