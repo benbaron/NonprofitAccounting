@@ -58,15 +58,20 @@ final class AlternateNavigationCustomizer
                 AppPanelId.DASHBOARD, journal)),
             navButton("⌂", "Dashboard", () -> openPanel(window,
                 AppPanelId.DASHBOARD, journal)),
+            navButton("▦", "Companies", () -> openPanel(window,
+                AppPanelId.COMPANY_ADMIN, journal)),
             navButton("⌕", "Search", () -> {
                 hideJournal(journal);
                 window.openSearchPage();
             }),
             navButton("⚙", "Settings", () -> openPanel(window,
                 AppPanelId.SETTINGS, journal)),
-            navButton("☰", "Command Center", () -> fire(
-                originalCommandCenter, window, AppPanelId.DASHBOARD,
-                journal)));
+            navButton("☰", "Command Center", () -> {
+                fire(originalCommandCenter, window, AppPanelId.DASHBOARD,
+                    journal);
+                Platform.runLater(() ->
+                    CommandCenterLayoutCustomizer.apply(window));
+            }));
         primary.getStyleClass().add("alternate-navigation-primary");
 
         VBox accountingButtons = group(
