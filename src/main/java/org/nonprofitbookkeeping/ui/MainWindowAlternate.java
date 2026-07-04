@@ -914,18 +914,14 @@ public class MainWindowAlternate extends BorderPane
         {
             this.alternateDashboardPanel.refresh();
         }
-        this.alternateSettingsPane.setVisible(id == AppPanelId.SETTINGS);
-        this.alternateSettingsPane.setManaged(id == AppPanelId.SETTINGS);
-        this.alternateContentPane.setVisible(alternateCustomPane && id != AppPanelId.SETTINGS);
-        this.alternateContentPane.setManaged(alternateCustomPane && id != AppPanelId.SETTINGS);
+        this.alternateSettingsPane.setVisible(false);
+        this.alternateSettingsPane.setManaged(false);
+        this.alternateContentPane.setVisible(alternateCustomPane);
+        this.alternateContentPane.setManaged(alternateCustomPane);
         this.panelHost.setVisible(panelHostBackedPanel);
         this.panelHost.setManaged(panelHostBackedPanel);
 
-        if (id == AppPanelId.SETTINGS)
-        {
-            buildAlternateSettingsPane();
-        }
-        else if (id == AppPanelId.BUDGET_EDITOR)
+        if (id == AppPanelId.BUDGET_EDITOR)
         {
             buildAlternateBudgetEditorPane();
         }

@@ -7,12 +7,43 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Field;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import javafx.application.Platform;
 
 class PanelHostLifecycleTest
 {
+    @BeforeAll
+    static void initToolkit() throws Exception
+    {
+        System.setProperty("testfx.toolkit", "glass");
+        System.setProperty("testfx.robot", "glass");
+        System.setProperty("testfx.headless", "true");
+        System.setProperty("glass.platform", "Monocle");
+        System.setProperty("monocle.platform", "Headless");
+        System.setProperty("prism.order", "sw");
+        System.setProperty("prism.text", "t2k");
+        System.setProperty("prism.es2", "false");
+        CountDownLatch latch = new CountDownLatch(1);
+        try
+        {
+            Platform.startup(latch::countDown);
+        }
+        catch (IllegalStateException alreadyStarted)
+        {
+            latch.countDown();
+        }
+        if (!latch.await(30, TimeUnit.SECONDS))
+        {
+            throw new AssertionError("Timed out starting JavaFX toolkit");
+        }
+    }
+
     @Test
     void switchingBetweenPhaseOnePanelsSavesActivePanelBeforeShow()
     {
@@ -151,6 +182,17 @@ class PanelHostLifecycleTest
         assertEquals(SaveResult.Status.FAILED, result.status());
         assertFalse(guarded.saveAttempted);
         assertSame(guarded.root(), host.getCenter());
+    }
+
+    @Test
+    void defaultFactoryHostsClassicSettingsPanelInAlternateChrome()
+    {
+        PanelHost host = new PanelHost(new UiServiceProvider(new AlternateDataContextService()));
+
+        host.show(AppPanelId.SETTINGS);
+
+        assertTrue(host.getCenter() instanceof javafx.scene.layout.BorderPane);
+        assertEquals(SaveResult.Status.UNSUPPORTED, host.saveActive().status());
     }
 
 
