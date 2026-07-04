@@ -62,6 +62,7 @@ class AlternateUiCommandCatalog
         commands.add(command(IMPORT_EXPORT, "Import Chart of Accounts", AppPanelId.IMPORT_EXPORT, actions.importChartOfAccounts()));
         commands.add(command(IMPORT_EXPORT, "Export Chart of Accounts", AppPanelId.IMPORT_EXPORT, actions.exportChartOfAccounts()));
         commands.add(command(IMPORT_EXPORT, "Import SCLX", AppPanelId.IMPORT_EXPORT, actions.importSclx()));
+        commands.add(command(IMPORT_EXPORT, "Export SCLX", AppPanelId.IMPORT_EXPORT, actions.exportSclx()));
         commands.add(command(IMPORT_EXPORT, "Monthly Close Checklist", AppPanelId.MONTHLY_CLOSE, actions.openMonthlyClose()));
     }
 
