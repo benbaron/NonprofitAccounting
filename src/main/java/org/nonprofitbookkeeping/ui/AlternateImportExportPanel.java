@@ -100,14 +100,23 @@ public class AlternateImportExportPanel implements AppPanel
         ComboBox<String> mode = new ComboBox<>();
         mode.getItems().addAll("Preview only", "Validate only", "Commit to active company", "Create/import into new database/company");
         mode.setValue("Preview only");
+        TextField exportFile = new TextField();
+        exportFile.setPromptText("/path/to/export.sclx.json");
+        TextField exportRunId = new TextField();
+        exportRunId.setPromptText("Optional import run id for raw round-trip fidelity");
         Button run = new Button("Run SCLX import");
         run.setOnAction(e -> runSclx(file.getText(), cash.getText(), mode.getValue()));
+        Button export = new Button("Export active company to SCLX");
+        export.setOnAction(e -> runSclxExport(exportFile.getText(), exportRunId.getText()));
         grid.addRow(2, new Label("SCLX file"), file);
         grid.addRow(3, new Label("Import mode"), mode);
         grid.addRow(4, new Label("Cash account"), cash);
         grid.add(run, 1, 5);
-        addReadOnlyRow(grid, 6, "Result counts", "Every run reports created, updated, skipped, warnings, and errors. Errors block commit.");
-        addReadOnlyRow(grid, 7, "Export mode", "SCLX export is not currently exposed by an existing alternate UI service.");
+        grid.addRow(6, new Label("Export file"), exportFile);
+        grid.addRow(7, new Label("Import run id"), exportRunId);
+        grid.add(export, 1, 8);
+        addReadOnlyRow(grid, 9, "Result counts", "Every run reports created, updated, skipped, warnings, and errors. Errors block commit.");
+        addReadOnlyRow(grid, 10, "Export mode", "Exports the active company through NonprofitBookkeepingSclxExportService; an optional import run id reuses preserved raw SCLX when available.");
         return grid;
     }
 
@@ -147,6 +156,22 @@ public class AlternateImportExportPanel implements AppPanel
         {
             showResult(this.service.blockingError(ex.getMessage()));
         }
+    }
+
+
+    private void runSclxExport(String file, String importRunId)
+    {
+        if (!Database.isInitialized() || !CurrentCompany.isOpen())
+        {
+            showResult(this.service.blockingError("Open a database and active company before exporting SCLX."));
+            return;
+        }
+        if (file == null || file.isBlank())
+        {
+            showResult(this.service.blockingError("Select a destination file before exporting SCLX."));
+            return;
+        }
+        showResult(this.service.exportSclx(Path.of(file.trim()), blankToNull(importRunId)));
     }
 
     private void showResult(ImportExportOperationResult result)

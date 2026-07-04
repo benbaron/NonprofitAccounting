@@ -57,6 +57,7 @@ import nonprofitbookkeeping.plugins.scaledger.SCALedgerPlugin;
 import nonprofitbookkeeping.ui.actions.*;
 import nonprofitbookkeeping.ui.actions.scaledger.ImportFromOutlandsLedgerActionFX;
 import nonprofitbookkeeping.ui.actions.ImportSclxActionFX;
+import nonprofitbookkeeping.ui.actions.ExportSclxActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.SaveModifiedCopyActionFX;
 import nonprofitbookkeeping.plugins.scaledger.ui.PageViewerPanel;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
@@ -130,6 +131,7 @@ public class NonprofitBookkeepingFX extends Application
 	private MenuItem miImportFile;
 	/** Menu item for importing an SCLX file into the data model. */
 	private MenuItem miImportSclx;
+	private MenuItem miExportSclx;
 	/** Menu item for loading an SCA XLSM workbook via the plugin. */
 	private MenuItem miLoadScaXlsm;
 	/** Menu item for importing an SCA Excel ledger via the plugin. */
@@ -424,6 +426,9 @@ public class NonprofitBookkeepingFX extends Application
 		this.miImportSclx =
 			add(fileMenu, "Import SCLX...",
 				e -> new ImportSclxActionFX(this.primaryStage).handle(e));
+		this.miExportSclx =
+			add(fileMenu, "Export SCLX...",
+				e -> new ExportSclxActionFX(this.primaryStage).handle(e));
 
 		this.miImportScaExcel = new MenuItem("Import Outlands Ledger...");
 		this.miImportScaExcel.setOnAction(
@@ -1382,6 +1387,11 @@ public class NonprofitBookkeepingFX extends Application
 		if (this.miImportSclx != null)
 		{
 			this.miImportSclx.setDisable(!companyOpen || creatingCompany);
+		}
+
+		if (this.miExportSclx != null)
+		{
+			this.miExportSclx.setDisable(!companyOpen || creatingCompany);
 		}
 		
 		if (this.miPersistScaLedger != null)
