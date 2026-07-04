@@ -225,7 +225,7 @@ public class PanelHost extends BorderPane
                 case DEVELOPER_TOOLS -> new DeveloperToolsPanel();
                 case MONTHLY_CLOSE ->
                     new MonthlyCloseChecklistPanel(this.services);
-                case SETTINGS -> new SettingsPanel(this.services);
+                case SETTINGS -> new AlternateSettingsHost();
             };
         }
     }

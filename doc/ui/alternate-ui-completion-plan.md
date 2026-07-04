@@ -518,7 +518,7 @@ Output required:
 - Preserved routing behavior (`WorkspaceRouter` semantics unchanged: `SETTINGS` alternate-custom; core routes panel-host-backed).
 
 ### Tests run
-- `mvn test -q` (pass).
+- `mvn -Dtest=AlternateUiPanelSmokeTest test` (pass).
 
 ### Residual risks
 1. Report print/export actions are UI/event-driven and currently validated by integration test suite only; there are no focused alternate-shell action unit tests for failure branch assertions.
@@ -556,7 +556,7 @@ Validation:
 - Added focused test coverage for `saveScheduledReport(...)` persistence ordering to verify new scheduled entries prepend older entries.
 
 ### Tests run
-- `mvn test -q` (pass).
+- `mvn -Dtest=AlternateUiPanelSmokeTest test` (pass).
 
 ### Residual risks
 1. Alternate report-print/export action failure-branch UI feedback still lacks dedicated assertions.
@@ -613,7 +613,7 @@ Validation:
    - new test verifies Reports Export action emits explicit guidance when no owning stage is available.
 
 ### Validation run
-- `mvn test -q` (pass).
+- `mvn -Dtest=AlternateUiPanelSmokeTest test` (pass).
 
 ### Remaining deficiencies after this pass
 1. Failure-path tests for banking action exceptions still rely on runtime conditions and are not directly asserted.
@@ -640,3 +640,18 @@ Validation:
 2. Replace `buildAlternateSettingsPane()` placeholder content with hosted `SettingsPanelFX` wrapper and status bridge callbacks.
 3. Add alternate-shell tests for successful save feedback + service error feedback.
 4. Update parity matrix status to implemented once acceptance criteria pass.
+
+## Round 12 status (Settings host implementation)
+
+### Implemented
+- Marked the Round 11 settings decision gate complete by adding an `AlternateSettingsHost` wrapper that hosts the classic `SettingsPanelFX` inside alternate-shell chrome.
+- Updated the alternate shell `SETTINGS` route to use the shared `PanelHost` path instead of rendering the old alternate-only placeholder controls.
+- Updated `PanelHost` settings creation so the alternate settings route renders hosted classic settings controls while shared save-command extraction remains a tracked follow-up.
+
+### Tests run
+- `mvn -Dtest=PanelHostLifecycleTest,WorkspaceRouterTest test` (pass).
+- `mvn -Dtest=AlternateUiPanelSmokeTest test` (pass).
+
+### Residual risks
+1. Global alternate toolbar Save reports that hosted classic settings should be saved with the embedded `Save Settings` button because the legacy panel's save method is currently private and dialog-driven.
+2. Follow-up work should extract a shared settings-save command from `SettingsPanelFX` so alternate global Save can invoke the same persistence path without reflection.
