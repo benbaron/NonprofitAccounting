@@ -57,6 +57,7 @@ import nonprofitbookkeeping.plugins.scaledger.SCALedgerPlugin;
 import nonprofitbookkeeping.ui.actions.*;
 import nonprofitbookkeeping.ui.actions.scaledger.ImportFromOutlandsLedgerActionFX;
 import nonprofitbookkeeping.ui.actions.ImportSclxActionFX;
+import nonprofitbookkeeping.ui.actions.ExportSclxActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.SaveModifiedCopyActionFX;
 import nonprofitbookkeeping.plugins.scaledger.ui.PageViewerPanel;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
@@ -130,6 +131,7 @@ public class NonprofitBookkeepingFX extends Application
 	private MenuItem miImportFile;
 	/** Menu item for importing an SCLX file into the data model. */
 	private MenuItem miImportSclx;
+	private MenuItem miExportSclx;
 	/** Menu item for loading an SCA XLSM workbook via the plugin. */
 	private MenuItem miLoadScaXlsm;
 	/** Menu item for importing an SCA Excel ledger via the plugin. */
@@ -245,7 +247,6 @@ public class NonprofitBookkeepingFX extends Application
 	 * The main entry point for this JavaFX application, called after the {@code init} method.
 	 * This method sets up the primary stage, initializes the main application view,
 	 * configures the menu bar, loads plugins, and displays the initial UI.
-	 * A shutdown hook is added to attempt saving company data on application exit.
 	 * SLF4J logging bridge is installed.
 	 *
 	 * @param stage The primary {@link Stage} for this application, onto which
@@ -254,12 +255,6 @@ public class NonprofitBookkeepingFX extends Application
 	@Override
 	public void start(Stage stage)
 	{
-		// Add a shutdown hook to save company data when the application exits.
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-			// Save data
-			doSaveCompany(); // Attempt to save company data
-		}));
-		
 		// Configure SLF4J logging bridge
 		SLF4JBridgeHandler.removeHandlersForRootLogger();
 		SLF4JBridgeHandler.install();
@@ -424,6 +419,9 @@ public class NonprofitBookkeepingFX extends Application
 		this.miImportSclx =
 			add(fileMenu, "Import SCLX...",
 				e -> new ImportSclxActionFX(this.primaryStage).handle(e));
+		this.miExportSclx =
+			add(fileMenu, "Export SCLX...",
+				e -> new ExportSclxActionFX(this.primaryStage).handle(e));
 
 		this.miImportScaExcel = new MenuItem("Import Outlands Ledger...");
 		this.miImportScaExcel.setOnAction(
@@ -1383,6 +1381,11 @@ public class NonprofitBookkeepingFX extends Application
 		{
 			this.miImportSclx.setDisable(!companyOpen || creatingCompany);
 		}
+
+		if (this.miExportSclx != null)
+		{
+			this.miExportSclx.setDisable(!companyOpen || creatingCompany);
+		}
 		
 		if (this.miPersistScaLedger != null)
 		{
@@ -1693,11 +1696,31 @@ public class NonprofitBookkeepingFX extends Application
 	 */
 	private void doSaveCompany()
 	{
+		saveCurrentCompany(true);
+	}
+
+	/**
+	 * Saves the active company when one is open. Non-interactive callers such as
+	 * application shutdown must not display JavaFX dialogs because shutdown can be
+	 * triggered before a company is opened or after the JavaFX toolkit is exiting.
+	 *
+	 * @param interactive true when called from an explicit user action
+	 */
+	private void saveCurrentCompany(boolean interactive)
+	{
 		
 		if (!Database.isInitialized() || !CurrentCompany.isOpen())
 		{
-			AlertBox.showError(this.primaryStage,
-				"Open a company connected to the database before saving.");
+			if (interactive)
+			{
+				AlertBox.showError(this.primaryStage,
+					"Open a company connected to the database before saving.");
+			}
+			else
+			{
+				LOGGER.debug(
+					"Skipping non-interactive save because no database-backed company is open.");
+			}
 			return;
 		}
 		
@@ -1705,12 +1728,23 @@ public class NonprofitBookkeepingFX extends Application
 		{
 			SaveCompanyFileAction saveCompanyFileAction =
 				new SaveCompanyFileAction(this.primaryStage);
-			AlertBox.showInfo(this.primaryStage, "Company saved.");
+			if (interactive)
+			{
+				AlertBox.showInfo(this.primaryStage, "Company saved.");
+			}
 		}
 		catch (Exception ex)
 		{
-			AlertBox.showError(this.primaryStage,
-				"Failed to save company: " + ex.getMessage());
+			if (interactive)
+			{
+				AlertBox.showError(this.primaryStage,
+					"Failed to save company: " + ex.getMessage());
+			}
+			else
+			{
+				LOGGER.warn("Failed to save company during shutdown: {}",
+					ex.getMessage(), ex);
+			}
 		}
 		
 	}
@@ -1823,7 +1857,7 @@ public class NonprofitBookkeepingFX extends Application
 			
 		}
 		
-		doSaveCompany();
+		saveCurrentCompany(false);
 		super.stop();
 		
 	}

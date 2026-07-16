@@ -1,6 +1,8 @@
 package org.nonprofitbookkeeping.ui;
 
 import nonprofitbookkeeping.importer.sclx.SclxImportResult;
+import nonprofitbookkeeping.importer.sclx.SclxImportService;
+import nonprofitbookkeeping.importer.sclx.NonprofitBookkeepingSclxExportService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -54,4 +56,38 @@ class AlternateImportExportServiceTest
 
         assertFalse(service.validateChartOfAccountsImport(csv).hasBlockingErrors());
     }
+    @Test
+    void sclxExportWritesJsonToDestination() throws Exception
+    {
+        AlternateImportExportService service = new AlternateImportExportService(
+            new SclxImportService(), new StubSclxExportService());
+        Path out = this.tempDir.resolve("company.sclx.json");
+
+        ImportExportOperationResult result = service.exportSclx(out, "run-1");
+
+        assertFalse(result.hasBlockingErrors());
+        assertTrue(Files.readString(out).contains("run-1"));
+        assertEquals(1, result.warningCount());
+    }
+
+    @Test
+    void sclxExportBlocksUnsupportedDestinationExtension()
+    {
+        AlternateImportExportService service = new AlternateImportExportService(
+            new SclxImportService(), new StubSclxExportService());
+
+        ImportExportOperationResult result = service.exportSclx(this.tempDir.resolve("company.txt"), null);
+
+        assertTrue(result.hasBlockingErrors());
+    }
+
+    private static class StubSclxExportService extends NonprofitBookkeepingSclxExportService
+    {
+        @Override
+        public String exportJson(String importRunId)
+        {
+            return "{\"runId\":\"" + importRunId + "\"}";
+        }
+    }
+
 }

@@ -19,7 +19,6 @@
     <hibernate.version>6.4.4.Final</hibernate.version>
     <weld.version>5.1.2.Final</weld.version>
     <slf4j.version>2.0.13</slf4j.version>
-    <logback.version>1.5.6</logback.version>
     <flyway.version>10.17.0</flyway.version>
   </properties>
 
@@ -397,12 +396,6 @@
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
       <version>${weld.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <version>${logback.version}</version>
-      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>info.picocli</groupId>
